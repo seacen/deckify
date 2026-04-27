@@ -9,6 +9,8 @@
   {"query": "extract the visual identity from this brand site (https://airbnb.design) and turn it into something i can hand to claude later when we build slides", "should_trigger": true},
   {"query": "create a design system markdown from https://vercel.com that bakes in the same engineering rules as my unilever deck", "should_trigger": true},
   {"query": "starting a new client deck for a fashion brand — their site is https://www.everlane.com — what's the workflow to make my slides match their look?", "should_trigger": true},
+  {"query": "deckify https://www.lululemon.com — i want both the DS markdown and a verification deck", "should_trigger": true},
+  {"query": "use deckify on https://patagonia.com please", "should_trigger": true},
 
   {"query": "extract the dominant colors from this image i'm sending you (./photo.jpg)", "should_trigger": false},
   {"query": "design a new product page for our internal admin tool — react + tailwind, no specific brand to match, just look professional", "should_trigger": false},

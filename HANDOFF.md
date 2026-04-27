@@ -154,7 +154,7 @@ Use the DS as a spec to write a sample HTML deck (cover + 2-3 content slides) at
 
 `decks/unilever/unilever-deck.html` is the 9-slide verification deck per `skills/deckify/references/verification-deck-spec.md`. Hard 8/8 PASS. Visually verified at 1920×1080 (perfect fill), 1440×900 (fills horizontally; 45 px letterbox top/bottom is unavoidable on 16:10 viewports), 1280×720 (perfect), 375×812 mobile (cover + content fill the full viewport with `min-height: 100dvh`).
 
-Judge step still pending — when you next run a full eval, write `judge.json` per the instructions printed by `bash skills/deckify/eval/run.sh`.
+Judge step still pending — when you next run a full eval, write `judge.json` per the instructions printed by `bash skills/deckify/evals/run.sh`.
 
 ### Step 2 — P&G Phase 1 + Phase 3 + Phase 4 (apply upgraded skill)
 
@@ -191,7 +191,7 @@ Sitemap is rich; pick from /about, /customers, /newsroom, /atlas, /payments, /pr
 ### Step 4 — Run eval and confirm all three PASS
 
 ```bash
-bash skills/deckify/eval/run.sh
+bash skills/deckify/evals/run.sh
 # Then write judge.json for each brand (read screenshots, score per rubric).
 # Re-run build_report.py to aggregate.
 # Target: 3/3 PASS.
@@ -307,7 +307,7 @@ print('root vars containing brand:', [k for k in r['root_vars'] if 'brand' in k.
 "
 
 # Run eval (after decks are regenerated)
-bash skills/deckify/eval/run.sh
+bash skills/deckify/evals/run.sh
 
 # Latest report
 cat skills/deckify/tests/reports/latest.md
