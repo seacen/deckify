@@ -1,0 +1,22 @@
+{
+  "chosen": {
+    "id": "d481e89a",
+    "kind": "jsonld-logo",
+    "page": "home",
+    "src": "https://images.ctfassets.net/oggad6svuzkv/4JSezOuLv9CCXfHEBpfGxp/528d1ca0496e3401cd60467235b6441f/P_G_Logo_RGB.png",
+    "context": "Organization",
+    "field": "logo"
+  },
+  "result": {
+    "ok": true,
+    "format": "png",
+    "path": "/tmp/web-to-ds/pg/assets/logo.png",
+    "evidence": {
+      "size": [
+        3004,
+        3004
+      ]
+    },
+    "url": "https://images.ctfassets.net/oggad6svuzkv/4JSezOuLv9CCXfHEBpfGxp/528d1ca0496e3401cd60467235b6441f/P_G_Logo_RGB.png"
+  }
+}

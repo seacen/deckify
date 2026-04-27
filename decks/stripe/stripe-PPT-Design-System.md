@@ -6,25 +6,44 @@
 
 ## 1. Design Philosophy
 
-**Stripe reads as engineering-clean and developer-first: tight grids, monospace accents, restrained palette, generous use of muted gray scales with a single signature blurple accent. The deck identity is monochrome navy + one purple thing — the campaign-chrome hero gradients you see on stripe.com are explicitly out of scope here. Every element earns its place; if it's not load-bearing, it's not on the slide.**
+<!-- BRAND-VARIABLE: 1-2 paragraphs capturing the brand's mood + a "Constraints vs Freedom" block -->
 
-> Stripe's deck mood: structured as a developer documentation site — tight grid, monospace accents, copy-pastable code blocks, generous use of muted gray scales with one strong accent. The accent (`--blue` blurple) appears once or twice per slide as emphasis, never as decoration.
+**Engineered calm with lavender restraint. Every slide is a precise statement on Stripe Slate (#0A2540) or pure white surface, anchored by Söhne sans-serif and disciplined to a two-chord palette — slate gravitas + iconic Stripe indigo. Sharp 0-radius rectangles, generous whitespace, monospace-adjacent typography for code, and the Stripe wordmark as the recognisable signature.**
+
+> Example mood paragraphs to draw from (pick or remix the closest match, then customize):
+> - **Premium / editorial / typographically-led**: "draws from luxury brand communications: generous whitespace, high-contrast type, restrained colour. Every element earns its place. No decorative gradients, no stock icons, no emoji."
+> - **Engineering-clean / grid-driven**: "structured as a developer documentation site: tight grid, monospace accents, copy-pastable code blocks, generous use of muted gray scales with one strong accent."
+> - **Bold-colorful / consumer**: "high-energy, high-saturation, hero typography, big illustrative shapes. Whitespace exists to make the colour pop, not to reduce noise."
+> - **Minimal-monochrome**: "reductive, near-monochrome palette, one accent colour reserved for emphasis only, type does the heavy lifting."
 
 **Two modes:**
-- **Desktop (≥ 769 px)**: 1280 × 720 px canvas, scale-to-fit, keyboard / click navigation.
+- **Desktop (≥ 769 px)**: 1280 × 720 px canvas, scale-to-fit (§5 runtime), keyboard / click navigation.
 - **Mobile (≤ 768 px)**: all slides stack vertically as a scrollable page; single-column layouts.
 
-### Constraints vs Freedom
+### Design taste <!-- ENGINEERING-DNA framing; the "what to avoid" list is invariant -->
+
+**Commit to a clear aesthetic point of view.** This DS is a brand instrument, not a generic SaaS template. Every deck made from it should be unmistakably *this* brand on first glance — not "another tasteful business presentation." Bold maximalism and refined minimalism both succeed; the failure mode is timidity.
+
+**Anti-AI-slop rules** (apply on every slide, every component, every variant):
+
+- **No generic font defaults.** The brand typeface is named in §3 and must be used. If a fallback is needed it should be the most characterful option available, not Arial/system-ui as the "design choice".
+- **No cliché palettes.** Pure-white background + one purple/blue accent + slate-grey type = AI-slop signature. The §2 palette has a dominant chord and supporting accents — use them with that hierarchy. Do not flatten everything to "white + grey + one accent".
+- **No even-weighted accent grids.** A 6-colour decorative rainbow looks like a Storybook page, not a brand. One dominant chord + 2–3 semantic accents (with distinct meaning) is the right shape.
+- **No off-the-shelf SaaS dashboard chrome.** 8 px radius + soft drop-shadow + tidy spacing on every component homogenises every brand. Match the brand's actual radius / shadow / density per §2.
+- **No vague mood language in copy.** "Modern, clean, bold" describes everything and therefore nothing. Slide titles and section copy should be specific and concrete.
+- **One orchestrated entrance, not scattered micro-interactions.** A staggered slide-content reveal on activation is the only motion most slides need; do not bolt hover wiggles onto every card.
+
+### Constraints vs Freedom <!-- ENGINEERING-DNA framing; bullet contents are BRAND-VARIABLE -->
 
 This Design System defines **hard constraints** (what you must never break) and **reusable components** (what you can reach for). It does NOT define recipes — every slide should be composed for its specific content, not assembled from a template.
 
 **Hard constraints (locked):**
 - Colour palette (§2 tokens only — no ad-hoc colours)
-- Inter typeface (substituting for licensed Söhne Var), no serif/display fonts; monospace permitted only for code/tabular numerals
+- Söhne typeface, no serif/display fonts — Stripe's licensed proprietary face from Klim Type Foundry; no serif or display variants
 - 12px readability floor
 - Logo on every slide
-- No emoji (the entire visual system rejects them) — typographic symbols (✓ − ! ×) and geometric indicators are permitted
-- No decorative stock imagery; no campaign-chrome hero gradients (those belong on marketing pages, not internal decks)
+- No emoji (👍🎉 etc.) — typographic symbols (✓ − ! ×) and geometric indicators are permitted
+- No decorative stock imagery
 - `.shd` header strip on content slides
 - `.sw` border-left accent
 
@@ -32,52 +51,52 @@ This Design System defines **hard constraints** (what you must never break) and 
 - §7 Component Library provides cards, tables, charts, tabs, marks — use them when they fit. Skip them when a bespoke layout serves the content better.
 
 **Bespoke elements (encouraged):**
-- **Invent freely** within the colour palette. A CSS-drawn funnel diagram, a custom step diagram with monospace labels, a diff-style before/after block — all welcome, as long as they use only the tokens below and respect the type floor.
+- **Invent freely** within the colour palette. Pair the slate Brand Slate (#0A2540) cover with a clean white content body; reserve Brand Indigo (#635BFF) for one accent moment per slide — a CTA highlight, a chart fill, a callout border-left. Use Lavender (#9966FF) sparingly for decorative gradients only on cover slides. Lean into Söhne 700 at 50–82 px for headlines, with the wider tracking that the typeface handles gracefully. Code samples set in Source Code Pro at 14–15 px with --slate-mid background tint; this is one of Stripe's signature compositions.
 - The test is: does the element use only the defined colour tokens, the brand typeface, and respect the readability floor? If yes, it's in-system even if it doesn't match any named component.
 - **Do not self-restrict to the named components.** If a slide needs something that doesn't exist in §7, design it from the tokens. The best slides are bespoke compositions built from system tokens.
 
 ---
 
-## 2. Colour Tokens
+## 2. Colour Tokens <!-- BRAND-VARIABLE: hex values; token NAMES are invariant -->
 
 ```css
 :root {
   /* ── Brand ── */
-  --navy:     #0A2540;   /* Stripe ink */
-  --blue:     #635BFF;   /* Stripe blurple — the iconic accent */
+  --navy:     #0A2540;   /* Primary brand dark */
+  --blue:     #635BFF;   /* Accent / CTA */
   /* ── Neutrals ── */
-  --surface:  #F6F9FC;   /* cool off-white */
+  --surface:  #FFFFFF;   /* Off-white slide bg */
   --white:    #FFFFFF;
-  --ink:      #0A2540;   /* same as navy — type-led */
-  --mid:      #425466;   /* secondary text */
-  --rule:     #E3E8EE;   /* dividers */
-  --tint:     #ECF1F6;   /* row tint */
+  --ink:      #425466;   /* Body text on light */
+  --mid:      #32325D;   /* Secondary text */
+  --rule:     #E7ECF1;   /* Dividers */
+  --tint:     #F6F9FC;   /* Subtle separation bg */
   /* ── Semantic ── */
-  --green:    #14B872;   /* Stripe success green */
-  --green-bg: #E5F8EE;
-  --red:      #DF1B41;   /* Stripe error red */
-  --red-bg:   #FCE8EC;
-  --warn:     #F8A302;   /* Stripe warning amber */
-  --warn-bg:  #FFF6E0;
-  --teal:     #11B5D9;   /* Informational / neutral highlight */
-  --teal-bg:  #E1F4F9;
+  --green:    #0E9F6E;   /* Positive */
+  --green-bg: #D1FAE5;
+  --red:      #DC2626;   /* Negative */
+  --red-bg:   #FEE2E2;
+  --warn:     #F59E0B;   /* Warning / caution */
+  --warn-bg:  #FEF3C7;
+  --teal:     #0073E6;   /* Informational / neutral highlight */
+  --teal-bg:  #DBEAFE;
 }
 ```
 
-**Rules:**
-- `--navy` and `--blue` are the only dark fills. Never pure black. (Token names are abstractions — `--navy` is whatever this brand's dominant dark is; for Stripe that's `#0A2540`.)
+**Rules:** <!-- ENGINEERING-DNA -->
+- `--navy` and `--blue` are the only dark fills. Never pure black. (Token names are abstractions — `--navy` is whatever this brand's dominant dark is.)
 - One *dominant* accent colour per slide. Semantic colours (green/red for pass/fail, amber for caution, teal for info) may coexist when they carry distinct, opposing meaning — e.g., a comparison slide with ✓/✗ marks.
 - `--tint` is for rows, not card fills.
 
 ---
 
-## 3. Typography
+## 3. Typography <!-- BRAND-VARIABLE: font family + fallback; the scale below is mostly invariant -->
 
-**Inter** — sole typeface. Weights 300–900, italic 300. `system-ui, sans-serif` fallback for environments without Inter loaded.
+**Söhne** — sole typeface. Weights 400, 500, 600, 700, 800Italic permitted for pull-quotes only. `'Helvetica Neue', Arial, system-ui, sans-serif` fallback for when Söhne is not licensed for the deck context.
 
-> Stripe's production face is **Söhne Var** (Klim Type Foundry) — licensed for stripe.com use only. Inter is the closest open-license substitute and is what every internal deck should use; the type personality (high contrast between weights, slightly humanist forms, strong italic) carries across. If the deck will only ever live inside Stripe and Söhne Var is licensed for the surface, swap Inter for `sohne-var` in the font stack — no other change required.
+> Stripe leans engineered-calm — Söhne's wide humanist counters, even text colour at body scale, monospace-adjacent letter-spacing on labels. Avoid all-caps body, tight tracking, condensed weights, or anything decorative.
 
-### Type scale
+### Type scale <!-- ENGINEERING-DNA — sizes are invariant; the scale is what makes decks readable -->
 
 | Role | Size | Weight | Letter-spacing | Notes |
 |---|---|---|---|---|
@@ -91,7 +110,7 @@ This Design System defines **hard constraints** (what you must never break) and 
 | Table / data | 13–14 px | 700–800 | +0.1 em | ALL CAPS |
 | Caption / meta | 12–13 px | 700–800 | +0.14 em | Never below 12 px |
 
-### Readability
+### Readability <!-- ENGINEERING-DNA -->
 
 1. **Maximise**: Default to the largest size that fits. Half-empty slide with 14px body = design failure.
 2. **Floor**: Nothing below 12px. If content doesn't fit at min sizes, change layout — never shrink font.
@@ -107,21 +126,77 @@ This Design System defines **hard constraints** (what you must never break) and 
 
 **Enforcement**: Title below 50px or primary body below 16px on a slide's main content area is a bug. Component-internal secondary text (card descriptions, list details) may use 13–14px to maintain visual hierarchy between title and description within the component.
 
+### 3.1 Typography Safety <!-- ENGINEERING-DNA — non-negotiable layout invariants -->
+
+Slide "looks good" is engineering-quantifiable. The rules below are hard rules; the `text_layout_safe` auto-check enforces most of them.
+
+1. **Never glued to the bottom edge**: the lowest visible text element on a content slide must be ≥ 18px from the slide's bottom (target 24–48px). Keep `padding-bottom` on `.sw` / `.sc` as a guardrail; do not push content to the edge.
+2. **Never truncated**: any text container with `overflow:hidden` must have `scrollHeight ≤ clientHeight`. If content might overflow, use `text-overflow: ellipsis` or `-webkit-line-clamp` and explicitly declare the allowed max line count — never "bet" that it just fits.
+3. **Never broken across lines arbitrarily**: H1/H2/H3 single titles ≤ 3 lines; body paragraphs ≤ 5 lines. For CJK titles, avoid mid-phrase wraps — use `word-break: keep-all; line-break: strict;` paired with shorter copy, do not let auto-wrap take over.
+4. **Global layout law** (the basics):
+   - Disable `hyphens: auto` globally (it produces broken hyphens in mixed-CJK environments).
+   - `line-height` ≥ 1.4 for body, ≥ 1.15 for headings — never tighter.
+   - Minimum 12px spacing between cards / paragraphs (matches the §5 12px floor); two text blocks must never touch.
+   - At most 3 levels of hierarchy inside one `.sc` (title → subtitle/figure → list/cards). If you need more, split the slide.
+5. **Build-time self-check** (run after writing HTML):
+   ```js
+   document.querySelectorAll('.slide').forEach((s, i) => {
+     const slideBottom = s.getBoundingClientRect().bottom;
+     let maxBottom = -Infinity;
+     s.querySelectorAll('h1,h2,h3,h4,p,li').forEach(el => {
+       if ((el.textContent||'').trim().length < 3) return;
+       const r = el.getBoundingClientRect();
+       if (r.height > 0) maxBottom = Math.max(maxBottom, r.bottom);
+       if (el.scrollHeight > el.clientHeight + 2 && getComputedStyle(el).overflow === 'hidden')
+         console.warn(`slide ${i+1}: ${el.tagName} text truncated →`, (el.textContent||'').slice(0,40));
+     });
+     const gap = slideBottom - maxBottom;
+     if (gap < 18) console.warn(`slide ${i+1}: text only ${gap.toFixed(1)}px from bottom (need ≥ 18)`);
+   });
+   ```
+6. **Repair priority when a check fails**:
+   - First, **edit the copy** (cut words, shorten sentences, use noun phrases).
+   - Then, **change the layout** (drop an item, split the slide, turn a list into a 2-column grid).
+   - **Never** "fit it in" by shrinking type below 12px or allowing truncation.
+
 ---
 
-## 4. Stripe Logo
+## 4. Stripe Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
 
 ### Definition (once per HTML file)
 
-Define the wordmark as an SVG `<symbol>` in a hidden `<svg>` block at the top of `<body>`. The path below was extracted from stripe.com's rendered logo SVG and saved at `$WS/assets/logo.svg`. Any hardcoded `fill` attributes have been removed from the `<path>` so CSS `currentColor` controls the colour.
+The logo must be a real brand identity asset, **fully inlined** into the HTML (no external network dependency). Two embed paths are allowed; `embed_logo.py` picks one automatically:
+
+**A. SVG vector path** (preferred) — when an SVG source can be obtained from the brand site, Wikipedia, or a brand-asset page:
 
 ```html
 <svg style="display:none" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="0 0 60 25">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M59.6444 14.2813h-8.062c.1843 1.9296 1.5983 2.5476 3.2032 2.5476 1.6352 0 2.9534-.3656 4.0453-.9506v3.3179c-1.1186.7115-2.5964 1.1068-4.5645 1.1068-4.011 0-6.8218-2.5122-6.8218-7.4783 0-4.19441 2.3837-7.52509 6.3017-7.52509 3.912 0 5.9537 3.28038 5.9537 7.49819 0 .3982-.0372 1.261-.0556 1.4835Zm-5.9241-5.62407c-1.0294 0-2.1739.72812-2.1739 2.58387h4.2573c0-1.85362-1.0721-2.58387-2.0834-2.58387ZM40.9547 20.303c-1.4411 0-2.322-.6087-2.9133-1.0417l-.0088 4.6271-4.1181.8755-.0014-19.19053h3.7543l.0864 1.01784c.6035-.52914 1.6114-1.29157 3.2256-1.29162 2.8925 0 5.6162 2.6052 5.6162 7.39971 0 5.2327-2.6948 7.6037-5.6409 7.6037Zm-.959-11.35573c-.9453 0-1.5376.34559-1.9669.81586l.0245 6.11967c.3997.433.9763.7813 1.9424.7813 1.5231 0 2.5437-1.6575 2.5437-3.8745 0-2.1544-1.037-3.84233-2.5437-3.84233Zm-11.7602-3.3739h4.1341V20.0088h-4.1341V5.57337Zm0-4.694699L32.3696 0v3.35821l-4.1341.87868V.878671ZM23.9198 10.2223v9.7861h-4.1156V5.57296h3.6867l.1317 1.21751c1.0035-1.7722 3.0722-1.41321 3.6209-1.21594v3.78524c-.5242-.16908-2.2894-.42779-3.3237.86253Zm-8.5525 4.7221c0 2.4275 2.5988 1.6719 3.1263 1.4609v3.3522c-.5492.3013-1.5437.5458-2.8901.5458-2.4441 0-4.2773-1.7999-4.2773-4.2379l.0173-13.17658 4.0206-.85464.0032 3.5395h3.1278V9.0857h-3.1278v5.8588-.0001Zm-4.9069.7026c0 2.9645-2.31051 4.6562-5.73464 4.6562-1.41958 0-2.92289-.2761-4.453935-.9347v-3.9319c1.382085.7516 3.093705 1.315 4.457755 1.315.91864 0 1.53106-.2459 1.53106-1.0069C6.26064 13.7786 0 14.5192 0 9.95995 0 7.04457 2.27622 5.2998 5.61655 5.2998c1.36404 0 2.72806.20934 4.09208.75351V9.9317c-1.25265-.67618-2.84332-1.05979-4.09588-1.05979-.86296 0-1.44753.24965-1.44753.8924.0001 1.85329 6.29518.97249 6.29518 5.88279v-.0001Z"/>
+  <symbol id="brand-wm" viewBox="0 0 60 25" fill="currentColor">
+    <title>Stripe logo</title><path d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a8.33 8.33 0 0 1-4.56 1.1c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.04 1.26-.06 1.48zm-5.92-5.62c-1.03 0-2.17.73-2.17 2.58h4.25c0-1.85-1.07-2.58-2.08-2.58zM40.95 20.3c-1.44 0-2.32-.6-2.9-1.04l-.02 4.63-4.12.87V5.57h3.76l.08 1.02a4.7 4.7 0 0 1 3.23-1.29c2.9 0 5.62 2.6 5.62 7.4 0 5.23-2.7 7.6-5.65 7.6zM40 8.95c-.95 0-1.54.34-1.97.81l.02 6.12c.4.44.98.78 1.95.78 1.52 0 2.54-1.65 2.54-3.87 0-2.15-1.04-3.84-2.54-3.84zM28.24 5.57h4.13v14.44h-4.13V5.57zm0-4.7L32.37 0v3.36l-4.13.88V.88zm-4.32 9.35v9.79H19.8V5.57h3.7l.12 1.22c1-1.77 3.07-1.41 3.62-1.22v3.79c-.52-.17-2.29-.43-3.32.86zm-8.55 4.72c0 2.43 2.6 1.68 3.12 1.46v3.36c-.55.3-1.54.54-2.89.54a4.15 4.15 0 0 1-4.27-4.24l.01-13.17 4.02-.86v3.54h3.14V9.1h-3.13v5.85zm-4.91.7c0 2.97-2.31 4.66-5.73 4.66a11.2 11.2 0 0 1-4.46-.93v-3.93c1.38.75 3.1 1.31 4.46 1.31.92 0 1.53-.24 1.53-1C6.26 13.77 0 14.51 0 9.95 0 7.04 2.28 5.3 5.62 5.3c1.36 0 2.72.2 4.09.75v3.88a9.23 9.23 0 0 0-4.1-1.06c-.86 0-1.44.25-1.44.9 0 1.85 6.29.97 6.29 5.88z" fill-rule="evenodd"></path>  <!-- inner <path>/<g> carry no explicit fill, so currentColor cascades in -->
   </symbol>
 </svg>
 ```
+
+**B. PNG/JPG/WebP base64 embed** (raster fallback) — when only a raster logo is available (minimum 64×64), base64-encode it and wrap it in the same `<symbol>` via `<image href>`:
+
+```html
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 72 30">
+    <image href="data:image/png;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNjAgMjUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjYwIiBoZWlnaHQ9IjI1IiBjbGFzcz0iVXNlckxvZ28gdmFyaWFudC0tICI+PHRpdGxlPlN0cmlwZSBsb2dvPC90aXRsZT48cGF0aCBmaWxsPSJ2YXIoLS11c2VyTG9nb0NvbG9yLCAjMEEyNTQwKSIgZD0iTTU5LjY0IDE0LjI4aC04LjA2Yy4xOSAxLjkzIDEuNiAyLjU1IDMuMiAyLjU1IDEuNjQgMCAyLjk2LS4zNyA0LjA1LS45NXYzLjMyYTguMzMgOC4zMyAwIDAgMS00LjU2IDEuMWMtNC4wMSAwLTYuODMtMi41LTYuODMtNy40OCAwLTQuMTkgMi4zOS03LjUyIDYuMy03LjUyIDMuOTIgMCA1Ljk2IDMuMjggNS45NiA3LjUgMCAuNC0uMDQgMS4yNi0uMDYgMS40OHptLTUuOTItNS42MmMtMS4wMyAwLTIuMTcuNzMtMi4xNyAyLjU4aDQuMjVjMC0xLjg1LTEuMDctMi41OC0yLjA4LTIuNTh6TTQwLjk1IDIwLjNjLTEuNDQgMC0yLjMyLS42LTIuOS0xLjA0bC0uMDIgNC42My00LjEyLjg3VjUuNTdoMy43NmwuMDggMS4wMmE0LjcgNC43IDAgMCAxIDMuMjMtMS4yOWMyLjkgMCA1LjYyIDIuNiA1LjYyIDcuNCAwIDUuMjMtMi43IDcuNi01LjY1IDcuNnpNNDAgOC45NWMtLjk1IDAtMS41NC4zNC0xLjk3LjgxbC4wMiA2LjEyYy40LjQ0Ljk4Ljc4IDEuOTUuNzggMS41MiAwIDIuNTQtMS42NSAyLjU0LTMuODcgMC0yLjE1LTEuMDQtMy44NC0yLjU0LTMuODR6TTI4LjI0IDUuNTdoNC4xM3YxNC40NGgtNC4xM1Y1LjU3em0wLTQuN0wzMi4zNyAwdjMuMzZsLTQuMTMuODhWLjg4em0tNC4zMiA5LjM1djkuNzlIMTkuOFY1LjU3aDMuN2wuMTIgMS4yMmMxLTEuNzcgMy4wNy0xLjQxIDMuNjItMS4yMnYzLjc5Yy0uNTItLjE3LTIuMjktLjQzLTMuMzIuODZ6bS04LjU1IDQuNzJjMCAyLjQzIDIuNiAxLjY4IDMuMTIgMS40NnYzLjM2Yy0uNTUuMy0xLjU0LjU0LTIuODkuNTRhNC4xNSA0LjE1IDAgMCAxLTQuMjctNC4yNGwuMDEtMTMuMTcgNC4wMi0uODZ2My41NGgzLjE0VjkuMWgtMy4xM3Y1Ljg1em0tNC45MS43YzAgMi45Ny0yLjMxIDQuNjYtNS43MyA0LjY2YTExLjIgMTEuMiAwIDAgMS00LjQ2LS45M3YtMy45M2MxLjM4Ljc1IDMuMSAxLjMxIDQuNDYgMS4zMS45MiAwIDEuNTMtLjI0IDEuNTMtMUM2LjI2IDEzLjc3IDAgMTQuNTEgMCA5Ljk1IDAgNy4wNCAyLjI4IDUuMyA1LjYyIDUuM2MxLjM2IDAgMi43Mi4yIDQuMDkuNzV2My44OGE5LjIzIDkuMjMgMCAwIDAtNC4xLTEuMDZjLS44NiAwLTEuNDQuMjUtMS40NC45IDAgMS44NSA2LjI5Ljk3IDYuMjkgNS44OHoiIGZpbGwtcnVsZT0iZXZlbm9kZCI+PC9wYXRoPjwvc3ZnPg==" width="72" height="30"/>
+  </symbol>
+</svg>
+```
+
+> ⚠️ **Typographic placeholders are forbidden**: faking a logo with `<text>` of the brand name (e.g. `<text>P&G</text>`, a generic disc-with-letter) is a build failure. The `logo_renders` hard check rejects `<symbol>` blocks that contain only `<text>`. If no source produces a real logo, **stop and ask the user** for an original file — never invent a placeholder.
+
+Source resolution order (the actual order `embed_logo.py` tries):
+1. Inline SVG inside the page's `<header>` (filtered to drop utility icons with viewBox < 60px)
+2. Wikipedia infobox logo file for the brand
+3. apple-touch-icon (typically ≥ 180px PNG)
+4. favicon (SVG or PNG)
+5. og:image / twitter:image
+6. Common path guesses (/logo.svg, /assets/logo.svg, …)
 
 ### Usage
 
@@ -141,23 +216,23 @@ Define the wordmark as an SVG `<symbol>` in a hidden `<svg>` block at the top of
 /* fill: currentColor must be on .logo — NOT on .logo path.
    CSS selectors do not pierce SVG <use> shadow DOM.
    Inherited fill on the outer <svg> cascades in correctly. */
-.logo   { height: 19px; width: auto; flex-shrink: 0; fill: currentColor; }
+.logo   { height: 25; width: auto; flex-shrink: 0; fill: currentColor; }
 .logo.W { color: #fff; }
 .logo.L { color: var(--navy); }
 ```
 
-### Placement rules
+### Placement rules <!-- ENGINEERING-DNA -->
 - **Every slide** must carry the logo — cover and all content slides.
 - **Cover**: top-right corner of the `.cov-top` flex row.
 - **Content slides**: right end of the `.shd` header strip (left = title eyebrow / slide number, right = logo).
-- Minimum clear space around the logo = logo height (19 px) on all sides.
+- Minimum clear space around the logo = logo height (25) on all sides.
 - Never stretch, recolour outside `W`/`L`, or overlay the logo on a patterned area.
 
-The Stripe wordmark must never be re-coloured to anything other than `--navy` (light surface) or `#fff` (dark surface). Do NOT place it on the campaign blurple gradient — it belongs on the deck's restrained navy/white system.
+The Stripe wordmark is set in proprietary letterforms — never reset it in another typeface. White-on-slate for cover and dark-mode hero use; brand-slate-on-white for content slides. Do not stretch, recolour beyond white/slate/indigo, or pair with a generated symbol.
 
 ---
 
-## 5. Slide Architecture
+## 5. Slide Architecture <!-- ENGINEERING-DNA — the entire section, invariant -->
 
 ### Scaffold
 ```
@@ -165,6 +240,43 @@ The Stripe wordmark must never be re-coloured to anything other than `--navy` (l
   #deck — 1280 × 720, position:relative, overflow:hidden (hard contract)
     .slide × N — absolute inset, opacity show/hide, overflow:hidden (hard contract)
 ```
+
+### Fullscreen fit — scale-to-fit at runtime <!-- ENGINEERING-DNA — DO NOT REMOVE -->
+
+The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any viewport without black borders, scale at runtime via CSS transform — never resize the canvas itself. This keeps every measurement, every fit-contract calculation, every `offsetWidth` value invariant; the auto-eval and the visual reality both stay coherent.
+
+```css
+/* Required CSS hooks */
+#deck { transform-origin: center center; will-change: transform; }
+```
+
+```html
+<!-- Required JS at the end of <body>; runs on load + resize -->
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      deck.style.transform = 'none';
+      return;
+    }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+</script>
+```
+
+**Why a CSS transform and not a viewport unit on the canvas itself:**
+- `transform: scale()` does not change `offsetWidth` / `offsetHeight`, so every layout calculation, fit-contract budget (602 px content area), and auto-eval measurement remains exact.
+- A viewport-relative `width: 100vw` on the canvas would warp the type scale; a slide tuned for 50 px headlines becomes 38 px on a small laptop.
+- Mobile is exempt: the mobile media query already turns the deck into a flow document, so `transform: none` is required there or the stacked slides scale with the canvas and break.
+
+**Anti-pattern**: shipping a deck without `scaleDeck()` lets `#wrap`'s flex-centre place a 1280×720 deck inside a 1920×1080 viewport with 320 px / 180 px of dark border — the deck looks unfinished even when content is correct. Every brand DS must wire scale-to-fit into the verification deck.
 
 ### Visibility
 ```css
@@ -257,29 +369,30 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 #### Pre-build checklist (do this BEFORE writing HTML)
 
 1. **List your sections** and assign each a role: `absorber` (exactly one) or `natural`.
-2. **Estimate natural heights** using the type scale.
-3. **Sum fixed sections + gaps**. Confirm total ≤ (602 − absorber minimum).
-4. **Write the copy short enough that single-line bullets don't wrap**.
-5. **Render at 1280×720 and eye the bottom edge.** Native canvas is the source of truth.
+2. **Estimate natural heights** using the type scale. A card with head (30) + label (14) + 5 single-line 13 px bullets (~125) + V-padding (34) = ~203 px.
+3. **Sum fixed sections + gaps**. Confirm total ≤ (602 − absorber minimum) — the absorber needs at least ~160 px to hold meaningful content.
+4. **Write the copy short enough that single-line bullets don't wrap**. In a half-width column at 13 px CJK, budget ~28 characters per bullet before wrapping.
+5. **Render at 1280×720 and eye the bottom edge.** Not at 1920×1080 (the `transform: scale()` masks overflow by rescaling). The native canvas is the source of truth.
 
 #### Anti-patterns that cause overflow
 
-- **N natural-height sections with no absorber**: total exceeds 602 px, content leaks past the deck.
-- **Absorber without `min-height: 0`**: flex refuses to shrink it below content's natural size.
-- **Absorber without `overflow: hidden`**: oversized children push through and break the parent.
-- **Omitting `overflow: hidden` on `.slide`/`.sc`**: content bleeds outside the deck.
-- **Packing 2 section labels + 5+ bullets into one card that gets ~240 px of flex:1 space**: clipping guaranteed.
-- **Trusting the 1920×1080 render**: `transform: scale()` masks overflow. Always verify at native 1280×720.
+- **N natural-height sections with no absorber**: total exceeds 602 px, content leaks past the deck. Missing the "one absorber" rule.
+- **Absorber without `min-height: 0`**: flex refuses to shrink it below content's natural size, defeats the whole point.
+- **Absorber without `overflow: hidden`**: oversized children push through the flex:1 and break the parent.
+- **Omitting `overflow: hidden` on `.slide`/`.sc`**: if any math is slightly off, content bleeds outside the deck onto the body. Safety net missing.
+- **Packing 2 section labels + 5+ bullets into one card that gets ~240 px of flex:1 space**: natural content ~260 px, clipping guaranteed. Merge into one section, or cut bullets.
+- **Trusting the 1920×1080 render**: the `transform: scale()` shrinks everything uniformly — a 730 px deck still *looks* fine at scale, but it *is* broken. Always verify at native 1280×720.
 
 ---
 
-## 6. Slide Types
+## 6. Slide Types <!-- BRAND-VARIABLE: emphasis order varies; the type definitions are mostly invariant -->
 
-> **Emphasis for Stripe**: Stripe decks are narrative-led and data-led, not image-led. Foreground these types when designing decks: **Type A (cover), Type C (full-width narrative), Type E (data table), Type H (chart), Type J (pull-quote), Type K (timeline)**.
-> Use sparingly: **Type F (image-dominant)** — Stripe avoids stock photography and most decorative imagery, so image-anchored slides only earn their place when there's a real product UI shot or a CSS-drawn diagram. **Type G (interactive demo)** — Stripe's docs already do interactive demos better than a slide can; a slide demo competes and loses.
+> **Emphasis for Stripe**: Stripe is a developer-platform company — every slide should feel like a page from well-crafted product documentation. Authority comes from precision, not volume. Treat each slide as a section in an annual letter to engineers.
+> Foreground these types when designing decks: Type C (full-width narrative — Stripe writes long-form essays well), Type E (data tables — pricing, comparison, capability matrix), Type H (chart — quantitative arguments), Type J (pull-quote — leadership voice anchored in the slate gravitas).
+> Use sparingly: Type F (decorative imagery slides) — Stripe avoids stock photography and lifestyle imagery; use product UI or code-sample slides instead.
 
 ### Type A — Cover
-- Background: `linear-gradient(135deg, var(--navy) 0%, #1A2A4F 50%, #0A1F3D 100%)` — subtle, almost-monochrome navy gradient. The bridge stops `#1A2A4F` and `#0A1F3D` are derived directly from `--navy` (one shade lighter, one shade deeper) — the cover reads as monochrome navy with a hint of depth, not a campaign gradient.
+- Background: `Brand Slate (#0A2540) for primary covers; White (#FFFFFF) for engineering-document covers`
 - Structure: Logo top-right → Eyebrow → Giant headline → Italic subtitle → Meta row
 - **No decorative lines of any kind** — no hairlines, no accent lines, no gradient borders. The background is the surface.
 
@@ -287,10 +400,10 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 Comparisons, feature lists, metrics. `grid-template-columns: 1fr 1fr; gap: 20px`. Collapses on mobile.
 
 ### Type C — Full-width narrative
-Single column, large type, pull-quotes. For context, summary, recommendation slides. **The Stripe workhorse** — most argument-led slides land here.
+Single column, large type, pull-quotes. For context, summary, recommendation slides.
 
 ### Type D — Flip cards
-Two cards side-by-side. Front = `--navy`, back = `#4A45D1` (one shade softer than `--blue`). **Hover + click flip** — JS `onclick` toggles `.on` class (required for mobile). Ghost Roman numerals on front. Spacious back (32px padding, ≤ 4 content elements).
+Two cards side-by-side. Front = `--navy`, back = `var(--blue) (#635BFF) — Stripe indigo on the back face for content contrast against the slate front` (softer than `--blue`). **Hover + click flip** — JS `onclick` toggles `.on` class (required for mobile). Ghost Roman numerals on front. Spacious back (32px padding, ≤ 4 content elements).
 
 **Typography — must be large and commanding:**
 
@@ -308,49 +421,69 @@ Two cards side-by-side. Front = `--navy`, back = `#4A45D1` (one shade softer tha
 **Do not use inline style overrides** to shrink flip card text below these sizes. If content doesn't fit, reduce the number of items — never the font size.
 
 ### Type E — Data / comparison slide
-Slide dominated by a table or structured data grid. **One of Stripe's foreground types** — funnel tables, MRR breakdowns, cohort matrices land here. The table component spec (§7.7) defines the element-level design; this type defines when to use it and how to lay out the slide around it.
+Slide dominated by a table or structured data grid. Used for feature comparisons, TCO analysis, specification matrices. The table component spec (§7.7) defines the element-level design; this type defines when to use it and how to lay out the slide around it.
 
 **Principles:** The table is the star — title + table + optional one-line callout below. No side panels competing for attention. If the table has 6+ columns, let it span full width.
 
-### Type F — Image slide (use sparingly for Stripe)
-One or more images dominate the slide, with text anchored to a calm area. For Stripe, this means real product UI screenshots or CSS-drawn diagrams ONLY — never stock photography, never campaign chrome.
+**Row-count rule** <!-- ENGINEERING-DNA — surfaced from Stripe verification overflow -->
+- 5 rows is the comfortable count at standard 14 px row-padding (cell `padding: 14px 18px`).
+- 6+ rows require either (a) tightening cell padding to `padding: 10px 16px` or (b) splitting the data across two slides. Do not let the absorber clip — the `text_layout_safe` hard check catches it.
+- If the table needs 6+ rows AND a side callout in the absorber, split. Don't pack.
+
+### Type F — Image slide
+One or more images dominate the slide, with text anchored to a calm area. Used to show real product UI, real screenshots, or contextual photography that makes an abstract concept concrete.
 
 **Principles:**
+- Images must serve comprehension — no decorative stock. Prefer: product UI screenshots, real data visualizations, contextual photos that illustrate a specific point.
+- When building a deck, **actively web search for relevant images** (product logos, UI screenshots, real-world examples) that support the narrative.
 - Image treatment: `border-radius: 4px`, optional `1px solid var(--rule)` border. On dark backgrounds, no border needed.
-- Layout: image fills 50–70% of slide area. Text sits beside or overlaid on a tinted region.
+- Layout: image fills 50–70% of slide area. Text sits beside or overlaid on a tinted region. Never place text over a busy image without a scrim.
 - Caption below image: `.cap` style (13px, 800 weight, ALL CAPS, `--mid`).
-- Prefer CSS-drawn diagrams over fetched images whenever the data is simple — they're crisper, smaller, and stay in-system.
 
-### Type G — Interactive demo (use sparingly for Stripe)
-A self-contained, click-to-advance micro-experience embedded in a slide. Stripe's actual product is the world's best interactive demo; a slide rarely competes. Reserve for genuinely novel scenarios that the live product doesn't cover.
+### Type G — Interactive demo
+A self-contained, click-to-advance micro-experience embedded in a slide. Purpose: help the audience *see* a concept working, not just read about it.
+
+**When to use:** Scenario walkthroughs, before/after comparisons, multi-step process visualizations.
+
+**Structure:** A "screen" area (dark bg `--navy` or `#1a1a2e`, 4px radius) with step-by-step content that advances on click. Controls: forward/back buttons or numbered steps. Content appears via CSS transitions.
+
+**Design rules:**
+- Must feel like a polished product demo, not a prototype. Clean typography, restrained animation.
+- CSS `@keyframes` only — no JS animation libraries. Keep under 50 lines of CSS per demo.
+- Each step should be one clear idea. Max 5 steps per demo.
+- Mobile: auto-advance on scroll or tap targets ≥ 44px.
 
 ### Type H — Chart / data insight slide
-Slide led by one or more data visualizations. **Foreground type for Stripe.**
+Slide led by one or more data visualizations. Used for quantitative arguments, trend analysis, performance comparisons. The chart component spec (§7.8) defines element-level design; this type defines slide-level principles.
 
 **Principles:**
-- One primary chart per slide.
-- Title states the insight, not the chart type. Good: "Cross-border SaaS exporters convert 4× better than B2C marketplaces". Bad: "Bar Chart Comparison".
+- One primary chart per slide. A secondary small chart is acceptable if it directly supports the primary.
+- Title states the insight, not the chart type. Good: "Stripe leads on all three dimensions". Bad: "Bar Chart Comparison".
 - Chart fills 50–70% of slide area. Remaining space: title + one paragraph of interpretation or a callout.
 - Animate on entrance for narrative impact.
 
 ### Type I — Tabs slide
-Multiple content views switchable via tabs. Max 4 tabs.
+Multiple content views switchable via tabs. Fits more information in one slide when content has natural categories. Tab component spec in §7.9.
+
+**Principles:** Max 4 tabs. Each tab panel is a self-contained slide-within-a-slide — it can use any component from §7. Avoid tabs as a crutch for overstuffed slides; if 2 tabs would each be sparse, merge into one view instead.
 
 ### Type J — Quote / pullquote
-A single striking statement that anchors a narrative moment. **Foreground type for Stripe** — used heavily for strategy doc excerpts, customer voice, founding-principle reframes.
+A single striking statement that anchors a narrative moment. Used for key takeaways, audience reframes, or memorable one-liners.
 
-**Structure:** Large quote text (28–36px, weight 700, `--ink`) centered or left-aligned. Optional attribution below (14px, `--mid`). Left border accent (`3px solid var(--blue)`) preferred.
+**Structure:** Large quote text (28–36px, weight 700, `--ink`) centered or left-aligned. Optional attribution below (14px, `--mid`). Left border accent (`3px solid --blue`) or none.
 
 ### Type K — Timeline / roadmap
-Horizontal or vertical sequence of milestones. **Foreground type for Stripe** — phase plans, rollout sequences, market-launch chronologies.
+Horizontal or vertical sequence of milestones. Used for project plans, evolution narratives, phase descriptions. Component spec in §7.12.
 
 ---
 
-## 7. Component Library
+## 7. Component Library <!-- ENGINEERING-DNA — every component preserved verbatim -->
 
-Reusable elements available on **any** slide type. A slide may combine multiple components, or use none — building bespoke layouts from colour tokens and type scale instead.
+Reusable elements available on **any** slide type. A slide may combine multiple components, or use none — building bespoke layouts from colour tokens and type scale instead. The library is a toolkit, not a constraint. If a slide's content calls for something not listed here, invent it from the system tokens (§2 colours, §3 type, §12 spacing).
 
 ### 7.1 Panel Card (Tier 1 — "big card")
+
+Full-height comparison panels. Used when 2–3 options need deep, structured comparison.
 
 ```css
 .panel {
@@ -363,7 +496,20 @@ Reusable elements available on **any** slide type. A slide may combine multiple 
 .panel.dark { background: var(--navy); color: #fff; border: none; border-top: 3px solid rgba(255,255,255,.2); }
 ```
 
+Internal: `.cap` eyebrow → title (18–22px 900) → rows (`.panel-row`: surface bg, 8px 12px padding) → optional callout.
+
 ### 7.2 Showcase Card (Tier 2 — "block card")
+
+Clean, elegant blocks for grouping content. White background, thin coloured top accent, content-first. **No heavy coloured header strips** — the card should feel like premium stationery, not a dashboard widget.
+
+**Design treatment:**
+- Background: `var(--white)` with `1px solid var(--rule)` border
+- **Top accent line**: `3px solid var(--blue)` (default). Can be `--navy`, `--green`, or `--red` per context. This is a thin, elegant line — not a filled header block.
+- **No mandatory label strip.** The title lives inside the card body as part of the content.
+- Title: 20px weight 900 `--ink`
+- Content: 15–16px weight 600 `--mid`, generous 12px+ gaps
+- Optional SVG icon: 32–36px, inline next to the title or above it.
+- **Hover**: subtle lift (`translateY(-2px)`) + shadow
 
 ```css
 .show-card {
@@ -383,7 +529,11 @@ Reusable elements available on **any** slide type. A slide may combine multiple 
 .show-card.compact .show-title { font-size: 18px; }
 ```
 
+**Anti-pattern**: Heavy filled colour strips across every card when shown 6+ in a grid — visual monotony. Use the thin top accent line instead.
+
 ### 7.3 Item Card (Tier 3 — "list card")
+
+Small horizontal cards for structured lists. Left accent border + leading indicator + content.
 
 ```css
 .bitem {
@@ -394,7 +544,13 @@ Reusable elements available on **any** slide type. A slide may combine multiple 
 }
 ```
 
+**Leading indicator** — flexible:
+- **Ghost number** (default): `20px 900, --blue, opacity .4` — for sequential lists (`01`, `02`, `03`)
+- **Icon circle**: small circle (24px) with symbol (`!`, `✓`, `→`) — for findings, alerts. Use semantic bg.
+- **Letter / label**: single letter or short label in same ghost style — for categorized items.
+
 ### 7.4 Stat Card (Tier 4 — "number card")
+
 Compact metric display. `stat-num` (36px 900 `--navy`) + `stat-label` (12px 800 ALL CAPS `--mid`).
 
 ### 7.5 Callout / Note
@@ -404,15 +560,21 @@ Compact metric display. `stat-num` (36px 900 `--navy`) + `stat-label` (12px 800 
 .snote { border-left: 3px solid var(--navy); padding: 10px 18px; background: var(--tint); font-size: 14px; font-weight: 700; }
 ```
 
-**Dark** (conclusion / recommendation bar): Full-width navy block for slide-ending takeaways.
+**Dark** (conclusion / recommendation bar):
+Full-width navy block for slide-ending takeaways. Text: 13–16px 700–800, `rgba(255,255,255,.85)`. Bold key phrases with `color: #fff`. No border-left — the solid navy fill IS the emphasis.
 
 ### 7.6 Marks, Badges & Chips
 
+**Status marks**:
 ```css
 .mark::before { display: inline-block; width: 18px; height: 18px; border-radius: 50%; text-align: center; line-height: 18px; font-size: 11px; font-weight: 900; margin-right: 8px; }
 .mark.yes::before { content: '✓'; background: var(--green); color: #fff; }
 .mark.no::before  { content: '−'; background: var(--red); color: #fff; }
 ```
+
+**Badges** — small label pills (`.bg-g`, `.bg-r`, `.bg-b`) for inline status. 12–13px, 900 weight, ALL CAPS.
+
+**Tech chips** — compact inline labels for technology/feature names. 13px 700, `min-height: 26px`.
 
 ### 7.7 Table (`.dt`)
 
@@ -426,64 +588,117 @@ Compact metric display. `stat-num` (36px 900 `--navy`) + `stat-label` (12px 800 
 .dt .neu { color: var(--mid); font-weight: 600; }
 ```
 
+**Rules:**
+- Navy header row is the only colour block. All data cells: white bg, `--ink` text.
+- **No coloured badges in `<table>` cells** — use text weight/colour for emphasis instead.
+- One optional `--tint` highlight row for the single most important row.
+- The "clean grid" test: squint at the table. If you see a patchwork of coloured boxes, the design has failed.
+
 ### 7.8 Charts
 
-| Type | Primary | Secondary | Neutral |
-|---|---|---|---|
-| Bar | `--blue` | `--navy` | `--rule` |
-| Progress | `--blue` fill | — | `--rule` track |
-| Pie / donut | `--navy` | `--blue` | `--rule` |
-| Timeline | `--navy` dots | — | `--rule` dots |
+| Type | Primary colour | Secondary | Neutral | Notes |
+|---|---|---|---|---|
+| Bar (H / V) | `--blue` | `--navy` | `--rule` | Animated grow on entrance |
+| Progress / gauge | `--blue` fill | — | `--rule` track | 8px height, 4px radius |
+| Pie / donut | `--navy` | `--blue` | `--rule` | Max 3 segments |
+| Timeline | `--navy` dots | — | `--rule` dots | Key nodes: `--tint` ring |
+
+Max 2 colours per chart (+ `--rule` neutral). Animate on entrance: bars grow, counters count up.
 
 ### 7.9 Tabs
 
 ```css
 .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 'Inter'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
+.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 'Söhne'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
 .tb:hover { border-color: var(--blue); color: var(--blue); }
 .tb.on { background: var(--navy); border-color: var(--navy); color: #fff; }
 .tc { display: none; } .tc.on { display: block; }
 ```
 
+Max 4 tabs.
+
 ### 7.10 Sequential steps / barriers
-Numeric labels `01` `02` `03` in `--blue`, weight 800 — preferred over bullet points.
+Use numeric labels `01` `02` `03` in monospace-weight span, `--blue` colour, rather than bullet points or decorative emoji.
 
 ### 7.11 Decision questions
 Prefix with `Q.1` / `Q.2` spans in `--blue`, weight 800, letter-spacing 0.12 em.
 
 ### 7.12 Timeline
 
+Horizontal sequence of milestones with connecting line.
+
+**Critical layout rule — dot always sits on the line, line passes through dot center:**
+The `.tl-line` uses a fixed `top` value calculated from total space above the dot's center. Date block uses `min-height` for text + `margin-bottom` for breathing room.
+
+**Important: use `margin-bottom`, NOT `padding-bottom` for date-to-dot spacing.** With `box-sizing: border-box`, padding is INSIDE `min-height` — it shrinks the content area instead of adding space. `margin` is OUTSIDE the box.
+
+```
+Date height:    min-height = 48px
+Date-to-dot gap: margin-bottom = 16px
+Total above dot: 64px → dot center: 73px → line top: 73px
+```
+
 ```css
 .tl-wrap { position: relative; padding: 0 10px; }
 .tl-line { position: absolute; top: 73px; left: 30px; right: 30px; height: 3px; background: var(--rule); }
 .tl-row { display: flex; position: relative; z-index: 1; }
 .tl-node { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 4px; }
-.tl-date-top { font-size: 22px; font-weight: 900; color: var(--blue); min-height: 48px; margin-bottom: 16px; display: flex; align-items: flex-end; justify-content: center; }
-.tl-dot2 { width: 18px; height: 18px; border-radius: 50%; background: var(--rule); margin-bottom: 12px; flex-shrink: 0; }
+.tl-date-top {
+  font-size: 22px; font-weight: 900; letter-spacing: -.01em; color: var(--blue);
+  min-height: 48px; margin-bottom: 16px;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.tl-dot2 { width: 18px; height: 18px; border-radius: 50%; background: var(--rule); margin-bottom: 12px; flex-shrink: 0; transition: transform .3s ease; }
 .tl-name { font-size: 18px; font-weight: 900; color: var(--ink); line-height: 1.2; margin-bottom: 4px; }
 .tl-detail { font-size: 14px; font-weight: 600; color: var(--mid); line-height: 1.3; }
 ```
 
+### Component selection guide
+
+| Content | Component | Layout |
+|---|---|---|
+| 2–3 deep comparisons | Panel | side-by-side flex |
+| 2–3 labeled concept blocks (premium) | Showcase Card | side-by-side flex or 3-col grid |
+| 3–4 labeled concept blocks (compact) | Showcase Card `.compact` | 3-col or 2×2 grid |
+| Sequential steps, feature lists | Item Card | stacked column |
+| Findings with status icons | Item Card (icon variant) | stacked column |
+| Key metrics | Stat Card | row of 3–4 |
+| Interactive comparison | Flip Card (Type D) | 2 side-by-side |
+| Single takeaway | Callout / Note (light) | full width |
+| Slide conclusion / recommendation | Callout / Note (dark) | full width |
+| Project milestones | Timeline | horizontal flex |
+
 ---
 
-## 8. Imagery & Visual Evidence
+## 8. Imagery & Visual Evidence <!-- BRAND-VARIABLE intro; rules are ENGINEERING-DNA -->
 
 ### Principle
-Stripe avoids decorative imagery. Every visual element is either typographic, a CSS-drawn diagram, a real product UI screenshot, or a data viz. Stock photography, AI placeholder art, and abstract gradients are not in the system.
+
+Product UI screenshots and code samples are the primary imagery — never decorative stock. When a slide needs a visual, prefer a real Stripe Dashboard screenshot, an API code sample in monospace, or a real customer logo wordmark. The brand voice is 'documentation that earns trust' — every visual element should pass the developer-skim test.
 
 ### When to include images
-- Product UI screenshots (real Stripe Dashboard, Stripe Atlas onboarding, etc.)
-- Data visualizations — build with CSS / SVG, not as static image exports
-- Diagrams — CSS/SVG over external images
+
+- **Product UI screenshots**: When discussing a specific tool, show its real interface.
+- **Data visualizations**: When a number or trend is central, build a chart (Type H).
+- **Contextual photography**: When a scenario benefits from visual grounding, search for and include a relevant image.
+- **Diagrams**: When a concept has structure (layers, flows, comparisons), draw it with CSS/SVG rather than describing it in words.
+
+### How to source images
+
+1. **Search actively**: Use web search to find relevant product screenshots, diagrams, contextual photos. Prefer official assets.
+2. **CSS-drawn alternatives**: Bar charts, progress bars, timeline diagrams — preferable to external images when data is simple.
+3. **Never use**: Decorative stock photos, abstract gradients, AI-generated placeholder art, images that don't directly support the slide's point.
 
 ### Image treatment
+
 - `border-radius: 4px`. Optional `1px solid var(--rule)` border on light backgrounds.
-- Caption: `.cap` style below.
-- Never place text over a busy image without a scrim.
+- Images on dark backgrounds: no border.
+- Caption: `.cap` style below the image.
+- Never place text over a busy image without a scrim (`rgba(0,0,0,.5)` minimum).
 
 ---
 
-## 9. Navigation
+## 9. Navigation <!-- ENGINEERING-DNA -->
 
 ### Dot nav — bottom-centre, horizontal
 
@@ -501,7 +716,7 @@ Keyboard: `← → Space Home End`. Touch: 48px swipe threshold.
 
 ---
 
-## 10. Mobile
+## 10. Mobile <!-- ENGINEERING-DNA — every line invariant; this section saved real decks -->
 
 ```css
 @media (max-width: 768px) {
@@ -509,40 +724,53 @@ Keyboard: `← → Space Home End`. Touch: 48px swipe threshold.
   #wrap { position: static; display: block; }
   #deck { width: 100%; position: static; transform: none !important; }
   .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; }
+  /* Cover and content shells must fill the slide on mobile — `.slide` only sets min-height,
+     which a child's `height: 100%` does not inherit, so each shell needs its own min-height. */
+  .cov, .sw { min-height: 100dvh; height: auto; }
   .cov-title { font-size: 48px; } .stitle { font-size: 32px; }
   .shd { padding: 0 20px; } .sw .sc { padding: 24px 20px; }
-  .g2,.g3,.flip-row,.tabs { grid-template-columns: 1fr; flex-direction: column; }
+  /* All multi-col → single-col */ .g2,.g3,.flip-row,.tabs { grid-template-columns: 1fr; flex-direction: column; }
   #nav, #ctr { display: none; }
 }
 ```
 
 All interactive elements ≥ 44×44px tap area. Never use `vh` for font/padding on mobile.
 
-### The inline-flex trap (critical)
+### The inline-flex trap (critical) <!-- ENGINEERING-DNA — DO NOT REMOVE -->
 
-**Root cause of most mobile layout failures**: Multi-column layouts written with inline `style="display:flex"` instead of CSS classes. The mobile media query collapses `.g2`/`.g3` to single-column, but inline `style="display:flex"` is immune to class-based media queries — it keeps the horizontal layout on mobile.
+**Root cause of most mobile layout failures**: Multi-column layouts written with inline `style="display:flex"` instead of CSS classes (`.g2`, `.g3`). The mobile media query collapses `.g2,.g3` to single-column, but inline `style="display:flex"` is immune to class-based media queries — it keeps the horizontal layout on mobile, making cards tiny and unreadable.
+
+**Prevention rule**: Every multi-column layout inside `.sc` must use a CSS class (`.g2`, `.g3`, `.fr`) for its flex/grid direction. If inline `style="display:flex"` is unavoidable (e.g., bespoke one-off layouts), the mobile CSS must include a **catch-all override**:
 
 ```css
 @media (max-width: 768px) {
+  /* Catch-all: force ALL flex layouts inside content areas to stack */
   .sc div[style*="display:flex"] { flex-direction: column !important; }
   .sc div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  /* Panel cards should not have fixed flex ratios on mobile */
   .pnl { flex: none !important; width: 100% !important; }
 }
 ```
 
-**Preferred approach**: Use `.g2` / `.g3` classes. Inline flex should be the exception, the catch-all is the safety net. Verify at 375px width before declaring done.
+**Preferred approach**: Use `.g2` / `.g3` classes instead of inline flex. Inline flex should be the exception, and the catch-all CSS above is the safety net.
 
-### Mobile flip card fix
+**Checklist addition**: Before shipping, resize the browser to 375px width and verify every slide stacks vertically. Any slide that still shows side-by-side content on mobile is a bug.
 
-CSS `:hover` does not work on touch devices. Flip cards **must** have a JS `onclick` handler that toggles a `.on` class.
+### Mobile flip card fix <!-- ENGINEERING-DNA — DO NOT REMOVE -->
 
+CSS `:hover` does not work on touch devices. Flip cards **must** have a JS `onclick` handler that toggles a `.on` class. This is the **only** reliable cross-platform flip mechanism.
+
+**Required JS on every flip card:**
 ```html
 <div class="fc" onclick="this.classList.toggle('on')">
 ```
 
+**Required CSS — both desktop and mobile:**
 ```css
+/* Desktop: hover + .on both trigger flip */
 .fc:hover .fc-inner, .fc.on .fc-inner { transform: rotateY(180deg); }
 
+/* Mobile: kill ALL 3D transforms, use show/hide instead */
 @media (max-width: 768px) {
   .fc { perspective: none !important; min-height: auto !important; }
   .fc .fc-inner { transform-style: flat !important; transition: none !important; height: auto !important; transform: none !important; }
@@ -556,7 +784,9 @@ CSS `:hover` does not work on touch devices. Flip cards **must** have a JS `oncl
 
 ---
 
-## 11. Animation
+## 11. Animation <!-- ENGINEERING-DNA -->
+
+### Core transitions
 
 | Element | Animation | Duration | Easing |
 |---|---|---|---|
@@ -564,16 +794,44 @@ CSS `:hover` does not work on touch devices. Flip cards **must** have a JS `oncl
 | Content entrance | translateY(14px) → 0 + fade | 420 ms | cubic-bezier(.4,0,.2,1) |
 | Flip card | rotateY 180° | 650 ms | cubic-bezier(.4,0,.2,1) |
 | Dot nav | width expand | 220 ms | ease |
-| Bar chart grow | width 0 → target | 600 ms + 100 ms stagger | ease-out |
 
-Every animation serves comprehension. Play once on entrance. Total entrance ≤ 2 seconds per slide.
+### Storytelling animations
+
+| Element | Spec | When to use |
+|---|---|---|
+| Staggered entrance | 80ms delay between items, 350ms each | Lists, grids |
+| Counter roll-up | 0 → target, 1200ms | Statistics |
+| Bar chart grow | width 0 → target, 600ms + 100ms stagger | Comparisons |
+| Scale-in | scale(.85) → 1, 400ms | Callout cards |
+
+### Principles
+
+- Every animation serves comprehension. Remove if purely ornamental.
+- Play once on entrance. No loops (except flip cards on hover).
+- Total **entrance animation** time per slide ≤ 2 seconds. Does not apply to interactive demos or flip cards.
+
+### Storytelling-first design
+
+1. **Flip cards for reveals**: problem/solution, before/after, myth/reality.
+2. **Concrete over abstract**: specific scenarios beat generic descriptions.
+3. **Visual evidence**: Charts > text. Screenshots > descriptions. Diagrams > bullet lists.
+4. **The screenshot test**: If no one would photograph this slide, it needs a visual hook.
 
 ---
 
-## 12. Layout Rules
+## 12. Layout Rules <!-- ENGINEERING-DNA -->
 
 ### Overflow prevention
+
 Every slide fits 720px. If too dense: reduce gaps → reduce body to 14px → split slide. Never clip or scroll.
+
+**The "blue block" trap**: Dark callout at bottom-right = visual imbalance. Move to full-width bottom, use `.snote` instead, or place dark cards at top.
+
+**The "blue-on-navy" trap**: On dark slides (`--navy` bg), never use `--blue` for text or accent — it creates jarring, cheap-looking contrast. Use white (`#fff`) or semi-transparent white (`rgba(255,255,255,.85)`) for emphasis. For subtle CTAs on dark backgrounds, use `rgba(255,255,255,.08)` bg fill + white text.
+
+**The "dark stack" trap**: When a dark element sits directly below another dark element, they visually merge. Always separate dark elements with at least 12px of `--surface` or `--tint` gap.
+
+**Header-content dedup**: The `.shd-n` bar already carries the slide's section label. Do not repeat the same text as a separate eyebrow/title inside the content area.
 
 ### Spacing
 
@@ -585,62 +843,68 @@ Every slide fits 720px. If too dense: reduce gaps → reduce body to 14px → sp
 | Header height | 54 px |
 | Card gap | 20 px |
 | Card inner padding | 32 px |
-| Border radius | 4px |
+| Border radius | 0px throughout — sharp rectangles on every surface and every CTA. The whole identity is rectilinear. |
 | Rule thickness | 1 px |
 | Accent border | 3 px |
 
 ---
 
-## 13. Checklist
+## 13. Checklist <!-- ENGINEERING-DNA — verbatim; DO NOT trim -->
 
 Before sharing a deck, verify every item.
 
 ### Brand & tokens
 - [ ] Logo on every slide (cover top-right, content `.shd` right end)
 - [ ] Colours: only system tokens — no ad-hoc hex values
-- [ ] All bespoke elements built from system tokens only
-- [ ] No emoji — typographic symbols (✓ − ! ×) are fine
-- [ ] Inter 300–900 (italic 300) loaded; no serif or display fonts
-- [ ] Cover subtitle: Inter 300 italic
-- [ ] No campaign-chrome hero gradients leaked from stripe.com — the deck cover is monochrome navy, not blurple
+- [ ] All bespoke elements built from system tokens only (§1 Constraints vs Freedom)
+- [ ] No emoji (👍🎉 etc.) — typographic symbols (✓ − ! ×) are fine
+- [ ] Söhne 400, 500, 600, 700, 800italic for quotes only loaded; no serif or display fonts
+- [ ] Cover subtitle: Söhne 300 italic only (or brand-equivalent if 300 italic unavailable)
 
 ### Typography & readability
-- [ ] No text below 12px
+- [ ] No text below 12px — check badge/label columns especially
 - [ ] Slide titles ≥ 50px (38px only on dense multi-line exceptions)
-- [ ] Body text ≥ 16px on non-table slides
+- [ ] Body text ≥ 16px on non-table slides (14px only on data-dense tables)
 - [ ] Subtitles ≥ 20px
+- [ ] Chinese text same size/weight as English equivalents (if mixed)
 
 ### Slide structure
 - [ ] Every content slide has `.shd` header strip with slide number + logo
-- [ ] Cover has no decorative lines
-- [ ] Every slide fits within 720px
+- [ ] Cover has no decorative lines — no hairlines, no accent lines, no gradient borders
+- [ ] Every slide fits within 720px — no content clipped or overflowing
+- [ ] No "blue block" trap — dark callouts not isolated at bottom-right of 2-col layouts
+- [ ] Scanning headlines only gives a coherent story
 
-### Fit contract (§5.1)
-- [ ] `.slide` AND `.sw .sc` both carry `overflow: hidden`
+### Fit contract (§5.1) — the layout-safety gate
+- [ ] `.slide` AND `.sw .sc` both carry `overflow: hidden` (three-layer safety net)
 - [ ] Every flex:1 absorber ALSO carries `overflow: hidden` AND `min-height: 0`
-- [ ] Vertical stack inside `.sc` has exactly **one** `flex: 1 1 0` absorber
-- [ ] Sum of natural-section heights + gaps ≤ 602 px
+- [ ] Vertical stack inside `.sc` has exactly **one** `flex: 1 1 0` absorber; all other rows are `flex: 0 0 auto`
+- [ ] Sum of natural-section heights + gaps ≤ 602 px (standard content area)
 - [ ] Visible bottom gap from last content to deck edge ≥ 20 px
-- [ ] Verified at native **1280 × 720** render
+- [ ] Verified at native **1280 × 720** render, not scaled — overflow is invisible at scaled sizes
+- [ ] No single card packs 2 section labels + 5+ bullets into a half-column absorber slot — merge or cut
 
 ### Components & interaction
-- [ ] Flip cards click-to-toggle on mobile (JS `onclick` toggles `.on`)
-- [ ] Tables: no coloured badges in cells — text colour only
-- [ ] Card tier matches content density
+- [ ] Flip cards are hover-only on desktop, click-to-toggle on mobile (JS `onclick` toggles `.on`)
+- [ ] Tables: no coloured badges in cells — text colour only (`.pos` / `.neg` / `.neu`)
+- [ ] Card tier matches content density (no bitem-only sparse slides)
+- [ ] Interactive elements have visible hover/focus states
 
 ### Visual & imagery
 - [ ] Images serve comprehension — no decorative stock photos
+- [ ] Text over images has a scrim (≥ 50% opacity dark overlay)
 - [ ] Image captions use `.cap` style
 
 ### Animation
 - [ ] Entrance animation plays on slide activation
-- [ ] Entrance animation total time per slide ≤ 2s
+- [ ] Entrance animation total time per slide ≤ 2s (does not apply to interactive demos or flip cards)
 - [ ] No entrance animation loops
 
-### Responsive (mobile parity)
-- [ ] All multi-col layouts collapse to 1-col at ≤ 768px
-- [ ] No inline `display:flex` without a matching catch-all in mobile CSS
+### Responsive (mobile parity — non-negotiable)
+- [ ] All multi-col layouts collapse to 1-col at ≤ 768px — **including inline `style="display:flex"` layouts** (verify at 375px width)
+- [ ] No inline `display:flex` without a matching catch-all in mobile CSS (see §10 "inline-flex trap")
 - [ ] Touch swipe works (48px threshold)
+- [ ] Dot nav hidden in mobile scroll mode
 - [ ] Tap targets ≥ 44×44px on mobile
-- [ ] Flip cards work via tap on mobile
+- [ ] Flip cards work via tap (not just hover) on mobile — every `.fc` has `onclick="this.classList.toggle('on')"`
 - [ ] Browser tested at **375px width** before declaring done

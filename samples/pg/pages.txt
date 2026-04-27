@@ -1,0 +1,20 @@
+# Phase 1b — LLM-picked high-value subpages for P&G brand synthesis
+# Drawn from /tmp/web-to-ds/pg/recon/nav-links.json
+
+# Corporate identity
+https://us.pg.com/who-we-are
+
+# Brand portfolio (the operational core of P&G)
+https://us.pg.com/brands
+
+# Leadership voice + governance
+https://us.pg.com/leadership-team
+
+# Sustainability narrative
+https://us.pg.com/environmental-sustainability
+
+# Innovation positioning
+https://us.pg.com/innovation
+
+# Citizenship / impact (numbers source)
+https://us.pg.com/citizenship

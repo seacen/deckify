@@ -1,0 +1,118 @@
+{
+  "host": "us.pg.com",
+  "brand_name": "Procter & Gamble",
+  "base_url": "https://us.pg.com/",
+  "chosen_logo": {
+    "id": "d481e89a",
+    "why": "JSON-LD Organization.logo points to the canonical P&G monogram PNG (P_G_Logo_RGB.png) on Contentful CDN \u2014 full-resolution 3004\u00d73004 RGB version, transparent background. Visible in every page header."
+  },
+  "alt_logo_ids": [
+    "74d017a9",
+    "9870c4b7",
+    "8694278a"
+  ],
+  "palette": {
+    "brand_primary": {
+      "hex": "#003DA5",
+      "name": "--color-brand-blue",
+      "evidence": "P&G's signature Pantone 286 blue. Computed body/nav/h2/h3/footer colour across all 6 pages; dominant cover bg on home and innovation pages; literal hex appears 105\u00d7 in CSS."
+    },
+    "brand_secondary": {
+      "hex": "#003DA5",
+      "name": "--color-brand-blue",
+      "evidence": "P&G commits to one saturated brand blue. There is no separate 'navy' \u2014 the same Pantone 286 carries both the dominant chord (cover bg) and the accent role (CTA outlines, header nav, h2 type)."
+    },
+    "ink": {
+      "hex": "#000000",
+      "name": "--color-brand-ink",
+      "evidence": "Computed body color rgb(0,0,0) on every page. P&G uses pure black for body text \u2014 the brand book is unsentimental about typography colour."
+    },
+    "paper": {
+      "hex": "#FFFFFF",
+      "name": "--color-brand-paper",
+      "evidence": "White surface for content-dense pages (leadership-team). The blue-bg slides invert: white type on saturated blue. Two-mode design \u2014 white surface OR blue surface, never anything in between."
+    },
+    "accents": [
+      {
+        "hex": "#97D700",
+        "name": "--color-brand-lime",
+        "evidence": "Bright lime green \u2014 appears as a sustainability/nature accent in body content. Count 3\u00d7 in literal CSS."
+      },
+      {
+        "hex": "#00A3E0",
+        "name": "--color-brand-sky",
+        "evidence": "Sky cyan \u2014 secondary brand accent (e.g. Tide-family categorical color). Count 3\u00d7 in literal CSS."
+      },
+      {
+        "hex": "#F2F7FF",
+        "name": "--color-brand-mist",
+        "evidence": "Pale blue tint for hero backgrounds on innovation page; row separation. Count 19\u00d7 in literal CSS."
+      },
+      {
+        "hex": "#0F5780",
+        "name": "--color-brand-deepteal",
+        "evidence": "Dark teal accent \u2014 appears in footer-adjacent contexts."
+      },
+      {
+        "hex": "#FFD100",
+        "name": "--color-brand-spark",
+        "evidence": "P&G's signature decorative-period yellow \u2014 appears as the coloured stop after large titles ('Innovation.', 'Leadership.'). Embedded in title assets rather than CSS literals; visible in every hero screenshot."
+      }
+    ],
+    "neutrals": [
+      {
+        "hex": "#2E2E2E",
+        "name": "--color-brand-graphite",
+        "evidence": "Secondary text grey \u2014 count 6\u00d7 across pages."
+      },
+      {
+        "hex": "#6D665C",
+        "name": "--color-brand-stone",
+        "evidence": "Warm grey-brown \u2014 minor neutral for citizenship/lifestyle pages."
+      }
+    ]
+  },
+  "typography": {
+    "display_font": {
+      "family": "Montserrat",
+      "evidence": "Computed h1/h2/h3 font-family on every page: 'Montserrat, \"Montserrat Fallback\", sans-serif'. 96 px h1 weight 700 on home, innovation, who-we-are, citizenship \u2014 confirms big-billboard treatment."
+    },
+    "body_font": {
+      "family": "Montserrat",
+      "evidence": "Computed body font on header/nav/footer/main is also Montserrat (the 'Times' that shows on the bare body element is the unstyled fallback for default <body> before P&G's CSS rules apply). Frequencies show Montserrat 59\u00d7 \u2014 the brand uses one face for everything, weight differentiates display vs body."
+    }
+  },
+  "spacing_radius_shadow": {
+    "radius_style": "split \u2014 sharp 0px on surfaces, 50px pill on interactive",
+    "shadow_style": "flat",
+    "spacing_density": "airy",
+    "evidence": "Computed surface radius 0px on every header/footer/main/h1/h2 \u2014 P&G commits to sharp rectangles for content. CTAs (`a` tags) have radius:50px \u2014 full pill. No box-shadow observed on any computed element. Body padY:66px, footer padY:50px \u2014 generous vertical rhythm."
+  },
+  "aesthetic": {
+    "mood": "operational corporate confidence",
+    "style_keywords": [
+      "billboard typography",
+      "saturated single-blue dominance",
+      "engineered civic",
+      "weighty",
+      "lifestyle photography",
+      "pill-button interactions"
+    ],
+    "precedents": [
+      "old IBM corporate brochures",
+      "Boeing brand book",
+      "American Express civic confidence",
+      "modernist Swiss editorial \u2014 but with consumer warmth in the imagery"
+    ],
+    "voice_register": "operational confidence; portfolio-led ('Most Innovative for Third Consecutive Year', '#1 Most Innovative in Household Products'); the brand speaks in superlatives that are earned, not aspirational"
+  },
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/innovation/shot.png",
+    "recon/pages/leadership-team/shot.png",
+    "recon/pages/citizenship/shot.png",
+    "recon/pages/who-we-are/shot.png",
+    "recon/pages/environmental-sustainability/shot.png",
+    "recon/pages/brands/shot.png"
+  ]
+}
