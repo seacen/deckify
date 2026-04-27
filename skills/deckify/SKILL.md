@@ -7,9 +7,9 @@ dependencies:
   - curl           # Used by fetch_sitemap.sh to fetch /sitemap.xml.
 ---
 
-# Web → Design System
+# deckify
 
-Turn a reference URL into a production-ready Design System markdown that another agent (or you) can use to build precise, mobile-friendly HTML slides in the brand's visual language.
+Turn a reference URL into a production-ready Design System markdown plus a verified 9-slide HTML sample deck. Another agent (or you) can use the DS to build precise, mobile-friendly HTML slides in the brand's visual language. The sample deck is the proof that the DS spec works.
 
 ## Why this skill exists (read first)
 
@@ -137,19 +137,64 @@ Steps:
 4. **Language pass** (only if Round 0 picked a non-English language): the template is English. Translate **prose only** — section narration, philosophy paragraph, anti-patterns, checklist labels, mood/aesthetic notes, repair-priority bullets. **Never translate**: token names (`--navy`, `--blue`), CSS / JS / HTML code, viewBox numbers, hex values, comment markers like `<!-- ENGINEERING-DNA -->`, file names. The output must be **single-language throughout** — no half-translated paragraphs and no leftover English sentences mixed into a Chinese DS.
 5. Write the final markdown to the user's chosen path. Default: `./{{BRAND_SLUG}}-PPT-Design-System.md`. Confirm path before writing if it would overwrite an existing file.
 
-### Phase 4 — Verification (latent)
+### Phase 4 — Verification deck + runtime hard checks (MANDATORY, not optional)
 
-After writing, give the user:
-1. Output file path
+The DS markdown is the deliverable. The verification deck is the **proof that the DS produces correct slides**. Skipping this means shipping an unverified spec — don't.
+
+**Step 4a — Write the verification deck.**
+Read `references/verification-deck-spec.md`. It defines the 8 required slide types (cover, narrative+pullquote, two-column, data table, chart, flip cards, timeline, big pull-quote) and 6 coverage rules (multi-column collapse, click interaction, semantic colour, real numbers, bespoke composition, absorber variety). Write the deck to `decks/<brand>/<brand>-deck.html` using copy drawn from the recon corpus — **never invented stats**.
+
+**Step 4b — Run the runtime hard checks (deterministic).**
+
+```bash
+bash evals/run.sh
+```
+
+This invokes `evals/hard_checks.py` over each registered brand sample, lands measurements under `tests/reports/runs/<ts>/per-sample/<brand>/`. The 8 checks are: slide dimensions (1280×720), fit contract intact, token-only colors, no emoji, mobile collapse at 375 px, logo renders, text layout safe (no truncation, no glued-to-bottom), DS engineering DNA preserved.
+
+**Step 4c — On any hard-check failure, FIX THE BRAND DS — never the deck alone.**
+The brand DS markdown is your tunable; the deck is the verification artifact. When a check fails, trace it to the relevant section of *your brand's DS* (use the fail → DS-section mapping table in `references/verification-deck-spec.md`), update the DS, regenerate the deck from the updated DS, re-run hard checks. **If you find yourself editing only the deck to make a check pass, you are doing it wrong** — the DS is the spec, the deck just exercises it.
+
+Iterate until hard checks are 8/8 PASS.
+
+### Phase 5 — Visual judge (LLM, you) — MANDATORY
+
+Hard checks measure DOM shapes; they don't measure whether the deck *looks* on-brand. That's your job.
+
+**Step 5a — Read the per-slide screenshots.**
+For each brand under `tests/reports/runs/<latest>/per-sample/<brand>/slides/`, read the PNGs (Read tool, vision). Re-read the brand's DS markdown for context.
+
+**Step 5b — Score against the rubric.**
+Read `evals/rubric.json` — 5 dimensions (logo present and branded, slide visual quality, brand fidelity, content substantive, engineering DNA visible in DS), each 0–5. Plus 5 disqualifiers (D1 logo missing, D2 dimensions wrong, D3 console errors, D4 mobile horizontal scroll, D5 DS template violated).
+
+**Step 5c — Write `judge.json`.**
+Land at `tests/reports/runs/<latest>/per-sample/<brand>/judge.json` with the schema printed by `run.sh` — scores, reasoning (especially for low scores), regression_flags.
+
+**Step 5d — Aggregate.**
+
+```bash
+python3 evals/build_report.py <run-dir> 4 \
+  "<brand>|<url>|<deck-path>|<ds-path>" ...
+```
+
+PASS criteria (per `rubric.json`): hard 8/8 AND judge avg ≥ 4 AND no disqualifier triggered.
+
+**Step 5e — Failure handling.**
+- Judge score < 4 on `brand_fidelity` → revisit the brand.json (was the mood paragraph too generic? did the palette flatten to white+grey+single-accent?). Update brand.json with sharper evidence, regenerate the brand DS §1 + §2, regenerate the deck, re-judge.
+- Judge score < 4 on `slide_visual_quality` → tighten the brand DS §6 (per-slide-type spec) or §7 (component density). Update the relevant section in *your brand's* DS, regenerate the deck, re-judge.
+- Judge score < 4 on `content_substantive` → the recon copy was thin; revisit Phase 1b page picks (broader subpages) or pull more from the existing recon corpus into the deck content.
+- Judge score < 4 on `engineering_dna_visible_in_ds` → your brand DS is missing a required chapter or it got diluted during the language/translation pass. Restore the chapter verbatim from `references/ds-template.md`.
+- Disqualifier triggered → see the fail → DS-section mapping table in `references/verification-deck-spec.md`.
+
+Iterate until PASS. The skill is not done until both hard 8/8 AND judge ≥ 4.
+
+### Phase 6 — Hand back to the user (latent)
+
+Give the user:
+1. The DS markdown path + the deck HTML path
 2. A 5-line summary: palette, font, logo source, aesthetic mood, slide-type emphasis
-3. A one-line offer: "Want me to build a sample 3-slide deck using this DS to verify it actually produces what you expect?"
-
-If the user accepts the verification offer, generate one cover + two content slides exercising:
-- The logo on a dark slide AND a light slide (confirms the `currentColor` flip works)
-- A single-column dense slide (confirms fit contract math)
-- A two-column slide (confirms `.g2` collapses on mobile)
-
-Open the resulting HTML file at native 1280×720 and at 375px width to visually confirm.
+3. The eval scoreboard: hard 8/8, judge avg, status PASS/WARN/FAIL
+4. Path to `tests/reports/runs/<latest>/summary.md` for the full per-brand breakdown
 
 ## Hard rules — engineering DNA (NEVER violate, NEVER simplify)
 
@@ -188,14 +233,17 @@ If any of these is missing from the generated DS, the DS will produce broken dec
 
 ## Companion files
 
-- `references/ds-template.md` — full DS template with placeholders + engineering DNA (incl. §3.1 Typography Safety, §4 multi-format logo embed). Read in Phase 3.
+- `references/ds-template.md` — full DS template with placeholders + engineering DNA (incl. §3.1 Typography Safety, §4 multi-format logo embed, §5 scale-to-fit runtime, §6 Type E row-count rule, §10 mobile cov/sw fill rule). Read in Phase 3.
+- `references/verification-deck-spec.md` — Phase 4 contract: the 8 required slide types every verification deck must include, plus the 6 coverage rules. Read in Phase 4a.
 - `references/decision-questions.md` — Phase 2 structured decision checklist + Round 0 language framing.
 - `references/llm-prompts/discover-pages.md` — guideline you (LLM) read at step 1b to decide which subpages to fetch.
-- `references/llm-prompts/synthesize-brand.md` — guideline you (LLM) read at step 1e to pick logo + palette + type + aesthetic from raw assets.
+- `references/llm-prompts/synthesize-brand.md` — guideline you (LLM) read at step 1e. Includes Design Taste anti-AI-slop guardrails (no Inter as the design choice, no even-weighted accent grids, no SaaS-default chrome).
 - `scripts/fetch_sitemap.sh` — step 1a: home + sitemap + nav-links + JSON-LD.
 - `scripts/fetch_pages.sh` — step 1c: batch-fetch a URL list with full per-page probes.
 - `scripts/enumerate_assets.py` — step 1d: aggregate all probes into raw-assets.json with stable candidate ids.
-- `scripts/embed_logo.py` — step 1f: quality-gate + base64-embed the chosen logo.
+- `scripts/embed_logo.py` — step 1f: navigate-to-asset-then-same-origin-fetch + quality-gate + base64-embed the chosen logo. Handles cross-origin CDN (Contentful, Cloudinary).
 - `scripts/setup.sh` — Phase 0 dependency check.
-- `eval/` — auto-eval framework (hard checks + LLM-judged rubric, run via `eval/run.sh`).
+- `evals/` — quality contract directory (see `evals/README.md`). Two layers in one folder:
+  - `evals/evals.json` + `evals/trigger_evals.json` — marketplace harness contract (Anthropic skill-eval format).
+  - `evals/hard_checks.py` + `evals/rubric.json` + `evals/build_report.py` + `evals/run.sh` — runtime auto-eval invoked by Phase 4-5.
 - `tests/` — unit + integration + smoke tests.
