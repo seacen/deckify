@@ -28,8 +28,21 @@
 > - **Minimal-monochrome**: "reductive, near-monochrome palette, one accent colour reserved for emphasis only, type does the heavy lifting."
 
 **Two modes:**
-- **Desktop (≥ 769 px)**: 1280 × 720 px canvas, scale-to-fit, keyboard / click navigation.
+- **Desktop (≥ 769 px)**: 1280 × 720 px canvas, scale-to-fit (§5 runtime), keyboard / click navigation.
 - **Mobile (≤ 768 px)**: all slides stack vertically as a scrollable page; single-column layouts.
+
+### Design taste <!-- ENGINEERING-DNA framing; the "what to avoid" list is invariant -->
+
+**Commit to a clear aesthetic point of view.** This DS is a brand instrument, not a generic SaaS template. Every Unilever deck should be unmistakably *Unilever* on first glance — editorial sustainability gravitas, warm Earth paper, deep Brand Night, saturated brand-colour accents — not "another tasteful corporate presentation." Bold maximalism and refined minimalism both succeed; the failure mode is timidity.
+
+**Anti-AI-slop rules** (apply on every slide, every component, every variant):
+
+- **No generic font defaults.** UnileverDesire is the typeface. The fallback chain is `'Century Gothic', "CenturyGothic", "AppleGothic", system-ui, sans-serif` — Century Gothic is the most characterful available stand-in. Never silently substitute Arial, Inter, or Roboto as the "design choice."
+- **No cliché palettes.** Pure-white background + one purple/blue accent + slate-grey type = AI-slop signature. The §2 palette has a dominant chord (Sky / Night) and supporting accents — use them with that hierarchy. Do not flatten everything to "white + grey + one accent."
+- **No even-weighted accent grids.** A 6-colour decorative rainbow looks like a Storybook page, not Unilever. Sky-blue is dominant; Night-navy carries gravitas; Clover / Water / Sorbet / Lilac / Rose carry distinct semantic meaning. Treat them as named instruments, not interchangeable swatches.
+- **No off-the-shelf SaaS dashboard chrome.** 8 px radius + soft drop-shadow + tidy spacing on every component homogenises every brand. Match Unilever's actual treatment per §2: softly-rounded, flat shadows, airy density.
+- **No vague mood language in copy.** "Modern, clean, bold" describes everything and therefore nothing. Slide titles and section copy should be specific and concrete — name the priority area, the partner type, the operational reality.
+- **One orchestrated entrance, not scattered micro-interactions.** A staggered slide-content reveal on activation is the only motion most slides need; do not bolt hover wiggles onto every card.
 
 ### Constraints vs Freedom <!-- ENGINEERING-DNA framing; bullet contents are BRAND-VARIABLE -->
 
@@ -246,6 +259,43 @@ Source resolution order (the actual order `embed_logo.py` tries):
   #deck — 1280 × 720, position:relative, overflow:hidden (hard contract)
     .slide × N — absolute inset, opacity show/hide, overflow:hidden (hard contract)
 ```
+
+### Fullscreen fit — scale-to-fit at runtime <!-- ENGINEERING-DNA — DO NOT REMOVE -->
+
+The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any viewport without black borders, scale at runtime via CSS transform — never resize the canvas itself. This keeps every measurement, every fit-contract calculation, every `offsetWidth` value invariant; the auto-eval and the visual reality both stay coherent.
+
+```css
+/* Required CSS hooks */
+#deck { transform-origin: center center; will-change: transform; }
+```
+
+```html
+<!-- Required JS at the end of <body>; runs on load + resize -->
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      deck.style.transform = 'none';
+      return;
+    }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+</script>
+```
+
+**Why a CSS transform and not a viewport unit on the canvas itself:**
+- `transform: scale()` does not change `offsetWidth` / `offsetHeight`, so every layout calculation, fit-contract budget (602 px content area), and auto-eval measurement remains exact.
+- A viewport-relative `width: 100vw` on the canvas would warp the type scale; a slide tuned for 50 px headlines becomes 38 px on a small laptop.
+- Mobile is exempt: the mobile media query already turns the deck into a flow document, so `transform: none` is required there or the stacked slides scale with the canvas and break.
+
+**Anti-pattern**: shipping a deck without `scaleDeck()` lets `#wrap`'s flex-centre place a 1280×720 deck inside a 1920×1080 viewport with 320 px / 180 px of dark border — the deck looks unfinished even when content is correct.
 
 ### Visibility
 ```css
@@ -688,6 +738,9 @@ Keyboard: `← → Space Home End`. Touch: 48px swipe threshold.
   #wrap { position: static; display: block; }
   #deck { width: 100%; position: static; transform: none !important; }
   .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; }
+  /* Cover and content shells must fill the slide on mobile — `.slide` only sets min-height,
+     which a child's `height: 100%` does not inherit, so each shell needs its own min-height. */
+  .cov, .sw { min-height: 100dvh; height: auto; }
   .cov-title { font-size: 48px; } .stitle { font-size: 32px; }
   .shd { padding: 0 20px; } .sw .sc { padding: 24px 20px; }
   /* All multi-col → single-col */ .g2,.g3,.flip-row,.tabs { grid-template-columns: 1fr; flex-direction: column; }
