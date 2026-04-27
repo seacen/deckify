@@ -1,5 +1,5 @@
 ---
-name: web-to-design-system
+name: deckify
 description: Generate a complete HTML-slide Design System markdown file from a reference URL. Studies the page's color palette, typography, logo, and aesthetic mood, then writes a Design System that bakes in proven engineering rules (1280×720 fit contract, three-layer overflow safety net, single-absorber rule, mobile inline-flex trap catch-all, flip-card mobile fix, logo-as-SVG-symbol-with-currentColor pattern, 12px readability floor) while letting the brand identity drive the visuals. Use this whenever the user gives you a URL and asks to "build a design system from this site," "extract a design system from", "make slides like this brand," "skin slides to match this site's visual language," or wants to author HTML slides in the visual language of any specific website. Also use when the user names a brand site as a slide-deck reference, even if they don't say "design system" explicitly.
 dependencies:
   - agent-browser  # Standalone CLI from Vercel Labs (https://github.com/vercel-labs/agent-browser). Install via npm/brew/cargo — see scripts/setup.sh. Used for URL fetch, computed-style introspection, screenshots in Phase 1. NOT the same as any plugin called "agent-browser" — this is the standalone binary at github.com/vercel-labs/agent-browser. Verify with `which agent-browser` and `agent-browser --version`.
@@ -134,7 +134,8 @@ Steps:
 1. Fill brand-variable placeholders from `$WS/decisions.json` + `$WS/brand.json` (palette hex, font families, brand name, etc.).
 2. **Logo embed**: paste the contents of `$WS/assets/logo.embed.html` directly into the §4 Logo section's "Definition (once per HTML file)" block. `embed_logo.py` already produced the correct `<symbol id="brand-wm">` snippet — vector or base64-raster form, with hardcoded fills stripped so `currentColor` works. Do not regenerate this; do not re-extract paths.
 3. Set `{{LOGO_VIEWBOX}}` placeholder in §4's `.logo` usage examples to match the viewBox in the embed snippet.
-4. Write the final markdown to the user's chosen path. Default: `./{{BRAND_SLUG}}-PPT-Design-System.md`. Confirm path before writing if it would overwrite an existing file.
+4. **Language pass** (only if Round 0 picked a non-English language): the template is English. Translate **prose only** — section narration, philosophy paragraph, anti-patterns, checklist labels, mood/aesthetic notes, repair-priority bullets. **Never translate**: token names (`--navy`, `--blue`), CSS / JS / HTML code, viewBox numbers, hex values, comment markers like `<!-- ENGINEERING-DNA -->`, file names. The output must be **single-language throughout** — no half-translated paragraphs and no leftover English sentences mixed into a Chinese DS.
+5. Write the final markdown to the user's chosen path. Default: `./{{BRAND_SLUG}}-PPT-Design-System.md`. Confirm path before writing if it would overwrite an existing file.
 
 ### Phase 4 — Verification (latent)
 

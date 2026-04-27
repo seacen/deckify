@@ -18,7 +18,7 @@ Give it a URL. It will:
 
 ```bash
 # 1. The skill itself: this directory belongs in your Claude skills location.
-#    For Claude Code default, put the folder at: ~/.claude/skills/web-to-design-system/
+#    For Claude Code default, put the folder at: ~/.claude/skills/deckify/
 
 # 2. Run the dependency setup once per machine — it walks you through installing
 #    agent-browser via your preferred package manager.
