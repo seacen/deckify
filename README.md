@@ -7,7 +7,7 @@
 ```
 deckify/
 ├── skills/
-│   └── web-to-design-system/      ← the Claude skill (install via symlink to ~/.claude/skills/)
+│   └── deckify/      ← the Claude skill (install via symlink to ~/.claude/skills/)
 │       ├── SKILL.md               ← entry point, defines the 4-phase pipeline
 │       ├── scripts/               ← deterministic Python/bash (fetch, enumerate, embed)
 │       ├── references/            ← DS template + LLM guideline prompts
@@ -46,24 +46,24 @@ There are no `_request.json` / `_response.json` middle layers. The agent running
 
 ```bash
 # Install the skill into Claude
-ln -s "$(pwd)/skills/web-to-design-system" ~/.claude/skills/web-to-design-system
+ln -s "$(pwd)/skills/deckify" ~/.claude/skills/deckify
 
 # Verify dependencies (agent-browser, python3, curl)
-bash skills/web-to-design-system/scripts/setup.sh
+bash skills/deckify/scripts/setup.sh
 ```
 
 ## Run a sample
 
 In Claude, point the skill at a brand URL:
 
-> "Use the web-to-design-system skill to extract a Design System from https://www.unilever.com"
+> "Use the deckify skill to extract a Design System from https://www.unilever.com"
 
 The skill will run Phase 1 → ask you to confirm the synthesized palette/typography → generate `decks/unilever/unilever-PPT-Design-System.md`.
 
 ## Eval
 
 ```bash
-bash skills/web-to-design-system/eval/run.sh
+bash skills/deckify/eval/run.sh
 ```
 
 Two layers:
