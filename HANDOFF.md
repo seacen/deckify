@@ -1,13 +1,31 @@
 # Handoff for the next session
 
-> Last updated: end of session 2026-04-27 (rename + template-language fix + symlink set up).
-> Read this file in full before doing anything. The previous session has 18 tasks worth of context — this is the compressed version.
+> Last updated: mid-session 2026-04-27 (skill upgrade pass — see §A below).
+> Read this file in full before doing anything. CLAUDE.md at the project root is the canonical project rules; this HANDOFF.md is the rolling state log.
 
 ## TL;DR
 
-You're picking up the **deckify** project. The skill architecture is done and validated end-to-end on Unilever. **Your job is to finish Task 18: verify the Unilever DS produces a PASS deck, then run the same Phase 1 pipeline on P&G and Stripe so all three eval sites are green.**
+You're picking up the **deckify** project. The skill architecture is done; **Unilever** is fully validated (9-slide verification deck, hard 8/8 PASS, visually verified at 1920×1080 / 1440×900 / 1280×720 / 375×812 mobile). The repo now carries a **CLAUDE.md** anchoring the core rule that all eval failures must be fixed in the skill, never in a single deck.
+
+**Your job**: run Phase 1 → 4 for **P&G** and **Stripe** using the upgraded skill (scale-to-fit + design-taste + verification-deck-spec), then run final eval and confirm all three brands PASS.
 
 The user prefers **中文 replies**, no external API keys (you're the LLM), and absolutely no typographic-placeholder logos or mixed-language DS.
+
+---
+
+## A. What changed this session (skill-level upgrades)
+
+Read these BEFORE touching any new brand:
+
+1. **CLAUDE.md** at the project root (new). The core rule: when eval reveals a deck-level issue, fix the SKILL artifact (DS template / prompt / script), not the deck. Decks are downstream artifacts. Patching a deck while the skill stays broken means the next brand will hit the same bug.
+
+2. **skills/deckify/references/verification-deck-spec.md** (new). 8 required slide types every Phase 4 verification deck must contain — cover, narrative+pullquote, two-col, table, chart, flip cards, timeline, pull-quote — plus 6 coverage rules (mobile collapse, click interaction, semantic colour, real numbers, bespoke composition, absorber variety). Read this before writing any new brand's deck.
+
+3. **skills/deckify/references/ds-template.md** §5 (engineering-DNA). New "Fullscreen fit — scale-to-fit at runtime" subsection mandates a CSS-transform scale on `#deck` so the 1280×720 canvas fills any viewport without warping the type scale. Without this, a deck has visible 320×180 px black borders on a 1920×1080 viewport. Every brand DS must wire the scale-to-fit JS into its verification deck. §10 mobile gains `.cov, .sw { min-height: 100dvh }` so cover backgrounds fill the full mobile viewport.
+
+4. **ds-template.md §1 + llm-prompts/synthesize-brand.md** carry a Design Taste subsection inspired by compound-engineering's frontend-design skill. Forbids generic font defaults (Inter, Arial, system-ui as the "design choice"), cliché white+grey+single-accent palettes, even-weighted accent grids, off-the-shelf SaaS chrome, and vague mood language. Pushes the synthesizer toward bold, specific aesthetic commitments.
+
+The Unilever DS markdown + verification deck have been regenerated to carry all four upgrades. P&G and Stripe **must** use the upgraded skill — re-read ds-template.md / synthesize-brand.md before starting.
 
 ---
 
@@ -132,28 +150,13 @@ Use the DS as a spec to write a sample HTML deck (cover + 2-3 content slides) at
 
 ## 4. ✨ What YOU need to do
 
-### Step 1 — Verify Unilever end-to-end (Phase 4 + eval)
+### Step 1 — Unilever DONE ✓
 
-The current `decks/unilever/unilever-deck.html` is **stale** — it was generated from the old DS that used a typographic placeholder logo. You need to regenerate it from the **new** DS (`decks/unilever/unilever-PPT-Design-System.md`).
+`decks/unilever/unilever-deck.html` is the 9-slide verification deck per `skills/deckify/references/verification-deck-spec.md`. Hard 8/8 PASS. Visually verified at 1920×1080 (perfect fill), 1440×900 (fills horizontally; 45 px letterbox top/bottom is unavoidable on 16:10 viewports), 1280×720 (perfect), 375×812 mobile (cover + content fill the full viewport with `min-height: 100dvh`).
 
-**How to do it:**
+Judge step still pending — when you next run a full eval, write `judge.json` per the instructions printed by `bash skills/deckify/eval/run.sh`.
 
-1. Read the new DS markdown end-to-end (especially §1 Philosophy, §2 Tokens, §4 Logo, §5 Architecture, §6 Slide Types, §10 Mobile, §13 Checklist).
-2. Write a **fresh** `decks/unilever/unilever-deck.html` with:
-   - Cover slide (Type A): Brand Night `#133062` background, white logo top-right via `<svg class="logo W"><use href="#brand-wm"/></svg>`, big white title.
-   - 2-3 content slides exercising real Unilever sustainability narrative (use the recon screenshots in `samples/unilever/recon/pages/sustainability/shot.png` for content inspiration; **do not invent stats**).
-   - One slide must use the multi-column `.g2` grid (so eval can verify it collapses on mobile).
-   - Logo `<symbol>` block: paste from `samples/unilever/assets/logo.embed.html` (don't re-extract).
-3. The deck must satisfy all 8 hard checks. Read `skills/deckify/eval/rubric.json` for what's checked.
-4. Run eval:
-   ```bash
-   bash skills/deckify/eval/run.sh
-   ```
-5. Read screenshots in `skills/deckify/tests/reports/runs/<latest>/per-sample/unilever/slides/` and write `judge.json` per the instructions printed at the end of run.sh.
-6. Re-run `build_report.py` (the command is printed by run.sh) to fold judge scores in.
-7. Target: unilever hard 8/8 + judge avg ≥ 4 = **PASS**.
-
-### Step 2 — P&G Phase 1 + Phase 3 + Phase 4
+### Step 2 — P&G Phase 1 + Phase 3 + Phase 4 (apply upgraded skill)
 
 ```bash
 WS=/tmp/web-to-ds/pg
