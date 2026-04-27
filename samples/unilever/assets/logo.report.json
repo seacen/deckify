@@ -1,0 +1,27 @@
+{
+  "chosen": {
+    "id": "ddbdd22c",
+    "kind": "icon-link",
+    "page": "brands",
+    "rel": "icon",
+    "href": "/favicon.svg",
+    "sizes": "",
+    "type": "image/svg+xml"
+  },
+  "result": {
+    "ok": true,
+    "format": "svg",
+    "path": "/tmp/web-to-ds/unilever/assets/logo.svg",
+    "evidence": {
+      "paths": 9,
+      "max_d_len": 7409,
+      "has_inner_image": false,
+      "has_text": false,
+      "dims": [
+        700.0,
+        700.0
+      ]
+    },
+    "url": "https://www.unilever.com/favicon.svg"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "skill_name": "web-to-design-system",
+  "evals": [
+    {
+      "id": 1,
+      "name": "unilever-canonical",
+      "prompt": "Build me a Design System from https://www.unilever.com so I can author HTML slides in their visual language. Save the result to ./unilever-PPT-Design-System.md",
+      "expected_output": "A complete DS markdown that mirrors the structural shape of the canonical reference DS: §1 Design Philosophy with Constraints/Freedom split, §2 Colour Tokens (token names invariant, hex from extraction), §3 Typography with type scale + readability floor, §4 Logo with SVG <symbol> + currentColor, §5 Slide Architecture incl. full Fit Contract, §6 11 slide types, §7 Component Library (Panel/Showcase/Item/Stat/Callout/Table/Charts/Tabs/Timeline), §8 Imagery, §9 Navigation, §10 Mobile incl. inline-flex trap + flip-card mobile fix, §11 Animation, §12 Layout Rules, §13 ~40-item Checklist incl. 375px verification.",
+      "files": [],
+      "assertions": [
+        {"name": "has_design_philosophy_section", "type": "contains", "value": "## 1. Design Philosophy"},
+        {"name": "has_constraints_vs_freedom", "type": "contains", "value": "Constraints vs Freedom"},
+        {"name": "has_colour_tokens_section", "type": "contains", "value": "## 2. Colour Tokens"},
+        {"name": "uses_navy_token_name", "type": "contains", "value": "--navy:"},
+        {"name": "uses_blue_token_name", "type": "contains", "value": "--blue:"},
+        {"name": "has_logo_symbol_pattern", "type": "regex", "value": "<symbol id=\"[a-z-]+\""},
+        {"name": "logo_uses_currentColor_on_outer_svg", "type": "contains", "value": "fill: currentColor"},
+        {"name": "has_fit_contract_section", "type": "contains", "value": "Single-Slide Fit Contract"},
+        {"name": "has_three_layer_overflow_safety_net", "type": "contains", "value": "three-layer overflow safety net"},
+        {"name": "has_single_absorber_rule", "type": "contains", "value": "single flex:1 absorber"},
+        {"name": "has_602px_budget", "type": "contains", "value": "602"},
+        {"name": "has_12px_floor", "type": "regex", "value": "(12 ?px floor|Nothing below 12 ?px)"},
+        {"name": "has_inline_flex_trap_section", "type": "contains", "value": "inline-flex trap"},
+        {"name": "has_inline_flex_catchall", "type": "contains", "value": ".sc div[style*=\"display:flex\"]"},
+        {"name": "has_flip_card_mobile_onclick", "type": "contains", "value": "this.classList.toggle('on')"},
+        {"name": "has_375px_verification", "type": "contains", "value": "375"},
+        {"name": "has_no_emoji_rule", "type": "regex", "value": "(No emoji|no emoji)"},
+        {"name": "has_pre_ship_checklist", "type": "contains", "value": "## 13. Checklist"},
+        {"name": "has_tap_target_rule", "type": "contains", "value": "44"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "stripe-engineering-aesthetic",
+      "prompt": "Generate a Design System from https://stripe.com — for product/SaaS slide decks. We want the engineering-clean aesthetic.",
+      "expected_output": "A DS reading as engineering-clean (purple/blurple accent, Sohne or Inter family, dense grid). Engineering DNA section preserved (fit contract, mobile inline-flex trap, flip-card mobile fix, logo as SVG symbol). Brand-variable parts adapted to Stripe.",
+      "files": [],
+      "assertions": [
+        {"name": "engineering_dna_fit_contract_preserved", "type": "contains", "value": "Single-Slide Fit Contract"},
+        {"name": "engineering_dna_inline_flex_trap_preserved", "type": "contains", "value": "inline-flex trap"},
+        {"name": "engineering_dna_flip_mobile_preserved", "type": "contains", "value": "this.classList.toggle('on')"},
+        {"name": "tokens_named_navy_not_stripe_purple", "type": "contains", "value": "--navy:"},
+        {"name": "tokens_use_var_not_hardcoded_in_components", "type": "regex", "value": "var\\(--(navy|blue|surface|ink|mid|rule)"},
+        {"name": "no_local_path_leakage", "type": "not_contains", "value": "/Users/"},
+        {"name": "logo_has_use_href", "type": "contains", "value": "<use href=\"#"},
+        {"name": "philosophy_mentions_engineering_or_grid", "type": "regex", "value": "(engineering|grid|developer|technical)"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "minimal-monochrome-brand",
+      "prompt": "Build a design system from https://www.apple.com — for executive briefing decks. I want minimal, monochrome, type-led.",
+      "expected_output": "A DS where the philosophy paragraph reads minimal/monochrome, palette is restrained, but the same engineering DNA is preserved.",
+      "files": [],
+      "assertions": [
+        {"name": "philosophy_mentions_minimal_or_restrained", "type": "regex", "value": "(minimal|restrained|monochrome|reductive)"},
+        {"name": "engineering_dna_fit_contract_preserved", "type": "contains", "value": "Single-Slide Fit Contract"},
+        {"name": "engineering_dna_mobile_preserved", "type": "contains", "value": "## 10. Mobile"},
+        {"name": "tap_target_44px_preserved", "type": "contains", "value": "44"},
+        {"name": "logo_section_present", "type": "regex", "value": "## 4\\. .*Logo"},
+        {"name": "all_11_slide_types_present", "type": "regex", "value": "Type [A-K]"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "pg-end-to-end-with-deck",
+      "prompt": "Build a Design System from https://www.pg.com (Procter & Gamble) for an internal corporate-update deck. After the DS is generated, write 5–6 slides of original copy yourself — about a fictional 'P&G China Q2 brand performance' update — and produce a complete standalone HTML file (1280×720, single-file, opens in a browser) that exercises the DS: cover slide + dark-bg slide showing the logo in white + light-bg slide showing the logo in brand-dark + a two-column comparison + a chart slide + a closing pull-quote. Save the DS to ./pg-PPT-Design-System.md, save the deck to ./pg-deck.html, and save the workspace under ./.web-to-ds-workspace/pg-<ts>/.",
+      "expected_output": "Two artifacts: a DS markdown matching template structure with P&G-specific palette (likely a corporate blue plus warm neutrals) + an HTML deck file that renders without console errors at native 1280×720. The deck must demonstrate logo flip (W on dark, L on light), token-only colors, and at 375px width must collapse to single-column without horizontal scroll.",
+      "files": [],
+      "assertions": [
+        {"name": "ds_file_exists",                     "type": "file_exists", "value": "./pg-PPT-Design-System.md"},
+        {"name": "ds_has_engineering_dna_fit_contract","type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": "Single-Slide Fit Contract"},
+        {"name": "ds_has_inline_flex_catchall",        "type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": ".sc div[style*=\"display:flex\"]"},
+        {"name": "ds_has_375px_check",                 "type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": "375"},
+        {"name": "deck_file_exists",                   "type": "file_exists", "value": "./pg-deck.html"},
+        {"name": "deck_has_brand_symbol_block",        "type": "file_contains", "file": "./pg-deck.html", "value": "<symbol id=\"brand-wm\""},
+        {"name": "deck_has_logo_W_class",              "type": "file_contains", "file": "./pg-deck.html", "value": "logo W"},
+        {"name": "deck_has_logo_L_class",              "type": "file_contains", "file": "./pg-deck.html", "value": "logo L"},
+        {"name": "deck_uses_var_navy",                 "type": "file_contains", "file": "./pg-deck.html", "value": "var(--navy"},
+        {"name": "deck_has_overflow_hidden_on_slide",  "type": "file_contains", "file": "./pg-deck.html", "value": ".slide"},
+        {"name": "deck_has_native_1280x720_canvas",    "type": "regex_in_file", "file": "./pg-deck.html", "value": "(1280px|width:\\s*1280)"},
+        {"name": "deck_has_mobile_media_query",        "type": "file_contains", "file": "./pg-deck.html", "value": "@media (max-width: 768px)"},
+        {"name": "deck_no_emoji",                      "type": "regex_in_file", "file": "./pg-deck.html", "value": "^(?!.*[\\x{1F300}-\\x{1F9FF}]).*$"},
+        {"name": "process_called_extract_brand",       "type": "transcript_contains", "value": "extract_brand.py"},
+        {"name": "process_called_ask_user_question",   "type": "transcript_contains", "value": "AskUserQuestion"}
+      ],
+      "manual_review": [
+        "Open ./pg-deck.html at native 1280×720 — does it look on-brand for P&G?",
+        "Resize browser to 375px — do slides stack vertically with no horizontal scroll?",
+        "Cycle through all slides — does the logo flip cleanly from white-on-dark to brand-on-light?",
+        "Is the slide copy legible, is the cover commanding, is there visible bottom breathing room on every content slide?"
+      ]
+    }
+  ]
+}

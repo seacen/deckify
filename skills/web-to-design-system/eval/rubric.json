@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "pass_threshold": 4.0,
+  "hard_checks": [
+    {"id": "slide_dimensions",      "description": "Every .slide rect = 1280×720 ±2px"},
+    {"id": "fit_contract_intact",   "description": "Each stacked .sc has exactly one flex:1 absorber with min-height:0 and overflow:hidden"},
+    {"id": "token_only_colors",     "description": "Slide CSS in <style> blocks contains no ad-hoc 6/3-digit hex literals outside the :root token block"},
+    {"id": "no_emoji",              "description": "Body contains no characters in the U+1F300–U+1FAFF emoji range"},
+    {"id": "mobile_collapse",       "description": "At 375×812 viewport, body.scrollWidth ≤ 375 AND every .g2/.g3/.flip-row/.tabs has flex-direction: column"},
+    {"id": "logo_renders",          "description": "Every .logo SVG renders with non-zero bounding box AND the brand-wm symbol contains either a real <path> with d>40 chars OR an <image href> attribute (PNG fallback). Pure <text>-only fallback is INSUFFICIENT."},
+    {"id": "text_layout_safe",      "description": "无块级文本元素被截断（overflow:hidden 且 scrollHeight > clientHeight），无 slide 最低文本元素贴底（gap < 18px），H1/H2/H3 不超过 3 行；封面（slide 0）豁免"},
+    {"id": "ds_has_engineering_dna","description": "DS markdown contains all of: 'Single-Slide Fit Contract', 'three-layer overflow safety net', 'inline-flex trap', 'this.classList.toggle', '12 px floor', 'Typography Safety' (case-insensitive)"}
+  ],
+  "judge_dimensions": [
+    {
+      "name": "logo_present_and_branded",
+      "description": "Is a recognisable BRAND logo visible on every slide (white-on-dark on cover; brand-dark on light slides)? Or is it a typographic placeholder / missing entirely?",
+      "scoring_guide": "5 = real brand wordmark/mark visible and clean on every slide; 4 = real logo but minor positioning/clarity issue; 3 = typographic placeholder (e.g. brand name set in regular text) — usable but obviously not the real logo; 2 = degenerate placeholder (e.g. just 'X' or generic disc) or invisible on dark; 1 = visibly broken (clipped/garbled); 0 = no logo at all"
+    },
+    {
+      "name": "slide_visual_quality",
+      "description": "Across the slides shown, is layout balanced, breathing-room visible at bottom, type hierarchy clear, no awkward gaps or cramped rows? Cover should feel commanding; content slides should look composed not crammed.",
+      "scoring_guide": "5 = every slide visually composed; 4 = 1-2 slides minor (slight imbalance); 3 = several slides feel awkward (cramped, weak hierarchy, mis-aligned); 2 = consistent layout problems; 1 = obviously broken; 0 = unusable"
+    },
+    {
+      "name": "brand_fidelity",
+      "description": "Does the deck's overall visual register match the source brand's known visual language (palette mood, type personality, decorative restraint)? Judge against your prior knowledge of the source brand.",
+      "scoring_guide": "5 = unmistakably on-brand; 4 = on-brand with minor liberties; 3 = recognisable but generic-feeling; 2 = generic AI/SaaS aesthetic, not brand-specific; 1 = wrong mood; 0 = no brand identity at all"
+    },
+    {
+      "name": "content_substantive",
+      "description": "Is the slide copy real, substantive, on-domain business writing? Not lorem ipsum, not 'discover the seamless future', not vague AI filler.",
+      "scoring_guide": "5 = every line earns its place, sounds like real internal business writing; 4 = mostly substantive, 1-2 lines vague; 3 = mixed (some real, some filler); 2 = mostly filler/generic; 1 = lorem-flavoured; 0 = empty/placeholder"
+    },
+    {
+      "name": "engineering_dna_visible_in_ds",
+      "description": "Does the Design System markdown explicitly carry the engineering invariants: §1 Constraints/Freedom, §5 Fit Contract incl. three-layer overflow + single absorber + 602px budget, §10 Mobile incl. inline-flex trap + flip-card mobile fix, §13 ~40-item Checklist incl. 375px verification?",
+      "scoring_guide": "5 = all sections present and verbatim from template; 4 = present but minor wording drift; 3 = key sections present but at least one diluted; 2 = major section missing; 1 = engineering DNA largely absent; 0 = template not followed"
+    }
+  ],
+  "disqualifiers": [
+    {"id": "D1_logo_missing_or_placeholder", "trigger": "logo_renders fails OR logo_present_and_branded ≤ 2"},
+    {"id": "D2_slide_dimensions_wrong",      "trigger": "slide_dimensions hard check fails"},
+    {"id": "D3_console_errors",              "trigger": "agent-browser eval reports any console.error during render"},
+    {"id": "D4_mobile_horizontal_scroll",    "trigger": "mobile_collapse hard check fails"},
+    {"id": "D5_ds_template_violated",        "trigger": "ds_has_engineering_dna hard check fails"}
+  ]
+}
