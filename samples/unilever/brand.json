@@ -1,0 +1,115 @@
+{
+  "host": "www.unilever.com",
+  "brand_name": "Unilever",
+  "base_url": "https://www.unilever.com/",
+  "chosen_logo": {
+    "id": "ddbdd22c",
+    "why": "header-img returned 403 from CDN; falling back to /favicon.svg, the next-best official asset"
+  },
+  "alt_logo_ids": [
+    "d3ee2303",
+    "8b53dddb"
+  ],
+  "palette": {
+    "brand_primary": {
+      "hex": "#0066CC",
+      "name": "--color-brand-sky",
+      "evidence": ":root token --color-brand-sky; literal hex appears 25× across all 6 pages; CTA hover state uses --color-brand-skydark #004D99"
+    },
+    "brand_secondary": {
+      "hex": "#133062",
+      "name": "--color-brand-night",
+      "evidence": ":root token --color-brand-night; deep navy used for high-contrast headers and feature backdrops"
+    },
+    "ink": {
+      "hex": "#4D4B46",
+      "name": "--color-brand-stone",
+      "evidence": ":root token --color-brand-stone; computed body color is rgb(77,75,70) = #4D4B46 — Unilever uses warm stone instead of pure black for body text"
+    },
+    "paper": {
+      "hex": "#F6F7F0",
+      "name": "--color-brand-earth",
+      "evidence": ":root token --color-brand-earth; computed body bg is rgb(246,247,240) = #F6F7F0 across pages"
+    },
+    "accents": [
+      {
+        "hex": "#23E7FF",
+        "name": "--color-brand-water",
+        "evidence": "aqua/water accent — Unilever sustainability palette"
+      },
+      {
+        "hex": "#8652DF",
+        "name": "--color-brand-lilac",
+        "evidence": "lilac accent — used for content highlights"
+      },
+      {
+        "hex": "#E13591",
+        "name": "--color-brand-rose",
+        "evidence": "rose accent — campaign-secondary"
+      },
+      {
+        "hex": "#28911C",
+        "name": "--color-brand-clover",
+        "evidence": "clover green — sustainability/positive signaling"
+      },
+      {
+        "hex": "#DA5700",
+        "name": "--color-brand-sorbet",
+        "evidence": "sorbet orange — warm accent"
+      }
+    ],
+    "neutrals": [
+      {
+        "hex": "#FFFFFF",
+        "name": "--color-brand-cloud"
+      },
+      {
+        "hex": "#DEDED7",
+        "name": "--color-brand-pebble"
+      },
+      {
+        "hex": "#000000",
+        "name": "--color-brand-abyss"
+      }
+    ]
+  },
+  "typography": {
+    "display_font": {
+      "family": "UnileverDesire",
+      "evidence": "Custom proprietary font, computed font-family on body and h1 across all 6 pages; appears in font-family stack 61× (max in scan). Fallback chain: 'Century Gothic', 'CenturyGothic', 'AppleGothic', Roboto, sans-serif. Note: UnileverDesire is licensed — fallback to 'Century Gothic' for slide builds"
+    },
+    "body_font": {
+      "family": "UnileverDesire",
+      "evidence": "Same as display; Unilever uses one display family across the site, weight differentiates display vs body"
+    }
+  },
+  "spacing_radius_shadow": {
+    "radius_style": "softly-rounded",
+    "shadow_style": "flat",
+    "spacing_density": "airy",
+    "evidence": "Computed body padding is generous (large vertical rhythm); CTAs visible in /our-company/a have rgb(0,77,153) bg with rounded corners; no heavy drop-shadows observed in computed[box-shadow] — Unilever leans into editorial flat with breathing room"
+  },
+  "aesthetic": {
+    "mood": "corporate sustainability gravitas",
+    "style_keywords": [
+      "editorial",
+      "spacious",
+      "warm-neutral grounding",
+      "saturated brand-color accents on calm earth-tone canvas",
+      "humanist typography"
+    ],
+    "precedents": [
+      "Patagonia annual reports",
+      "IKEA sustainability microsite",
+      "Ben & Jerry's manifesto pages — minus the playfulness"
+    ],
+    "voice_register": "purpose-driven corporate; long-form sustainability narratives, leadership-quote heavy"
+  },
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/our-company/shot.png",
+    "recon/pages/brands/shot.png",
+    "recon/pages/sustainability/shot.png",
+    "recon/pages/news-press-and-media/shot.png"
+  ]
+}

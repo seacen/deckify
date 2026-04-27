@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Eval run output (regenerated each run)
+skills/*/tests/reports/runs/
+
+# Sample workspace artifacts that are large + regenerable
+# (keep brand.json + pages.txt + assets/ — they're the LLM/quality-gate output)
+samples/*/recon/
+samples/*/raw-assets.json
+samples/*/eval-output/
+
+# Editor scratch
+.idea/
+.vscode/
+*.swp
+*~

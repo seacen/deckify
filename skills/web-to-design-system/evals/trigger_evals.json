@@ -1,0 +1,23 @@
+[
+  {"query": "ok so my colleague just sent over the link to https://www.unilever.com — i need to make a 10-slide product proposal deck and they want it to feel On Brand. can you start by extracting the design system from that site so i have something to work with", "should_trigger": true},
+  {"query": "build me a design system from stripe.com that i can use for my saas pitch deck", "should_trigger": true},
+  {"query": "我下周要给一个客户做提案，他们的官网是 https://www.lululemon.com，能不能先帮我从这个网站提取一套设计系统出来？我后面要用这个系统做 html slide", "should_trigger": true},
+  {"query": "got a deck to write that needs to look like apple.com — start with the design system pls", "should_trigger": true},
+  {"query": "skin my slides like notion.so — please extract their visual language first", "should_trigger": true},
+  {"query": "我的同事让我做一份 ppt，要 follow https://www.linear.app 的设计风格。先帮我把 design system 整出来", "should_trigger": true},
+  {"query": "i need html slides that match what figma.com looks like — what's a good first step?", "should_trigger": true},
+  {"query": "extract the visual identity from this brand site (https://airbnb.design) and turn it into something i can hand to claude later when we build slides", "should_trigger": true},
+  {"query": "create a design system markdown from https://vercel.com that bakes in the same engineering rules as my unilever deck", "should_trigger": true},
+  {"query": "starting a new client deck for a fashion brand — their site is https://www.everlane.com — what's the workflow to make my slides match their look?", "should_trigger": true},
+
+  {"query": "extract the dominant colors from this image i'm sending you (./photo.jpg)", "should_trigger": false},
+  {"query": "design a new product page for our internal admin tool — react + tailwind, no specific brand to match, just look professional", "should_trigger": false},
+  {"query": "build slides for my conference talk about React 19 server components", "should_trigger": false},
+  {"query": "fix the css of this website i'm building so the buttons match the rest of my brand, i pasted the current style below", "should_trigger": false},
+  {"query": "我想做一个网页设计的 mockup，参考一下 dribbble 上类似的项目能拿到什么 inspiration", "should_trigger": false},
+  {"query": "what's the hex code for stripe purple", "should_trigger": false},
+  {"query": "convert this powerpoint file to html slides please", "should_trigger": false},
+  {"query": "audit my current website for accessibility issues and visual inconsistencies — site is at https://my-portfolio.com", "should_trigger": false},
+  {"query": "write a brand guideline document for a new startup we're naming — we don't have a website yet, just brainstorming", "should_trigger": false},
+  {"query": "i have a figma file for our internal design system, can you turn it into a tailwind config", "should_trigger": false}
+]

@@ -1,0 +1,8 @@
+# Picked per references/llm-prompts/discover-pages.md
+# Highest signal: company/brand-asset pages where real wordmark + brand palette appear large
+https://www.unilever.com/our-company/at-a-glance/
+https://www.unilever.com/our-company/
+https://www.unilever.com/news/press-and-media/
+https://www.unilever.com/brands/
+https://www.unilever.com/sustainability/
+https://www.unilever.com/our-company/our-leadership/

@@ -1,0 +1,402 @@
+#!/usr/bin/env python3
+"""
+hard_checks.py — deterministic verification layer of the auto-eval.
+
+Drives agent-browser to render the deck, measure DOM, and run regex
+checks over the source HTML / DS markdown. No LLM calls.
+
+Output: dict[check_id -> {"passed": bool, "evidence": ...}].
+
+Usage:
+    python3 hard_checks.py <deck.html> <ds.md> <out_dir>
+        out_dir receives: measurements.json, slides/<n>.png, mobile.png
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+AB = "agent-browser"
+JS_DESKTOP_MEASURE = r"""(()=>{
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const out = {slideCount: slides.length, slides: [], deck: null, body: null, consoleErrors: window.__captured_errors || []};
+  const deck = document.querySelector('#deck');
+  if (deck) {
+    const r = deck.getBoundingClientRect();
+    out.deck = {w: r.width, h: r.height, scW: deck.scrollWidth, scH: deck.scrollHeight};
+  }
+  out.body = {scrollWidth: document.body.scrollWidth, overflowX: getComputedStyle(document.body).overflowX};
+  // Activate each slide in turn and measure
+  for (let i = 0; i < slides.length; i++) {
+    slides.forEach((s,k)=>s.classList.toggle('active', k===i));
+    const a = slides[i];
+    const r = a.getBoundingClientRect();
+    const sc = a.querySelector('.sw .sc') || a.querySelector('.sc');
+    const scR = sc ? sc.getBoundingClientRect() : null;
+    // Count flex:1 absorbers (children of .sc)
+    let absorbers = 0;
+    if (sc) {
+      Array.from(sc.children).forEach(ch => {
+        const cs = getComputedStyle(ch);
+        const fg = cs.flexGrow;
+        const fs = cs.flexShrink;
+        if (parseFloat(fg) >= 1 && parseFloat(fs) >= 1) absorbers++;
+      });
+    }
+    // Logo presence on this slide
+    const logos = a.querySelectorAll('.logo');
+    const logoBboxes = Array.from(logos).map(l => {
+      const lr = l.getBoundingClientRect();
+      return {w: lr.width, h: lr.height, visible: lr.width>0 && lr.height>0};
+    });
+    // Text layout probes — overflow, bottom-guard, headline line count
+    const slideRect = a.getBoundingClientRect();
+    const slideBottom = slideRect.bottom;
+    const overflowingText = [];
+    const allText = a.querySelectorAll('h1,h2,h3,h4,p,li,figcaption,blockquote,div,span');
+    let maxBottom = -Infinity;
+    let maxBottomTag = '';
+    let maxBottomText = '';
+    const lineCounts = [];
+    allText.forEach(el => {
+      const cs = getComputedStyle(el);
+      // 文本截断/溢出检测：仅看显式块级文本容器，避免误报 flex 容器
+      if (el.scrollHeight > el.clientHeight + 2 && el.clientHeight > 0
+          && (cs.overflow === 'hidden' || cs.overflowY === 'hidden')
+          && cs.textOverflow !== 'ellipsis') {
+        const r2 = el.getBoundingClientRect();
+        if (r2.width > 30 && r2.height > 10) {
+          overflowingText.push({tag: el.tagName, text: (el.textContent||'').trim().slice(0,80),
+                                clientH: el.clientHeight, scrollH: el.scrollHeight});
+        }
+      }
+      // 跟踪页面里"最低的可见文本元素"位置
+      const txt = (el.textContent || '').trim();
+      if (txt.length > 2 && el.children.length === 0) {
+        const r3 = el.getBoundingClientRect();
+        if (r3.width > 0 && r3.height > 0 && r3.bottom > maxBottom && r3.bottom <= slideBottom + 1) {
+          maxBottom = r3.bottom;
+          maxBottomTag = el.tagName;
+          maxBottomText = txt.slice(0, 60);
+        }
+      }
+      // 标题类元素的行数（heading 不应被胡乱拆成 4+ 行）
+      if (['H1','H2','H3'].includes(el.tagName)) {
+        const lh = parseFloat(cs.lineHeight);
+        const h = el.getBoundingClientRect().height;
+        if (lh > 0 && h > 0) {
+          const lines = Math.round(h / lh);
+          if (lines > 0) lineCounts.push({tag: el.tagName, lines, text: (el.textContent||'').trim().slice(0,60)});
+        }
+      }
+    });
+    const bottomGap = (maxBottom > -Infinity) ? (slideBottom - maxBottom) : null;
+
+    out.slides.push({
+      idx: i,
+      width: a.offsetWidth, height: a.offsetHeight,
+      bbWidth: r.width, bbHeight: r.height,
+      scrollWidth: a.scrollWidth, scrollHeight: a.scrollHeight,
+      scH: scR ? scR.height : null, scScrollH: sc ? sc.scrollHeight : null,
+      scOverflows: sc ? sc.scrollHeight > sc.clientHeight + 1 : null,
+      absorbers,
+      logoCount: logos.length,
+      logoBboxes,
+      textLayout: {
+        overflowingText: overflowingText.slice(0, 5),
+        bottomGap, bottomTag: maxBottomTag, bottomText: maxBottomText,
+        headingLines: lineCounts,
+      },
+    });
+  }
+  // Reset to slide 0
+  slides.forEach((s,k)=>s.classList.toggle('active', k===0));
+  // Also probe the brand-wm symbol contents
+  const sym = document.querySelector('symbol#brand-wm');
+  if (sym) {
+    out.brandSymbol = {
+      pathCount: sym.querySelectorAll('path').length,
+      pathDLen: Array.from(sym.querySelectorAll('path')).map(p => (p.getAttribute('d')||'').length),
+      textCount: sym.querySelectorAll('text').length,
+      imageCount: sym.querySelectorAll('image').length,
+      circleCount: sym.querySelectorAll('circle').length,
+      hasInnerFill: !!sym.querySelector('[fill]:not([fill="none"]):not([fill="currentColor"])'),
+    };
+  } else {
+    out.brandSymbol = null;
+  }
+  return JSON.stringify(out);
+})()"""
+
+JS_MOBILE_MEASURE = r"""(()=>{
+  const out = {body: {scrollWidth: document.body.scrollWidth}, multiCol: []};
+  ['.g2','.g3','.flip-row','.tabs','.f-row','.fr'].forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      const cs = getComputedStyle(el);
+      out.multiCol.push({selector: sel, flexDir: cs.flexDirection, gridCols: cs.gridTemplateColumns, displayMode: cs.display});
+    });
+  });
+  return JSON.stringify(out);
+})()"""
+
+
+def run_ab(args: list[str], capture=True, check=False):
+    return subprocess.run([AB, *args], capture_output=capture, text=True, check=check, timeout=60)
+
+
+def parse_ab_eval(out: str):
+    """agent-browser eval prints JSON wrapped in quotes; unwrap."""
+    s = out.strip()
+    if s.startswith('"') and s.endswith('"'):
+        s = s[1:-1].encode().decode("unicode_escape")
+    # find first { or [
+    for i, c in enumerate(s):
+        if c in "{[":
+            s = s[i:]
+            break
+    return json.loads(s)
+
+
+def measure_desktop(deck_path: Path, out_dir: Path) -> dict:
+    run_ab(["set", "viewport", "1440", "900"])
+    run_ab(["open", f"file://{deck_path.resolve()}"])
+    import time; time.sleep(1.2)
+    res = run_ab(["eval", JS_DESKTOP_MEASURE])
+    try:
+        measurements = parse_ab_eval(res.stdout)
+    except Exception as e:
+        return {"error": f"desktop measure failed: {e}", "raw": res.stdout[:500]}
+    # screenshot first slide as the cover
+    shots_dir = out_dir / "slides"
+    shots_dir.mkdir(parents=True, exist_ok=True)
+    for i in range(measurements.get("slideCount", 0)):
+        run_ab(["eval", f"document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k==={i}))"])
+        time.sleep(0.25)
+        run_ab(["screenshot", str(shots_dir / f"slide-{i+1:02d}.png")])
+    return measurements
+
+
+def measure_mobile(deck_path: Path, out_dir: Path) -> dict:
+    import time
+    run_ab(["set", "viewport", "375", "812"])
+    run_ab(["open", f"file://{deck_path.resolve()}"])
+    time.sleep(1.0)
+    res = run_ab(["eval", JS_MOBILE_MEASURE])
+    try:
+        m = parse_ab_eval(res.stdout)
+    except Exception as e:
+        m = {"error": str(e), "raw": res.stdout[:500]}
+    run_ab(["screenshot", str(out_dir / "mobile.png")])
+    # restore desktop viewport
+    run_ab(["set", "viewport", "1440", "900"])
+    return m
+
+
+# ── checks ────────────────────────────────────────────────────────────────
+
+def check_slide_dimensions(measurements: dict) -> dict:
+    bad = []
+    for s in measurements.get("slides", []):
+        if abs(s["width"] - 1280) > 2 or abs(s["height"] - 720) > 2:
+            bad.append({"idx": s["idx"], "w": s["width"], "h": s["height"]})
+    return {"passed": len(bad) == 0, "evidence": {"bad_slides": bad, "n_slides": len(measurements.get("slides", []))}}
+
+
+def check_fit_contract(measurements: dict) -> dict:
+    # Skip cover (slide 0) — covers don't always have an absorber.
+    bad = []
+    for s in measurements.get("slides", []):
+        if s["idx"] == 0:
+            continue
+        if s["absorbers"] != 1:
+            bad.append({"idx": s["idx"], "absorbers": s["absorbers"]})
+    return {"passed": len(bad) == 0, "evidence": {"bad_slides": bad}}
+
+
+HEX_RE = re.compile(r"#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b")
+ROOT_BLOCK_RE = re.compile(r":root\s*\{[^}]*\}", re.DOTALL)
+
+
+# Universal-backdrop colors that are reasonable to use without a token.
+# (e.g. the page-outside-the-deck background, scrim overlays, pure-white text on dark cover.)
+TOKEN_HEX_ALLOWLIST = {"#fff", "#FFF", "#ffffff", "#FFFFFF", "#000", "#000000"}
+
+
+def check_token_only_colors(html: str) -> dict:
+    """Find <style> blocks. Strip :root{...}. Then any remaining hex literal not in the allowlist is a violation."""
+    style_blocks = re.findall(r"<style[^>]*>(.*?)</style>", html, re.DOTALL | re.IGNORECASE)
+    violations = []
+    for blk in style_blocks:
+        # remove :root blocks (where token defs legitimately have hex)
+        cleaned = ROOT_BLOCK_RE.sub("", blk)
+        for m in HEX_RE.finditer(cleaned):
+            hex_str = m.group(0)
+            if hex_str in TOKEN_HEX_ALLOWLIST:
+                continue
+            i = m.start()
+            ctx = cleaned[max(0, i-30):i+10]
+            violations.append({"hex": hex_str, "context": ctx.strip()})
+    return {"passed": len(violations) == 0, "evidence": {"count": len(violations), "samples": violations[:10]}}
+
+
+# Pictographic emoji ranges. Explicitly EXCLUDES typographic symbols:
+#   - U+2600–U+26FF (misc symbols, includes ✓ ✗ → ←)
+#   - U+2700–U+27BF (dingbats, includes ✂ ✔ ✖)
+# These are documented as permitted in the DS template ("typographic symbols only").
+EMOJI_RE = re.compile(
+    r"[\U0001F300-\U0001F5FF\U0001F600-\U0001F6FF\U0001F900-\U0001F9FF\U0001FA00-\U0001FAFF]"
+)
+
+
+def check_no_emoji(html: str) -> dict:
+    matches = EMOJI_RE.findall(html)
+    return {"passed": len(matches) == 0, "evidence": {"count": len(matches), "samples": list(set(matches))[:10]}}
+
+
+def check_mobile_collapse(mobile: dict) -> dict:
+    if "error" in mobile:
+        return {"passed": False, "evidence": mobile}
+    body_w = mobile.get("body", {}).get("scrollWidth", 9999)
+    multi_col = mobile.get("multiCol", [])
+    # no horizontal scroll
+    horiz_ok = body_w <= 375 + 2  # 2px tolerance
+    # every multi-col element should be flex-direction: column OR grid-template-columns: ~"none/1fr"
+    bad = []
+    for el in multi_col:
+        is_column = el.get("flexDir") == "column"
+        is_single_grid = "1fr" in (el.get("gridCols") or "") or el.get("gridCols") in (None, "none", "")
+        # tabs (a row of tab buttons) is allowed to stay row — accept either
+        if el.get("selector") == ".tabs":
+            continue
+        if not (is_column or is_single_grid or el.get("displayMode") == "block"):
+            bad.append(el)
+    return {
+        "passed": horiz_ok and len(bad) == 0,
+        "evidence": {"body_scrollWidth": body_w, "horiz_ok": horiz_ok, "bad_multi_col": bad[:10]},
+    }
+
+
+def check_logo_renders(measurements: dict) -> dict:
+    sym = measurements.get("brandSymbol")
+    if not sym:
+        return {"passed": False, "evidence": "no <symbol id='brand-wm'> defined"}
+    # must contain either a path with d>40 chars, OR an <image href> (raster fallback embedded)
+    has_real_vector = any(d > 40 for d in sym.get("pathDLen", []))
+    has_image = sym.get("imageCount", 0) > 0
+    has_inner_fill_violation = sym.get("hasInnerFill", False)
+    # Also confirm logos rendered visibly on at least the cover
+    visible_on_cover = False
+    if measurements.get("slides"):
+        cover = measurements["slides"][0]
+        visible_on_cover = any(b.get("visible") for b in cover.get("logoBboxes", []))
+    passed = (has_real_vector or has_image) and visible_on_cover and not has_inner_fill_violation
+    return {
+        "passed": passed,
+        "evidence": {
+            "has_real_vector_path": has_real_vector,
+            "has_embedded_image": has_image,
+            "visible_on_cover": visible_on_cover,
+            "has_inner_fill_violation": has_inner_fill_violation,
+            "symbol_summary": sym,
+        },
+    }
+
+
+def check_text_layout_safe(measurements: dict) -> dict:
+    """
+    通用排版安全检查：
+      - 不允许任何块级文本元素被截断（overflow:hidden 且 scrollHeight > clientHeight）
+      - 不允许 slide 最低文本元素贴底（bottomGap < 18px → 视为贴底）
+      - 不允许 H1/H2 被拆成 ≥ 4 行（视为胡乱换行）
+    跳过封面（slide 0）以放宽 hero 排版。
+    """
+    overflow_hits = []
+    bottom_glued = []
+    too_many_lines = []
+    BOTTOM_GAP_FLOOR = 18  # px：到 slide 底部的最小空白
+    HEADING_MAX_LINES = 3  # H1/H2/H3 最多 3 行
+    for s in measurements.get("slides", []):
+        if s.get("idx") == 0:
+            continue
+        tl = s.get("textLayout") or {}
+        for ot in tl.get("overflowingText") or []:
+            overflow_hits.append({"slide": s["idx"], **ot})
+        bg = tl.get("bottomGap")
+        if isinstance(bg, (int, float)) and bg < BOTTOM_GAP_FLOOR:
+            bottom_glued.append({
+                "slide": s["idx"],
+                "bottomGap": round(bg, 2),
+                "tag": tl.get("bottomTag"),
+                "text": tl.get("bottomText"),
+            })
+        for hc in tl.get("headingLines") or []:
+            if hc.get("lines", 0) > HEADING_MAX_LINES:
+                too_many_lines.append({"slide": s["idx"], **hc})
+    bad = bool(overflow_hits or bottom_glued or too_many_lines)
+    return {
+        "passed": not bad,
+        "evidence": {
+            "overflow_hits": overflow_hits[:8],
+            "bottom_glued": bottom_glued[:8],
+            "too_many_lines": too_many_lines[:8],
+            "thresholds": {"bottom_gap_floor_px": BOTTOM_GAP_FLOOR, "heading_max_lines": HEADING_MAX_LINES},
+        },
+    }
+
+
+def check_ds_engineering_dna(ds_md: str) -> dict:
+    required = [
+        "Single-Slide Fit Contract",
+        "three-layer overflow safety net",
+        "inline-flex trap",
+        "this.classList.toggle",
+        "12 px",  # floor mention
+    ]
+    missing = [phrase for phrase in required if phrase.lower() not in ds_md.lower()]
+    return {"passed": len(missing) == 0, "evidence": {"missing_phrases": missing}}
+
+
+# ── orchestration ──────────────────────────────────────────────────────────
+
+def run_all(deck_path: Path, ds_path: Path, out_dir: Path) -> dict:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    html = deck_path.read_text(encoding="utf-8")
+    ds_md = ds_path.read_text(encoding="utf-8") if ds_path.exists() else ""
+
+    print(f"[1/2] desktop measure {deck_path.name}")
+    desktop = measure_desktop(deck_path, out_dir)
+    print(f"[2/2] mobile measure {deck_path.name}")
+    mobile = measure_mobile(deck_path, out_dir)
+
+    (out_dir / "measurements.json").write_text(
+        json.dumps({"desktop": desktop, "mobile": mobile}, indent=2, ensure_ascii=False)
+    )
+
+    checks = {
+        "slide_dimensions":       check_slide_dimensions(desktop),
+        "fit_contract_intact":    check_fit_contract(desktop),
+        "token_only_colors":      check_token_only_colors(html),
+        "no_emoji":               check_no_emoji(html),
+        "mobile_collapse":        check_mobile_collapse(mobile),
+        "logo_renders":           check_logo_renders(desktop),
+        "text_layout_safe":       check_text_layout_safe(desktop),
+        "ds_has_engineering_dna": check_ds_engineering_dna(ds_md),
+    }
+    (out_dir / "hard_checks.json").write_text(json.dumps(checks, indent=2, ensure_ascii=False))
+    return checks
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        print("usage: hard_checks.py <deck.html> <ds.md> <out_dir>", file=sys.stderr)
+        sys.exit(2)
+    deck, ds, out = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
+    res = run_all(deck, ds, out)
+    n_pass = sum(1 for v in res.values() if v["passed"])
+    print(f"\n{n_pass}/{len(res)} hard checks passed")
+    for k, v in res.items():
+        print(f"  {'✓' if v['passed'] else '✗'} {k}")
