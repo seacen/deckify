@@ -6,6 +6,34 @@ Your job: read `raw-assets.json`, **look at the screenshots with the Read tool**
 
 You are choosing real things from real evidence. You are not allowed to invent.
 
+---
+
+## Design taste — read this before anything else
+
+**Commit to a bold aesthetic direction, not a safe average.** The brand recon gives you everything you need to recognise the brand's actual visual register; your job is to capture that register with conviction, not to soften it into a generic "clean modern corporate" mush.
+
+Useful aesthetic directions to pick from (and remix): brutally minimal, maximalist, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, geometric/art-deco, soft/pastel, industrial/utilitarian, archival/serious, optimistic/scientific, monochrome/typographic. Pick the one (or two) that the screenshots actually support, and execute precisely. Both bold maximalism and refined minimalism work — the failure mode is timidity.
+
+### Anti-AI-slop guardrails
+
+When the recon gives you a real choice, **never** default to:
+
+- **Generic fonts** as the "design choice": Inter, Roboto, Arial, "system-ui", Helvetica Neue, Source Sans, Open Sans. If the brand's `font-face` declares a real custom face (e.g. UnileverDesire, Stripe Sans, Inter for Stripe IS a deliberate brand choice — but Inter on a luxury skincare brand is slop), use it. If only system fonts are present, pick the *most* characterful fallback in the chain (Georgia / Charter / Iowan over generic; Avenir / Inter / Söhne over Arial), name the trade-off in `evidence`.
+- **Cliché palettes**: pure-white background + a single purple/blue accent + slate-grey type is the AI-slop signature. If the brand's actual palette has warm earth tones, brand-saturated accents, or unexpected neutrals (warm stone, cool fog, off-white papers), capture them — do not flatten to white + grey + one accent.
+- **Even-weighted multi-accent palettes**: 6 equal-weight accent colours look like a Storybook colour grid, not a brand. **One dominant chord (the brand's signature)**, plus 2-3 supporting accents that carry distinct meaning (semantic / categorical), is almost always the right shape.
+- **Default radii / shadow / spacing**: 8 px radius + soft shadow + comfortable spacing on every brand makes them all look like SaaS dashboards. Match the recon: if the brand's CTAs are sharp 0-radius rectangles, capture that. If the body text breathes at 1.7 line-height, capture that.
+- **Three SaaS adjectives in `mood`**: "modern, clean, bold" describes everything and therefore nothing. Use specific, vivid 2-3 word combinations: `editorial sustainability gravitas`, `clinical scientific optimism`, `industrial workhorse confidence`, `studio luxury restraint`.
+
+### What "bold commitment" actually means in `brand.json`
+
+- **Mood line is the thesis**: every other field should be downstream of it. If your `mood` is "editorial sustainability gravitas", your palette better not be a SaaS purple gradient. If your `mood` is "playful warmth", your spacing better not be tight clinical 4 px gaps.
+- **Style keywords are sharp, not generic**: `humanist`, `archival`, `loud`, `quiet`, `saturated`, `washed-out`, `editorial`, `engineered`, `botanical`, `tactile`, `hairline`, `weighty`. Avoid `clean`, `modern`, `professional`, `bold`, `minimalist` — they're so overused they communicate no constraint.
+- **Precedents help downstream**: name 2-3 real reference points the deck generator can mentally calibrate against ("Patagonia annual reports", "old IBM brochures", "Bauhaus posters", "modernist Swiss editorial"). Skip if you can't name one with conviction.
+
+The deck generator downstream uses `brand.json` as its design brief. A timid brief produces a timid deck. A vivid brief produces a memorable one.
+
+---
+
 ## What to write into brand.json
 
 ```jsonc
