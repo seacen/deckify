@@ -1,623 +1,999 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Stripe Atlas China Launch — Q2 Update</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stripe — Financial infrastructure to grow your revenue</title>
 <style>
-:root{
-  --navy:#0A2540;
-  --blue:#635BFF;
-  --surface:#F6F9FC;
-  --white:#FFFFFF;
-  --ink:#0A2540;
-  --mid:#425466;
-  --rule:#E3E8EE;
-  --tint:#ECF1F6;
-  --green:#14B872;
-  --green-bg:#E5F8EE;
-  --red:#DF1B41;
-  --red-bg:#FCE8EC;
-  --warn:#F8A302;
-  --warn-bg:#FFF6E0;
-  --teal:#11B5D9;
-  --teal-bg:#E1F4F9;
-  --navy-mid: var(--navy-mid);
-  --navy-deep: var(--navy-deep);
-  --accent: var(--accent);
-  --bar-mid: var(--bar-mid);
-  --accent-dark: var(--accent-dark);
+:root {
+  /* ── Brand ── */
+  --navy:     #0A2540;
+  --blue:     #635BFF;
+  /* ── Neutrals ── */
+  --surface:  #FFFFFF;
+  --white:    #FFFFFF;
+  --ink:      #425466;
+  --mid:      #32325D;
+  --rule:     #E7ECF1;
+  --tint:     #F6F9FC;
+  /* ── Brand accents ── */
+  --lavender: #9966FF;
+  --slate-mid:#424770;
+  /* ── Semantic ── */
+  --green:    #0E9F6E;
+  --green-bg: #D1FAE5;
+  --red:      #DC2626;
+  --red-bg:   #FEE2E2;
+  --warn:     #F59E0B;
+  --warn-bg:  #FEF3C7;
+  --teal:     #0073E6;
+  --teal-bg:  #DBEAFE;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#000;font-family:'Inter',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
-#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
-#deck{width:1280px;height:720px;position:relative;overflow:hidden;background:var(--surface);border-radius:4px}
-.slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .38s ease;overflow:hidden}
-.slide.active{opacity:1;pointer-events:auto}
-.slide.active .sc,.slide.active .cv{animation:enter .42s cubic-bezier(.4,0,.2,1) both}
-@keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-/* logo */
-.logo{height:19px;width:auto;flex-shrink:0;fill:currentColor}
-.logo.W{color:#fff}
-.logo.L{color:var(--navy)}
-.logo.lg{height:26px}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--navy);
+  font-family: 'sohne-var', 'Söhne', 'Helvetica Neue', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-/* content slide scaffold */
-.sw{background:var(--surface);border-left:3px solid var(--blue);display:flex;flex-direction:column;height:100%}
-.sw .sc{flex:1;padding:24px 80px 36px 96px;display:flex;flex-direction:column;overflow:hidden;gap:18px}
-.shd{display:flex;align-items:center;justify-content:space-between;padding:0 80px 0 96px;flex:0 0 54px;border-bottom:1px solid var(--rule)}
-.shd-num{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--blue)}
-.shd-num span.s{color:var(--mid);margin-left:10px}
+#wrap {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--navy);
+}
+#deck {
+  width: 1280px; height: 720px;
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 8px 40px rgba(0,0,0,.45);
+  transform-origin: center center;
+  will-change: transform;
+}
+.slide {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity .38s ease;
+  overflow: hidden;
+}
+.slide.active {
+  opacity: 1; pointer-events: auto;
+}
+.slide.active .sc,
+.slide.active .cov-body {
+  animation: enter .42s cubic-bezier(.4,0,.2,1) both;
+}
+@keyframes enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
 
-/* titles */
-.stitle{font-size:42px;font-weight:900;letter-spacing:-.025em;line-height:1.06;color:var(--ink);max-width:1020px}
-.ssub{font-size:16px;font-weight:600;color:var(--mid);letter-spacing:.01em;line-height:1.5;max-width:980px}
+.logo { display: inline-block; flex: 0 0 auto; line-height: 0; }
+.logo.W { width: 96px; height: 40px; color: var(--white); fill: currentColor; }
+.logo.L { width: 56px; height: 24px; color: var(--navy); fill: currentColor; }
 
-/* cover */
-.cv{position:absolute;inset:0;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 50%,var(--navy-deep) 100%);display:flex;flex-direction:column;padding:48px 80px 56px 96px;color:#fff;overflow:hidden}
-.cov-top{display:flex;justify-content:space-between;align-items:center}
-.cov-eyebrow{font-size:12px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.7)}
-.cov-mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;min-height:0;overflow:hidden}
-.cov-title{font-size:72px;font-weight:900;letter-spacing:-.03em;line-height:.98;max-width:1080px}
-.cov-sub{font-size:22px;font-weight:300;font-style:italic;letter-spacing:.01em;color:rgba(255,255,255,.78);max-width:880px;line-height:1.4}
-.cov-meta{display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
-.cov-meta-l{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.62);line-height:1.6}
+.cov {
+  height: 100%;
+  background: var(--navy);
+  color: var(--white);
+  display: flex; flex-direction: column;
+  padding: 56px 96px;
+  position: relative;
+  overflow: hidden;
+}
+.cov::after {
+  content: '';
+  position: absolute;
+  right: -160px; bottom: -180px;
+  width: 540px; height: 540px;
+  background: radial-gradient(circle at 30% 30%, var(--blue) 0%, var(--lavender) 55%, transparent 75%);
+  opacity: .55;
+  filter: blur(20px);
+  pointer-events: none;
+}
+.cov-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex: 0 0 auto;
+  position: relative; z-index: 2;
+}
+.cov-eb {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--white); opacity: .7;
+  padding-top: 12px;
+}
+.cov-body {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: center; gap: 24px;
+  max-width: 1080px;
+  position: relative; z-index: 2;
+}
+.cov-title {
+  font-size: 78px; line-height: 1.04;
+  font-weight: 600; letter-spacing: -.025em;
+  color: var(--white);
+  max-width: 980px;
+}
+.cov-sub {
+  font-size: 22px; line-height: 1.45;
+  font-weight: 400;
+  letter-spacing: .002em;
+  max-width: 780px;
+  color: var(--white); opacity: .82;
+}
+.cov-meta {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--white); opacity: .55;
+  flex: 0 0 auto;
+  position: relative; z-index: 2;
+}
 
-/* layouts */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1 1 0;min-height:0;overflow:hidden}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
-.absorber{flex:1 1 0;min-height:0;overflow:hidden}
+.sw {
+  background: var(--surface);
+  border-top: 4px solid var(--blue);
+  display: flex; flex-direction: column;
+  height: 100%;
+}
+.shd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 80px 0 96px;
+  flex: 0 0 56px;
+  border-bottom: 1px solid var(--rule);
+}
+.shd-num {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--mid);
+}
+.sc {
+  flex: 1;
+  padding: 32px 80px 40px 96px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+.stitle {
+  font-size: 50px; line-height: 1.1;
+  font-weight: 600; letter-spacing: -.022em;
+  color: var(--mid);
+  flex: 0 0 auto;
+}
+.ssub {
+  font-size: 19px; line-height: 1.5;
+  font-weight: 400; letter-spacing: .002em;
+  color: var(--ink);
+  flex: 0 0 auto;
+  max-width: 920px;
+}
 
-/* panel cards */
-.panel{flex:1;padding:22px 24px;display:flex;flex-direction:column;gap:10px;background:var(--white);border:1px solid var(--rule);border-top:3px solid var(--rule);overflow:hidden}
-.panel.blue{border-top-color:var(--blue)}
-.panel.green{border-top-color:var(--green)}
-.panel.red{border-top-color:var(--red)}
-.panel-cap{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--mid)}
-.panel-tt{font-size:20px;font-weight:900;color:var(--ink);letter-spacing:-.01em;line-height:1.15}
-.panel ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.panel li{font-size:14px;font-weight:600;color:var(--ink);line-height:1.45;padding:8px 12px;background:var(--surface);border-left:3px solid var(--rule);display:flex;align-items:flex-start;gap:10px}
-.panel li.pos{border-left-color:var(--green)}
-.panel li.neg{border-left-color:var(--red)}
-.mk{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;margin-top:1px}
-.mk.y{background:var(--green)}
-.mk.n{background:var(--red)}
+.absorb {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+}
 
-/* narrative */
-.narrative{font-size:19px;font-weight:500;color:var(--ink);line-height:1.55;max-width:1020px}
-.narrative em{font-style:normal;color:var(--blue);font-weight:700}
-.snote{border-left:3px solid var(--blue);padding:14px 22px;background:var(--tint);font-size:15px;font-weight:700;color:var(--ink);line-height:1.45}
-.snote.dark{background:rgba(255,255,255,.06);border-left-color:#fff;color:rgba(255,255,255,.92)}
-.snote.dark b{color:#fff}
+.stat-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  width: 100%; height: 100%;
+}
+.stat-card {
+  display: flex; flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  padding: 26px 24px;
+  gap: 12px;
+  overflow: hidden;
+  justify-content: center;
+}
+.stat-card .stat-rule {
+  height: 3px; width: 32px;
+  background: var(--blue);
+}
+.stat-card.alt .stat-rule { background: var(--lavender); }
+.stat-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--mid);
+}
+.stat-num {
+  font-size: 56px; line-height: 1;
+  font-weight: 600; color: var(--mid);
+  letter-spacing: -.03em;
+}
+.stat-desc {
+  font-size: 14px; line-height: 1.5;
+  font-weight: 400; color: var(--ink);
+  margin-top: 2px;
+}
 
-/* flip cards */
-.flip-row{display:flex;gap:20px;flex:1 1 0;min-height:0;overflow:hidden}
-.fc{flex:1;perspective:1400px;min-height:0;cursor:pointer}
-.fc-inner{position:relative;width:100%;height:100%;transition:transform .65s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
-.fc:hover .fc-inner,.fc.on .fc-inner{transform:rotateY(180deg)}
-.ff{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:4px;display:flex;flex-direction:column;padding:32px 30px;overflow:hidden}
-.ff-front{background:var(--navy);color:#fff;justify-content:space-between}
-.ff-back{background:var(--accent);color:#fff;transform:rotateY(180deg);gap:12px}
-.fc-roman{font-size:96px;font-weight:900;color:rgba(255,255,255,.08);line-height:.9;letter-spacing:-.04em}
-.cnm{font-size:28px;font-weight:900;color:#fff;line-height:1.12;letter-spacing:-.01em}
-.cbd{font-size:17px;font-weight:600;color:rgba(255,255,255,.78);line-height:1.45;margin-top:8px}
-.ht{font-size:13px;font-weight:800;color:rgba(255,255,255,.55);letter-spacing:.18em;text-transform:uppercase;margin-top:14px}
-.bkl{font-size:13px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:.18em;text-transform:uppercase}
-.bkt{font-size:22px;font-weight:900;color:#fff;line-height:1.18}
-.bk-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.bk-list li{font-size:14px;font-weight:600;color:rgba(255,255,255,.88);line-height:1.4;padding-left:14px;position:relative}
-.bk-list li::before{content:'—';position:absolute;left:0;color:rgba(255,255,255,.5)}
+.narr-col {
+  display: flex; flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  justify-content: center;
+}
+.narr-body {
+  font-size: 18px; line-height: 1.65;
+  font-weight: 400; color: var(--ink);
+  max-width: 920px;
+}
+.narr-body p { margin: 0 0 14px 0; }
+.narr-body p:last-child { margin-bottom: 0; }
+.pull {
+  font-size: 26px; line-height: 1.35;
+  font-weight: 500;
+  color: var(--mid);
+  padding: 6px 0 6px 24px;
+  border-left: 3px solid var(--blue);
+  max-width: 980px;
+}
+.pull-attr {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink);
+  margin-top: 4px;
+}
 
-/* table */
-.dt{width:100%;border-collapse:collapse;font-size:14px;font-weight:600}
-.dt th{background:var(--navy);color:#fff;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:10px 14px}
-.dt td{padding:10px 14px;color:var(--ink);border-bottom:1px solid var(--rule);background:var(--white)}
-.dt tr.hi td{background:var(--tint)}
-.dt .pos{color:var(--green);font-weight:800}
-.dt .neg{color:var(--red);font-weight:800}
-.dt .neu{color:var(--mid);font-weight:600}
-.dt-wrap{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.g2 {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  width: 100%; height: 100%;
+}
+.show-card {
+  display: flex; flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  padding: 28px 30px 30px;
+  gap: 14px;
+  overflow: hidden;
+}
+.show-card.dark {
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+}
+.show-cap {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--blue);
+}
+.show-card.dark .show-cap { color: var(--lavender); }
+.show-title {
+  font-size: 26px; line-height: 1.2;
+  font-weight: 600; color: var(--mid);
+  letter-spacing: -.012em;
+}
+.show-card.dark .show-title { color: var(--white); }
+.show-price {
+  font-size: 38px; line-height: 1;
+  font-weight: 600; color: var(--mid);
+  letter-spacing: -.025em;
+  margin: 4px 0 8px;
+}
+.show-card.dark .show-price { color: var(--white); }
+.show-list {
+  margin: 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.show-list li {
+  font-size: 15px; line-height: 1.55;
+  font-weight: 400; color: var(--ink);
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.show-card.dark .show-list li { color: var(--white); opacity: .88; }
+.show-list li .check {
+  color: var(--blue); font-weight: 700;
+  flex: 0 0 auto;
+}
+.show-card.dark .show-list li .check { color: var(--lavender); }
 
-/* funnel diagram (slide 6) */
-.fn-wrap{display:flex;flex:1 1 0;min-height:0;overflow:hidden;gap:32px;align-items:stretch}
-.fn-col{flex:1.3;display:flex;flex-direction:column;justify-content:center;gap:8px;padding:6px 0;min-height:0;overflow:hidden}
-.fn-bar{display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:#fff;height:42px;padding:0 18px;border-radius:4px;transition:width .5s ease}
-.fn-bar.b1{background:var(--navy);width:100%}
-.fn-bar.b2{background:var(--bar-mid);width:80%}
-.fn-bar.b3{background:var(--blue);width:60%}
-.fn-bar.b4{background:var(--accent);width:38%}
-.fn-bar.b5{background:var(--accent-dark);width:22%}
-.fn-bar .fn-label{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
-.fn-bar .fn-num{font-size:14px;font-weight:800;color:rgba(255,255,255,.78)}
-.fn-side{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;min-height:0;overflow:hidden}
-.fn-anno{font-size:15px;font-weight:600;color:var(--ink);line-height:1.5}
-.fn-anno b{color:var(--red);font-weight:800}
+.tbl-wrap {
+  width: 100%; height: 100%;
+  display: flex; align-items: stretch;
+  overflow: hidden;
+}
+.tbl {
+  width: 100%; border-collapse: collapse;
+  background: var(--white);
+  border: 1px solid var(--rule);
+}
+.tbl thead th {
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--mid);
+  border-bottom: 1px solid var(--rule);
+  background: var(--tint);
+}
+.tbl tbody td {
+  padding: 14px 18px;
+  font-size: 14px; line-height: 1.5;
+  font-weight: 400;
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.tbl tbody tr:last-child td { border-bottom: none; }
+.tbl .row-cap {
+  font-size: 14px; font-weight: 600;
+  color: var(--mid);
+  white-space: nowrap;
+}
+.tbl .pos { color: var(--green); font-weight: 700; }
+.tbl .neu { color: var(--teal); font-weight: 700; }
+.tbl .accent { color: var(--blue); font-weight: 700; }
 
-/* chart */
-.ch-wrap{display:grid;grid-template-columns:1.6fr 1fr;gap:32px;flex:1 1 0;min-height:0;overflow:hidden;align-items:center}
-.ch-bars{display:flex;flex-direction:column;gap:16px}
-.ch-row{display:flex;align-items:center;gap:14px}
-.ch-lbl{flex:0 0 180px;font-size:14px;font-weight:700;color:var(--ink);letter-spacing:.02em}
-.ch-track{flex:1;height:22px;background:var(--rule);border-radius:3px;overflow:hidden;position:relative}
-.ch-fill{height:100%;background:var(--blue);border-radius:3px;animation:grow .6s cubic-bezier(.4,0,.2,1) .15s both;transform-origin:left center}
-@keyframes grow{from{width:0!important}}
-.ch-val{flex:0 0 64px;font-size:14px;font-weight:800;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
-.ch-side{display:flex;flex-direction:column;gap:14px;justify-content:center}
-.ch-tt{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--blue)}
-.ch-bd{font-size:16px;font-weight:600;color:var(--ink);line-height:1.5}
-.ch-bd b{color:var(--ink);font-weight:800}
+.chart-wrap {
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px;
+  width: 100%; height: 100%; align-items: center;
+}
+.chart-bars {
+  display: flex; flex-direction: column; gap: 26px;
+}
+.chart-row { display: flex; flex-direction: column; gap: 10px; }
+.chart-row-label {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 14px;
+}
+.chart-row-name {
+  font-size: 13px; font-weight: 700; color: var(--mid);
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.chart-row-val {
+  font-size: 30px; font-weight: 600; color: var(--mid);
+  letter-spacing: -.018em;
+}
+.chart-bar-track {
+  height: 14px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.chart-bar-fill {
+  height: 100%; background: var(--blue);
+  transform-origin: left center;
+  animation: barFill 1s cubic-bezier(.4,0,.2,1) both;
+}
+@keyframes barFill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.chart-bar-fill.lavender { background: var(--lavender); }
+.chart-bar-meta {
+  font-size: 12px; font-weight: 500;
+  color: var(--ink); letter-spacing: .02em;
+}
+.chart-callout {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--blue);
+  padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.chart-callout-cap {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--blue);
+}
+.chart-callout-title {
+  font-size: 18px; font-weight: 600; color: var(--mid);
+  line-height: 1.3; letter-spacing: -.01em;
+}
+.chart-callout-body {
+  font-size: 14px; line-height: 1.55; font-weight: 400;
+  color: var(--ink);
+}
 
-/* pull quote */
-.pq-wrap{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:0 24px;border-left:3px solid var(--blue);margin-top:6px}
-.pq{font-size:32px;font-weight:700;color:var(--ink);line-height:1.28;letter-spacing:-.01em;max-width:1020px}
-.pq-attr{margin-top:24px;font-size:14px;font-weight:700;color:var(--mid);letter-spacing:.04em}
+.flip-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  width: 100%; height: 100%;
+}
+.fc {
+  perspective: 1200px;
+  cursor: pointer;
+  height: 100%;
+  min-height: 0;
+}
+.fc-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .65s cubic-bezier(.4,0,.2,1);
+}
+.fc:hover .fc-inner,
+.fc.on .fc-inner {
+  transform: rotateY(180deg);
+}
+.ff {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  padding: 32px 34px;
+}
+.ff-front {
+  background: var(--navy);
+  color: var(--white);
+}
+.ff-back {
+  background: var(--blue);
+  color: var(--white);
+  transform: rotateY(180deg);
+  justify-content: flex-start;
+}
+.ff-roman {
+  position: absolute; right: 30px; top: 22px;
+  font-size: 86px; line-height: 1;
+  font-weight: 600;
+  color: var(--lavender); opacity: .35;
+  letter-spacing: -.02em;
+}
+.cnm {
+  font-size: 30px; line-height: 1.15;
+  font-weight: 600;
+  margin-top: auto;
+  color: var(--white);
+  letter-spacing: -.018em;
+}
+.cbd {
+  font-size: 16px; line-height: 1.5;
+  font-weight: 400;
+  color: var(--white); opacity: .85;
+  margin-top: 14px;
+  max-width: 88%;
+}
+.ht {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--lavender); opacity: .9;
+  margin-top: 22px;
+}
+.bkl {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--white); opacity: .65;
+}
+.bkt {
+  font-size: 22px; line-height: 1.25;
+  font-weight: 600;
+  color: var(--white);
+  margin-top: 10px;
+  letter-spacing: -.012em;
+}
+.bkbody {
+  font-size: 15px; line-height: 1.55;
+  font-weight: 400;
+  color: var(--white); opacity: .92;
+  margin-top: 16px;
+}
 
-/* tabs */
-.tabs{display:flex;gap:6px;margin-top:4px}
-.tb{padding:9px 18px;border:1px solid var(--rule);background:transparent;font:800 12px/1 'Inter';letter-spacing:.06em;color:var(--mid);cursor:pointer;text-transform:uppercase;border-radius:3px}
-.tb:hover{border-color:var(--blue);color:var(--blue)}
-.tb.on{background:var(--navy);border-color:var(--navy);color:#fff}
-.tc{display:none}
-.tc.on{display:flex;flex-direction:column;gap:10px}
-.tc-wrap{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;background:var(--white);border:1px solid var(--rule);border-top:3px solid var(--blue);padding:22px 26px;margin-top:8px;gap:10px}
-.tc-tt{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-.01em}
-.tc-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:4px}
-.tc-list li{font-size:15px;font-weight:600;color:var(--ink);line-height:1.45;padding-left:18px;position:relative}
-.tc-list li::before{content:'';position:absolute;left:0;top:9px;width:8px;height:2px;background:var(--blue)}
-.tc-take{margin-top:auto;padding:11px 16px;background:var(--tint);border-left:3px solid var(--navy);font-size:14px;font-weight:700;color:var(--ink)}
+.tl {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  gap: 22px;
+  justify-content: center;
+  padding: 0 8px;
+}
+.tl-track {
+  position: relative;
+  height: 2px; background: var(--rule);
+  margin: 6px 14px 0;
+}
+.tl-dot {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  background: var(--blue);
+  border: 3px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.tl-dot.is-now {
+  background: var(--lavender);
+  box-shadow: 0 0 0 1px var(--lavender);
+}
+.tl-stops {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+.tl-stop {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.tl-stop-cap {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--blue);
+}
+.tl-stop.is-now .tl-stop-cap { color: var(--lavender); }
+.tl-stop-title {
+  font-size: 18px; font-weight: 600;
+  color: var(--mid); letter-spacing: -.012em;
+  line-height: 1.25;
+}
+.tl-stop-desc {
+  font-size: 13px; line-height: 1.55;
+  font-weight: 400; color: var(--ink);
+}
 
-/* closing dark slide */
-.dark-slide{background:var(--navy);color:#fff;display:flex;flex-direction:column;height:100%;border-left:3px solid var(--blue)}
-.dark-slide .shd{border-bottom:1px solid rgba(255,255,255,.1)}
-.dark-slide .shd-num{color:rgba(255,255,255,.6)}
-.dark-slide .shd-num span.s{color:rgba(255,255,255,.4)}
-.dark-slide .sc{padding:28px 80px 36px 96px;flex:1;display:flex;flex-direction:column;gap:20px;overflow:hidden}
-.dark-title{font-size:42px;font-weight:900;color:#fff;line-height:1.08;letter-spacing:-.025em;max-width:1020px}
-.cards-col{display:flex;flex-direction:column;gap:12px;flex:1 1 0;min-height:0;overflow:hidden}
-.bitem{display:flex;align-items:flex-start;gap:18px;padding:14px 18px;background:rgba(255,255,255,.05);border-left:3px solid var(--blue)}
-.bitem-num{font-size:24px;font-weight:900;color:var(--blue);opacity:.7;flex:0 0 36px;line-height:1.1;font-variant-numeric:tabular-nums}
-.bitem-body{display:flex;flex-direction:column;gap:4px}
-.bitem-tt{font-size:17px;font-weight:800;color:#fff;line-height:1.25}
-.bitem-ds{font-size:14px;font-weight:500;color:rgba(255,255,255,.72);line-height:1.45}
+.bigq {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-start;
+  gap: 24px;
+  padding-right: 60px;
+}
+.bigq-text {
+  font-size: 42px; line-height: 1.22;
+  font-weight: 500; color: var(--mid);
+  letter-spacing: -.018em;
+  border-left: 3px solid var(--blue);
+  padding-left: 28px;
+}
+.bigq-attr {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink);
+  padding-left: 31px;
+}
 
-/* nav */
-#nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:99}
-.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .22s ease}
-.dot.on{width:20px;border-radius:3px;background:rgba(255,255,255,.85)}
-#ctr{position:fixed;bottom:22px;right:24px;font-size:12px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.16em;z-index:99}
+@media (max-width: 768px) {
+  body { overflow-y: auto; }
+  #wrap { position: static; display: block; }
+  #deck {
+    width: 100%; height: auto;
+    position: static;
+    transform: none !important;
+    box-shadow: none;
+  }
+  .slide {
+    position: relative !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    min-height: 100dvh;
+  }
+  .cov, .sw { min-height: 100dvh; height: auto; }
+  .cov { padding: 32px 20px 36px; }
+  .cov-title { font-size: 40px; }
+  .cov-sub { font-size: 17px; }
+  .stitle { font-size: 32px; }
+  .ssub { font-size: 16px; }
+  .shd { padding: 0 20px; }
+  .sw .sc { padding: 24px 20px 32px; }
 
-/* mobile */
-@media (max-width:768px){
-  body{overflow-y:auto}
-  #wrap{position:static;display:block;background:#fff}
-  #deck{width:100%;height:auto;position:static;transform:none!important;border-radius:0}
-  .slide{position:relative!important;opacity:1!important;pointer-events:auto!important;min-height:100dvh;height:auto}
-  .cov-title{font-size:42px}
-  .stitle,.dark-title{font-size:30px}
-  .cv{padding:32px 22px}
-  .shd{padding:0 20px}
-  .sw .sc,.dark-slide .sc{padding:24px 20px}
-  .g2,.g3,.flip-row,.tabs,.fn-wrap,.ch-wrap{grid-template-columns:1fr;flex-direction:column}
-  .sc div[style*="display:flex"]{flex-direction:column!important}
-  .sc div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
-  .panel{flex:none!important;width:100%!important}
-  #nav,#ctr{display:none}
-  .pq{font-size:24px}
-  .ch-lbl{flex:0 0 auto}
-  /* flip card mobile fix */
-  .fc{perspective:none!important;min-height:auto!important;height:auto!important}
-  .fc .fc-inner{transform-style:flat!important;transition:none!important;height:auto!important;transform:none!important;position:relative}
-  .fc:hover .fc-inner,.fc.on .fc-inner{transform:none!important}
-  .fc .ff{position:relative!important;backface-visibility:visible!important;transform:none!important;inset:auto;height:auto;min-height:280px}
-  .fc .ff-back{display:none;transform:none!important}
-  .fc.on .ff-front{display:none}
-  .fc.on .ff-back{display:flex;transform:none!important}
-  .dt th,.dt td{padding:8px 10px;font-size:12px}
+  .g2, .g3, .flip-row, .tabs,
+  .stat-row, .chart-wrap, .tl-stops {
+    grid-template-columns: 1fr !important;
+    flex-direction: column !important;
+  }
+  .tl-track { display: none !important; }
+  .tbl thead th, .tbl tbody td { padding: 10px 12px; font-size: 13px; }
+  .bigq-text { font-size: 26px; padding-left: 18px; }
+  .bigq-attr { padding-left: 21px; }
+  .stat-num { font-size: 40px; }
+  .chart-row-val { font-size: 24px; }
+
+  .sc div[style*="display:flex"] { flex-direction: column !important; }
+  .sc div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+
+  .fc {
+    perspective: none !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+  .fc .fc-inner {
+    transform-style: flat !important;
+    transition: none !important;
+    height: auto !important;
+    transform: none !important;
+  }
+  .fc:hover .fc-inner,
+  .fc.on .fc-inner { transform: none !important; }
+  .fc .ff {
+    position: relative !important;
+    backface-visibility: visible !important;
+    transform: none !important;
+    min-height: 240px;
+  }
+  .fc .ff-back { display: none; transform: none !important; }
+  .fc.on .ff-front { display: none; }
+  .fc.on .ff-back { display: flex; transform: none !important; }
+
+  #nav, #ctr { display: none; }
 }
 </style>
 </head>
 <body>
 
-<svg style="display:none" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="0 0 60 25">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M59.6444 14.2813h-8.062c.1843 1.9296 1.5983 2.5476 3.2032 2.5476 1.6352 0 2.9534-.3656 4.0453-.9506v3.3179c-1.1186.7115-2.5964 1.1068-4.5645 1.1068-4.011 0-6.8218-2.5122-6.8218-7.4783 0-4.19441 2.3837-7.52509 6.3017-7.52509 3.912 0 5.9537 3.28038 5.9537 7.49819 0 .3982-.0372 1.261-.0556 1.4835Zm-5.9241-5.62407c-1.0294 0-2.1739.72812-2.1739 2.58387h4.2573c0-1.85362-1.0721-2.58387-2.0834-2.58387ZM40.9547 20.303c-1.4411 0-2.322-.6087-2.9133-1.0417l-.0088 4.6271-4.1181.8755-.0014-19.19053h3.7543l.0864 1.01784c.6035-.52914 1.6114-1.29157 3.2256-1.29162 2.8925 0 5.6162 2.6052 5.6162 7.39971 0 5.2327-2.6948 7.6037-5.6409 7.6037Zm-.959-11.35573c-.9453 0-1.5376.34559-1.9669.81586l.0245 6.11967c.3997.433.9763.7813 1.9424.7813 1.5231 0 2.5437-1.6575 2.5437-3.8745 0-2.1544-1.037-3.84233-2.5437-3.84233Zm-11.7602-3.3739h4.1341V20.0088h-4.1341V5.57337Zm0-4.694699L32.3696 0v3.35821l-4.1341.87868V.878671ZM23.9198 10.2223v9.7861h-4.1156V5.57296h3.6867l.1317 1.21751c1.0035-1.7722 3.0722-1.41321 3.6209-1.21594v3.78524c-.5242-.16908-2.2894-.42779-3.3237.86253Zm-8.5525 4.7221c0 2.4275 2.5988 1.6719 3.1263 1.4609v3.3522c-.5492.3013-1.5437.5458-2.8901.5458-2.4441 0-4.2773-1.7999-4.2773-4.2379l.0173-13.17658 4.0206-.85464.0032 3.5395h3.1278V9.0857h-3.1278v5.8588-.0001Zm-4.9069.7026c0 2.9645-2.31051 4.6562-5.73464 4.6562-1.41958 0-2.92289-.2761-4.453935-.9347v-3.9319c1.382085.7516 3.093705 1.315 4.457755 1.315.91864 0 1.53106-.2459 1.53106-1.0069C6.26064 13.7786 0 14.5192 0 9.95995 0 7.04457 2.27622 5.2998 5.61655 5.2998c1.36404 0 2.72806.20934 4.09208.75351V9.9317c-1.25265-.67618-2.84332-1.05979-4.09588-1.05979-.86296 0-1.44753.24965-1.44753.8924.0001 1.85329 6.29518.97249 6.29518 5.88279v-.0001Z"/>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 60 25" fill="currentColor">
+    <title>Stripe logo</title>
+    <path d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a8.33 8.33 0 0 1-4.56 1.1c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.04 1.26-.06 1.48zm-5.92-5.62c-1.03 0-2.17.73-2.17 2.58h4.25c0-1.85-1.07-2.58-2.08-2.58zM40.95 20.3c-1.44 0-2.32-.6-2.9-1.04l-.02 4.63-4.12.87V5.57h3.76l.08 1.02a4.7 4.7 0 0 1 3.23-1.29c2.9 0 5.62 2.6 5.62 7.4 0 5.23-2.7 7.6-5.65 7.6zM40 8.95c-.95 0-1.54.34-1.97.81l.02 6.12c.4.44.98.78 1.95.78 1.52 0 2.54-1.65 2.54-3.87 0-2.15-1.04-3.84-2.54-3.84zM28.24 5.57h4.13v14.44h-4.13V5.57zm0-4.7L32.37 0v3.36l-4.13.88V.88zm-4.32 9.35v9.79H19.8V5.57h3.7l.12 1.22c1-1.77 3.07-1.41 3.62-1.22v3.79c-.52-.17-2.29-.43-3.32.86zm-8.55 4.72c0 2.43 2.6 1.68 3.12 1.46v3.36c-.55.3-1.54.54-2.89.54a4.15 4.15 0 0 1-4.27-4.24l.01-13.17 4.02-.86v3.54h3.14V9.1h-3.13v5.85zm-4.91.7c0 2.97-2.31 4.66-5.73 4.66a11.2 11.2 0 0 1-4.46-.93v-3.93c1.38.75 3.1 1.31 4.46 1.31.92 0 1.53-.24 1.53-1C6.26 13.77 0 14.51 0 9.95 0 7.04 2.28 5.3 5.62 5.3c1.36 0 2.72.2 4.09.75v3.88a9.23 9.23 0 0 0-4.1-1.06c-.86 0-1.44.25-1.44.9 0 1.85 6.29.97 6.29 5.88z" fill-rule="evenodd"></path>
   </symbol>
 </svg>
 
 <div id="wrap">
-<div id="deck">
+  <div id="deck">
 
-<!-- 1 — Cover (Type A) -->
-<section class="slide active" data-i="1">
-  <div class="cv">
-    <div class="cov-top">
-      <div class="cov-eyebrow">Stripe Atlas · Greater China · Q2 Update</div>
-      <svg class="logo W lg" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="cov-mid">
-      <h1 class="cov-title">Atlas, in a market that still doesn't trust internet money.</h1>
-      <p class="cov-sub">What we built, what we learned, what we're asking for next.</p>
-    </div>
-    <div class="cov-meta">
-      <div class="cov-meta-l">Stripe Atlas Strategy<br>Submitted to Product Council · Q2 FY26</div>
-    </div>
-  </div>
-</section>
-
-<!-- 2 — Two-col (Type B) -->
-<section class="slide" data-i="2">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">02 / Market Fit <span class="s">Greater China</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="stitle">Where Atlas plays vs where it doesn't.</h2>
-      <p class="ssub">A clean read on the segments where the current product wins, and the segments where the gap is structural rather than incremental.</p>
-      <div class="g2">
-        <div class="panel green">
-          <div class="panel-cap">Plays well</div>
-          <div class="panel-tt">Cross-border builders, USD rails</div>
-          <ul>
-            <li class="pos"><span class="mk y">✓</span>Cross-border SaaS exporters selling to US / EU customers</li>
-            <li class="pos"><span class="mk y">✓</span>USD-denominated invoicing for international receivables</li>
-            <li class="pos"><span class="mk y">✓</span>US-incorporated Chinese founders raising offshore capital</li>
-            <li class="pos"><span class="mk y">✓</span>Marketplace platforms with non-mainland buyer bases</li>
-          </ul>
+    <!-- Slide 1 — Cover -->
+    <div class="slide active" data-slide="1">
+      <div class="cov">
+        <div class="cov-top">
+          <div class="cov-eb">Annual Letter · 2026</div>
+          <svg class="logo W" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
         </div>
-        <div class="panel red">
-          <div class="panel-cap">Doesn't play (yet)</div>
-          <div class="panel-tt">Domestic rails, RMB-first commerce</div>
-          <ul>
-            <li class="neg"><span class="mk n">−</span>Domestic Yuan settlement and onshore payouts</li>
-            <li class="neg"><span class="mk n">−</span>B2C on Alipay / WeChat Pay rails</li>
-            <li class="neg"><span class="mk n">−</span>RMB-only invoices for mainland-only operations</li>
-            <li class="neg"><span class="mk n">−</span>Mobile-first commerce inside the WeChat ecosystem</li>
-          </ul>
+        <div class="cov-body">
+          <div class="cov-title">Financial infrastructure to grow your revenue.</div>
+          <div class="cov-sub">Accept payments, offer financial services, and implement custom revenue models — from your first transaction to your billionth.</div>
         </div>
+        <div class="cov-meta">Stripe · 2026 Annual Letter to Engineers</div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- 3 — Full-width narrative (Type C) -->
-<section class="slide" data-i="3">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">03 / Diagnosis <span class="s">The Real Friction</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="stitle">The trust gap is doing more work than the integration gap.</h2>
-      <div class="absorber" style="display:flex;flex-direction:column;gap:22px;justify-content:center">
-        <p class="narrative">Technical integration to Atlas takes <em>under two hours</em> for a competent founder — the SDK is good, the docs are excellent, and the onboarding flow has been localized into Mandarin since March. The real friction is upstream of all of that: convincing a China-based founder that an offshore <em>Delaware C-corp</em> plus <em>US bank rails</em> is the right architecture for what is, today, a regional business. The integration is a one-afternoon problem. The architectural reframe is a six-month conversation, often with a co-founder, an accountant, and a parent who all need to be persuaded in turn.</p>
-        <div class="snote">Trust takes longer to build than infrastructure.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 4 — Flip cards (Type D) -->
-<section class="slide" data-i="4">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">04 / Quarter Delta <span class="s">Shipped vs Held</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="stitle">What we shipped — and what we deliberately didn't.</h2>
-      <p class="ssub">Hover or tap each card to see the line items. The held list is as deliberate as the shipped list.</p>
-      <div class="flip-row">
-        <div class="fc" onclick="this.classList.toggle('on')">
-          <div class="fc-inner">
-            <div class="ff ff-front">
-              <div class="fc-roman">I</div>
-              <div>
-                <div class="cnm">What we shipped Q2</div>
-                <div class="cbd">Four launches, all in service of cross-border builders.</div>
+    <!-- Slide 2 — Stat row -->
+    <div class="slide" data-slide="2">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">02 · Stripe at a Glance</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">Global infrastructure, single integration</div>
+          <div class="ssub">A single Stripe integration spans the same set of countries, payment methods, and currencies — whether you're a startup or a Fortune 500.</div>
+          <div class="absorb">
+            <div class="stat-row">
+              <div class="stat-card">
+                <div class="stat-rule"></div>
+                <div class="stat-label">Markets</div>
+                <div class="stat-num">47</div>
+                <div class="stat-desc">Countries where Stripe operates as the merchant of record.</div>
               </div>
-              <div class="ht">Tap to reveal →</div>
-            </div>
-            <div class="ff ff-back">
-              <div class="bkl">Shipped · Q2 FY26</div>
-              <div class="bkt">The cross-border kit</div>
-              <ul class="bk-list">
-                <li>Multi-currency invoicing — USD, EUR, GBP, SGD, HKD</li>
-                <li>China-localized onboarding flow with Mandarin copy</li>
-                <li>Mandarin developer docs for the full Atlas SDK surface</li>
-                <li>Cross-border tax templates for US / EU / SG receivables</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="fc" onclick="this.classList.toggle('on')">
-          <div class="fc-inner">
-            <div class="ff ff-front">
-              <div class="fc-roman">II</div>
-              <div>
-                <div class="cnm">What we didn't ship</div>
-                <div class="cbd">Four held items, each a bigger conversation.</div>
+              <div class="stat-card alt">
+                <div class="stat-rule"></div>
+                <div class="stat-label">Currencies</div>
+                <div class="stat-num">135</div>
+                <div class="stat-desc">Supported settlement currencies — including stablecoins.</div>
               </div>
-              <div class="ht">Tap to reveal →</div>
+              <div class="stat-card">
+                <div class="stat-rule"></div>
+                <div class="stat-label">Payment methods</div>
+                <div class="stat-num">100+</div>
+                <div class="stat-desc">From cards to local bank rails to wallets to BNPL — one API.</div>
+              </div>
+              <div class="stat-card alt">
+                <div class="stat-rule"></div>
+                <div class="stat-label">Annual volume</div>
+                <div class="stat-num">$1T+</div>
+                <div class="stat-desc">Total payment volume processed annually — hundreds of billions across business sizes.</div>
+              </div>
             </div>
-            <div class="ff ff-back">
-              <div class="bkl">Held · Q2 FY26</div>
-              <div class="bkt">Where we said "not yet"</div>
-              <ul class="bk-list">
-                <li>Domestic Yuan rails — needs PBOC posture clarity</li>
-                <li>Alipay integration — strategic, not technical, hold</li>
-                <li>In-mainland support team — hiring + visa complexity</li>
-                <li>On-shore data residency — open Council decision</li>
-              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 — Narrative + pullquote -->
+    <div class="slide" data-slide="3">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">03 · The Operating Thesis</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">One integration, the whole stack</div>
+          <div class="ssub">Stripe's bet is that the same primitives that power a startup's first transaction also power a Fortune 500's billionth — only the volume changes.</div>
+          <div class="absorb">
+            <div class="narr-col">
+              <div class="narr-body">
+                <p>Our teams are based in dozens of global offices and we process hundreds of billions of dollars each year for every size of business — from startups to Fortune 500s. The same API answers the same questions whether you're collecting your first $10 or your billionth.</p>
+                <p>Enterprises from Airbnb to Unilever optimize payments with a single integration that works across 47 countries, 75+ payment methods, and 135 currencies — including stablecoins. The single-integration promise is not a marketing line; it is the architectural decision the rest of the platform compounds against.</p>
+              </div>
+              <div class="pull">"Increase revenue and save thousands of engineering hours with prebuilt payment UIs, easy access to more than 100 payment methods, and Link, Stripe's one-click checkout."</div>
+              <div class="pull-attr">Stripe Payments product page</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- 5 — Data table (Type E) -->
-<section class="slide" data-i="5">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">05 / Funnel <span class="s">Q2 FY26</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="stitle">Atlas China funnel · Q2 FY26.</h2>
-      <p class="ssub">Movement is healthy at the top of the funnel and at the bottom. The middle is where the trust conversation lives.</p>
-      <div class="dt-wrap">
-        <table class="dt">
-          <thead>
-            <tr>
-              <th style="width:30%">Funnel stage</th>
-              <th>Q1</th>
-              <th>Q2</th>
-              <th>Δ</th>
-              <th>Conversion</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Visited landing</td><td>48,210</td><td>62,840</td><td class="pos">+30%</td><td class="neu">—</td><td class="neu">Top of funnel healthy</td></tr>
-            <tr><td>Started onboarding</td><td>9,420</td><td>13,210</td><td class="pos">+40%</td><td class="neu">21.0%</td><td class="neu">Mandarin flow lifted</td></tr>
-            <tr class="hi"><td>Verified identity</td><td>3,840</td><td>4,180</td><td class="neg">+8.9%</td><td class="neg">31.6%</td><td class="neg">Bottleneck — KYC drop</td></tr>
-            <tr><td>Funded</td><td>1,910</td><td>2,250</td><td class="pos">+18%</td><td class="neu">53.8%</td><td class="neu">Recovers post-KYC</td></tr>
-            <tr><td>Active month-1</td><td>1,420</td><td>1,780</td><td class="pos">+25%</td><td class="neu">79.1%</td><td class="pos">Stronger than US baseline</td></tr>
-            <tr><td>Active month-3</td><td>980</td><td>1,290</td><td class="pos">+32%</td><td class="neu">72.5%</td><td class="pos">Retention compounding</td></tr>
-            <tr><td>Renewed</td><td>620</td><td>910</td><td class="pos">+47%</td><td class="neu">70.5%</td><td class="pos">Strongest cohort to date</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 6 — Image-anchored / funnel diagram (Type F) -->
-<section class="slide" data-i="6">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">06 / Drop Profile <span class="s">Where The Conversion Drop Happens</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="stitle">Where the conversion drop happens.</h2>
-      <div class="fn-wrap">
-        <div class="fn-col">
-          <div class="fn-bar b1"><span class="fn-label">Visited landing</span><span class="fn-num">62,840</span></div>
-          <div class="fn-bar b2"><span class="fn-label">Started onboarding</span><span class="fn-num">13,210</span></div>
-          <div class="fn-bar b3"><span class="fn-label">Verified identity</span><span class="fn-num">4,180</span></div>
-          <div class="fn-bar b4"><span class="fn-label">Funded</span><span class="fn-num">2,250</span></div>
-          <div class="fn-bar b5"><span class="fn-label">Active month-1</span><span class="fn-num">1,780</span></div>
+    <!-- Slide 4 — G2 two-pricing -->
+    <div class="slide" data-slide="4">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">04 · Pricing Built for Every Size</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
         </div>
-        <div class="fn-side">
-          <div class="ch-tt">The KYC pinch</div>
-          <p class="fn-anno"><b>60% of total funnel loss</b> is concentrated between <em>Started onboarding</em> and <em>Verified identity</em> — the step that asks a China-based founder to upload a passport and accept a Delaware corp structure. Everything after KYC behaves like a healthy SaaS funnel; everything before it is a trust conversation we have not yet won.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 7 — Chart (Type H) -->
-<section class="slide" data-i="7">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">07 / Segment Insight <span class="s">Conversion By Builder Type</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="stitle">Cross-border SaaS exporters convert 4× better than B2C marketplaces.</h2>
-      <div class="ch-wrap">
-        <div class="ch-bars">
-          <div class="ch-row"><div class="ch-lbl">SaaS exporters</div><div class="ch-track"><div class="ch-fill" style="width:88%"></div></div><div class="ch-val">8.8%</div></div>
-          <div class="ch-row"><div class="ch-lbl">Marketplace</div><div class="ch-track"><div class="ch-fill" style="width:42%"></div></div><div class="ch-val">4.2%</div></div>
-          <div class="ch-row"><div class="ch-lbl">E-commerce</div><div class="ch-track"><div class="ch-fill" style="width:28%"></div></div><div class="ch-val">2.8%</div></div>
-          <div class="ch-row"><div class="ch-lbl">Subscription</div><div class="ch-track"><div class="ch-fill" style="width:22%"></div></div><div class="ch-val">2.2%</div></div>
-        </div>
-        <div class="ch-side">
-          <div class="ch-tt">Conversion to funded</div>
-          <p class="ch-bd"><b>Where the next 10× of revenue actually lives.</b> SaaS exporters already trust the offshore-corp model — they wrote it into their pitch deck. Pull on that thread.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 8 — Pull quote (Type J) -->
-<section class="slide" data-i="8">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">08 / Reframe <span class="s">Strategy Doc Excerpt</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <div class="pq-wrap">
-        <p class="pq">"We are not the China product. We are the path out of China for the small set of Chinese builders who already know they need to leave."</p>
-        <div class="pq-attr">— Atlas China Strategy doc, Q2 FY26</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 9 — Tabs (Type I) -->
-<section class="slide" data-i="9">
-  <div class="sw">
-    <div class="shd">
-      <div class="shd-num">09 / Pricing Tiers <span class="s">Atlas Plans</span></div>
-      <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="stitle">Pricing tiers, sized for the Greater China builder.</h2>
-      <div class="tabs">
-        <button class="tb on" data-tab="t1">Solo</button>
-        <button class="tb" data-tab="t2">Team</button>
-        <button class="tb" data-tab="t3">Scale</button>
-        <button class="tb" data-tab="t4">Enterprise</button>
-      </div>
-      <div class="tc-wrap">
-        <div class="tc on" id="t1">
-          <div class="tc-tt">Solo · single founder</div>
-          <ul class="tc-list">
-            <li>Delaware C-corp formation, EIN, US bank account included</li>
-            <li>Multi-currency invoicing across 5 currencies, no monthly fee</li>
-            <li>Mandarin onboarding + Mandarin docs, async support only</li>
-          </ul>
-          <div class="tc-take">Default for first-time founders pre-revenue.</div>
-        </div>
-        <div class="tc" id="t2">
-          <div class="tc-tt">Team · 2–10 builders</div>
-          <ul class="tc-list">
-            <li>Everything in Solo, plus shared dashboard and role permissions</li>
-            <li>Atlas Tax templates for distributed US / EU receivables</li>
-            <li>Priority queue support during HK / Beijing business hours</li>
-          </ul>
-          <div class="tc-take">For seed-stage teams shipping cross-border revenue.</div>
-        </div>
-        <div class="tc" id="t3">
-          <div class="tc-tt">Scale · 10–50 builders, $1M+ ARR</div>
-          <ul class="tc-list">
-            <li>Dedicated success manager based in Singapore time zone</li>
-            <li>Custom invoicing flows, Connect for marketplace payouts</li>
-            <li>Quarterly tax / structuring review with Atlas counsel</li>
-          </ul>
-          <div class="tc-take">Where most cross-border SaaS exporters land by Series A.</div>
-        </div>
-        <div class="tc" id="t4">
-          <div class="tc-tt">Enterprise · custom</div>
-          <ul class="tc-list">
-            <li>Bespoke entity structures, multi-jurisdiction holding companies</li>
-            <li>Direct-to-Stripe-banking line, custom treasury terms</li>
-            <li>Named legal, tax, compliance and engineering contacts</li>
-          </ul>
-          <div class="tc-take">For the handful of Chinese unicorns going fully global.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 10 — Closing dark slide (Type C variant) -->
-<section class="slide" data-i="10">
-  <div class="dark-slide">
-    <div class="shd">
-      <div class="shd-num">10 / The Ask <span class="s">Council Decisions Needed</span></div>
-      <svg class="logo W" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
-    </div>
-    <div class="sc">
-      <h2 class="dark-title">Three things we need from the Council.</h2>
-      <div class="cards-col">
-        <div class="bitem">
-          <div class="bitem-num">01</div>
-          <div class="bitem-body">
-            <div class="bitem-tt">A green light on on-shore data residency for Atlas China builders.</div>
-            <div class="bitem-ds">The KYC pinch will not move without it. Engineering scope: one quarter; legal scope: open question we cannot answer ourselves.</div>
-          </div>
-        </div>
-        <div class="bitem">
-          <div class="bitem-num">02</div>
-          <div class="bitem-body">
-            <div class="bitem-tt">Hiring approval for two Mandarin-native account managers in Singapore.</div>
-            <div class="bitem-ds">The trust conversation is not an asynchronous one. We need humans on calls in the right time zone and the right language.</div>
-          </div>
-        </div>
-        <div class="bitem">
-          <div class="bitem-num">03</div>
-          <div class="bitem-body">
-            <div class="bitem-tt">A clear "no, not now" or "yes, plan it" on Alipay integration.</div>
-            <div class="bitem-ds">We do not need a launch — we need a posture. The current ambiguity is costing us roadmap clarity in three other workstreams.</div>
+        <div class="sc">
+          <div class="stitle">Two pricing modes, one architecture</div>
+          <div class="ssub">A self-serve pay-as-you-go price for everyone, and a custom-package option for businesses with large volume or unique business models. The product is the same.</div>
+          <div class="absorb">
+            <div class="g2">
+              <div class="show-card">
+                <div class="show-cap">Standard</div>
+                <div class="show-title">Pay-as-you-go, no setup</div>
+                <div class="show-price">2.9% + 30¢</div>
+                <ul class="show-list">
+                  <li><span class="check">→</span><span>Per successful transaction for domestic cards.</span></li>
+                  <li><span class="check">→</span><span>No setup fees, no monthly fees, no hidden fees.</span></li>
+                  <li><span class="check">→</span><span>Access the complete payments platform — same API as enterprise.</span></li>
+                </ul>
+              </div>
+              <div class="show-card dark">
+                <div class="show-cap">Custom</div>
+                <div class="show-title">For large or unique volume</div>
+                <div class="show-price">IC+ pricing</div>
+                <ul class="show-list">
+                  <li><span class="check">→</span><span>Volume discounts for businesses processing at scale.</span></li>
+                  <li><span class="check">→</span><span>Multi-product discounts when stacking Payments + Connect + Billing.</span></li>
+                  <li><span class="check">→</span><span>Country-specific rates for global enterprises.</span></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="snote dark"><b>Decision needed before EU launch lock-in</b>, end of FY26 H2. After that, attention shifts and the Atlas China question gets re-opened in FY27 — twelve months we cannot afford.</div>
     </div>
-  </div>
-</section>
 
+    <!-- Slide 5 — Data table -->
+    <div class="slide" data-slide="5">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">05 · Products Across the Stack</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">Each product earns its place in the integration</div>
+          <div class="ssub">A focused product surface — every line item answers a specific operator question. Each is callable from the same API and the same Dashboard.</div>
+          <div class="absorb">
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th style="width: 22%;">Product</th>
+                    <th style="width: 42%;">What it does</th>
+                    <th style="width: 36%;">Operator question it answers</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="row-cap">Payments</span></td>
+                    <td>The core API — accept cards, wallets, bank debits, BNPL across 100+ payment methods.</td>
+                    <td><span class="accent">— How do I take money?</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="row-cap">Connect</span></td>
+                    <td>Build a marketplace or platform — onboard third-party sellers, route funds, manage payouts.</td>
+                    <td><span class="accent">— How do others get paid through me?</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="row-cap">Billing</span></td>
+                    <td>Subscriptions, usage-based pricing, invoicing — recurring revenue infrastructure.</td>
+                    <td><span class="neu">— How do I bill on a schedule?</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="row-cap">Atlas</span></td>
+                    <td>Incorporate a Delaware C-corp, get an EIN, file 83(b), open a business bank account.</td>
+                    <td><span class="pos">— How do I start a company?</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="row-cap">Climate</span></td>
+                    <td>Allocate a percentage of revenue to high-quality permanent carbon removal.</td>
+                    <td><span class="pos">— How do I fund carbon removal?</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6 — Chart -->
+    <div class="slide" data-slide="6">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">06 · Performance Signals from the Field</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">Single-integration leverage, measured at the merchant</div>
+          <div class="ssub">Customer-reported metrics from real Stripe deployments. Each line is the lift a merchant saw after consolidating onto Stripe — not a synthetic benchmark.</div>
+          <div class="absorb">
+            <div class="chart-wrap">
+              <div class="chart-bars">
+                <div class="chart-row">
+                  <div class="chart-row-label">
+                    <div class="chart-row-name">US Authorization rate</div>
+                    <div class="chart-row-val">99%</div>
+                  </div>
+                  <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 99%;"></div></div>
+                  <div class="chart-bar-meta">A reported customer auth-rate after enabling Adaptive Acceptance.</div>
+                </div>
+                <div class="chart-row">
+                  <div class="chart-row-label">
+                    <div class="chart-row-name">Conversion lift on checkout</div>
+                    <div class="chart-row-val">+11%</div>
+                  </div>
+                  <div class="chart-bar-track"><div class="chart-bar-fill lavender" style="width: 60%;"></div></div>
+                  <div class="chart-bar-meta">Reported by businesses adopting Stripe's newest checkout optimizations.</div>
+                </div>
+                <div class="chart-row">
+                  <div class="chart-row-label">
+                    <div class="chart-row-name">URBN consolidation onto Stripe</div>
+                    <div class="chart-row-val">$5B</div>
+                  </div>
+                  <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 80%;"></div></div>
+                  <div class="chart-bar-meta">Online and in-store revenue moved to a single Stripe integration.</div>
+                </div>
+              </div>
+              <aside class="chart-callout">
+                <div class="chart-callout-cap">What this means</div>
+                <div class="chart-callout-title">Single-integration leverage compounds in the merchant P&amp;L.</div>
+                <div class="chart-callout-body">Auth rate, conversion lift, and consolidated volume each look like incremental improvements on their own. Stacked through one API, they are the operator-side return on switching to Stripe's stack.</div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7 — Flip cards -->
+    <div class="slide" data-slide="7">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">07 · Where the Stack Goes Wide · Tap to Reveal</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">Two products beyond payments</div>
+          <div class="ssub">Stripe's surface area extends past the transaction. Two products that show how the platform compounds outside the core. Tap to reveal.</div>
+          <div class="absorb">
+            <div class="flip-row">
+
+              <div class="fc" onclick="this.classList.toggle('on')">
+                <div class="fc-inner">
+                  <div class="ff ff-front">
+                    <div class="ff-roman">I</div>
+                    <div class="cnm">Atlas</div>
+                    <div class="cbd">Incorporate a Delaware C-corp in a few clicks — get an EIN, issue equity, file 83(b), open a bank account.</div>
+                    <div class="ht">Tap to reveal</div>
+                  </div>
+                  <div class="ff ff-back">
+                    <div class="bkl">For founders</div>
+                    <div class="bkt">Your startup checklist, automated</div>
+                    <div class="bkbody">Atlas sets up your company using templates created in collaboration with Cooley LLP. Atlas startups get $2,500 in Stripe product credits in their first year, plus over $50,000 in discounts on tools like Mercury, Xero, and AWS — incorporated, banked, and accepting payments before the end of the day.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="fc" onclick="this.classList.toggle('on')">
+                <div class="fc-inner">
+                  <div class="ff ff-front">
+                    <div class="ff-roman">II</div>
+                    <div class="cnm">Climate</div>
+                    <div class="cbd">Allocate a percentage of your revenue to high-quality permanent carbon removal — funded directly through the Stripe API.</div>
+                    <div class="ht">Tap to reveal</div>
+                  </div>
+                  <div class="ff ff-back">
+                    <div class="bkl">For operators</div>
+                    <div class="bkt">Carbon removal as a line item</div>
+                    <div class="bkbody">Climate routes a fraction of every successful transaction to vetted permanent carbon-removal projects. The same Dashboard reports it. The same API allocates it. Removing CO₂ becomes a line item in the P&amp;L instead of a side project — and a deliberate part of the integration.</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8 — Timeline -->
+    <div class="slide" data-slide="8">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">08 · The Stack, in Order</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">Each layer compounds against the one before it</div>
+          <div class="ssub">The Stripe stack didn't ship as one release. It accreted — Payments first, then everything that depends on the same primitives. The order is the moat.</div>
+          <div class="absorb">
+            <div class="tl">
+              <div class="tl-track">
+                <span class="tl-dot" style="left: 12.5%;"></span>
+                <span class="tl-dot" style="left: 37.5%;"></span>
+                <span class="tl-dot" style="left: 62.5%;"></span>
+                <span class="tl-dot is-now" style="left: 87.5%;"></span>
+              </div>
+              <div class="tl-stops">
+                <div class="tl-stop">
+                  <div class="tl-stop-cap">Layer 01 · Core</div>
+                  <div class="tl-stop-title">Payments — accept cards, wallets, bank debits</div>
+                  <div class="tl-stop-desc">The original API — seven lines of code, one integration. Everything else hangs off the same primitive.</div>
+                </div>
+                <div class="tl-stop">
+                  <div class="tl-stop-cap">Layer 02 · Platforms</div>
+                  <div class="tl-stop-title">Connect — marketplaces and platforms</div>
+                  <div class="tl-stop-desc">Onboard third-party sellers, route funds, manage payouts. Same API surface; different operator question.</div>
+                </div>
+                <div class="tl-stop">
+                  <div class="tl-stop-cap">Layer 03 · Recurring</div>
+                  <div class="tl-stop-title">Billing — subscriptions and usage-based pricing</div>
+                  <div class="tl-stop-desc">Recurring revenue infrastructure — invoices, dunning, prorations, usage metering. Compounds on top of Payments.</div>
+                </div>
+                <div class="tl-stop is-now">
+                  <div class="tl-stop-cap">Layer 04 · Now</div>
+                  <div class="tl-stop-title">Atlas, Climate, Sigma, Issuing — the whole stack</div>
+                  <div class="tl-stop-desc">Incorporation, carbon removal, SQL on Stripe data, card issuing — every layer reuses the API surface and the Dashboard.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9 — Big quote -->
+    <div class="slide" data-slide="9">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">09 · The Reframe</div>
+          <svg class="logo L" viewBox="0 0 60 25" aria-label="Stripe"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">One sentence we keep coming back to</div>
+          <div class="ssub">Stripe's product page summarises the bet in one line — the closing reframe behind every page in this deck.</div>
+          <div class="absorb">
+            <div class="bigq">
+              <div class="bigq-text">"Financial infrastructure to grow your revenue — from your first transaction to your billionth."</div>
+              <div class="bigq-attr">Stripe Payments</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
-</div>
-
-<div id="nav"></div>
-<div id="ctr">SLIDE 1 / 10</div>
 
 <script>
-(function(){
-  var slides=document.querySelectorAll('.slide');
-  var navEl=document.getElementById('nav');
-  var ctr=document.getElementById('ctr');
-  var i=0;
-  for(var k=0;k<slides.length;k++){
-    var d=document.createElement('div');d.className='dot'+(k===0?' on':'');d.dataset.i=k;
-    d.addEventListener('click',function(e){go(parseInt(e.target.dataset.i,10))});
-    navEl.appendChild(d);
+/* Scale-to-fit — fills viewport without warping the 1280×720 canvas. ENGINEERING-DNA from DS §5. */
+(function () {
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      deck.style.transform = 'none';
+      return;
+    }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
   }
-  function go(n){
-    if(n<0)n=0;if(n>=slides.length)n=slides.length-1;
-    slides[i].classList.remove('active');
-    document.querySelectorAll('#nav .dot')[i].classList.remove('on');
-    i=n;
-    slides[i].classList.add('active');
-    document.querySelectorAll('#nav .dot')[i].classList.add('on');
-    ctr.textContent='SLIDE '+(i+1)+' / '+slides.length;
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+
+/* Slide navigation */
+(function () {
+  var slides = Array.from(document.querySelectorAll('.slide'));
+  var i = 0;
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
   }
-  document.addEventListener('keydown',function(e){
-    if(e.key==='ArrowRight'||e.key===' ')go(i+1);
-    else if(e.key==='ArrowLeft')go(i-1);
-    else if(e.key==='Home')go(0);
-    else if(e.key==='End')go(slides.length-1);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') show(i + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') show(i - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
   });
-  // touch swipe
-  var sx=null;
-  document.addEventListener('touchstart',function(e){sx=e.touches[0].clientX});
-  document.addEventListener('touchend',function(e){
-    if(sx===null)return;
-    var dx=e.changedTouches[0].clientX-sx;
-    if(Math.abs(dx)>48)go(dx<0?i+1:i-1);
-    sx=null;
-  });
-  // tabs
-  document.querySelectorAll('.tb').forEach(function(b){
-    b.addEventListener('click',function(){
-      var t=b.dataset.tab;
-      var parent=b.closest('.sc');
-      parent.querySelectorAll('.tb').forEach(function(x){x.classList.remove('on')});
-      parent.querySelectorAll('.tc').forEach(function(x){x.classList.remove('on')});
-      b.classList.add('on');
-      parent.querySelector('#'+t).classList.add('on');
-    });
-  });
-  // scale to fit
-  function fit(){
-    if(window.innerWidth<=768){document.getElementById('deck').style.transform='none';return}
-    var s=Math.min(window.innerWidth/1280,window.innerHeight/720);
-    document.getElementById('deck').style.transform='scale('+s+')';
-    document.getElementById('deck').style.transformOrigin='center center';
-  }
-  window.addEventListener('resize',fit);fit();
 })();
 </script>
+
 </body>
 </html>

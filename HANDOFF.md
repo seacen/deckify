@@ -329,6 +329,7 @@ cat skills/deckify/tests/reports/latest.md
 
 - `samples/unilever/raw-assets.json` is gitignored (132KB; regenerable from recon/ which is also gitignored). If you need to inspect it on a fresh clone, re-run Phase 1 1c+1d.
 - `embed_logo.py` does an `agent-browser open <referer>` before each fetch — if you make many calls, this opens the same page multiple times. Acceptable for now; could batch later.
+- **embed_logo.py cross-origin CDN fetches fail** (surfaced on P&G 2026-04-27). When the JSON-LD canonical logo lives on a third-party CMS CDN (e.g. Contentful's `images.ctfassets.net`), CORS headers block the script's in-page `fetch()` from the referer page. `agent-browser open <url>` works (full navigation, no CORS) but the script does an eval-fetch that fails. The script silently falls back to alt logo IDs (e.g. `apple-touch-icon.png` from the brand's own host), which is usable but skips the canonical brand asset. Fix: when the asset host differs from the referer host, navigate directly to the asset URL and extract bytes from there. Tracked as Task #17.
 - Some Unilever utility-icon SVGs got embedded into raw-assets.json (~40KB). Not a problem because LLM correctly ignores them, but the file is bigger than necessary. Future optimization: filter by viewBox at enumerate time.
 
 ---

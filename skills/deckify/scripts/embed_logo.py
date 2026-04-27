@@ -75,20 +75,33 @@ def http_get(url: str, referer: str | None = None) -> tuple[bytes, str]:
     reject anything that doesn't look like a fully-fingerprinted browser.
 
     Strategy:
-      1. agent-browser open <referer>  (so the fetch is same-origin)
-      2. agent-browser eval `fetch(url) → arrayBuffer → base64`
+      1. agent-browser open <url>  (navigate the browser AT the asset itself —
+         this handles both same-origin assets and third-party CMS CDNs like
+         Contentful / Cloudinary that block cross-origin in-page fetch via CORS)
+      2. agent-browser eval `fetch(location.href) → arrayBuffer → base64`
+         (now a same-origin fetch — no CORS issue because the page IS the asset)
       3. Decode base64 + content-type → return
+
+    Why not "navigate to referer, then cross-origin fetch the asset"?
+    Many production CMS CDNs (Contentful, Cloudinary, Akamai-fronted) set CORS
+    headers that BLOCK cross-origin in-page fetch even when the asset is
+    publicly readable. Direct navigation to the asset URL succeeds where
+    cross-origin fetch fails. Surfaced concretely on P&G's JSON-LD logo at
+    images.ctfassets.net (2026-04-27).
     """
     import subprocess, json as _json
-    if referer:
-        try:
-            subprocess.run(["agent-browser", "open", referer],
-                           capture_output=True, timeout=30, check=False)
-        except Exception:
-            pass
+    # Navigate the browser AT the asset URL itself — this is the most reliable
+    # path for both same-origin assets and third-party CMS CDNs.
+    try:
+        subprocess.run(["agent-browser", "open", url],
+                       capture_output=True, timeout=30, check=False)
+    except Exception:
+        pass
+    # `location.href` instead of the literal URL — once we've navigated to the
+    # asset, fetch(location.href) is by definition same-origin and bypasses CORS.
     js = (
         "(async () => {"
-        f"  const r = await fetch({_json.dumps(url)}, {{credentials:'include'}});"
+        "  const r = await fetch(location.href, {credentials:'include'});"
         "  if (!r.ok) throw new Error('HTTP ' + r.status);"
         "  const b = await r.arrayBuffer();"
         "  const a = new Uint8Array(b);"

@@ -436,6 +436,11 @@ Slide dominated by a table or structured data grid. Used for feature comparisons
 
 **Principles:** The table is the star — title + table + optional one-line callout below. No side panels competing for attention. If the table has 6+ columns, let it span full width.
 
+**Row-count rule** <!-- ENGINEERING-DNA — surfaced from Stripe verification overflow -->
+- 5 rows is the comfortable count at standard 14 px row-padding (cell `padding: 14px 18px`).
+- 6+ rows require either (a) tightening cell padding to `padding: 10px 16px` or (b) splitting the data across two slides. Do not let the absorber clip — the `text_layout_safe` hard check catches it.
+- If the table needs 6+ rows AND a side callout in the absorber, split. Don't pack.
+
 ### Type F — Image slide
 One or more images dominate the slide, with text anchored to a calm area. Used to show real product UI, real screenshots, or contextual photography that makes an abstract concept concrete.
 

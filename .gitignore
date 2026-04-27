@@ -23,3 +23,6 @@ samples/*/eval-output/
 .vscode/
 *.swp
 *~
+
+# Claude Code session state
+.claude/
