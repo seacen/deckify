@@ -19,18 +19,24 @@ bug. See `evals/README.md` Layer 1 fix-mapping table — the cure is in
 `scripts/*.py`, or `evals/hard_checks.py` itself, NEVER in the brand DS
 markdown alone.
 
-Usage:
+Usage (run from repo root):
     # Full Layer 1 run: audit + hard checks + emit judge instructions
-    python3 evals/run_phase_a.py
+    python3 tools/phase-a/run_phase_a.py
 
     # After the LLM has written all judge.json files, fold them in:
-    python3 evals/run_phase_a.py --aggregate-only
+    python3 tools/phase-a/run_phase_a.py --aggregate-only
 
     # Limit to a subset of brands:
-    python3 evals/run_phase_a.py --brands unilever,coca-cola
+    python3 tools/phase-a/run_phase_a.py --brands unilever,coca-cola
 
     # Skip the audit step (useful when iterating on hard_checks logic):
-    python3 evals/run_phase_a.py --skip-audit
+    python3 tools/phase-a/run_phase_a.py --skip-audit
+
+Layout:
+    This script lives at <repo>/tools/phase-a/ — it is dev tooling for
+    tuning the deckify skill, not part of the shipped skill itself.
+    The skill's runtime evaluation (Phase B) lives at
+    <repo>/skills/deckify/evals/ and is invoked separately by users.
 """
 import argparse
 import datetime
@@ -92,9 +98,12 @@ def build_sample_args(brands: list[tuple[str, str]], decks_dir: Path) -> list[st
     return out
 
 
-def run_audit(skill_dir: Path) -> int:
-    """Step 1 of Layer 1: structural audit. Fail-fast before touching brands."""
-    audit_script = skill_dir / "evals" / "audit_skill.py"
+def run_audit() -> int:
+    """Step 1 of Layer 1: structural audit. Fail-fast before touching brands.
+
+    audit_skill.py is a sibling in tools/phase-a/ (it inspects the shipped
+    skill source — it is itself dev tooling, not part of the skill)."""
+    audit_script = Path(__file__).resolve().parent / "audit_skill.py"
     print()
     print("═══════════════════════════════════════════════════════════")
     print(" Phase A step 1 — audit_skill.py (DRY + reachability)")
@@ -151,10 +160,12 @@ def aggregate(brands: list[tuple[str, str]], decks_dir: Path, out_dir: Path,
     if proc.stderr:
         sys.stderr.write(proc.stderr)
 
-    # Mirror summary.md to a stable location
+    # Mirror summary.md to a stable location for quick "what happened in
+    # the last run" lookups. The latest pointer is gitignored — see
+    # repo-root .gitignore for tests/reports/runs/ and latest-*.md.
     src = out_dir / "summary.md"
     if src.exists():
-        latest = skill_dir / "tests" / "reports" / "latest-phase-a.md"
+        latest = out_dir.parent.parent / "latest-phase-a.md"   # tests/reports/latest-phase-a.md
         latest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(src, latest)
 
@@ -176,12 +187,12 @@ def emit_judge_instructions(out_dir: Path, brands: list[tuple[str, str]]) -> Non
     print()
     print("After all judge.json are written, fold them into the scoreboard:")
     print()
-    print(f"    python3 {Path(__file__).resolve().relative_to(repo_root_from(Path(__file__)))} --aggregate-only")
+    print("    python3 tools/phase-a/run_phase_a.py --aggregate-only")
     print()
     print("Reminder — Phase A failures are SKILL SOURCE bugs:")
-    print("  See skills/deckify/evals/README.md for Layer 1 fix-mapping.")
+    print("  See TESTING.md (repo root) for the Phase A vs Phase B fix-routing model.")
     print("  Editing decks/<brand>/<brand>-PPT-Design-System.md to make a check pass")
-    print("  is a Layer 2 fix — heals one brand, lets the bug ship to all others.")
+    print("  is a Phase B-only fix — heals one brand, lets the bug ship to all others.")
     print()
 
 
@@ -197,10 +208,14 @@ def main() -> int:
                     help="Skip the audit_skill.py structural pre-check (useful when iterating on hard_checks).")
     args = ap.parse_args()
 
-    skill_dir = Path(__file__).resolve().parent.parent
-    repo = repo_root_from(Path(__file__))
+    # tools/phase-a/run_phase_a.py — climb 2 dirs up to repo root.
+    repo = Path(__file__).resolve().parent.parent.parent
+    skill_dir = repo / "skills" / "deckify"
     decks_dir = repo / "decks"
-    reports_root = skill_dir / "tests" / "reports"
+    # Phase A run output lands in tests/reports/runs/<ts>-phase-a/ at the
+    # repo root — alongside Phase B per-brand runs but distinguishable by
+    # the -phase-a suffix on the run dir name.
+    reports_root = repo / "tests" / "reports"
 
     # Filter panel by --brands if given
     brand_set = {b.strip() for b in args.brands.split(",") if b.strip()}
@@ -226,7 +241,7 @@ def main() -> int:
 
     # Step 1: structural audit (fail-fast on skill source bugs).
     if not args.aggregate_only and not args.skip_audit:
-        audit_rc = run_audit(skill_dir)
+        audit_rc = run_audit()
         if audit_rc != 0:
             print()
             print("Phase A halted — audit_skill.py reported failures.")

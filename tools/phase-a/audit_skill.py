@@ -18,7 +18,12 @@ import sys
 from pathlib import Path
 
 
-SKILL_DIR = Path(__file__).resolve().parent.parent
+# tools/phase-a/audit_skill.py — climb 2 dirs up to repo root, then descend
+# into skills/deckify/. The skill source-of-truth is the only thing this
+# script audits; the dev tooling that calls into it (this file,
+# run_phase_a.py, evals.json) doesn't audit itself.
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+SKILL_DIR = REPO_ROOT / "skills" / "deckify"
 SKILL_MD = SKILL_DIR / "SKILL.md"
 
 # What we expect to find in skills/deckify/scripts/
@@ -40,16 +45,17 @@ REFERENCES = [
     "verification-deck-spec.md",
 ]
 
-# Layer 1 / Layer 2 eval files (must always be present)
+# Files in skills/deckify/evals/ that ship with the skill — i.e. things a
+# Phase B user will run on their own brand. The Phase A dev harness
+# (run_phase_a.py, audit_skill.py, evals.json with the 5-brand panel)
+# lives at tools/phase-a/ and is intentionally NOT in this list — those
+# pieces are not part of the marketplace skill.
 EVAL_FILES = [
-    "evals/evals.json",
     "evals/trigger_evals.json",
     "evals/README.md",
-    "evals/run_phase_a.py",
     "evals/hard_checks.py",
     "evals/build_report.py",
     "evals/rubric.json",
-    "evals/audit_skill.py",
 ]
 
 # Engineering-DNA invariants that MUST be in references/ds-template.md verbatim.
