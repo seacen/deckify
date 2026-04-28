@@ -149,6 +149,91 @@ def audit_engineering_dna(r: Result) -> None:
         r.check(f"template has {label}", file_contains(tpl, needles))
 
 
+def audit_template_anchor_sync(r: Result) -> None:
+    """Cross-check ENGINEERING-DNA anchor IDs between ds-template.md (en)
+    and ds-template.zh.md. The two templates share the same engineering
+    invariants — only the prose around the anchors differs. Anchors are
+    `<!-- ENGINEERING-DNA: <id> -->` HTML comments and serve as
+    language-agnostic identifiers for hard_checks.py.
+
+    A drift between the two anchor sets is almost always a bug:
+      - Adding a chapter to one language and forgetting the other
+      - Renaming an anchor in one place
+      - The hard_checks `required_ids` list silently going stale
+
+    The exception is genuinely language-specific DNA — e.g. `cjk-fallback`
+    only makes sense in zh. Track those in LANGUAGE_SPECIFIC_ANCHORS so
+    they're whitelisted explicitly rather than masked by a loose comparison.
+    """
+    print()
+    print("── ds-template anchor sync (en ↔ zh) ──")
+    en_path = SKILL_DIR / "references" / "ds-template.md"
+    zh_path = SKILL_DIR / "references" / "ds-template.zh.md"
+    if not en_path.is_file() or not zh_path.is_file():
+        r.check("both ds-template files exist", False, "missing template")
+        return
+
+    anchor_re = re.compile(r"<!--\s*ENGINEERING-DNA:\s*([a-z0-9-]+)\s*-->")
+    en = set(anchor_re.findall(en_path.read_text(encoding="utf-8")))
+    zh = set(anchor_re.findall(zh_path.read_text(encoding="utf-8")))
+
+    # Anchors that are LEGITIMATELY only in one template. Add new entries here
+    # whenever a language-specific engineering rule is introduced (e.g. a new
+    # CJK rule that doesn't apply to en, or a Latin-only chapter for en).
+    LANGUAGE_SPECIFIC_ANCHORS: dict[str, set[str]] = {
+        "zh": {"cjk-fallback"},
+        "en": set(),
+    }
+
+    # 1. Common-core check: every anchor not in the per-language allowlist
+    #    must appear in both templates.
+    only_en = (en - zh) - LANGUAGE_SPECIFIC_ANCHORS["en"]
+    only_zh = (zh - en) - LANGUAGE_SPECIFIC_ANCHORS["zh"]
+    r.check(
+        "anchors in en template all present in zh (modulo en-only allowlist)",
+        not only_en,
+        f"only-en (drift): {sorted(only_en)}" if only_en else "",
+    )
+    r.check(
+        "anchors in zh template all present in en (modulo zh-only allowlist)",
+        not only_zh,
+        f"only-zh (drift): {sorted(only_zh)}" if only_zh else "",
+    )
+
+    # 2. Reverse-leak check: an anchor declared zh-only must NOT appear in en
+    #    (and vice versa). If it leaked in, either the allowlist is wrong or
+    #    the chapter became cross-language and should leave the allowlist.
+    zh_only_leaked_to_en = LANGUAGE_SPECIFIC_ANCHORS["zh"] & en
+    en_only_leaked_to_zh = LANGUAGE_SPECIFIC_ANCHORS["en"] & zh
+    r.check(
+        "no zh-only anchor leaked into en template",
+        not zh_only_leaked_to_en,
+        f"leaked: {sorted(zh_only_leaked_to_en)}" if zh_only_leaked_to_en else "",
+    )
+    r.check(
+        "no en-only anchor leaked into zh template",
+        not en_only_leaked_to_zh,
+        f"leaked: {sorted(en_only_leaked_to_zh)}" if en_only_leaked_to_zh else "",
+    )
+
+    # 3. hard_checks.required_ids must be a subset of the en common-core
+    #    (since en is the source-of-truth template). If hard_checks asks for
+    #    an anchor that isn't in en, it'll silently fail every brand DS.
+    hard_checks_path = SKILL_DIR / "evals" / "hard_checks.py"
+    if hard_checks_path.is_file():
+        hc_text = hard_checks_path.read_text(encoding="utf-8")
+        # Find the required_ids list block
+        m = re.search(r"required_ids\s*=\s*\[(.*?)\]", hc_text, re.DOTALL)
+        if m:
+            required_ids = set(re.findall(r'"([a-z0-9-]+)"', m.group(1)))
+            missing_in_en = required_ids - en
+            r.check(
+                "hard_checks.required_ids ⊆ en template anchors",
+                not missing_in_en,
+                f"required but not in en template: {sorted(missing_in_en)}" if missing_in_en else "",
+            )
+
+
 def audit_no_path_leakage(r: Result) -> None:
     """Scan shipped files for hardcoded user-specific or platform-specific paths.
 
@@ -205,6 +290,7 @@ def main() -> int:
     audit_references_reachability(r)
     audit_eval_files_present(r)
     audit_engineering_dna(r)
+    audit_template_anchor_sync(r)
     audit_no_path_leakage(r)
 
     print()

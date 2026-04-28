@@ -42,8 +42,25 @@ The deck generator downstream uses `brand.json` as its design brief. A timid bri
   "brand_name": "<the actual brand name as people say it>",
   "base_url": "https://<host>/",
 
+  // chosen_logo has two legal forms — pick whichever fits your evidence:
+  //
+  // Form A (default) — point at a candidate id from raw-assets.json:
+  //   "chosen_logo": { "id": "<8-char id>", "why": "..." }
+  //
+  // Form B (escape hatch) — point at an authoritative URL directly. Use this
+  // when the LLM identified a canonical asset (typically the JSON-LD
+  // Organization.logo) that enumerate_assets.py didn't surface as a discrete
+  // candidate id (e.g. it got bucketed into jsonld_logos as ListItem.image
+  // along with product photos). See "Direct-URL escape hatch" section below
+  // for full criteria.
+  //   "chosen_logo": {
+  //     "id": "<stable-name-you-chose>",     // any stable string; not looked up in raw-assets
+  //     "kind": "jsonld-logo" | "img" | "icon-link",
+  //     "url": "https://...",
+  //     "why": "..."
+  //   }
   "chosen_logo": {
-    "id": "<id of the candidate from raw-assets.logo_candidates that you pick>",
+    "id": "<id of the candidate from raw-assets.logo_candidates, OR a stable name when using direct-URL form>",
     "why": "<1-2 sentences of evidence: where you saw it, why it's the real wordmark>"
   },
 
@@ -113,6 +130,35 @@ If multiple candidates pass these tests, prefer (in order):
 7. **Footer logo, higher `maxPathDLen`** — last resort tiebreaker.
 
 If nothing passes — if every SVG is a utility icon and every img is decorative — populate `chosen_logo.id` with the best of a bad lot, **set `alt_logo_ids` to `[]`, and add a `note` field explaining the situation**. The skill's caller can then ask the user for a logo file.
+
+### Direct-URL escape hatch <!-- surfaced from Tiffany end-to-end test -->
+
+`enumerate_assets.py` aggregates JSON-LD `logo` fields into the `jsonld_logos` list, but it doesn't distinguish an `Organization.logo` from product images embedded in `ItemList`/`ListItem` blocks (which also use the `logo`/`image` schema field on big e-commerce sites). The result: on a luxury / e-commerce site (Tiffany, P&G, fashion houses) the canonical logo URL declared in JSON-LD `Organization.logo` may have *no* discrete candidate id in `raw-assets.json` — its bytes were scooped into `jsonld_logos` alongside dozens of product photos.
+
+When this happens AND the JSON-LD URL is clearly authoritative (the brand declares it in `@type: "Corporation"` or `@type: "Organization"` blocks on every page, and visually matches the rendered wordmark in `shot.png`), use the **direct-URL escape hatch** in `chosen_logo`:
+
+```jsonc
+{
+  "chosen_logo": {
+    "id": "jsonld-tiffany-logo-svg",   // any stable name — for documentation/audit only
+    "kind": "jsonld-logo",             // tells embed_logo.py which materialization path to use
+    "url": "https://www.tiffany.com/.../logo.svg",
+    "why": "Official Schema.org Organization.logo from JSON-LD on every page; vector wordmark, currentColor-flippable, matches the visible 'TIFFANY & CO.' in every shot.png header."
+  },
+  "alt_logo_ids": ["press-newsroom-logo-png", "..."]   // alt_logo_sources is encouraged here too
+}
+```
+
+**When to use the escape hatch:**
+- ✓ The site declares an `Organization.logo` URL in JSON-LD on every page, AND
+- ✓ The URL passes the visual sanity check (you can fetch it in a browser tab and see it matches the rendered wordmark), AND
+- ✓ `raw-assets.json` does NOT contain that URL as a `logo_candidates[].src` (otherwise just use the candidate id).
+
+**When NOT to use it:**
+- ✗ JSON-LD `logo` is missing, contradictory, or RGB-only PNG that won't currentColor-flip cleanly (use `alt_logo_ids` candidates instead).
+- ✗ You're tempted to invent a URL ("tiffany.com/logo.svg") not actually declared anywhere — never invent.
+
+`embed_logo.py` will quality-gate the URL the same as a candidate (SVG `<path d>` ≥ 40 chars OR `<image>` child OR raster ≥ 64×64). If it fails, swap to `alt_logo_ids` and try again — same fallback chain as Form A.
 
 ### Disambiguating wordmark glyphs vs icon silhouettes vs Lottie animations <!-- surfaced from Apple end-to-end test -->
 
