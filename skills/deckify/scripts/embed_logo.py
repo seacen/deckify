@@ -307,8 +307,16 @@ def build_embed(result: dict) -> tuple[str, str]:
         inner = re.sub(r'<style[^>]*>.*?</style>', '', inner, flags=re.IGNORECASE | re.DOTALL)
         # strip <metadata>, <defs> with linearGradient/radialGradient that pin colors
         inner = re.sub(r'<metadata[^>]*>.*?</metadata>', '', inner, flags=re.IGNORECASE | re.DOTALL)
-        # remove hardcoded fills so currentColor works (keep fill="none" — that means stroke-only)
-        inner = re.sub(r'\sfill="(?!none\b|currentColor\b)[^"]+"', '', inner, flags=re.IGNORECASE)
+        # Remove hardcoded inner fills so currentColor cascades from <symbol fill="currentColor">.
+        # IMPORTANT: this includes fill="none". A wrapper <g fill="none"> is the most common
+        # cause of an "embedded but invisible" wordmark — e.g. exporters wrap the real glyph
+        # paths inside <g fill="none" fill-rule="evenodd">. The intent is "let inner paths
+        # set their own fill", but inside our <symbol fill="currentColor"> the parent fill
+        # cascade IS the colour, and fill="none" silently zeros it out across the whole logo.
+        # If the source SVG truly was stroke-only (line icon), each path will already carry
+        # an explicit `stroke=` attribute that is unaffected by this strip; the resulting
+        # logo will still render correctly.
+        inner = re.sub(r'\sfill="(?!currentColor\b)[^"]+"', '', inner, flags=re.IGNORECASE)
         # also strip inline style="fill:..."
         inner = re.sub(r'\sstyle="[^"]*fill:[^;"]*[;"]?[^"]*"', '', inner, flags=re.IGNORECASE)
         embed = (

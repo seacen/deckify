@@ -139,7 +139,12 @@ JS_DESKTOP_MEASURE = r"""(()=>{
       textCount: sym.querySelectorAll('text').length,
       imageCount: sym.querySelectorAll('image').length,
       circleCount: sym.querySelectorAll('circle').length,
-      hasInnerFill: !!sym.querySelector('[fill]:not([fill="none"]):not([fill="currentColor"])'),
+      // ANY inner fill attribute is a violation, INCLUDING fill="none".
+      // fill="none" on a wrapper <g> silently zeroes out the entire logo because the
+      // parent <symbol fill="currentColor"> cascade gets overridden — the wordmark
+      // renders 100% invisible while every other check (path d > 40, viewBox sane,
+      // visible_on_cover via getBoundingClientRect) still says PASS. Catch it here.
+      hasInnerFill: !!sym.querySelector('[fill]:not([fill="currentColor"])'),
     };
   } else {
     out.brandSymbol = null;
@@ -511,6 +516,11 @@ def check_ds_engineering_dna(ds_md: str) -> dict:
         "inline-flex-trap",
         "flip-card-mobile",
         "pre-ship-checklist",
+        # Surfaced from Mars end-to-end test:
+        # without this anchor the DS forgets to teach the inner-fill cascade trap,
+        # and a freshly embedded wordmark can render 100% invisible while every
+        # byte-level check still says PASS.
+        "logo-inner-fill",
     ]
     missing = [i for i in required_ids if f"<!-- ENGINEERING-DNA: {i} -->" not in ds_md]
     return {"passed": len(missing) == 0, "evidence": {"missing_ids": missing, "checked": required_ids}}

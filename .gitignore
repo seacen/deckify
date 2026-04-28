@@ -26,6 +26,12 @@ samples/*/eval-output/
 .web-to-ds-workspace/
 .deckify-workspace/
 
+# skill-creator workspace — sibling to a skill dir, holds per-iteration eval
+# outputs (baseline.json, with_skill/, without_skill/, benchmark.json, etc).
+# Path convention from the skill-creator skill is `<skill-dir>-workspace/`.
+skills/*-workspace/
+*-workspace/iteration-*/
+
 # Local backups (user-managed, not part of the skill)
 decks/backup/
 

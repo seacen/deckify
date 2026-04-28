@@ -53,6 +53,8 @@ This Design System defines **hard constraints** (what you must never break) and 
 - {{PRIMARY_FONT}} typeface, no serif/display fonts {{FONT_RESTRICTION_NOTES}}
 - 12px readability floor
 - Logo on every slide
+- **Every slide content lives inside a `.sc` container** (even bespoke full-bleed Type J / Type A compositions). The `.sc` is what `fit_contract_intact` measures — bespoke layouts that draw straight into a custom shell silently bypass absorber detection, mobile catch-all, and the 602 px content budget. No `.sc`, no contract.
+- **Logo `<symbol>` must contain no inner `fill` attributes** (including `fill="none"` on wrapper `<g>` elements). Any inner fill overrides the `currentColor` cascade and renders the wordmark fully invisible — while every byte-level check still says PASS. `embed_logo.py` strips these on materialization; the `logo_renders` hard check rejects any that survive.
 - No emoji (👍🎉 etc.) — typographic symbols (✓ − ! ×) and geometric indicators are permitted
 - No decorative stock imagery
 - `.shd` header strip on content slides
@@ -194,10 +196,22 @@ The logo must be a real brand identity asset, **fully inlined** into the HTML (n
 ```html
 <svg style="display:none" aria-hidden="true">
   <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}" fill="currentColor">
-    {{LOGO_PATH_ELEMENTS}}  <!-- inner <path>/<g> carry no explicit fill, so currentColor cascades in -->
+    {{LOGO_PATH_ELEMENTS}}  <!-- inner <path>/<g> must carry NO fill attribute at all,
+                                  so currentColor cascades in. See "fill-cascade pitfall" below. -->
   </symbol>
 </svg>
 ```
+
+> ⚠️ **fill-cascade pitfall** <!-- ENGINEERING-DNA: logo-inner-fill -->
+> Many brand-site SVG exporters wrap real glyph paths inside a defaulting group:
+> `<g fill="none" fill-rule="evenodd"><g><path d="..."/></g></g>`. Pasted as-is into our
+> `<symbol fill="currentColor">`, the inner `fill="none"` **wins** over the parent
+> currentColor cascade — the wordmark renders 100% invisible while every byte-level
+> check (path-d length, viewBox, even `visible_on_cover` via getBoundingClientRect)
+> still says PASS. **Strip every inner `fill` attribute (including `fill="none"`)
+> before embedding.** `embed_logo.py` does this automatically; if you ever hand-paste
+> a logo, do it manually. The `logo_renders` hard check rejects any inner `fill` other
+> than `fill="currentColor"`.
 
 **B. PNG/JPG/WebP base64 embed** (raster fallback) — when only a raster logo is available (minimum 64×64), base64-encode it and wrap it in the same `<symbol>` via `<image href>`:
 
@@ -494,7 +508,14 @@ Multiple content views switchable via tabs. Fits more information in one slide w
 ### Type J — Quote / pullquote
 A single striking statement that anchors a narrative moment. Used for key takeaways, audience reframes, or memorable one-liners.
 
-**Structure:** Large quote text (28–36px, weight 700, `--ink`) centered or left-aligned. Optional attribution below (14px, `--mid`). Left border accent (`3px solid --accent`) or none.
+**Structure (standard):** Large quote text (28–36px, weight 700, `--ink`) centered or left-aligned. Optional attribution below (14px, `--mid`). Left border accent (`3px solid --accent`) or none.
+
+**Structure (full-bleed bespoke variant):** Some brands lean into full-bleed `--primary` slides with multi-line poster type (e.g. Mars's Five Principles page — six lines of Inter Black 900 stacked vertically with selected words tinted in `--accent` or a brand-palette colour). When you do this:
+
+1. **The composition still goes inside `.sw + .sc`.** Use `.sw` (with `background: var(--primary)` overriding the default) and a single `.sc` containing your bespoke layout. Do **not** invent a sibling shell class (`.fpwrap`, `.poster-wrap`, etc.) — bespoke shells silently bypass `fit_contract_intact` (no `.sc` = no absorber count = `bad_slides: [{absorbers: 0}]`).
+2. **Exactly one absorber** inside the `.sc` carries `flex: 1 1 0; min-height: 0; overflow: hidden` — usually the middle band that holds the big type. The header band and footer attribution are `flex: 0 0 auto`.
+3. **Cap line size by row count.** `clientH` of the absorber is `(720 − 54 header − 32 top − 32 bottom) − header_band − footer_band`. For a 5-line stack with header band ~120 px and footer band ~30 px, the absorber is ~420 px — cap each line at ≈ `floor((420 − 4×gap) / 5) ≈ 78 px`. **At 84 px × 5 lines you overflow by ~40 px.** Pick the line size from the budget; never the other way around.
+4. **No header strip (`.shd`) on full-bleed Type J.** Put logo + slide-eyebrow inline at the top of `.sc` instead.
 
 ### Type K — Timeline / roadmap
 Horizontal or vertical sequence of milestones. Used for project plans, evolution narratives, phase descriptions. Component spec in §7.12.
@@ -879,6 +900,9 @@ Before sharing a deck, verify every item.
 
 ### Brand & tokens
 - [ ] Logo on every slide (cover top-right, content `.shd` right end)
+- [ ] **Logo visibly renders on cover** — open the deck, eyeball the top-right of slide 1. A wordmark that is "embedded" but invisible is the most common failure mode (see §4 fill-cascade pitfall). `has_real_vector_path: true` alone does NOT guarantee visibility.
+- [ ] Logo `<symbol>` block contains no inner `fill` attribute (including `fill="none"` on wrapper `<g>`) — only `fill="currentColor"` is allowed
+- [ ] **Every slide content lives inside a `.sc` container** — including bespoke full-bleed Type J / Type A. No sibling shells like `.fpwrap` / `.poster-wrap` (they bypass `fit_contract_intact` silently)
 - [ ] Colours: only system tokens — no ad-hoc hex values
 - [ ] All bespoke elements built from system tokens only (§1 Constraints vs Freedom)
 - [ ] No emoji (👍🎉 etc.) — typographic symbols (✓ − ! ×) are fine
