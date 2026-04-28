@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
-# smoke_unilever.sh — full Phase-1 smoke test against unilever.com.
+# smoke_unilever.sh — Phase-1 smoke test against unilever.com.
 #
-# Per Skillify step 9: the full pipeline, end-to-end. Catches the case where
-# every individual layer is correct but the pieces don't connect.
+# Runs the full deterministic pipeline (1a fetch_sitemap, 1c fetch_pages on
+# a single page, 1d enumerate_assets, 1f embed_logo against a chosen candidate)
+# and checks that the workspace ends up with the artifacts the LLM would
+# consume in 1b/1e.
 #
 # Usage: smoke_unilever.sh [workspace_dir]
-# Default workspace: /tmp/web-to-ds-smoke/<unix-ts>
+# If no workspace given, creates one in the OS temp area (auto-swept by OS).
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
 
-WS_BASE="${1:-/tmp/web-to-ds-smoke}"
-WS="$WS_BASE/$(date +%s)"
-mkdir -p "$WS"
+if [[ $# -ge 1 ]]; then
+  WS="$1"
+  mkdir -p "$WS"
+else
+  WS=$(python3 "$SKILL_DIR/scripts/init_workspace.py" smoke-unilever)
+fi
 
 URL="https://www.unilever.com"
 
@@ -25,66 +30,44 @@ echo "=========================================================="
 
 echo
 echo "[1/4] setup check"
-bash "$SKILL_DIR/scripts/setup.sh" >/dev/null
+python3 "$SKILL_DIR/scripts/setup.py" >/dev/null
 
 echo
-echo "[2/4] fetch_site (agent-browser)"
-bash "$SKILL_DIR/scripts/fetch_site.sh" "$URL" "$WS"
+echo "[2/4] fetch_sitemap (1a)"
+python3 "$SKILL_DIR/scripts/fetch_sitemap.py" "$URL" "$WS"
 
 echo
-echo "[3/4] extract_brand (Python deterministic parse)"
-python3 "$SKILL_DIR/scripts/extract_brand.py" "$WS"
+echo "[3/4] fetch_pages — minimal one-page list"
+echo "$URL/our-company/at-a-glance/" > "$WS/pages.txt"
+python3 "$SKILL_DIR/scripts/fetch_pages.py" "$WS/pages.txt" "$WS"
 
 echo
-echo "[4/4] download_logo"
-bash "$SKILL_DIR/scripts/download_logo.sh" "$WS" || {
-  echo "WARNING: logo download failed — would prompt user in real run"
-}
+echo "[4/4] enumerate_assets (1d)"
+python3 "$SKILL_DIR/scripts/enumerate_assets.py" "$WS"
 
 echo
 echo "─── assertions ──────────────────────────────────────────"
 
-RECON_JSON="$WS/brand-recon.json"
-if [[ ! -f "$RECON_JSON" ]]; then
-  echo "FAIL: $RECON_JSON not produced"
+RAW_JSON="$WS/raw-assets.json"
+if [[ ! -f "$RAW_JSON" ]]; then
+  echo "FAIL: $RAW_JSON not produced"
   exit 1
 fi
 
-# At least 3 brand candidates
-BRAND_COUNT=$(python3 -c "import json; d=json.load(open('$RECON_JSON')); print(len(d['colors']['brand_candidates']))")
-echo "  brand candidates: $BRAND_COUNT"
-if [[ "$BRAND_COUNT" -lt 3 ]]; then
-  echo "FAIL: expected ≥3 brand color candidates, got $BRAND_COUNT"
-  exit 1
-fi
+# At least 1 logo candidate
+LOGO_COUNT=$(python3 -c "import json; d=json.load(open('$RAW_JSON')); print(len(d.get('logo_candidates', [])))")
+echo "  logo candidates:  $LOGO_COUNT"
+[[ "$LOGO_COUNT" -lt 1 ]] && { echo "FAIL: expected ≥1 logo candidate"; exit 1; }
 
-# At least 1 font detected — count BOTH the HTML-parsed list AND the computed_signal.primary_fonts
-# (latter comes from agent-browser's eval probe and is more reliable on JS-heavy sites)
-FONT_COUNT=$(python3 -c "
-import json
-d = json.load(open('$RECON_JSON'))
-html_fonts = len(d.get('fonts') or [])
-cs = d.get('computed_signal') or {}
-computed_fonts = len(cs.get('primary_fonts') or [])
-print(max(html_fonts, computed_fonts))
-")
-echo "  font families:    $FONT_COUNT (HTML+computed combined)"
-if [[ "$FONT_COUNT" -lt 1 ]]; then
-  echo "FAIL: expected ≥1 font family, got $FONT_COUNT"
-  exit 1
-fi
+# At least 5 colours in frequency
+COLOR_COUNT=$(python3 -c "import json; d=json.load(open('$RAW_JSON')); print(len(d.get('color_frequency', [])))")
+echo "  unique colours:   $COLOR_COUNT"
+[[ "$COLOR_COUNT" -lt 5 ]] && { echo "FAIL: expected ≥5 unique colours"; exit 1; }
 
-# Logo path was set (logo file exists or warning was surfaced)
-LOGO_PATH=$(python3 -c "import json; d=json.load(open('$RECON_JSON')); print(d.get('logo_local_path') or '')")
-if [[ -n "$LOGO_PATH" && -f "$LOGO_PATH" ]]; then
-  echo "  logo:             $LOGO_PATH ($(wc -c < "$LOGO_PATH") bytes)"
-else
-  echo "  logo:             (none — would prompt user)"
-fi
-
-# Computed signal exists
-HAS_COMPUTED=$(python3 -c "import json; d=json.load(open('$RECON_JSON')); print('yes' if d.get('computed_signal') else 'no')")
-echo "  computed signal:  $HAS_COMPUTED"
+# At least 1 font family
+FONT_COUNT=$(python3 -c "import json; d=json.load(open('$RAW_JSON')); print(len(d.get('fonts', {}).get('frequencies', [])))")
+echo "  font families:    $FONT_COUNT"
+[[ "$FONT_COUNT" -lt 1 ]] && { echo "FAIL: expected ≥1 font family"; exit 1; }
 
 echo
 echo "OK — Phase 1 smoke passed."

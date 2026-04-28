@@ -1,0 +1,75 @@
+{
+  "host": "www.unilever.com",
+  "brand_name": "Unilever",
+  "base_url": "https://www.unilever.com/",
+
+  "chosen_logo": {
+    "id": "0bee9521",
+    "why": "uco-c-header__logo-image — official self-hosted SVG at /core-assets/logos/logo-wordmark.svg, alt='Unilever logo - go to home'. Sits in <header> on every fetched page. SVG vector means clean currentColor flip between white-on-blue (cover) and brand-blue-on-paper (content). The signature flowing handwritten 'Unilever' wordmark Wolff Olins designed in 2004."
+  },
+  "alt_logo_ids": ["18d7d7e7", "34256f6a"],
+
+  "palette": {
+    "brand_primary":   { "hex": "#0066CC", "name": "--primary",   "evidence": "Sky blue — appears 26× in CSS, h2/h3 color, button-bg-color → var(--color-brand-sky). Also the visible header gradient base in screenshots. Per the root_vars system this maps to --color-brand-sky." },
+    "brand_secondary": { "hex": "#004D99", "name": "--accent",    "evidence": "Sky-dark — `<a>` background rgb(0,77,153) seen across all 6 sampled pages; --button-hover-bg-color resolves to --color-brand-skydark. Used for hover states / link surfaces / deep-blue accents." },
+    "ink":             { "hex": "#4D4B46", "name": "--ink",       "evidence": "Body text rgb(77,75,70) on every fetched page — Unilever's signature warm-graphite ink, NOT pure black. 'Stone'-named in their root_vars as --color-brand-stone." },
+    "paper":           { "hex": "#F6F7F0", "name": "--surface",   "evidence": "Computed body bg rgb(246,247,240) on every page — soft cream-tinted paper, --color-brand-cloud. Distinctive warm off-white that gives Unilever its editorial-organic feel (NOT a SaaS pure-white)." },
+    "accents": [
+      { "hex": "#E2A300", "name": "--gold",      "evidence": "Sustainability hero / award accents — from root_vars --color-brand-magma family adjacent. Warm gold pairs with the cream paper and reinforces 'sustainability gravitas' mood." },
+      { "hex": "#7BBFB0", "name": "--aquamid",   "evidence": "Listicle keyline / dot color → --color-brand-aquamid. Soft eco-aqua used as separator / row accent across long-form content." },
+      { "hex": "#C8E0E5", "name": "--cloudblue", "evidence": "Light atmospheric tint pairing with sky — used as form-input bg via --color-brand-cloud variant. Soft surface accent for callouts." },
+      { "hex": "#FFFFFF", "name": "--white",     "evidence": "Pure white — used as inverse paper on the blue cover (logo flip target) and on dark-hero overlays." }
+    ],
+    "neutrals": [
+      { "hex": "#D7D7D7", "name": "--rule",      "evidence": "Hairline grey — appears 30× in CSS, used for dividers / disabled states / form borders." },
+      { "hex": "#696969", "name": "--mid",       "evidence": "Mid-grey for muted secondary text — 24× in CSS." }
+    ]
+  },
+
+  "typography": {
+    "display_font": {
+      "family": "UnileverDesire",
+      "evidence": "h1/h2/h3 computed font-family across all 6 pages: 'UnileverDesire, Century Gothic, AppleGothic, system-ui...' UnileverDesire is the proprietary Wolff Olins-designed face — appears 62× in fonts.frequencies. NOT licensable for standalone slide decks; need fallback discussion in Phase 2."
+    },
+    "body_font": {
+      "family": "UnileverDesire",
+      "evidence": "Same fallback chain on body — Unilever uses ONE family across display + body. The chain falls back to Century Gothic (geometric humanist sans) which is the right register fallback if UnileverDesire isn't available."
+    }
+  },
+
+  "spacing_radius_shadow": {
+    "radius_style": "split — sharp 0px on most surfaces, full pill (26px nav, 32px CTA half-pill) on interactive controls",
+    "shadow_style": "flat — no box-shadow on top-level chrome anywhere",
+    "spacing_density": "comfortable",
+    "evidence": "Computed body / h1 / h2 radius all 0px; nav radius 26px (full pill); CTA radius '0px 32px 32px 0px' (asymmetric half-pill — Unilever's signature shape). Shadow 'none' on every surface."
+  },
+
+  "aesthetic": {
+    "mood": "editorial sustainability gravitas",
+    "style_keywords": [
+      "humanist wordmark as the brand",
+      "warm off-white cream paper",
+      "single-chord sky blue",
+      "warm-graphite ink (not black)",
+      "asymmetric pill CTA",
+      "magazine-spread breathing room",
+      "sustainability-led visual language"
+    ],
+    "precedents": [
+      "Patagonia annual reports — long-form sustainability narrative + warm paper + earthy organic palette",
+      "FT Weekend Magazine — editorial register, generous whitespace, warm not stark",
+      "old IBM brochures — flowing custom wordmark + corporate confidence + asymmetric layout"
+    ],
+    "voice_register": "corporate but humanist; sustainability-led, evidence-heavy; the wordmark and the paper carry the warmth; statements are confident not slick"
+  },
+
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/our-company/shot.png",
+    "recon/pages/our-company-at-a-glance/shot.png",
+    "recon/pages/our-company-our-leadership/shot.png",
+    "recon/pages/brands/shot.png",
+    "recon/pages/sustainability/shot.png",
+    "recon/pages/news/shot.png"
+  ]
+}

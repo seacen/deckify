@@ -52,4 +52,4 @@ https://www.example.com/press
 https://www.example.com/case-studies
 ```
 
-After writing it, run `bash scripts/fetch_pages.sh $WS/pages.txt $WS` to pull all the pages.
+After writing it, run `python3 scripts/fetch_pages.py $WS/pages.txt $WS` to pull all the pages.

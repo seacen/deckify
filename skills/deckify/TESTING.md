@@ -33,11 +33,13 @@ The contract names the skill (`deckify`), declares its `dependencies` (agent-bro
 
 ## 2. Deterministic code — scripts/
 
-**Files:**
-- [`scripts/setup.sh`](scripts/setup.sh) — dependency check + guided install for agent-browser
-- [`scripts/fetch_site.sh`](scripts/fetch_site.sh) — drives agent-browser CLI to capture DOM, screenshots, and computed-style probe
-- [`scripts/extract_brand.py`](scripts/extract_brand.py) — pure-stdlib parser that turns recon files into `brand-recon.json`
-- [`scripts/download_logo.sh`](scripts/download_logo.sh) — best-effort logo file extraction with curl fallback chain
+**Files (all cross-platform Python — no bash dependency):**
+- [`scripts/setup.py`](scripts/setup.py) — dependency check + guided install for agent-browser
+- [`scripts/init_workspace.py`](scripts/init_workspace.py) — creates a per-run workspace in the OS temp dir
+- [`scripts/fetch_sitemap.py`](scripts/fetch_sitemap.py) — Phase 1a: home page + sitemap + nav-links + JSON-LD
+- [`scripts/fetch_pages.py`](scripts/fetch_pages.py) — Phase 1c: batch-fetch chosen URL list with full per-page probes
+- [`scripts/enumerate_assets.py`](scripts/enumerate_assets.py) — Phase 1d: aggregate all probes into `raw-assets.json`
+- [`scripts/embed_logo.py`](scripts/embed_logo.py) — Phase 1f: download + quality-gate + base64-embed the chosen logo
 
 **Why these are deterministic** (per the article: "deterministic work happens in deterministic space"):
 - Same URL → same `index.html` (modulo the live page changing)
@@ -48,47 +50,22 @@ The latent layer (Phase 2 mood synthesis, Phase 3 prose for the philosophy parag
 
 ---
 
-## 3. Unit tests — Python (stdlib `unittest`)
-
-**File:** [`tests/test_extract_brand.py`](tests/test_extract_brand.py)
-
-Vitest is JS-only; this skill's deterministic code is Python and Bash, so unit tests are stdlib `unittest`. Run:
-
-```bash
-python3 -m unittest tests.test_extract_brand -v
-```
-
-What's covered:
-- `_normalize_hex` round-trips 3-char and 6-char hex
-- `_rgb_to_hex` clamps and converts
-- `_is_neutral` flags whites, blacks, and pure grays correctly
-- `_clean_family` strips quotes and skips generic CSS keywords
-- `extract_colors` produces frequency-correct counts on fixture HTML
-- `parse_meta` extracts title, og:image, favicon, header inline SVG
-- `rank_logo_candidates` orders inline-svg before favicon before path-guess
-- `merge_computed_signal` promotes `:root` color vars to `root_color_vars`
-- `_color_str_to_hex` handles `rgb()`, `#abc`, `#aabbcc`
-
-Fixture data lives in `tests/fixtures/` — synthetic HTML files representing common brand-site shapes (CSS-variable site, monolithic-CSS site, image-heavy site).
-
-The kinds of bugs these catch (per the article): "parseEventLine silently drops events with Unicode characters in the location field" — equivalent here would be `extract_colors` silently dropping rgba() values, `parse_meta` failing on broken HTML, `_is_neutral` mis-classifying a brand color as gray.
-
----
-
-## 4. Integration tests — live endpoints
+## 3. Integration tests — live endpoints
 
 **File:** [`tests/test_integration.sh`](tests/test_integration.sh)
 
-These do hit the live web. Run only when you've actually changed `fetch_site.sh` or `extract_brand.py`'s real-world contract.
+These hit the live web. Run when you've changed any Phase 1 script (`fetch_sitemap.py` / `fetch_pages.py` / `enumerate_assets.py` / `embed_logo.py`).
 
 ```bash
 bash tests/test_integration.sh
 ```
 
-Tests:
-- Run the full Phase 1 pipeline on `https://stripe.com` → assert `brand-recon.json` has at least 3 brand candidates and a logo file
-- Run on `https://apple.com` → assert at least 1 logo candidate succeeded
-- Run on `https://www.unilever.com` → assert the `:root` custom-property surface is non-empty (a real corporate site exposes a token system)
+Tests, for each of `stripe.com` / `apple.com` / `github.com`:
+- `init_workspace.py` creates a fresh OS-tempdir workspace
+- `fetch_sitemap.py` produces `recon/{home.html, home.png, nav-links.json, sitemap-urls.txt, jsonld.json}`
+- `fetch_pages.py` produces `recon/pages/<slug>/{dom.html, shot.png, probe.json}`
+- `enumerate_assets.py` produces `raw-assets.json`
+- Asserts: ≥1 logo candidate, ≥5 unique colours, ≥1 font family
 
 Integration tests catch the "real data has malformed event lines" bugs — e.g., a brand site that returns 403 to non-real-browser User-Agents (caught by agent-browser, missed by curl).
 
@@ -109,7 +86,7 @@ Sample assertions (shape — full list in `evals/evals.json`):
 - `output_has_12px_floor`: contains "12 px" or "12px" floor in the typography section
 - `output_no_ad_hoc_hex`: § 7 / § 12 contain `var(--` references and not raw `#` hex literals
 - `output_has_mobile_375_check`: pre-ship checklist contains "375px" (mobile verification)
-- `process_called_extract_brand`: agent transcript shows it ran `python3 scripts/extract_brand.py`
+- `process_called_enumerate_assets`: agent transcript shows it ran `python3 scripts/enumerate_assets.py`
 - `process_called_ask_user_question`: agent invoked `AskUserQuestion` at least once before generation
 - `output_unilever_palette_match` (a real corporate site-only): generated `--primary` is within ΔE < 10 of `#07005A`
 
@@ -196,16 +173,18 @@ This step has two flavors:
 The full pipeline, end-to-end, against unilever.com (the canonical reference brand for this skill). Run:
 
 ```bash
-bash tests/smoke_unilever.sh /tmp/web-to-ds-smoke
+bash tests/smoke_unilever.sh    # workspace auto-created in OS tempdir
+# or pass an explicit dir:
+bash tests/smoke_unilever.sh /path/to/scratch
 ```
 
 Steps:
 1. Run `setup.sh` (verifies deps)
-2. Run `fetch_site.sh https://www.unilever.com /tmp/web-to-ds-smoke/<ts>`
-3. Run `extract_brand.py /tmp/web-to-ds-smoke/<ts>`
-4. Run `download_logo.sh /tmp/web-to-ds-smoke/<ts>`
-5. Assert: `brand-recon.json` exists, has ≥ 3 brand candidates, has at least 1 successful logo
-6. Print a summary of what would feed into Phase 2 (the latent half — not part of this smoke; that's covered by the LLM evals in step 5)
+2. Run `fetch_sitemap.sh https://www.unilever.com $WS`
+3. Write a 1-line `pages.txt` then run `fetch_pages.sh`
+4. Run `enumerate_assets.py $WS`
+5. Assert: `raw-assets.json` exists, has ≥ 1 logo candidate, ≥ 5 unique colours, ≥ 1 font family
+6. Print where the workspace lives (OS tempdir; auto-swept by the OS)
 
 If the smoke breaks, the LLM evals will all fail too, and the cause is in the deterministic layer.
 
@@ -238,7 +217,7 @@ The output Design System file goes to a deterministic, predictable location:
 
 - **Default:** `./{{BRAND_SLUG}}-PPT-Design-System.md` in the current working directory
 - **Logo:** `./{{BRAND_SLUG}}-PPT-Design-System-assets/logo.svg` (sibling directory)
-- **Session workspace** (recon files, intermediate JSONs, screenshots): `./.web-to-ds-workspace/<timestamp>/` (gitignored by default)
+- **Session workspace** (recon DOM dumps, intermediate JSONs, screenshots): created via `scripts/init_workspace.py` inside the OS temp dir (`/var/folders/.../T/deckify-<slug>-<rand>/` on macOS, `%TEMP%\deckify-<slug>-<rand>\` on Windows, `/tmp/deckify-<slug>-<rand>/` on Linux). The OS sweeps these on its own schedule; Phase 6 copies the durable artifacts (brand.json, decisions.json, pages.txt, assets/) out into `decks/<brand>/source/` before the workspace is gone.
 
 Why this matters: a future invocation of the skill against the same brand should *not* silently overwrite the prior DS file. Phase 3 must check for an existing `{{BRAND_SLUG}}-PPT-Design-System.md` and ask the user before overwriting.
 

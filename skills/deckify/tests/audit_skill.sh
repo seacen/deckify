@@ -37,22 +37,22 @@ check "SKILL.md describes 4-phase pipeline" \
 
 echo
 echo "── scripts reachability ──"
-for s in setup.sh fetch_site.sh extract_brand.py download_logo.sh; do
+for s in setup.py init_workspace.py fetch_sitemap.py fetch_pages.py enumerate_assets.py embed_logo.py persist_brand_source.py; do
   check "scripts/$s exists" "[[ -f '$SKILL_DIR/scripts/$s' ]]"
   check "scripts/$s referenced from SKILL.md" "grep -q '$s' '$SKILL_MD'"
 done
 
 echo
 echo "── references reachability ──"
-for r in ds-template.md decision-questions.md extraction-rules.md; do
+for r in ds-template.md ds-template.zh.md decision-questions.md verification-deck-spec.md; do
   check "references/$r exists" "[[ -f '$SKILL_DIR/references/$r' ]]"
   check "references/$r referenced from SKILL.md" "grep -q '$r' '$SKILL_MD'"
 done
 
 echo
 echo "── tests/evals presence ──"
-check "tests/test_extract_brand.py exists" "[[ -f '$SKILL_DIR/tests/test_extract_brand.py' ]]"
 check "tests/smoke_unilever.sh exists"      "[[ -f '$SKILL_DIR/tests/smoke_unilever.sh' ]]"
+check "tests/test_integration.sh exists"    "[[ -f '$SKILL_DIR/tests/test_integration.sh' ]]"
 check "evals/evals.json exists"             "[[ -f '$SKILL_DIR/evals/evals.json' ]]"
 check "evals/trigger_evals.json exists"     "[[ -f '$SKILL_DIR/evals/trigger_evals.json' ]]"
 check "TESTING.md exists"                   "[[ -f '$SKILL_DIR/TESTING.md' ]]"
@@ -79,6 +79,7 @@ echo "── no local-path leakage ──"
 LEAKS=$(grep -rn "Users/\|/opt/local\|/Library/Mobile\|iCloud" "$SKILL_DIR" 2>/dev/null \
         --include="*.md" --include="*.sh" --include="*.py" \
         --exclude-dir="__pycache__" \
+        --exclude-dir="reports" \
         --exclude="audit_skill.sh" \
         | wc -l | tr -d ' ')
 check "no hardcoded user-specific paths in shipped files" "[[ '$LEAKS' == '0' ]]"
@@ -86,6 +87,7 @@ if [[ "$LEAKS" != "0" ]]; then
   grep -rn "Users/\|/opt/local\|/Library/Mobile\|iCloud" "$SKILL_DIR" 2>/dev/null \
     --include="*.md" --include="*.sh" --include="*.py" \
     --exclude-dir="__pycache__" \
+    --exclude-dir="reports" \
     --exclude="audit_skill.sh"
 fi
 

@@ -22,10 +22,10 @@ Give it a URL. It will:
 
 # 2. Run the dependency setup once per machine — it walks you through installing
 #    agent-browser via your preferred package manager.
-bash scripts/setup.sh
+python3 scripts/setup.py
 ```
 
-`setup.sh` will:
+`setup.py` will:
 - Check `python3` is available
 - Check `agent-browser` is installed (and Chrome is set up via `agent-browser install`)
 - If anything is missing, print the recommended install command for your platform (npm / brew / cargo) and link to https://github.com/vercel-labs/agent-browser
@@ -43,14 +43,14 @@ The skill triggers on any request that names a URL + slides/decks/design-system/
 ## Tests
 
 ```bash
-# Unit tests (Python stdlib unittest, ~5ms total)
-python3 -m unittest tests.test_extract_brand -v
-
 # Reachability + DRY audit (no network)
 bash tests/audit_skill.sh
 
 # Full Phase 1 smoke against unilever.com (live web)
 bash tests/smoke_unilever.sh
+
+# 3-brand integration test (live web — stripe / apple / github)
+bash tests/test_integration.sh
 
 # LLM evals (run via skill-creator's run_loop.py — see TESTING.md)
 ```
@@ -65,18 +65,23 @@ deckify/
 ├── README.md                         # This file
 ├── TESTING.md                        # Skillify 10-step mapping for this skill
 ├── references/
-│   ├── ds-template.md                # The DS template — brand placeholders + engineering DNA
+│   ├── ds-template.md                # English DS template — brand placeholders + engineering DNA
+│   ├── ds-template.zh.md             # Chinese sister template (CJK fallback chain, etc.)
 │   ├── decision-questions.md         # Phase 2 user-confirmation checklist
-│   └── extraction-rules.md           # Fallback heuristics when scripts miss
-├── scripts/
-│   ├── setup.sh                      # Dependency check + install guide
-│   ├── fetch_site.sh                 # agent-browser → DOM + screenshots + computed.json
-│   ├── extract_brand.py              # Stdlib Python: parse to brand-recon.json
-│   └── download_logo.sh              # Logo file extractor (curl + inline SVG)
+│   ├── verification-deck-spec.md     # Phase 4 contract: 8 required slide types + fail-mapping table
+│   └── llm-prompts/                  # Per-step prompts for the LLM half (discover-pages, synthesize-brand)
+├── scripts/                          # All cross-platform Python (no bash dependency)
+│   ├── setup.py                      # Dependency check + install guide
+│   ├── init_workspace.py             # Create per-run workspace in OS tempdir
+│   ├── fetch_sitemap.py              # 1a: home page + sitemap + nav-links + JSON-LD
+│   ├── fetch_pages.py                # 1c: batch-fetch chosen URLs (DOM + screenshot + probe)
+│   ├── enumerate_assets.py           # 1d: aggregate probes → raw-assets.json
+│   ├── embed_logo.py                 # 1f: download + quality-gate + base64-embed logo
+│   └── persist_brand_source.py       # 6a: copy durable artifacts out of tempdir into decks/<brand>/source/
 ├── tests/
-│   ├── test_extract_brand.py         # 31 unit tests, stdlib only
 │   ├── audit_skill.sh                # DRY + reachability audit
-│   └── smoke_unilever.sh             # End-to-end Phase 1 smoke
+│   ├── smoke_unilever.sh             # End-to-end Phase 1 smoke (live)
+│   └── test_integration.sh           # 3-brand integration test (live)
 ├── evals/
 │   ├── evals.json                    # 4 LLM eval cases (varied brand archetypes + a deliverable end-to-end test)
 │   └── trigger_evals.json            # 20 trigger queries for description optimization
@@ -92,10 +97,9 @@ The point is: this skill could not have been written without first making a real
 ## Contributing / extending
 
 If a new brand site breaks something:
-1. Add a failing trigger / output assertion to `evals/`.
-2. Add a fallback heuristic to `references/extraction-rules.md`.
-3. If the bug is in the parser, add a unit test in `tests/test_extract_brand.py` that fails for the bad input.
-4. Fix the code so the new test passes.
-5. Re-run `bash tests/audit_skill.sh` before sharing.
+1. Add a failing case to `evals/` (assertions on the trigger description and / or the output DS).
+2. If the bug is in deterministic logic (Phase 1 scripts, hard-checks), add a hard-check rule in `evals/hard_checks.py` and reproduce locally.
+3. If the bug is in latent judgment (LLM picks wrong logo / palette / mood), tighten the corresponding prompt in `references/llm-prompts/`.
+4. Re-run `bash tests/audit_skill.sh` + `bash tests/smoke_unilever.sh` before sharing.
 
 That's the loop. Same one Garry's article describes.
