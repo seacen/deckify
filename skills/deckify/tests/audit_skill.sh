@@ -55,7 +55,8 @@ check "tests/smoke_unilever.sh exists"      "[[ -f '$SKILL_DIR/tests/smoke_unile
 check "tests/test_integration.sh exists"    "[[ -f '$SKILL_DIR/tests/test_integration.sh' ]]"
 check "evals/evals.json exists"             "[[ -f '$SKILL_DIR/evals/evals.json' ]]"
 check "evals/trigger_evals.json exists"     "[[ -f '$SKILL_DIR/evals/trigger_evals.json' ]]"
-check "TESTING.md exists"                   "[[ -f '$SKILL_DIR/TESTING.md' ]]"
+check "evals/README.md exists"              "[[ -f '$SKILL_DIR/evals/README.md' ]]"
+check "evals/run_phase_a.py exists"         "[[ -f '$SKILL_DIR/evals/run_phase_a.py' ]]"
 
 echo
 echo "── ENGINEERING-DNA bake-in (template invariants) ──"

@@ -2,7 +2,7 @@
 
 You are running the `deckify` skill. Phase 1c (`enumerate_assets.py`) has produced `$WS/raw-assets.json`, an exhaustive enumeration of every brand-asset candidate scraped from all fetched pages. Each candidate has a stable `id`. Phase 1b also saved screenshots at `$WS/recon/pages/<slug>/shot.png`.
 
-Your job: read `raw-assets.json`, **look at the screenshots with the Read tool** (vision), and produce `$WS/brand.json` — a synthesized, opinionated brand profile that the deck generator can use directly.
+Your job: read `raw-assets.json`, **look at the screenshots with your host's image-viewing capability** (the `Read` tool in Claude Code, equivalents in Codex / OpenClaw, or your own image loader if scripted), and produce `$WS/brand.json` — a synthesized, opinionated brand profile that the deck generator can use directly.
 
 You are choosing real things from real evidence. You are not allowed to invent.
 
