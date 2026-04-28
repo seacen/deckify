@@ -1,0 +1,29 @@
+{
+  "chosen": {
+    "id": "0bee9521",
+    "kind": "img",
+    "page": "brands",
+    "region": "header",
+    "src": "https://www.unilever.com/core-assets/logos/logo-wordmark.svg",
+    "alt": "Unilever logo - go to homepage",
+    "width": 185,
+    "height": 40,
+    "classNames": "uco-c-header__logo-image"
+  },
+  "result": {
+    "ok": true,
+    "format": "svg",
+    "path": ".web-to-ds-workspace/1777340806-unilever-e2e/assets/logo.svg",
+    "evidence": {
+      "paths": 2,
+      "max_d_len": 2833,
+      "has_inner_image": false,
+      "has_text": false,
+      "dims": [
+        180.0,
+        39.0
+      ]
+    },
+    "url": "https://www.unilever.com/core-assets/logos/logo-wordmark.svg"
+  }
+}

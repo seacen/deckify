@@ -363,6 +363,35 @@ def check_text_layout_safe(measurements: dict) -> dict:
     }
 
 
+def _decisions_candidates(ds_path: Path) -> list[Path]:
+    """Resolve where the brand's decisions.json might live, by relative path only.
+
+    Order (first match wins):
+      1. Sibling of the DS file:        decks/<brand>/decisions.json
+      2. New persisted location:        decks/<brand>/source/decisions.json
+      3. Legacy samples/ baseline:      <repo-root>/samples/<brand>/decisions.json
+
+    Repo root is inferred by walking up from the DS file looking for a `decks/`
+    sibling. We never hardcode a fixed user path — this works for any repo
+    layout (project, marketplace install, isolated test).
+    """
+    brand = ds_path.stem.replace("-PPT-Design-System", "")
+    cands: list[Path] = [
+        ds_path.parent / "decisions.json",
+        ds_path.parent / "source" / "decisions.json",
+    ]
+    # Walk up from the DS to find a `samples/` directory next to a `decks/` (repo root marker)
+    p = ds_path.parent
+    for _ in range(6):
+        p = p.parent
+        if p == p.parent:  # filesystem root
+            break
+        if (p / "decks").is_dir():
+            cands.append(p / "samples" / brand / "decisions.json")
+            break
+    return cands
+
+
 def check_language_consistency(ds_md: str, ds_path: Path) -> dict:
     """
     Verify the DS prose is in the language declared by decisions.json.
@@ -379,20 +408,7 @@ def check_language_consistency(ds_md: str, ds_path: Path) -> dict:
     got English DS with translated headings only" failure mode surfaced on
     Coca-Cola.
     """
-    # Find decisions.json — try common locations
-    candidates = [
-        ds_path.parent / "decisions.json",
-        ds_path.parent.parent / "samples" / ds_path.parent.name / "decisions.json",
-    ]
-    # Walk up to find samples/<brand>/decisions.json
-    p = ds_path
-    for _ in range(5):
-        p = p.parent
-        candidate = p / "samples" / ds_path.stem.replace("-PPT-Design-System", "") / "decisions.json"
-        if candidate.exists():
-            candidates.append(candidate)
-            break
-
+    candidates = _decisions_candidates(ds_path)
     decisions = None
     decisions_path = None
     for c in candidates:
@@ -545,13 +561,8 @@ def check_cjk_font_quality(ds_path: Path, desktop: dict, deck_path: Path = None)
     Failure routes the agent to DS §3 'CJK 字体回退链' chapter. The fix is in the DS
     (and propagated into the deck's body font-family rule), not in the deck alone.
     """
-    # Locate decisions.json near the DS file (sibling samples/<brand>/decisions.json or workspace)
     decisions = None
-    for cand in [
-        ds_path.parent / "decisions.json",
-        ds_path.parent.parent / "samples" / ds_path.stem.replace("-PPT-Design-System", "") / "decisions.json",
-        Path("/Users/seacen/Development/Projects/deckify/samples") / ds_path.stem.replace("-PPT-Design-System", "") / "decisions.json",
-    ]:
+    for cand in _decisions_candidates(ds_path):
         if cand.exists():
             try:
                 decisions = json.loads(cand.read_text())

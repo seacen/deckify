@@ -7,9 +7,8 @@ This is the runnable test plan. Each step has a command, an exit criterion, and 
 | # | Layer | Command | Pass criterion | Artifact |
 |---|---|---|---|---|
 | 1 | Reachability + DRY audit | `bash tests/audit_skill.sh` | `audit passed.` exit 0 | stdout |
-| 2 | Unit tests (Python stdlib) | `python3 -m unittest tests.test_extract_brand` | `OK`, all tests pass | stdout |
-| 3 | Integration (live) | `bash tests/test_integration.sh` | All 3 brands produce ≥3 brand candidates and a logo path | `tmp/integ-<brand>/brand-recon.json` |
-| 4 | Phase-1 smoke (deterministic) | `bash tests/smoke_unilever.sh` | `OK — Phase 1 smoke passed.` | `/tmp/web-to-ds-smoke/<ts>/brand-recon.json` |
+| 2 | Integration (live) | `bash tests/test_integration.sh` | All 3 brands produce ≥1 logo candidate, ≥5 colours, ≥1 font in `raw-assets.json` | `<os-tempdir>/deckify-integ-<brand>-<rand>/raw-assets.json` |
+| 4 | Phase-1 smoke (deterministic) | `bash tests/smoke_unilever.sh` | `OK — Phase 1 smoke passed.` | `<os-temp>/deckify-smoke-unilever-<rand>/raw-assets.json` |
 | 5 | Trigger evals (description matches intent) | `bash tests/run_trigger_evals.sh` | ≥ 80% of pos triggers + ≥ 80% of neg refusals as a static keyword scan | stdout summary |
 | 6 | E2E deliverable (the user-facing acceptance) | latent execution against `https://www.pg.com` | Two files exist: `./pg-PPT-Design-System.md` + `./pg-deck.html`, and the deck renders content-richly at native 1280×720 | the two files |
 | 7 | One-shot orchestrator | `bash tests/run_all.sh` | Steps 1–5 sequentially pass | aggregated stdout |

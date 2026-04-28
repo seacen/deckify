@@ -18,6 +18,14 @@ samples/*/recon/
 samples/*/raw-assets.json
 samples/*/eval-output/
 
+# Phase 1 transient workspace — should live in OS tempdir (init_workspace.py)
+# but gitignore the in-project locations too as defense in depth
+.web-to-ds-workspace/
+.deckify-workspace/
+
+# Local backups (user-managed, not part of the skill)
+decks/backup/
+
 # Editor scratch
 .idea/
 .vscode/

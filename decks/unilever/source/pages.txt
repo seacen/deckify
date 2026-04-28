@@ -1,0 +1,11 @@
+# Picked for brand-recon richness on www.unilever.com (sitemap + nav inspection)
+# /our-company is the about-page hub — typically richest brand voice + leadership copy
+https://www.unilever.com/our-company/
+https://www.unilever.com/our-company/at-a-glance/
+https://www.unilever.com/our-company/our-leadership/
+# /brands is the portfolio overview — exposes brand-grid type rhythm + imagery treatment
+https://www.unilever.com/brands/
+# /sustainability — long-form copy + chart-heavy reports = great for typography in body context
+https://www.unilever.com/sustainability/
+# /news — newsroom register (article cards, press headlines) — exposes editorial voice
+https://www.unilever.com/news/

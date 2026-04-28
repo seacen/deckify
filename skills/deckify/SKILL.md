@@ -2,9 +2,8 @@
 name: deckify
 description: Generate a complete HTML-slide Design System markdown file from a reference URL. Studies the page's color palette, typography, logo, and aesthetic mood, then writes a Design System that bakes in proven engineering rules (1280×720 fit contract, three-layer overflow safety net, single-absorber rule, mobile inline-flex trap catch-all, flip-card mobile fix, logo-as-SVG-symbol-with-currentColor pattern, 12px readability floor) while letting the brand identity drive the visuals. Use this whenever the user gives you a URL and asks to "build a design system from this site," "extract a design system from", "make slides like this brand," "skin slides to match this site's visual language," or wants to author HTML slides in the visual language of any specific website. Also use when the user names a brand site as a slide-deck reference, even if they don't say "design system" explicitly.
 dependencies:
-  - agent-browser  # Standalone CLI from Vercel Labs (https://github.com/vercel-labs/agent-browser). Install via npm/brew/cargo — see scripts/setup.sh. Used for URL fetch, computed-style introspection, screenshots in Phase 1. NOT the same as any plugin called "agent-browser" — this is the standalone binary at github.com/vercel-labs/agent-browser. Verify with `which agent-browser` and `agent-browser --version`.
-  - python3        # Stdlib only. enumerate_assets.py and embed_logo.py post-process agent-browser output. No external deps.
-  - curl           # Used by fetch_sitemap.sh to fetch /sitemap.xml.
+  - agent-browser  # Standalone CLI from Vercel Labs (https://github.com/vercel-labs/agent-browser). Install via npm/brew/cargo — see scripts/setup.py. Used for URL fetch, computed-style introspection, screenshots in Phase 1. NOT the same as any plugin called "agent-browser" — this is the standalone binary at github.com/vercel-labs/agent-browser. Verify with `which agent-browser` and `agent-browser --version`.
+  - python3        # Stdlib only (urllib, subprocess, pathlib, tempfile). All Phase 1 scripts (fetch_sitemap.py, fetch_pages.py, enumerate_assets.py, embed_logo.py, init_workspace.py) and Phase 0 (setup.py) are Python — no shell needed, runs natively on macOS / Linux / Windows.
 ---
 
 # deckify
@@ -29,7 +28,7 @@ That split is the whole game. Without it, every new brand = relearning the same 
 Before the first run on any new machine, verify the standalone `agent-browser` CLI is installed:
 
 ```bash
-bash scripts/setup.sh
+python3 scripts/setup.py
 ```
 
 This script:
@@ -47,22 +46,26 @@ Do NOT silently fall back to `curl` if `agent-browser` is missing — modern bra
 Architecture: Python scripts only do what's deterministic (fetch, enumerate, quality-gate, embed). Every act of *judgment* — which subpages to crawl, which candidate is the real wordmark, what the brand palette actually is — is done by **you**, the LLM running this skill, using the guideline files in `references/llm-prompts/`.
 
 ```
-1a. fetch_sitemap.sh   →   1b. (LLM picks pages)   →   1c. fetch_pages.sh
+1a. fetch_sitemap.py   →   1b. (LLM picks pages)   →   1c. fetch_pages.py
                                                                 ↓
 1f. embed_logo.py      ←   1e. (LLM synthesizes)   ←   1d. enumerate_assets.py
 ```
 
 Each step's output is the next step's input. Don't skip.
 
+Phase 1 happens in a transient workspace inside the OS temp dir — these are large, regenerable recon files (DOM dumps, screenshots, raw asset pools), not durable artifacts. The OS sweeps them on its own schedule (macOS ~3 days idle, Linux on reboot, Windows by user / Disk Cleanup). Durable artifacts (brand.json / decisions.json / assets / DS markdown / deck HTML) get copied out at Phase 6.
+
 ```bash
-WS=./.web-to-ds-workspace/$(date +%s)
-mkdir -p "$WS"
+# Cross-platform: creates /var/folders/.../T/deckify-<slug>-<rand>/ on macOS,
+# %TEMP%\deckify-<slug>-<rand>\ on Windows, /tmp/deckify-<slug>-<rand>/ on Linux.
+WS=$(python3 scripts/init_workspace.py <brand-slug>)
+echo "Workspace: $WS"
 ```
 
 **1a — Fetch sitemap + home (deterministic)**
 
 ```bash
-bash scripts/fetch_sitemap.sh <URL> "$WS"
+python3 scripts/fetch_sitemap.py <URL> "$WS"
 ```
 
 Pulls `recon/home.html` + `recon/home.png` + `recon/sitemap.xml` + `recon/sitemap-urls.txt` + `recon/nav-links.json` + `recon/jsonld.json`.
@@ -74,7 +77,7 @@ Read `references/llm-prompts/discover-pages.md`. Then read the discovery files f
 **1c — Batch-fetch the chosen pages (deterministic)**
 
 ```bash
-bash scripts/fetch_pages.sh "$WS/pages.txt" "$WS"
+python3 scripts/fetch_pages.py "$WS/pages.txt" "$WS"
 ```
 
 For each URL: desktop screenshot + DOM dump + per-page probe (every inline SVG anywhere with metadata, every `<img>` with size+region, every `background-image: url()`, every JSON-LD logo field, all `<link rel*=icon>`, all `:root` vars, computed bg/color/font on a wide selector set, `@font-face` srcs, preload font URLs). Lands at `$WS/recon/pages/<slug>/{dom.html,shot.png,probe.json}`.
@@ -228,12 +231,39 @@ PASS criteria (per `rubric.json`): hard 8/8 AND judge avg ≥ 4 AND no disqualif
 
 Iterate until PASS. The skill is not done until both hard 8/8 AND judge ≥ 4.
 
-### Phase 6 — Hand back to the user (latent)
+### Phase 6 — Persist + hand back
+
+**Step 6a — Persist durable artifacts out of the temp workspace.** Before the OS sweeps `$WS`, copy the parts that encode user judgment + LLM synthesis into the user's repo:
+
+```bash
+python3 scripts/persist_brand_source.py "$WS" <brand-slug>
+```
+
+This copies `brand.json`, `decisions.json`, `pages.txt`, and `assets/` (logo files) from `$WS` into `decks/<brand-slug>/source/` — sitting next to the DS markdown and the deck HTML. The `recon/` DOM dumps + `raw-assets.json` are intentionally **not** copied — those are large + regenerable from the URL, and the OS will sweep them on its own.
+
+After this step, the brand has a complete persisted bundle:
+
+```
+decks/<brand>/
+├── <brand>-PPT-Design-System.md   ← the deliverable
+├── <brand>-deck.html              ← verification deck
+└── source/
+    ├── brand.json                 ← LLM synthesis
+    ├── decisions.json             ← user choices (Phase 2)
+    ├── pages.txt                  ← LLM-picked subpages
+    └── assets/                    ← embedded logo files
+        ├── logo.svg
+        ├── logo.embed.html
+        ├── logo.dataurl
+        └── logo.report.json
+```
+
+**Step 6b — Hand back to the user.**
 
 Give the user:
 1. The DS markdown path + the deck HTML path
 2. A 5-line summary: palette, font, logo source, aesthetic mood, slide-type emphasis
-3. The eval scoreboard: hard 8/8, judge avg, status PASS/WARN/FAIL
+3. The eval scoreboard: hard 9/10+, judge avg, status PASS/WARN/FAIL
 4. Path to `tests/reports/runs/<latest>/summary.md` for the full per-brand breakdown
 
 ## Hard rules — engineering DNA (NEVER violate, NEVER simplify)
@@ -278,11 +308,11 @@ If any of these is missing from the generated DS, the DS will produce broken dec
 - `references/decision-questions.md` — Phase 2 structured decision checklist + Round 0 language framing.
 - `references/llm-prompts/discover-pages.md` — guideline you (LLM) read at step 1b to decide which subpages to fetch.
 - `references/llm-prompts/synthesize-brand.md` — guideline you (LLM) read at step 1e. Includes Design Taste anti-AI-slop guardrails (no Inter as the design choice, no even-weighted accent grids, no SaaS-default chrome).
-- `scripts/fetch_sitemap.sh` — step 1a: home + sitemap + nav-links + JSON-LD.
-- `scripts/fetch_pages.sh` — step 1c: batch-fetch a URL list with full per-page probes.
+- `scripts/fetch_sitemap.py` — step 1a: home + sitemap + nav-links + JSON-LD.
+- `scripts/fetch_pages.py` — step 1c: batch-fetch a URL list with full per-page probes.
 - `scripts/enumerate_assets.py` — step 1d: aggregate all probes into raw-assets.json with stable candidate ids.
 - `scripts/embed_logo.py` — step 1f: navigate-to-asset-then-same-origin-fetch + quality-gate + base64-embed the chosen logo. Handles cross-origin CDN (Contentful, Cloudinary).
-- `scripts/setup.sh` — Phase 0 dependency check.
+- `scripts/setup.py` — Phase 0 dependency check.
 - `evals/` — quality contract directory (see `evals/README.md`). Two layers in one folder:
   - `evals/evals.json` + `evals/trigger_evals.json` — marketplace harness contract (Anthropic skill-eval format).
   - `evals/hard_checks.py` + `evals/rubric.json` + `evals/build_report.py` + `evals/run.sh` — runtime auto-eval invoked by Phase 4-5.
