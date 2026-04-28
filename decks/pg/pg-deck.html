@@ -7,8 +7,8 @@
 <style>
 :root {
   /* ── Brand ── */
-  --navy:     #003DA5;
-  --blue:     #003DA5;
+  --primary:     #003DA5;
+  --accent:     #003DA5;
   /* ── Neutrals ── */
   --surface:  #FFFFFF;
   --white:    #FFFFFF;
@@ -75,7 +75,7 @@ html, body {
 
 .cov {
   height: 100%;
-  background: var(--navy);
+  background: var(--primary);
   color: var(--white);
   display: flex; flex-direction: column;
   padding: 56px 96px 56px 96px;
@@ -116,7 +116,7 @@ html, body {
 
 .sw {
   background: var(--surface);
-  border-left: 4px solid var(--blue);
+  border-left: 4px solid var(--accent);
   display: flex; flex-direction: column;
   height: 100%;
 }
@@ -129,7 +129,7 @@ html, body {
 .shd-num {
   font-size: 11px; font-weight: 800;
   letter-spacing: .24em; text-transform: uppercase;
-  color: var(--blue);
+  color: var(--accent);
 }
 .sc {
   flex: 1;
@@ -169,7 +169,7 @@ html, body {
   display: flex; flex-direction: column;
   background: var(--white);
   border: 1px solid var(--rule);
-  border-top: 4px solid var(--blue);
+  border-top: 4px solid var(--accent);
   padding: 26px 22px;
   gap: 10px;
   overflow: hidden;
@@ -183,7 +183,7 @@ html, body {
 }
 .stat-num {
   font-size: 56px; line-height: 1;
-  font-weight: 800; color: var(--navy);
+  font-weight: 800; color: var(--primary);
   letter-spacing: -.03em;
 }
 .stat-desc {
@@ -208,7 +208,7 @@ html, body {
 .pull {
   font-size: 26px; line-height: 1.32;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--primary);
   padding: 6px 0 6px 24px;
   border-left: 4px solid var(--warn);
   max-width: 980px;
@@ -228,13 +228,13 @@ html, body {
   display: flex; flex-direction: column;
   background: var(--white);
   border: 1px solid var(--rule);
-  border-top: 4px solid var(--blue);
+  border-top: 4px solid var(--accent);
   padding: 26px 28px 28px;
   gap: 14px;
   overflow: hidden;
 }
 .show-card.dark {
-  background: var(--navy);
+  background: var(--primary);
   color: var(--white);
   border: none;
   border-top: 4px solid var(--warn);
@@ -242,7 +242,7 @@ html, body {
 .show-cap {
   font-size: 11px; font-weight: 800;
   letter-spacing: .24em; text-transform: uppercase;
-  color: var(--blue);
+  color: var(--accent);
 }
 .show-card.dark .show-cap { color: var(--warn); }
 .show-title {
@@ -262,7 +262,7 @@ html, body {
 }
 .show-card.dark .show-list li { color: var(--white); opacity: .92; }
 .show-list li .dash {
-  color: var(--blue); font-weight: 800;
+  color: var(--accent); font-weight: 800;
   flex: 0 0 auto;
 }
 .show-card.dark .show-list li .dash { color: var(--warn); }
@@ -298,7 +298,7 @@ html, body {
 .tbl .row-cap {
   font-size: 13px; font-weight: 800;
   letter-spacing: .04em;
-  color: var(--navy);
+  color: var(--primary);
   white-space: nowrap;
 }
 .tbl .pos { color: var(--green); font-weight: 800; }
@@ -322,7 +322,7 @@ html, body {
   letter-spacing: .14em; text-transform: uppercase;
 }
 .chart-row-val {
-  font-size: 28px; font-weight: 800; color: var(--navy);
+  font-size: 28px; font-weight: 800; color: var(--primary);
   letter-spacing: -.015em;
 }
 .chart-bar-track {
@@ -331,7 +331,7 @@ html, body {
   overflow: hidden;
 }
 .chart-bar-fill {
-  height: 100%; background: var(--blue);
+  height: 100%; background: var(--accent);
   transform-origin: left center;
   animation: barFill 1s cubic-bezier(.4,0,.2,1) both;
 }
@@ -354,7 +354,7 @@ html, body {
 .chart-callout-cap {
   font-size: 11px; font-weight: 800;
   letter-spacing: .24em; text-transform: uppercase;
-  color: var(--blue);
+  color: var(--accent);
 }
 .chart-callout-title {
   font-size: 18px; font-weight: 800; color: var(--ink);
@@ -393,7 +393,7 @@ html, body {
   padding: 30px 32px;
 }
 .ff-front {
-  background: var(--navy);
+  background: var(--primary);
   color: var(--white);
 }
 .ff-back {
@@ -464,9 +464,9 @@ html, body {
 .tl-dot {
   position: absolute; top: 50%; transform: translate(-50%, -50%);
   width: 16px; height: 16px; border-radius: 50%;
-  background: var(--blue);
+  background: var(--accent);
   border: 3px solid var(--surface);
-  box-shadow: 0 0 0 1px var(--blue);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 .tl-dot.is-now {
   background: var(--warn);
@@ -482,7 +482,7 @@ html, body {
 .tl-stop-cap {
   font-size: 11px; font-weight: 800;
   letter-spacing: .24em; text-transform: uppercase;
-  color: var(--blue);
+  color: var(--accent);
 }
 .tl-stop.is-now .tl-stop-cap { color: var(--warn); }
 .tl-stop-title {
@@ -504,7 +504,7 @@ html, body {
 }
 .bigq-text {
   font-size: 42px; line-height: 1.18;
-  font-weight: 700; color: var(--navy);
+  font-weight: 700; color: var(--primary);
   letter-spacing: -.018em;
   border-left: 4px solid var(--warn);
   padding-left: 28px;

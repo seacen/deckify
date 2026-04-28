@@ -9,7 +9,8 @@
     {"id": "mobile_collapse",       "description": "At 375×812 viewport, body.scrollWidth ≤ 375 AND every .g2/.g3/.flip-row/.tabs has flex-direction: column"},
     {"id": "logo_renders",          "description": "Every .logo SVG renders with non-zero bounding box AND the brand-wm symbol contains either a real <path> with d>40 chars OR an <image href> attribute (PNG fallback). Pure <text>-only fallback is INSUFFICIENT."},
     {"id": "text_layout_safe",      "description": "无块级文本元素被截断（overflow:hidden 且 scrollHeight > clientHeight），无 slide 最低文本元素贴底（gap < 18px），H1/H2/H3 不超过 3 行；封面（slide 0）豁免"},
-    {"id": "ds_has_engineering_dna","description": "DS markdown contains all of: 'Single-Slide Fit Contract', 'three-layer overflow safety net', 'inline-flex trap', 'this.classList.toggle', '12 px floor', 'Typography Safety' (case-insensitive)"}
+    {"id": "ds_has_engineering_dna","description": "DS markdown contains all of: 'Single-Slide Fit Contract', 'three-layer overflow safety net', 'inline-flex trap', 'this.classList.toggle', '12 px floor', 'Typography Safety' (case-insensitive)"},
+    {"id": "cjk_font_quality",      "description": "zh decks only: at least one CJK font (PingFang SC / Hiragino Sans GB / Microsoft YaHei / Source Han Sans SC) is in the body font-family chain. Hard FAIL only when zero CJK fonts present (CJK chars would fall through to OS thin-default). Order is a soft preference — vision judge decides if the rendered CJK looks good. Skipped for en decks."}
   ],
   "judge_dimensions": [
     {
@@ -36,6 +37,11 @@
       "name": "engineering_dna_visible_in_ds",
       "description": "Does the Design System markdown explicitly carry the engineering invariants: §1 Constraints/Freedom, §5 Fit Contract incl. three-layer overflow + single absorber + 602px budget, §10 Mobile incl. inline-flex trap + flip-card mobile fix, §13 ~40-item Checklist incl. 375px verification?",
       "scoring_guide": "5 = all sections present and verbatim from template; 4 = present but minor wording drift; 3 = key sections present but at least one diluted; 2 = major section missing; 1 = engineering DNA largely absent; 0 = template not followed"
+    },
+    {
+      "name": "cjk_typography_quality",
+      "description": "zh decks only (skip + return 5 for en decks). Looking at the rendered slide screenshots, do the CJK glyphs look high-quality and on-brand? Specifically: (a) Are CJK chars rendered with a characterful family (PingFang SC / Hiragino Sans GB / Source Han Sans / Songti SC), not the thin OS default? Thin-default looks visibly cheap — strokes too fine, weight too light, characters appear to float. (b) Do CJK weight and proportions match the deck's Latin typography? A 700-weight Latin headline next to 400-weight thin CJK = mismatch. (c) For serif Latin brands (Coca-Cola Georgia / editorial), is CJK using a serif family (Songti / Noto Serif), or does it clash with a sans CJK? (d) Does the overall feel match the brand's voice?",
+      "scoring_guide": "5 = CJK rendering is clearly characterful, weights match Latin, harmonious with brand; 4 = looks good with one minor mismatch; 3 = readable but feels generic — could be PingFang Regular when the deck wanted Medium/Bold weight; 2 = visibly thin / cheap — looks like OS thin-default; 1 = serif/sans clash with Latin AND thin CJK rendering; 0 = unreadable. If you score ≤3, the fix is in DS §3 CJK 字体回退链 — move CJK family to front of font-family chain, or bump body font-weight from 400 to 500/600."
     }
   ],
   "disqualifiers": [

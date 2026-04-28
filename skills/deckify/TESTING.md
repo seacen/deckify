@@ -1,4 +1,4 @@
-# TESTING.md — Skillify 10-step mapping for `web-to-design-system`
+# TESTING.md — Skillify 10-step mapping for `deckify`
 
 This file maps Garry Tan's [10-item skillify checklist](https://x.com/garrytan/article/2046876981711769720) to the concrete artifacts in this skill, so future-you can verify nothing has rotted and future-contributors know where each layer lives.
 
@@ -22,7 +22,7 @@ Below: how each one is realized for *this* skill.
 
 **File:** [`SKILL.md`](SKILL.md)
 
-The contract names the skill (`web-to-design-system`), declares its `dependencies` (agent-browser, python3, curl), describes WHEN to trigger (push-y description with multiple trigger phrases), and specifies the four-phase pipeline + invariant engineering DNA.
+The contract names the skill (`deckify`), declares its `dependencies` (agent-browser, python3, curl), describes WHEN to trigger (push-y description with multiple trigger phrases), and specifies the four-phase pipeline + invariant engineering DNA.
 
 **Health check (manual):**
 - Does the description trigger on real-world phrasings? (See step 7 below for the eval set.)
@@ -111,13 +111,13 @@ Sample assertions (shape — full list in `evals/evals.json`):
 - `output_has_mobile_375_check`: pre-ship checklist contains "375px" (mobile verification)
 - `process_called_extract_brand`: agent transcript shows it ran `python3 scripts/extract_brand.py`
 - `process_called_ask_user_question`: agent invoked `AskUserQuestion` at least once before generation
-- `output_unilever_palette_match` (a real corporate site-only): generated `--navy` is within ΔE < 10 of `#07005A`
+- `output_unilever_palette_match` (a real corporate site-only): generated `--primary` is within ΔE < 10 of `#07005A`
 
 Run via `skill-creator`'s normal evaluation flow:
 
 ```bash
 # from inside the skill-creator workspace
-python -m scripts.run_loop --eval-set web-to-design-system/evals/evals.json --skill-path web-to-design-system
+python -m scripts.run_loop --eval-set deckify/evals/evals.json --skill-path deckify
 ```
 
 The "fucking shit" eval heuristic from the article applies: if a brand site breaks the skill in production, add it as a new eval case with the failing assertion captured.
@@ -145,8 +145,8 @@ If you tune the description, update the trigger eval (step 7) in lockstep.
 
 ```bash
 python -m scripts.run_loop \
-  --eval-set web-to-design-system/evals/trigger_evals.json \
-  --skill-path web-to-design-system \
+  --eval-set deckify/evals/trigger_evals.json \
+  --skill-path deckify \
   --model claude-opus-4-7 \
   --max-iterations 5 \
   --verbose

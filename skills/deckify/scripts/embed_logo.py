@@ -190,6 +190,29 @@ def svg_passes(svg: str) -> tuple[bool, dict]:
     return False, {**ev, "reason": "no path with d ≥ 40 and no <image>"}
 
 
+def png_color_type(buf: bytes) -> int | None:
+    """Return PNG IHDR colour-type byte, or None if not a PNG.
+    0 = grayscale  2 = RGB  3 = palette  4 = grayscale+alpha  6 = RGBA"""
+    if not buf.startswith(b"\x89PNG\r\n\x1a\n"):
+        return None
+    if buf[12:16] != b"IHDR":
+        return None
+    return buf[25]
+
+
+def png_has_alpha(buf: bytes) -> bool:
+    """True if the PNG has an alpha channel (color type 4 or 6 OR has tRNS chunk for type 3 palette)."""
+    ct = png_color_type(buf)
+    if ct is None:
+        return False
+    if ct in (4, 6):
+        return True
+    if ct == 3:
+        # palette PNG — check for tRNS chunk (transparency table)
+        return b"tRNS" in buf[:512]
+    return False
+
+
 def raster_passes(buf: bytes) -> tuple[bool, dict]:
     sz = raster_size(buf)
     if not sz:
@@ -197,7 +220,24 @@ def raster_passes(buf: bytes) -> tuple[bool, dict]:
     w, h = sz
     if min(w, h) < MIN_RASTER_SIDE:
         return False, {"size": [w, h], "reason": f"min side < {MIN_RASTER_SIDE}"}
-    return True, {"size": [w, h]}
+    # PNG-specific: warn (don't fail) if no alpha channel — surface the trade-off.
+    # An RGB-only PNG cannot composite cleanly on coloured backgrounds; filter:invert
+    # flips both the silhouette AND its surrounding rectangle, producing a visible
+    # bright square on dark covers. The skill caller can choose to swap to a different
+    # candidate or accept the trade-off (and document it in chosen_logo.why).
+    info = {"size": [w, h]}
+    if buf.startswith(b"\x89PNG\r\n\x1a\n"):
+        if png_has_alpha(buf):
+            info["alpha"] = "rgba"
+        else:
+            info["alpha"] = "rgb-only"
+            info["warning"] = (
+                "PNG has no alpha channel (RGB-only). filter:invert / brightness(0) "
+                "on this logo flips BOTH the silhouette AND its background rectangle, "
+                "producing a visible bright square on dark covers. Prefer an SVG or "
+                "RGBA-PNG candidate when available."
+            )
+    return True, info
 
 
 def find_candidate(raw_assets: dict, logo_id: str) -> dict | None:

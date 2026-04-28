@@ -19,7 +19,7 @@ This question runs before anything else, because it determines the language for 
 | 日本語 (Japanese) | `ja` |
 | Español (Spanish) | `es` |
 
-If the user picks Other, take their free-text answer (any ISO language tag or natural-language name). The skill itself contains no other language-specific copy — Phase 3 generation produces the DS in the chosen language by translating the template's prose sections (philosophy paragraph, rules narration, anti-pattern callouts) at write time. The CSS, token names (`--navy`, `--blue`, etc.), code snippets, and structural section numbers stay invariant across languages.
+If the user picks Other, take their free-text answer (any ISO language tag or natural-language name). The skill itself contains no other language-specific copy — Phase 3 generation produces the DS in the chosen language by translating the template's prose sections (philosophy paragraph, rules narration, anti-pattern callouts) at write time. The CSS, token names (`--primary`, `--accent`, etc.), code snippets, and structural section numbers stay invariant across languages.
 
 **Important:** if the user has been writing to you in a particular language up to this point, default the recommended option to that language — but still ask explicitly so they can choose differently for the DS output (e.g., user types in Chinese but wants the DS in English for an international team).
 
@@ -52,8 +52,8 @@ Show the user **side-by-side**:
 - Any `:root` custom property the site exposes (often the brand's actual token system — strongest signal)
 
 **Common decisions:**
-- Which color → `--navy` (the primary brand dark, used as background on dark slides and ink on light slides). NOT necessarily literal navy — it's whatever the brand uses as anchor.
-- Which color → `--blue` (the accent / CTA — the color used for links, buttons, focus states).
+- Which color → `--primary` (the primary brand dark, used as background on dark slides and ink on light slides). NOT necessarily literal navy — it's whatever the brand uses as anchor.
+- Which color → `--accent` (the accent / CTA — the color used for links, buttons, focus states).
 - Whether the homepage hero gradient is brand-permanent or campaign-only (often: campaign — don't bake it in).
 - Semantic palette overrides? Some brands have a brand-specific "positive" green different from the system default.
 
@@ -137,7 +137,7 @@ After all rounds, write a JSON snapshot to `$WS/decisions.json` capturing every 
   "emphasis":          ["<two-to-four Type X identifiers from Round 4>"],
   "border_radius":     "<as decided>",
   "cover_background":  "<solid color OR a linear-gradient using only token-derived colors>",
-  "flip_back_color":   "<one shade softer than --blue, for Type D back face>",
+  "flip_back_color":   "<one shade softer than --accent, for Type D back face>",
   "bespoke_examples":  "<one short paragraph with 2–3 hypothetical bespoke compositions for §1, all built from token colors only — no brand-specific hard-coded names from prior decks>"
 }
 ```

@@ -18,7 +18,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 print_header() {
   cat <<EOF
 ─────────────────────────────────────────────────────────────────
- web-to-design-system: dependency setup
+ deckify: dependency setup
 ─────────────────────────────────────────────────────────────────
 This skill needs the standalone \`agent-browser\` CLI from Vercel Labs:
   $REPO

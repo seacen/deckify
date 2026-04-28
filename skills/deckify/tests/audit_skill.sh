@@ -29,7 +29,7 @@ echo
 echo "── SKILL.md basics ──"
 check "SKILL.md exists" "[[ -f '$SKILL_MD' ]]"
 check "SKILL.md has YAML frontmatter (name + description)" \
-      "grep -q '^name: web-to-design-system' '$SKILL_MD' && grep -q '^description:' '$SKILL_MD'"
+      "grep -q '^name: deckify' '$SKILL_MD' && grep -q '^description:' '$SKILL_MD'"
 check "SKILL.md declares agent-browser dependency" \
       "grep -qi 'agent-browser' '$SKILL_MD'"
 check "SKILL.md describes 4-phase pipeline" \

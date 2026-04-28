@@ -117,7 +117,7 @@ class TestFontExtraction(unittest.TestCase):
 class TestColorExtraction(unittest.TestCase):
     def test_extract_colors_counts_occurrences(self):
         css = """
-            :root { --navy: #07005A; --blue: #1A1AE6; }
+            :root { --primary: #07005A; --accent: #1A1AE6; }
             .btn { background: #1A1AE6; color: #FFFFFF; }
             .nav { background-color: rgb(7, 0, 90); }
         """

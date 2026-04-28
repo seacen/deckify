@@ -1,4 +1,4 @@
-# TEST_PLAN.md — actionable E2E plan for `web-to-design-system`
+# TEST_PLAN.md — actionable E2E plan for `deckify`
 
 This is the runnable test plan. Each step has a command, an exit criterion, and an artifact to inspect. The full sweep maps 1:1 to the Skillify 10-step layers in `TESTING.md`.
 

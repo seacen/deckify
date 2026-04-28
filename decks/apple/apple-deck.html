@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple — 为简而存在</title>
+<style>
+:root {
+  --primary:    #000000;
+  --accent:    #1B9CF7;
+  --surface: #FFFFFF;
+  --white:   #FFFFFF;
+  --ink:     #1D1D1F;
+  --mid:     #86868B;
+  --rule:    #D2D2D7;
+  --tint:    #F5F5F7;
+  --green:   #0E9F6E;  --green-bg: #D1FAE5;
+  --red:     #FF3B30;  --red-bg:   #FFE5E2;
+  --warn:    #FF9500;  --warn-bg:  #FFEFD0;
+  --teal:    #1B9CF7;  --teal-bg:  #D6EBFF;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--primary);
+  font-family: 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+#wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--primary); }
+#deck {
+  width: 1280px; height: 720px; position: relative; overflow: hidden;
+  background: var(--surface); box-shadow: 0 8px 40px rgba(0,0,0,.45);
+  transform-origin: center center; will-change: transform;
+}
+.slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .38s ease; overflow: hidden; }
+.slide.active { opacity: 1; pointer-events: auto; }
+.slide.active .sc, .slide.active .cov-body { animation: enter .42s cubic-bezier(.4,0,.2,1) both; }
+@keyframes enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.logo { display: inline-block; flex: 0 0 auto; line-height: 0; }
+.logo.W { width: 36px; height: 36px; }
+.logo.L { width: 28px; height: 28px; }
+.logo svg, .logo image { width: 100%; height: 100%; }
+.logo.W image, .logo.W svg { filter: brightness(0) invert(1); }
+.logo.L image, .logo.L svg { filter: brightness(0); }
+
+.cov {
+  height: 100%; background: var(--primary); color: var(--white);
+  display: flex; flex-direction: column; padding: 56px 96px;
+}
+.cov-top { display: flex; align-items: flex-start; justify-content: space-between; flex: 0 0 auto; }
+.cov-eb { font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--white); opacity: .6; padding-top: 10px; }
+.cov-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 28px; max-width: 1080px; }
+.cov-title { font-size: 96px; line-height: 1; font-weight: 600; letter-spacing: -.03em; color: var(--white); }
+.cov-sub { font-size: 22px; line-height: 1.45; font-weight: 400; max-width: 780px; color: var(--white); opacity: .7; }
+.cov-meta { font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--white); opacity: .5; flex: 0 0 auto; }
+
+.sw { background: var(--surface); display: flex; flex-direction: column; height: 100%; }
+.shd { display: flex; align-items: center; justify-content: space-between; padding: 0 80px 0 96px; flex: 0 0 56px; border-bottom: 1px solid var(--rule); }
+.shd-num { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); }
+.sc { flex: 1; padding: 32px 80px 40px 96px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+.stitle { font-size: 56px; line-height: 1.05; font-weight: 600; letter-spacing: -.025em; color: var(--ink); flex: 0 0 auto; }
+.ssub { font-size: 19px; line-height: 1.5; font-weight: 400; color: var(--mid); flex: 0 0 auto; max-width: 920px; }
+
+.absorb { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; }
+
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; width: 100%; height: 100%; }
+.stat-card { display: flex; flex-direction: column; padding: 20px 0; gap: 10px; overflow: hidden; justify-content: center; border-top: 1px solid var(--rule); }
+.stat-num { font-size: 64px; line-height: 1; font-weight: 600; color: var(--ink); letter-spacing: -.03em; }
+.stat-label { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); }
+.stat-desc { font-size: 14px; line-height: 1.45; font-weight: 400; color: var(--ink); margin-top: 4px; }
+
+.narr-col { display: flex; flex-direction: column; gap: 26px; width: 100%; justify-content: center; }
+.narr-body { font-size: 19px; line-height: 1.65; font-weight: 400; color: var(--ink); max-width: 920px; }
+.narr-body p { margin: 0 0 14px 0; }
+.pull { font-size: 30px; line-height: 1.3; font-weight: 500; color: var(--ink); padding: 6px 0 6px 28px; border-left: 3px solid var(--accent); max-width: 980px; }
+.pull-attr { font-size: 13px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--mid); margin-top: 6px; }
+
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; width: 100%; height: 100%; }
+.show-card { display: flex; flex-direction: column; padding: 28px 0; gap: 14px; overflow: hidden; border-top: 1px solid var(--rule); }
+.show-card.dark { background: var(--primary); color: var(--white); padding: 32px 36px; border-top: none; }
+.show-cap { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+.show-card.dark .show-cap { color: var(--accent); }
+.show-title { font-size: 28px; line-height: 1.2; font-weight: 600; color: var(--ink); letter-spacing: -.012em; }
+.show-card.dark .show-title { color: var(--white); }
+.show-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.show-list li { font-size: 16px; line-height: 1.55; font-weight: 400; color: var(--ink); display: flex; gap: 12px; align-items: flex-start; }
+.show-card.dark .show-list li { color: var(--white); opacity: .82; }
+.show-list li .check { color: var(--accent); font-weight: 600; flex: 0 0 auto; }
+
+.tbl-wrap { width: 100%; height: 100%; display: flex; align-items: stretch; overflow: hidden; }
+.tbl { width: 100%; border-collapse: collapse; background: var(--white); }
+.tbl thead th { text-align: left; padding: 14px 18px 14px 0; font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid var(--rule); }
+.tbl tbody td { padding: 14px 18px 14px 0; font-size: 15px; line-height: 1.5; font-weight: 400; color: var(--ink); border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl tbody tr:last-child td { border-bottom: none; }
+.tbl .row-cap { font-size: 15px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.tbl .pos { color: var(--green); font-weight: 600; }
+.tbl .neu { color: var(--accent); font-weight: 600; }
+
+.chart-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; width: 100%; height: 100%; align-items: center; }
+.chart-bars { display: flex; flex-direction: column; gap: 28px; }
+.chart-row { display: flex; flex-direction: column; gap: 10px; }
+.chart-row-label { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.chart-row-name { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: .12em; text-transform: uppercase; }
+.chart-row-val { font-size: 36px; font-weight: 600; color: var(--ink); letter-spacing: -.022em; }
+.chart-bar-track { height: 8px; background: var(--rule); overflow: hidden; }
+.chart-bar-fill { height: 100%; background: var(--accent); transform-origin: left center; animation: barFill 1s cubic-bezier(.4,0,.2,1) both; }
+@keyframes barFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.chart-bar-meta { font-size: 12px; font-weight: 400; color: var(--mid); }
+.chart-callout { padding: 0 0 0 28px; border-left: 3px solid var(--accent); display: flex; flex-direction: column; gap: 12px; }
+.chart-callout-cap { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+.chart-callout-title { font-size: 22px; font-weight: 600; color: var(--ink); line-height: 1.3; letter-spacing: -.012em; }
+.chart-callout-body { font-size: 14px; line-height: 1.55; font-weight: 400; color: var(--mid); }
+
+.flip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; height: 100%; }
+.fc { perspective: 1200px; cursor: pointer; height: 100%; min-height: 0; }
+.fc-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .65s cubic-bezier(.4,0,.2,1); }
+.fc:hover .fc-inner, .fc.on .fc-inner { transform: rotateY(180deg); }
+.ff { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; overflow: hidden; padding: 36px 40px; }
+.ff-front { background: var(--primary); color: var(--white); }
+.ff-back { background: var(--accent); color: var(--white); transform: rotateY(180deg); justify-content: flex-start; }
+.ff-roman { position: absolute; right: 32px; top: 28px; font-size: 80px; line-height: 1; font-weight: 600; color: var(--white); opacity: .15; }
+.cnm { font-size: 36px; line-height: 1.1; font-weight: 600; margin-top: auto; color: var(--white); letter-spacing: -.018em; }
+.cbd { font-size: 17px; line-height: 1.5; font-weight: 400; color: var(--white); opacity: .82; margin-top: 16px; max-width: 88%; }
+.ht { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--white); opacity: .6; margin-top: 24px; }
+.bkl { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--white); opacity: .8; }
+.bkt { font-size: 26px; line-height: 1.22; font-weight: 600; color: var(--white); margin-top: 12px; }
+.bkbody { font-size: 16px; line-height: 1.55; font-weight: 400; color: var(--white); opacity: .92; margin-top: 18px; }
+
+.tl { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 26px; justify-content: center; padding: 0 8px; }
+.tl-track { position: relative; height: 1px; background: var(--rule); margin: 6px 14px 0; }
+.tl-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+.tl-dot.is-now { background: var(--ink); }
+.tl-stops { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.tl-stop { display: flex; flex-direction: column; gap: 8px; }
+.tl-stop-cap { font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+.tl-stop.is-now .tl-stop-cap { color: var(--ink); }
+.tl-stop-title { font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -.018em; line-height: 1.2; }
+.tl-stop-desc { font-size: 14px; line-height: 1.55; font-weight: 400; color: var(--mid); }
+
+.bigq { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 26px; padding-right: 60px; }
+.bigq-text { font-size: 56px; line-height: 1.15; font-weight: 600; color: var(--ink); letter-spacing: -.025em; max-width: 1000px; }
+.bigq-attr { font-size: 13px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); }
+
+@media (max-width: 768px) {
+  body { overflow-y: auto; }
+  #wrap { position: static; display: block; }
+  #deck { width: 100%; height: auto; position: static; transform: none !important; box-shadow: none; }
+  .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; }
+  .cov, .sw { min-height: 100dvh; height: auto; }
+  .cov { padding: 32px 20px 36px; }
+  .cov-title { font-size: 48px; }
+  .cov-sub { font-size: 17px; }
+  .stitle { font-size: 36px; }
+  .ssub { font-size: 16px; }
+  .shd { padding: 0 20px; }
+  .sw .sc { padding: 24px 20px 32px; }
+  .g2, .g3, .flip-row, .tabs, .stat-row, .chart-wrap, .tl-stops { grid-template-columns: 1fr !important; flex-direction: column !important; }
+  .tl-track { display: none !important; }
+  .tbl thead th, .tbl tbody td { padding: 10px 12px; font-size: 13px; }
+  .bigq-text { font-size: 30px; }
+  .stat-num { font-size: 44px; }
+  .chart-row-val { font-size: 28px; }
+  .sc div[style*="display:flex"] { flex-direction: column !important; }
+  .sc div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  .fc { perspective: none !important; min-height: auto !important; height: auto !important; }
+  .fc .fc-inner { transform-style: flat !important; transition: none !important; height: auto !important; transform: none !important; }
+  .fc:hover .fc-inner, .fc.on .fc-inner { transform: none !important; }
+  .fc .ff { position: relative !important; backface-visibility: visible !important; transform: none !important; min-height: 240px; }
+  .fc .ff-back { display: none; transform: none !important; }
+  .fc.on .ff-front { display: none; }
+  .fc.on .ff-back { display: flex; transform: none !important; }
+  #nav, #ctr { display: none; }
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 302 302">
+<image href="data:image/png;base64,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Z2VSZWFkeXHJZTwAAAOGaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjYtYzExMSA3OS4xNTgzMjUsIDIwMTUvMDkvMTAtMDE6MTA6MjAgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6ZjAyODJiMTQtMTk5MC00N2Y2LWE3MjMtMjE1ZjYxMWE3MWI5IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjBEMzc0NzEzMEJFNTExRTZCMTA3OUQ2MjY2NjM3NkJEIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjBEMzc0NzEyMEJFNTExRTZCMTA3OUQ2MjY2NjM3NkJEIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE1IChNYWNpbnRvc2gpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6ZDI2OGQ5YWUtYmEzMS00YTllLWFjOTQtNGU3NDAxMTVlOWRiIiBzdFJlZjpkb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6Mzc2ZDJlMjQtNTQ1Yy0xMTc5LTk5MGQtZmNiNGVkODNhNmY3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+lUZKMwAAGRVJREFUeNrsmDEOhCAQRReyJQfwPt6BI+gxjJWFsaPxCrTU3sTCkluwJiYWK8Kgw+xms1QWZB5/+MNMZM65B+3iiLGmaYJse6LA6rrePsqyzK7SWrvziBLbNA3pXb7pG8cxL/KCvrvI9RYvSEQrEjgPoUiSYNti0dcn6pG+7+d5hh8lhAwX3Fr10efGCz5FphY4nMqz8o7G9tsHkedNLGYnATqIZ5IYaCm5VEopqZFEU8Ef+ZvIZVmokV3XfSCxZ68Kv99yU6nZ7XOkepBCCGrHDsOACCiKgjqxbduCkFgm8vYTjjgtArvmF0wFWEIvzrGBct4jrqOs1jrtrA62qqpSSkX3GGOioRj974mXAOyYKw7EIBCGs1WV+JpeAQmXAdXUVXMEJKK3wRKuhNxN1jRdllcZSJOiJ/kzYR7/fK97E5F93xsRkdZ44qgX8K5QeCIF+jx4IusppcDxxPFkzx3FhZLTNH2TG8ex8vQ51eS6rhjjaF9KKRFC2ZLhBieEWGvL9pdfEg6H+Cu2Ip5obZ0/fjgJNUETGMAsA83a+6QFLdSHFdxSMlwTQ/RQgs0y0bxctClQf/kLmxtBGK+ZPs9Y59y2baDD75xlgbEIPyFE676c5zkuWRFweRHS8M/aVJH0IiS/JOe8w4quyw9vSEQYY5TSFF5STkSMMcuyhGO01tGYbkTkLQD7ZowyIQxE4UUsvYngcbyEpQew9gZexQvYiWBlI3gECw+wgQX5+XWTTHaSvAGn1EK/OEnmvYwRHhk+Uqi3cWuNkAHJqEngIPW1AONym2J+vesxhzBtYEN4PVgR9iX1hD6KgtCQ+75/u+XmyyFCjuP470pRFFVViSkGtm1b1zXP81+WjWEY+r7/SETFr8q5qyUaCJKqBP9Wn2fcNrQZQ61J1EEkQ/reuFlUgDskDh4V1WqfXJZFLqHV6to0jcYpihJZlpH6SAyQ0zShETpUC4Z07bpOOqEB0vKMPli0bctfoM/zDAWpOQFFVCGB44F8INGEqCOkP1M7MKe8dFWcSgMxqxDMqpWUaOlLbJyjb6RNGAcMdqImvImBmbcJ+wSQKpphOb38LAvF6cXjOeO2/T1klGVJaspx911j7Z9e/gfGQXWeLDwOel3Xx3Hc3rL0gjVuNdW28gX5SK348RaAvbPHVRiG4fhT9C7AHTojMXZD6kq5Ait7xTk4ARJjb9OVpRIjG29g6PgqkLqUJI7jpHYUz4jyI1+247+b/kiqPFEXsMfjQZgHZRRhjX4FsC2NPML7/W5QRIsnDO0/qLTxFiaM4/0pnniHw0E24e12M39gXiohjPB8Pqd84luXH216gZ1PM9dQCCO0rsC5ZENYbBG/8JHRLA2U3WNBqNPDJuKXhk7MLkZY1/Vut4vwILKd5u9tnpvhMAxt207y+aqq9vu9Z1WyF6E1ZoXMwDGih/SwQCcXkYSuYcEcFa3wdF23zoSe2tPRZfEP583dJbwIA6VSEDYuUaBs22EvxZV6B7LPHw2BhJ74XdfxwZsgIQUq0FkqtzTlVy4e8HrLTsitDNf1zLCvQ241uK5HohI3gK4nvpI1gAihlrDbNYS400TYNA0rvPV6TRzj66oQljKcADLfAWfCaIbuL6MMWQlWhNvtNnFC+ln6fD4TJ1ytVqx+aN/3ie806BpXLSH5HVA+LTIh+EVegglxS1HYLO26jpIw9GsfEIZQp5uyiSGaR5IYWZ4mULMdf3PKbko9LeCQKkTigBWkYKnptB2ab07F+zSv18uhkfJXq+uaOaRv2+84FRPZL9WaVbgnXiVsvQaWPYYQv1J25zBiBTQ3RxzojbhVm7AaxiACb3SjJ3KDv/rHjRDd5Ync4HGPCjQ3ZMSHPCGJ7/F1djweF8FDPBdJuNlsiqKIjDc+EdEE1quC1qDHjx8HBiH8cSlY/Lp+gAdsWZbo12HQ1Hnrfug4r06nE+Qbrter7u1onhsbpWZmmrSI9sGTDcNwuVw+lUokm3buOJAJ+du/AOydPYoyQRCGlw9DD2CugdGAoRcw0kiMDE00NBJjA/EAYmDkDURQMJh0vIKJMCeQOcLXsCDL96Mz3dXV1d3vGy/L7DxbPdX1G8WEE/yfQh6ohlfwRkVR7Pf7vx03aQFIUPxTcvqfQLGyBK4jAMWyKtnL+lMCM+Q18KuqyWQCiiJkko4RWHQUHUXD7maZ6fEaTLC8yif5cOu3dfMzRyi2gDOKCJx5gbDwbQRR2KIJwlarJX9xRvjfRb3rhBcmGBFFvYiMSXoUFIml0WMk2YuJlOLz+Sz5k//ckgyKHqj80DThQq4/BImwxTRNL5dLmVJBZT29Xs9qQXOWZdfrVcMnUneS0WjkZBaAA1ssimKxWBD+Qu1PmkK12+3spRWn06lG4axoitvtlm2K2v+Wuik7OxwO/LaiLi0a88wEUVS+vrR18A5lyTotUhQ14TZs39gKRR8LkLy2S2KK5J5L8CIJ1VLeNDgbiwJQkiR6E0AtUhQ+ViQ8+6OnCIQlwwIl++McUARCJ/ZHSREIP2q5XNoOy9WA0F8TfEm/7kYjAQuE4igirvZenMWrmhQ/LuyMXN1ul7Psg2k/Hc5SoScqJEegSC/+Wh4dinmeA9UbNZtN2CIEiqAIkeh8PntAMZjFPZbEv2oTtmhFWZaBovdirpfUpCh5K4oQcYa3NCmOx2NwkgNSk6Kc0e8AafRdDKNnjAek7RSQUT0qMhuVZC/RYUQxTVPtNbJgKYUizFFbtNMfTCmipN9Qm83G3FUk6NPgbEwMWNrLUL5IYjdUzQaRazgcOrhp8Hhf8chkTgtZHFXOkrsIHVcyiuoT7Wo5Gu4elDmNTqcDkFVFUnxMnJkCyKoISYqPrfT153m+Xq8Bic0ltDhjA2EdNq/+ly8PCoRubPFbiOz8lMk6V5cUvyiGr8OXcXaivqQeXZ0h9Xo9Wn7qb1dvwF4vHOtMxjiNkmGEtYPJmvHMF2ObhexsVnHYg6pM0kw+UeRhqawhSZLXgfZ4PO73u1Wf2d5oIrkUv2U+Q7XRaMxmM+0aiKIojsfj7XYzeYb5fN5ut528QFnT39XbXK1WH61zMBj0+33bjtjpdCrz/WYYSuQZRUjufRECReizfgvA3vmDNPJEcVzkV1hYaBdIl6QIFumTysJKjKQKCIpVMI1FSBGCSEghIYhYWdilkYhglVgoWNpYGBCEFAopU24hmPKGC3j5nV7czMx7Mzv7/fSnt/tx/rzZN+9hRsVYBLAIYBH84T+8Ap8MBoPx0U8mk+HpOwSLevi2o5GpAxpYnA2fR0iwaK+/IF4Bg8U/1Go1P138otEo9qg2IuTt7e35bMRoYe9pjMWZcw8sLKAWdotutBcMtUVnskbmoRAWAzyRyin8tt0xLJrZzkivhZubm7Bonl6vp5INa2GYETqLo9FIJdkunU5jXTSP4v0CiutOsDgbrVZL5Z/bfFsoLBbFXKqYNHx4eAiLhjk4OFAciDYX9g2FRc/zFAN8zqszsPg9ip8M7Yz0wx71z4r9tbXdt6hYTTkQlULct6hyUlMqlQLxjJhRpy2HFqa7hdGidDv6RCIRoFYTjluU69olokP+W92w+E8krvCLUWh5dPgVZE/9D6IKX7DIh8HyCrCoAebyNLCoHxuKZMBiqP2F1GIqlQpQOO8TVGeYw1gkYTAYzP3+Ov/x8bG8vGxw0vu8P/xX3Cl2Q7FYTAzoeDxuw5xsfiwOh8Pr62s/4XkkEsnlcqS3sT3Pu7u7kztAZ6hrZp1F8Qd+enqqEp4Lo7qyKL69+S0Nv87AV7lNJBKFQkFOZ7fb7XQ6RI8pZo56ve6gRdIOuP51qhfynGlLzNDZkMki5315oXNnZ+drrVSxXWo0Gj4vDAcrMOWw2Gq1FHNBpcnn89FotN1uG5H3198W3dcucovoUzQJURbPPBRyQvRCqCyKRQgK2UTOEylESyJOkSTrIkYh8xo5D4WmqNVqllosl8vQ4xMR/Mil6NFa7Ha7DjcdouDh4UHLz9H2ZUrsaOjOJJ2k2WzqOs3XtrvBcugf7ec4esaimEvhxifFYlH7J1I9FjGX+qRer0u3NKO1qHHH7DZW9yU2/rkg5Ao1WMRA9EO1WiUtPTaPgUhNOp2mzpNTskiXfuESDJewlCyGpNW34nLI8FvkLY5GI0iazmRja0stXl5ewtN0GLLfVC2aSogKCpwVq1AphQrOEh2SFnV9GHMV5mKqkhZvb2+hagqFQiEAFhHsT4f5livWRReARf3wl/qXsTi+6wv+xerqagAsvr29QdUU+O+Iy1js9/tQFfh1UaJEHsDuBsAiLAJYBLAIYBEWASwCWHQA/rwyWNTP09NTACza3NvVBvgTIWQsxmIxqJoCfyKEjEXHim47sDTKWIzH4/A0HeaUaxmLbnQvIIU55Rp7VCqkmwbCokWwlUOGRVrY0swkLaZSKUj6kUajYbXFTCYDSX7gqQQkaZG0NYlLdDodhtgR6yI5DAV/YZGD4+NjSy1ms1no8cnr6ytpPRJ5i2tra9Djn/v7e7pzAHmLPNUjHDsHIBKptC7iQ6OESIqpVcni9vY2xEhMrdqL5ylZRNQox3A43Nvb8zwPkUbgqVQqZ2dnWn6Uat1wvV1Ew0k+n1cscaSh+jvqvmthd3dX+nQaM6otrKysmFwXS6USHKij0ltDg0WkxKmTSCTM71Hx0ViR/f198xbZCoG6iuJxJnY3VuxObYn6q9UqfMihnv6izSJSjQ1uKXTOqMViEVaMbCl0WsTh+Kzo+rSneXeD4TgTR0dHNlrEcJxpIOrKl9AfaWA4Mg9EEosYjn6IRCIaE5e09SWexPO8SqUCVVM4Pz/X+NNIzm6WlpYo+rY6g/a2NyRjcQy+HvMMxDnSc1T140EnoTiqJLSYyWSQsPo1uqA4qiScUTGvMsyl5GNxDPI5GF4FucVkMon96jhApEttIZ9RMa+SzqVMY3EMT5Nla2k2m6Q/n8niwsICZ29Qq8hmsypZihZZnPt9YBHCBVI88sbGBvVvYVoXQ7tAki6HBsYi51OFSuGckUzGkOx0OB/TgEWx06nX624rFA/IWffATFaxWPMdFikejXkfx727mWQ4HGq/4T5JKpVKJpOflZVHo9Hz8/P9/T11aEgdV9hlcfxm9RbYSqfTuVzOz3scDAY3Nzd6O4KKtdBIARnDFseUy+X393fFyFolLFO/1764uHhycmLqBVphUfo9Ksr7Sq/Xk6gxrHKZ2ymLY66urn5ct8TGYWtri/rqa7/fb7fbP3bGEEuvDbf+7LI4xvO8i4uLyRVLzFfr6+vak458IlbQx8fHl5eXT6lCnvjP2HOJ2kaLIBjxIoBFAIuwCGARUPFLgPbOJiTKrg3A8318m+BZRFFM6cJsFvY3EhgyCpGMtClDEAbCQCGCARERERlEREIkZuFCRJcKtRGC0BYRBjGgYmZDgvmAP41U8myCWRjOru98zkdB71uvM/PMc37mulbiwpk53tec+5znnPsmRwVARQBARQBUBABUBLfJZDKpVGpra2t3d/d3p18Kr25vPP9hCCBX8TY2Nubn54V7jAYqgqc4jpNIJIp9iBcVAf5+9ltYWChq71ZARfiTgbOzs65PgD9uyQAqwj9A70VUBMnT4NjYWLH3YGiygorwWxzHicfjBV4XPQqhUIjRRkWQKWGWGzduMOaoCL+mo/39/Z5J6Du87k12iorg9ZrwrzQ3NzP4qAj/5/nz53Nzc96/bjAYpNEYKoKEZeEv3L9/n38BKsKRSncVj+7ubimlDFER1FoZerw98wuRSESdempawCUpA7Fte3R0VOIbcL28KSqCfoiMVO4Zbq4moiJIXhziISqCEh7GYjGe5ucN2zbm5KUSPbQsa3h4mP1SVCx1bNuWuD5kk4YEFf6H643VcpoMBwYGvG9lx6wIKjI7OyvlddmhQUX4ieM43i8RA4FAb28vg4+K8JNEIuGxhJ2dnWzPoCL8imdTolgWipnQ4yb1qAh6kEqlmAlREeSzvb1d1L/PxgwqgkyCwWBrayuPKFARjsrXr19d/GuhUKi5uRkDURFy5uTJk4VPgLdu3eLgKCqC14ipr7q6+sKFC2zDqAYH3/QmnU5/+PDh4ODgl98fO3bs7Nmzxw9hlFARAFCxgHnGcZwvX758+vTp27dvOzs7R6wQ4/f7T58+XVVVVVZWJn42bzr6MTK2bR99WHIauvPnz4ufSzN5Ll0Vs91zNzc3l5eXi12OSYTXtWvXAoGAFpWXfozM+vq6cE/iO7Esq7a2NhgMlkLFqhJSMdu7M5FIyA2vHwgz6+vrL168KHf+FKPx9u3blZUVRYblzwgtw+GwkWYarqLIqV6+fKlL52oP5BQDsrq6qs73UYG5xt27d43R0kwVk8nk48ePJVYBVUfOVCr15s0bD5JwuTQ1NTU2Nmq9yDRKxcXFxadPn5odc39edoq5bmdnR3wTra2tleYWgL7VPUxQUcTfxMSEARkXuIVlWZ2dnXqdItJbRVkNkkAXwuFwJBJBxWIhq1UgICQqIiEYLqROKsbjcSSEAmlra6urq0PFPJFegh5MQs06PaqrmEqlRkZGiB5wnVAo1N7ejopkpMD0qIOKTIZQbAlbWlqUWjSqqOLU1NTS0hLhAqVgoKIqSu8gD6YSDofv3Lmj8iFVhVR0HGdwcJCgAXenQV1OwKmiom3bo6OjhA64hXZFzZVQMZlMTk5OEj1QmhKqoiIegovpqL49diSrSF4KbqHsiTYNVEyn0319fcQQFIiYBmOxmO514mSq2NPTw3MLKBBj2l1JK9Q/NTWFh1AgYjI0puGHHBUXFxc5TwMF8ujRI5PqPv/b+5fMZDLT09NEEuChZBVnZ2eJJCiEoaEh8/ogeK2i4zhcAoZCiEajmj45VEvFFy9eEEyQN+Fw+OrVq0Z+NE9VTKfT7NZA3liWpUslRdVVXF1dJZ4gb+7du2fwp/NUxUQiQTxBfoj1oampqdcqplIpaulD3ly/ft3sD+iditvb28QT5E19fT0quoNt28QT5EcwGDS+K7h3Ku7s7BBSkB+l0ADcOxU5/A15U1ZWhorukEqliCfIG+OzU5+UM6gAgIrArIiKAPmSyWRQEQBQEeCQvb09VASQz+fPn1ERQD7Ly8uo6A5GXrsGz9jf3zf+0bRHKpbCZjQUldevX6OiOwSDQeIJ8mZpaSmdTqOiC5w6dYp4gkJ49uwZKrpAeXk5wQQFTozJZBIVC6WyspJgggKZnJw0NU31TkW/329ZFsEEBWJqF0BPnys2NDQQSVAgjuOMj4+jYkFcvnyZSILCWVtbM89GT1WsqKggRwW3bIzH46hIjgry2dra6unpMeb+lNcq1tTUEEPgFvv7+11dXWacifNaRb/fz7EbcJeRkZGZmRlUzBkzOqeDUrx69Uokq1qXn//X9+/fvX9VseAWiT4BBK4TCoXa29tR8ajYtm3qg1pQgba2trq6OlRkYgQliEajGjWfkqZiKpUSq23CBYpNJBLRYntCmoqCmZkZsdomVsADAoFAZ2enylfYZaqYyWS6urqIEmAZKVlFweLi4vT0NPEBHmNZVktLi1JOSlbRx/4NyKapqamxsVF67ipfxXQ63dfXR0CAdPx+f3Nzs6xNV/kqCpLJ5OTkJKEApbyeVKIksfgeCoVCRACoQCAQkLKGVKU6eHt7O1cZQQUePHgg5XUVKtQ/MDBAHIBcotHo8ePHS11FMQRiIIgGkEU4HJZ4UE6t9jViICKRCDEB3uP3++XGnnKdpMKHEBngMbFYTO4bULGpm/hy4qY/eOyh9Ef8ivZX7OjooA8ceEM0Gq2oqJD+NpR4xP87BgcHtS6RAFp4qMidRqW7Dg8NDTE3QlGXQurcLVZ6VmRuhKJ6qNQGoQYqYiMY76E2KgrGx8fX1taIITDSQ51U9FGAA9xA2dpTOqnoO6w8a0AdaJBFLBZT4bmFCSr6KBUHeWFZ1sDAgKyj3maq6DusT9Xf37+/v0+EwVEIBAK9vb2Kv0ktVczCRg4chaamptu3b6v/PjVW0UfBOPgnuru7q6qqtHireqvoO6xS9fDhQ5JV+OvicHh4WOUaxKapmGVqamppaYn4gyzhcFi7i6+GqChwHGdwcJAoBJWfWJSEilnYyylltNgpLRUVfTx4LFU02qEpFRWZHkuNYDDY0dGh+6cwVsXs6jEej7O5ajCWZYmM1IxLrSarmIVjq6aiSw9TVPxJJpMZGxujX5UxaL09U9IqZuEwgBkSKt48GBVZQLIsREWEBCRExQKFnJiY0KVqjojFS5culZeXV1ZW5hqXIjkXH1Oslnd3dzV6xmNwOoqKf49qpTqy1gWDQQ+eWdu2LRRdWVlR6ivJsN1RVMwNMXU8efLE+0lDJGANDQ01NTWK5GCZTGZjY+P9+/fen7AX3z6tra0q37VHRa9jcX5+fm5urhh/PBQKVVdXnzt3TqOAK7acYgK8efNmaRqIijlE4bt37xYWFnJ9LCnmuitXrmhnXU5JxMePHzc3N9fX13NNbsXg1NbWoh8quhCFgr29vYODg+xvTpw4cebMGdoKACoCoCIAoCIAKgIAKgKgIgC4zn8BsUWHdYwg3c8AAAAASUVORK5CYII=" width="302" height="302"/>
+  </symbol>
+</svg>
+
+<div id="wrap">
+  <div id="deck">
+
+    <!-- 1. Cover -->
+    <div class="slide active" data-slide="1">
+      <div class="cov">
+        <div class="cov-top">
+          <div class="cov-eb">2026 年度审视 · 内部沟通</div>
+          <svg class="logo W" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="cov-body">
+          <div class="cov-title">为简而存在。</div>
+          <div class="cov-sub">每一次决策都向同一个方向收敛——把复杂留给我们，把简单交给用户。</div>
+        </div>
+        <div class="cov-meta">Apple · 2026 Annual Review</div>
+      </div>
+    </div>
+
+    <!-- 2. Stat row -->
+    <div class="slide" data-slide="2">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">02 · 一览</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">用一组数字说明现在。</div>
+          <div class="ssub">这些不是营销口径——是 Apple 现在每天在做的事的尺寸。</div>
+          <div class="absorb">
+            <div class="stat-row">
+              <div class="stat-card">
+                <div class="stat-label">设立年份</div>
+                <div class="stat-num">1976</div>
+                <div class="stat-desc">Cupertino。49 年的产品线累积演进至今。</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">产品类目</div>
+                <div class="stat-num">7</div>
+                <div class="stat-desc">Mac · iPad · iPhone · Watch · Vision · AirPods · Accessories。每一类都是品类领导者。</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">iPhone 系列</div>
+                <div class="stat-num">5</div>
+                <div class="stat-desc">2026 lineup：17 Pro / Air / 17 / 17e / 16。每一档都对应一个清晰的取舍点。</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">价值观</div>
+                <div class="stat-num">3</div>
+                <div class="stat-desc">隐私、环境、无障碍——这三件事是产品决策的同等输入。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Narrative + pullquote -->
+    <div class="slide" data-slide="3">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">03 · 经营基调</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">隐私是 iPhone 的设计前提。</div>
+          <div class="ssub">每一个新功能在落地之前，都先回答一个问题——它有没有可能侵犯用户的私人数据。</div>
+          <div class="absorb">
+            <div class="narr-col">
+              <div class="narr-body">
+                <p>Apple 在 2007 年推出 iPhone 时，就把"用户的数据属于用户"这条线写进了产品架构。指纹和面容识别在设备端完成、邮件和健康数据加密同步、Siri 把请求匿名化处理——这些不是事后补丁，是从底层一直贯穿到 UI 的设计选择。</p>
+                <p>这条原则在过去十几年里从未改写。每一个新功能在 review 时都要回答同一个问题：它有没有让用户的私人数据离开他们的控制范围。如果答案不确定，那个功能就不会发布——不论它的市场价值。</p>
+              </div>
+              <div class="pull">"Privacy. That's iPhone."</div>
+              <div class="pull-attr">Apple Privacy</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. G2 -->
+    <div class="slide" data-slide="4">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">04 · 两条产品线</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">移动 + 个人计算。</div>
+          <div class="ssub">两条产品线，共享一套工具链。Mac 让创作者动手，iPhone 让所有人随身。</div>
+          <div class="absorb">
+            <div class="g2">
+              <div class="show-card">
+                <div class="show-cap">移动 · iPhone 系列</div>
+                <div class="show-title">每个人口袋里的设备</div>
+                <ul class="show-list">
+                  <li><span class="check">→</span><span>iPhone 17 Pro · 摄影系统的旗舰平台。</span></li>
+                  <li><span class="check">→</span><span>iPhone Air · 极致轻薄的钛金属机身。</span></li>
+                  <li><span class="check">→</span><span>iPhone 17 / 17e · 主流配置 + 入门级。</span></li>
+                  <li><span class="check">→</span><span>iPhone 16 · 经典代际的延续。</span></li>
+                </ul>
+              </div>
+              <div class="show-card dark">
+                <div class="show-cap">个人计算 · Mac 系列</div>
+                <div class="show-title">创造工具的源头</div>
+                <ul class="show-list">
+                  <li><span class="check">→</span><span>MacBook Neo · 全新代际的便携工作站。</span></li>
+                  <li><span class="check">→</span><span>MacBook Air / Pro · 轻办公到专业开发的连续区间。</span></li>
+                  <li><span class="check">→</span><span>iMac · 一体机桌面方案。</span></li>
+                  <li><span class="check">→</span><span>Mac mini · 最紧凑的桌面 Mac。</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Table -->
+    <div class="slide" data-slide="5">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">05 · 价值观矩阵</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">三个原则，一以贯之。</div>
+          <div class="ssub">每一条价值观都对应到具体的产品行为——不是 PR 口径，是每一行代码、每一次 review 的输入。</div>
+          <div class="absorb">
+            <div class="tbl-wrap">
+              <table class="tbl">
+                <thead>
+                  <tr>
+                    <th style="width: 22%;">原则</th>
+                    <th style="width: 42%;">在产品里如何体现</th>
+                    <th style="width: 36%;">怎么衡量</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="row-cap">隐私</span></td>
+                    <td>设备端识别、加密同步、Siri 请求匿名化、App Tracking Transparency。</td>
+                    <td><span class="pos">— 默认开启</span>，由用户主动放宽，而不是用户主动收紧。</td>
+                  </tr>
+                  <tr>
+                    <td><span class="row-cap">环境</span></td>
+                    <td>再生材料、产品包装去塑、运营碳中和承诺。</td>
+                    <td><span class="neu">— 公开报告</span>，每年一次环境进展报告。</td>
+                  </tr>
+                  <tr>
+                    <td><span class="row-cap">无障碍</span></td>
+                    <td>VoiceOver、Switch Control、Live Captions、Personal Voice。</td>
+                    <td><span class="pos">— 内置</span>，与系统同发布，不另收费。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Chart -->
+    <div class="slide" data-slide="6">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">06 · 环境承诺</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">2030 年实现碳中和。</div>
+          <div class="ssub">Apple 设定的目标涵盖整个产品生命周期——制造、运输、使用、回收。每一段都有独立的削减路径。</div>
+          <div class="absorb">
+            <div class="chart-wrap">
+              <div class="chart-bars">
+                <div class="chart-row">
+                  <div class="chart-row-label">
+                    <div class="chart-row-name">企业自有运营</div>
+                    <div class="chart-row-val">100%</div>
+                  </div>
+                  <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 100%;"></div></div>
+                  <div class="chart-bar-meta">2020 年起，全球办公室、零售店、数据中心已经实现碳中和。</div>
+                </div>
+                <div class="chart-row">
+                  <div class="chart-row-label">
+                    <div class="chart-row-name">供应链直接排放</div>
+                    <div class="chart-row-val">75%</div>
+                  </div>
+                  <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 75%;"></div></div>
+                  <div class="chart-bar-meta">直接合作伙伴已承诺的清洁电力配额。剩余 25% 在路上。</div>
+                </div>
+                <div class="chart-row">
+                  <div class="chart-row-label">
+                    <div class="chart-row-name">2030 全产品线</div>
+                    <div class="chart-row-val">目标</div>
+                  </div>
+                  <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 50%;"></div></div>
+                  <div class="chart-bar-meta">从原料、制造到运输、回收，每一段都做到净零排放。</div>
+                </div>
+              </div>
+              <aside class="chart-callout">
+                <div class="chart-callout-cap">这意味着什么</div>
+                <div class="chart-callout-title">这是一个交付承诺，不是营销话术。</div>
+                <div class="chart-callout-body">每年的环境报告会把每一段进度公开。落后了就承认落后；提前了也只是写在脚注。</div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Flip cards -->
+    <div class="slide" data-slide="7">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">07 · 两个新方向 · 点击查看</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">下一个十年的两条线。</div>
+          <div class="ssub">spatial computing 和 Apple Intelligence 是 Apple 当前最大的两个赌注。点击卡片查看背面。</div>
+          <div class="absorb">
+            <div class="flip-row">
+
+              <div class="fc" onclick="this.classList.toggle('on')">
+                <div class="fc-inner">
+                  <div class="ff ff-front">
+                    <div class="ff-roman">I</div>
+                    <div class="cnm">Vision Pro</div>
+                    <div class="cbd">空间计算的第一台主流设备——把屏幕从平面拉进三维。</div>
+                    <div class="ht">点击查看</div>
+                  </div>
+                  <div class="ff ff-back">
+                    <div class="bkl">空间计算</div>
+                    <div class="bkt">把生产力工具从平面带进三维空间</div>
+                    <div class="bkbody">Vision Pro 重写了"屏幕"的定义——你可以同时打开 6 个 Mac 窗口、把 FaceTime 钉在墙上、把 Keynote 大屏铺满整个房间。这是一台有可能改变工作场景的设备。</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="fc" onclick="this.classList.toggle('on')">
+                <div class="fc-inner">
+                  <div class="ff ff-front">
+                    <div class="ff-roman">II</div>
+                    <div class="cnm">Apple Intelligence</div>
+                    <div class="cbd">本机优先、设备端处理、隐私保护的 AI 助手。</div>
+                    <div class="ht">点击查看</div>
+                  </div>
+                  <div class="ff ff-back">
+                    <div class="bkl">私有云计算</div>
+                    <div class="bkt">AI 在你的设备上，不在别人的服务器上</div>
+                    <div class="bkbody">Apple Intelligence 默认在设备端运行——用户的数据不离开 iPhone / Mac / iPad。需要更强算力时使用 Private Cloud Compute——服务器跑完任务后立即销毁数据，整个过程可被独立审计。</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Timeline -->
+    <div class="slide" data-slide="8">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">08 · 50 年的产品线</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">每一代都重写了一次"个人计算"。</div>
+          <div class="ssub">从 Apple I 到 Vision Pro。50 年里 Apple 推出过几次真正改变行业的产品——它们之间的间隔不长。</div>
+          <div class="absorb">
+            <div class="tl">
+              <div class="tl-track">
+                <span class="tl-dot" style="left: 12.5%;"></span>
+                <span class="tl-dot" style="left: 37.5%;"></span>
+                <span class="tl-dot" style="left: 62.5%;"></span>
+                <span class="tl-dot is-now" style="left: 87.5%;"></span>
+              </div>
+              <div class="tl-stops">
+                <div class="tl-stop">
+                  <div class="tl-stop-cap">1976 · 起点</div>
+                  <div class="tl-stop-title">Apple I</div>
+                  <div class="tl-stop-desc">车库阶段。Steve Jobs 和 Steve Wozniak 推出第一台 Apple 计算机。</div>
+                </div>
+                <div class="tl-stop">
+                  <div class="tl-stop-cap">1984 · Mac</div>
+                  <div class="tl-stop-title">Macintosh</div>
+                  <div class="tl-stop-desc">第一台面向大众的图形界面计算机。鼠标、文件夹、窗口——后来所有桌面的范本。</div>
+                </div>
+                <div class="tl-stop">
+                  <div class="tl-stop-cap">2007 · iPhone</div>
+                  <div class="tl-stop-title">iPhone</div>
+                  <div class="tl-stop-desc">手机重新被定义。多点触控、App Store、移动互联网都是这台设备催生的。</div>
+                </div>
+                <div class="tl-stop is-now">
+                  <div class="tl-stop-cap">2024 · 现在</div>
+                  <div class="tl-stop-title">Vision Pro</div>
+                  <div class="tl-stop-desc">空间计算的第一代消费级硬件。屏幕从平面被推进三维空间。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Big quote -->
+    <div class="slide" data-slide="9">
+      <div class="sw">
+        <div class="shd">
+          <div class="shd-num">09 · 一句话</div>
+          <svg class="logo L" viewBox="0 0 302 302" aria-label="Apple"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="sc">
+          <div class="stitle">这一切归结为一句话。</div>
+          <div class="ssub">这是 Apple 五十年的设计哲学——每一个版本的 Mac、每一代 iPhone、每一项隐私协议都从这里推导。</div>
+          <div class="absorb">
+            <div class="bigq">
+              <div class="bigq-text">Designed by Apple in California.</div>
+              <div class="bigq-attr">Apple · Since 1976</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) { deck.style.transform = 'none'; return; }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+(function () {
+  var slides = Array.from(document.querySelectorAll('.slide'));
+  var i = 0;
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') show(i + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') show(i - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+  });
+})();
+</script>
+
+</body>
+</html>

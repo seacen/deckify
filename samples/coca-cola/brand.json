@@ -1,0 +1,118 @@
+{
+  "host": "www.coca-cola.com",
+  "brand_name": "Coca-Cola",
+  "base_url": "https://www.coca-cola.com/",
+  "chosen_logo": {
+    "id": "c8dd6b96",
+    "why": "the-coca-cola-company-logo.svg from corporate site header \u2014 direct SVG URL of the Spencerian wordmark, hosted by Coca-Cola itself. SVG vector means clean currentColor flip between white-on-black and red-on-white."
+  },
+  "alt_logo_ids": [
+    "4af94a22",
+    "5dd63c9e",
+    "c8dd6b96"
+  ],
+  "palette": {
+    "brand_primary": {
+      "hex": "#EA0000",
+      "name": "--color-brand-red",
+      "evidence": "Coca-Cola Red \u2014 the iconic colour that IS the brand. Per user direction: this is the dominant chord, used as cover background. Captured as `--color-icon-brand-primary-regular: #ea0000` in the site's design-token system. (User chose 'full red bg + white wordmark' over the corporate-site monochrome reading.)"
+    },
+    "brand_secondary": {
+      "hex": "#EA0000",
+      "name": "--color-brand-red",
+      "evidence": "Coca-Cola has a single brand colour. --primary AND --accent both map to Coca-Cola Red \u2014 covers use it as bg, content slides use it as CTA / chart fill / pull-quote border."
+    },
+    "ink": {
+      "hex": "#000000",
+      "name": "--color-brand-ink",
+      "evidence": "Pure black for body text \u2014 674\u00d7 in CSS. Coca-Cola has chosen unsentimental pure black, not Apple-Ink-style off-black."
+    },
+    "paper": {
+      "hex": "#EEEEEE",
+      "name": "--color-brand-paper",
+      "evidence": "Computed body bg rgb(238,238,238) = #EEEEEE on every page. Coca-Cola uses a light-grey paper rather than pure white \u2014 gives the editorial feel without surface glare."
+    },
+    "accents": [
+      {
+        "hex": "#BF1004",
+        "name": "--color-brand-red-deep",
+        "evidence": "`--color-icon-component-input-critical: #bf1004` \u2014 deeper red used for input-critical states. The shadow-mode of the brand red."
+      },
+      {
+        "hex": "#FFE9E2",
+        "name": "--color-brand-red-pale",
+        "evidence": "Pale red wash \u2014 6\u00d7 in CSS. Soft callout / row-tint variant of the brand red."
+      },
+      {
+        "hex": "#FFA68F",
+        "name": "--color-brand-coral",
+        "evidence": "Warm coral \u2014 30\u00d7 in CSS. Used for soft-CTA variants and hover transitions."
+      },
+      {
+        "hex": "#FFFFFF",
+        "name": "--color-brand-paper-pure",
+        "evidence": "Pure white \u2014 622\u00d7 in CSS. Used as the on-black surface and inverse paper for high-contrast moments."
+      }
+    ],
+    "neutrals": [
+      {
+        "hex": "#4F4F4F",
+        "name": "--color-brand-graphite",
+        "evidence": "Mid-tone grey \u2014 80\u00d7 in CSS. Used for secondary text and disabled states."
+      },
+      {
+        "hex": "#BDBDBD",
+        "name": "--color-brand-stone",
+        "evidence": "Light grey \u2014 240\u00d7 in CSS. Used as `--color-icon-action-on_brand-primary-disabled` and divider lines."
+      },
+      {
+        "hex": "#353535",
+        "name": "--color-brand-coal",
+        "evidence": "Near-black \u2014 78\u00d7 in CSS. Used for hover states on dark surfaces."
+      }
+    ]
+  },
+  "typography": {
+    "display_font": {
+      "family": "Georgia",
+      "evidence": "User chose Georgia as serif fallback for Coca-Cola's editorial register (TCCC-UnityText is proprietary, not licensable for slide decks). Pairs the 1886-brand provenance with magazine-newspaper typography."
+    },
+    "body_font": {
+      "family": "Helvetica Neue",
+      "evidence": "User chose Helvetica Neue as sans body to complement Georgia headlines \u2014 classic editorial pairing."
+    }
+  },
+  "spacing_radius_shadow": {
+    "radius_style": "split \u2014 sharp 0px on surfaces, 8000px (full pill) on CTAs",
+    "shadow_style": "flat \u2014 no box-shadow on top-level chrome",
+    "spacing_density": "comfortable",
+    "evidence": "Computed surface radius 0px on body / h1; button radius 8000px (effectively pill \u2014 same logic as 999px). No shadows observed. Body padX/padY varies but never tight."
+  },
+  "aesthetic": {
+    "mood": "editorial monochrome with iconic red wordmark",
+    "style_keywords": [
+      "Spencerian wordmark as the brand",
+      "monochrome canvas",
+      "black + white + iconic red",
+      "editorial-newspaper register",
+      "pill-button interactions",
+      "0-radius surfaces",
+      "single-saturated-mark"
+    ],
+    "precedents": [
+      "New York Times feature pages \u2014 but with the iconic Coke wordmark as the brand exclamation",
+      "Harvard Business Review covers \u2014 black on grey with one accent",
+      "Apple's monochrome treatment but with red instead of blue",
+      "1960s magazine ad layouts \u2014 wordmark + manifesto copy + generous whitespace"
+    ],
+    "voice_register": "corporate editorial; manifesto-grade copy with the iconic wordmark as the visual anchor. The brand voice on the site is quiet \u2014 the wordmark does the heavy lifting."
+  },
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/us-en/shot.png",
+    "recon/pages/us-en-brands/shot.png",
+    "recon/pages/us-en-impact-culture/shot.png",
+    "recon/pages/us-en-brands-freestyle/shot.png",
+    "recon/pages/about-us/shot.png"
+  ]
+}

@@ -31,7 +31,7 @@
 - **Desktop (≥ 769 px)**: 1280 × 720 px canvas, scale-to-fit (§5 runtime), keyboard / click navigation.
 - **Mobile (≤ 768 px)**: all slides stack vertically as a scrollable page; single-column layouts.
 
-### Design taste <!-- ENGINEERING-DNA framing; the "what to avoid" list is invariant -->
+### Design taste <!-- ENGINEERING-DNA: design-taste -->
 
 **Commit to a clear aesthetic point of view.** This DS is a brand instrument, not a generic SaaS template. Every deck made from it should be unmistakably *this* brand on first glance — not "another tasteful business presentation." Bold maximalism and refined minimalism both succeed; the failure mode is timidity.
 
@@ -68,21 +68,27 @@ This Design System defines **hard constraints** (what you must never break) and 
 
 ---
 
-## 2. Colour Tokens <!-- BRAND-VARIABLE: hex values; token NAMES are invariant -->
+## 2. Colour Tokens <!-- BRAND-VARIABLE: hex values + brand-palette names; core role token names are invariant -->
+
+The token system has three layers:
+
+1. **Core role tokens** — invariant names across every brand. They identify *what role* the colour plays, not *what colour it is*. A red brand's `--primary` is red; a blue brand's `--primary` is blue.
+2. **Semantic tokens** — invariant names; encode meaning (positive / negative / warning / informational) rather than colour identity.
+3. **Brand palette tokens** — brand-specific names AND hex values. These are the additional accents the brand actually uses (e.g. Unilever's `--lilac` and `--water`, P&G's `--spark`, Stripe's `--lavender`). Naming is whatever the brand uses for them — captured during Phase 1 from `brand.json`.
 
 ```css
 :root {
-  /* ── Brand ── */
-  --navy:     {{NAVY_HEX}};   /* Primary brand dark */
-  --blue:     {{BLUE_HEX}};   /* Accent / CTA */
+  /* ── Core role tokens (invariant names) ── */
+  --primary:  {{NAVY_HEX}};   /* Dominant brand chord — cover bg, primary mark colour */
+  --accent:   {{BLUE_HEX}};   /* CTA / link / single saturated highlight */
   /* ── Neutrals ── */
-  --surface:  {{SURFACE_HEX}};   /* Off-white slide bg */
+  --surface:  {{SURFACE_HEX}};   /* Paper / slide bg */
   --white:    #FFFFFF;
-  --ink:      {{INK_HEX}};   /* Body text on light */
-  --mid:      {{MID_HEX}};   /* Secondary text */
-  --rule:     {{RULE_HEX}};   /* Dividers */
-  --tint:     {{TINT_HEX}};   /* Subtle separation bg */
-  /* ── Semantic ── */
+  --ink:      {{INK_HEX}};   /* Body text on light surfaces */
+  --mid:      {{MID_HEX}};   /* Secondary text / muted labels */
+  --rule:     {{RULE_HEX}};   /* Dividers / hairlines */
+  --tint:     {{TINT_HEX}};   /* Subtle row / section bg */
+  /* ── Semantic (invariant names; values may map to brand-palette colours) ── */
   --green:    {{GREEN_HEX}};   /* Positive */
   --green-bg: {{GREEN_BG_HEX}};
   --red:      {{RED_HEX}};   /* Negative */
@@ -91,13 +97,18 @@ This Design System defines **hard constraints** (what you must never break) and 
   --warn-bg:  {{WARN_BG_HEX}};
   --teal:     {{TEAL_HEX}};   /* Informational / neutral highlight */
   --teal-bg:  {{TEAL_BG_HEX}};
+  /* ── Brand palette (brand-specific names; expanded from brand.json accents+neutrals) ── */
+{{BRAND_PALETTE_TOKENS}}
 }
 ```
 
 **Rules:** <!-- ENGINEERING-DNA -->
-- `--navy` and `--blue` are the only dark fills. Never pure black. (Token names are abstractions — `--navy` is whatever this brand's dominant dark is.)
-- One *dominant* accent colour per slide. Semantic colours (green/red for pass/fail, amber for caution, teal for info) may coexist when they carry distinct, opposing meaning — e.g., a comparison slide with ✓/✗ marks.
-- `--tint` is for rows, not card fills.
+- **Token names are role abstractions, not colour names.** `--primary` is the brand's dominant chord regardless of whether that chord is navy / red / yellow / black. Slide CSS reads `var(--primary)` and gets the right colour for whichever brand DS it's loaded against.
+- **One *dominant* accent colour per slide.** Use `--accent` for the slide's signature highlight (CTA, callout border, chart fill). Brand-palette tokens (e.g. `var(--lilac)`) are reach-for-when-needed decoration, not parallel accents — at most one decorative brand-palette colour per slide.
+- **Semantic colours coexist when they carry distinct, opposing meaning** — e.g., a comparison slide with ✓ (`--green`) / ✗ (`--red`) marks. Otherwise pick one.
+- **`--tint` is for rows, not card fills.**
+- **Never pure black.** `--primary` is the brand's actual dark; if the brand has nothing dark, use `--ink` for what would otherwise have been black.
+- **Never ad-hoc hex literals in slide CSS.** Every colour must come from a token (core / semantic / brand palette). The `token_only_colors` hard check enforces this.
 
 ---
 
@@ -124,7 +135,7 @@ This Design System defines **hard constraints** (what you must never break) and 
 ### Readability <!-- ENGINEERING-DNA -->
 
 1. **Maximise**: Default to the largest size that fits. Half-empty slide with 14px body = design failure.
-2. **Floor**: Nothing below 12px. If content doesn't fit at min sizes, change layout — never shrink font.
+2. **Floor**: Nothing below 12px <!-- ENGINEERING-DNA: typography-floor -->. If content doesn't fit at min sizes, change layout — never shrink font.
 
 | Role | Minimum | **Enforced default** |
 |---|---|---|
@@ -137,7 +148,7 @@ This Design System defines **hard constraints** (what you must never break) and 
 
 **Enforcement**: Title below 50px or primary body below 16px on a slide's main content area is a bug. Component-internal secondary text (card descriptions, list details) may use 13–14px to maintain visual hierarchy between title and description within the component.
 
-### 3.1 Typography Safety <!-- ENGINEERING-DNA — non-negotiable layout invariants -->
+### 3.1 Typography Safety <!-- ENGINEERING-DNA: typography-safety -->
 
 Slide "looks good" is engineering-quantifiable. The rules below are hard rules; the `text_layout_safe` auto-check enforces most of them.
 
@@ -229,7 +240,7 @@ Source resolution order (the actual order `embed_logo.py` tries):
    Inherited fill on the outer <svg> cascades in correctly. */
 .logo   { height: {{LOGO_HEIGHT}}; width: auto; flex-shrink: 0; fill: currentColor; }
 .logo.W { color: #fff; }
-.logo.L { color: var(--navy); }
+.logo.L { color: var(--primary); }
 ```
 
 ### Placement rules <!-- ENGINEERING-DNA -->
@@ -247,12 +258,14 @@ Source resolution order (the actual order `embed_logo.py` tries):
 
 ### Scaffold
 ```
-#wrap — fixed fullscreen, flex-centre
+#wrap — fixed fullscreen, flex-centre, background: var(--ink)
   #deck — 1280 × 720, position:relative, overflow:hidden (hard contract)
     .slide × N — absolute inset, opacity show/hide, overflow:hidden (hard contract)
 ```
 
-### Fullscreen fit — scale-to-fit at runtime <!-- ENGINEERING-DNA — DO NOT REMOVE -->
+`#wrap` and `body` background **must use `var(--ink)`**, not hardcoded `#000` / `#1A1A1A` / `#1F1F22` — those get caught by `token_only_colors`. Each brand's `--ink` already encodes its real dark register (Coca-Cola pure black, Unilever warm graphite, Apple near-black), so the letterbox follows it correctly.
+
+### Fullscreen fit — scale-to-fit at runtime <!-- ENGINEERING-DNA: scale-to-fit -->
 
 The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any viewport without black borders, scale at runtime via CSS transform — never resize the canvas itself. This keeps every measurement, every fit-contract calculation, every `offsetWidth` value invariant; the auto-eval and the visual reality both stay coherent.
 
@@ -298,7 +311,7 @@ The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any view
 
 ### Content slide (`.sw`)
 ```css
-.sw { background: var(--surface); border-left: 3px solid var(--blue); display: flex; flex-direction: column; height: 100%; }
+.sw { background: var(--surface); border-left: 3px solid var(--accent); display: flex; flex-direction: column; height: 100%; }
 /* Default: symmetric padding. Override with asymmetric bottom pad for visible breathing room. */
 .sw .sc { flex: 1; padding: 32px 80px 32px 96px; display: flex; flex-direction: column; overflow: hidden; }
 ```
@@ -306,16 +319,16 @@ The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any view
 ### Header strip (`.shd`) — every content slide
 ```css
 .shd { display: flex; align-items: center; justify-content: space-between; padding: 0 80px 0 96px; flex: 0 0 54px; border-bottom: 1px solid var(--rule); }
-.shd-num { font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--blue); }
+.shd-num { font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
 ```
 
 ---
 
-### 5.1 Single-Slide Fit Contract (hard-won, non-negotiable)
+### 5.1 Single-Slide Fit Contract (hard-won, non-negotiable) <!-- ENGINEERING-DNA: fit-contract -->
 
 **The one rule that prevents every "content overflowing the deck" bug:** a content slide is a *fixed-size box*, not a scrolling document. Every slide must fit inside 720 px with visible bottom breathing room. If it doesn't, you reduce content — never ship a slide that clips or leaks.
 
-#### The three-layer overflow safety net
+#### The three-layer overflow safety net <!-- ENGINEERING-DNA: three-layer-overflow -->
 
 Every stacked content slide MUST carry `overflow: hidden` at THREE levels. This is belt-and-braces: one layer catches whatever the others miss.
 
@@ -414,7 +427,7 @@ Comparisons, feature lists, metrics. `grid-template-columns: 1fr 1fr; gap: 20px`
 Single column, large type, pull-quotes. For context, summary, recommendation slides.
 
 ### Type D — Flip cards
-Two cards side-by-side. Front = `--navy`, back = `{{FLIP_BACK_COLOR}}` (softer than `--blue`). **Hover + click flip** — JS `onclick` toggles `.on` class (required for mobile). Ghost Roman numerals on front. Spacious back (32px padding, ≤ 4 content elements).
+Two cards side-by-side. Front = `--primary`, back = `{{FLIP_BACK_COLOR}}` (softer than `--accent`). **Hover + click flip** — JS `onclick` toggles `.on` class (required for mobile). Ghost Roman numerals on front. Spacious back (32px padding, ≤ 4 content elements).
 
 **Typography — must be large and commanding:**
 
@@ -436,7 +449,7 @@ Slide dominated by a table or structured data grid. Used for feature comparisons
 
 **Principles:** The table is the star — title + table + optional one-line callout below. No side panels competing for attention. If the table has 6+ columns, let it span full width.
 
-**Row-count rule** <!-- ENGINEERING-DNA — surfaced from Stripe verification overflow -->
+**Row-count rule** <!-- ENGINEERING-DNA: type-e-row-count -->
 - 5 rows is the comfortable count at standard 14 px row-padding (cell `padding: 14px 18px`).
 - 6+ rows require either (a) tightening cell padding to `padding: 10px 16px` or (b) splitting the data across two slides. Do not let the absorber clip — the `text_layout_safe` hard check catches it.
 - If the table needs 6+ rows AND a side callout in the absorber, split. Don't pack.
@@ -456,7 +469,7 @@ A self-contained, click-to-advance micro-experience embedded in a slide. Purpose
 
 **When to use:** Scenario walkthroughs, before/after comparisons, multi-step process visualizations.
 
-**Structure:** A "screen" area (dark bg `--navy` or `#1a1a2e`, 4px radius) with step-by-step content that advances on click. Controls: forward/back buttons or numbered steps. Content appears via CSS transitions.
+**Structure:** A "screen" area (dark bg `--primary` or `#1a1a2e`, 4px radius) with step-by-step content that advances on click. Controls: forward/back buttons or numbered steps. Content appears via CSS transitions.
 
 **Design rules:**
 - Must feel like a polished product demo, not a prototype. Clean typography, restrained animation.
@@ -481,7 +494,7 @@ Multiple content views switchable via tabs. Fits more information in one slide w
 ### Type J — Quote / pullquote
 A single striking statement that anchors a narrative moment. Used for key takeaways, audience reframes, or memorable one-liners.
 
-**Structure:** Large quote text (28–36px, weight 700, `--ink`) centered or left-aligned. Optional attribution below (14px, `--mid`). Left border accent (`3px solid --blue`) or none.
+**Structure:** Large quote text (28–36px, weight 700, `--ink`) centered or left-aligned. Optional attribution below (14px, `--mid`). Left border accent (`3px solid --accent`) or none.
 
 ### Type K — Timeline / roadmap
 Horizontal or vertical sequence of milestones. Used for project plans, evolution narratives, phase descriptions. Component spec in §7.12.
@@ -503,8 +516,8 @@ Full-height comparison panels. Used when 2–3 options need deep, structured com
   background: var(--white); border: 1px solid var(--rule);
   border-top: 3px solid var(--rule);
 }
-.panel.blue { border-top-color: var(--blue); }
-.panel.dark { background: var(--navy); color: #fff; border: none; border-top: 3px solid rgba(255,255,255,.2); }
+.panel.blue { border-top-color: var(--accent); }
+.panel.dark { background: var(--primary); color: #fff; border: none; border-top: 3px solid rgba(255,255,255,.2); }
 ```
 
 Internal: `.cap` eyebrow → title (18–22px 900) → rows (`.panel-row`: surface bg, 8px 12px padding) → optional callout.
@@ -515,7 +528,7 @@ Clean, elegant blocks for grouping content. White background, thin coloured top 
 
 **Design treatment:**
 - Background: `var(--white)` with `1px solid var(--rule)` border
-- **Top accent line**: `3px solid var(--blue)` (default). Can be `--navy`, `--green`, or `--red` per context. This is a thin, elegant line — not a filled header block.
+- **Top accent line**: `3px solid var(--accent)` (default). Can be `--primary`, `--green`, or `--red` per context. This is a thin, elegant line — not a filled header block.
 - **No mandatory label strip.** The title lives inside the card body as part of the content.
 - Title: 20px weight 900 `--ink`
 - Content: 15–16px weight 600 `--mid`, generous 12px+ gaps
@@ -526,7 +539,7 @@ Clean, elegant blocks for grouping content. White background, thin coloured top 
 .show-card {
   flex: 1; display: flex; flex-direction: column;
   background: var(--white); border: 1px solid var(--rule);
-  border-top: 3px solid var(--blue);
+  border-top: 3px solid var(--accent);
   padding: 20px 22px;
   gap: 10px;
   transition: transform .22s ease, box-shadow .22s ease;
@@ -534,7 +547,7 @@ Clean, elegant blocks for grouping content. White background, thin coloured top 
 .show-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
 .show-card .show-title { font-size: 20px; font-weight: 900; color: var(--ink); line-height: 1.15; }
 .show-card .show-desc { font-size: 15px; font-weight: 600; color: var(--mid); line-height: 1.5; }
-.show-card.accent-navy { border-top-color: var(--navy); }
+.show-card.accent-navy { border-top-color: var(--primary); }
 .show-card.accent-green { border-top-color: var(--green); }
 .show-card.compact { padding: 16px 18px; gap: 8px; }
 .show-card.compact .show-title { font-size: 18px; }
@@ -551,24 +564,24 @@ Small horizontal cards for structured lists. Left accent border + leading indica
   display: flex; align-items: flex-start; gap: 14px;
   padding: 12px 16px;
   background: var(--white);
-  border-left: 3px solid var(--blue);
+  border-left: 3px solid var(--accent);
 }
 ```
 
 **Leading indicator** — flexible:
-- **Ghost number** (default): `20px 900, --blue, opacity .4` — for sequential lists (`01`, `02`, `03`)
+- **Ghost number** (default): `20px 900, --accent, opacity .4` — for sequential lists (`01`, `02`, `03`)
 - **Icon circle**: small circle (24px) with symbol (`!`, `✓`, `→`) — for findings, alerts. Use semantic bg.
 - **Letter / label**: single letter or short label in same ghost style — for categorized items.
 
 ### 7.4 Stat Card (Tier 4 — "number card")
 
-Compact metric display. `stat-num` (36px 900 `--navy`) + `stat-label` (12px 800 ALL CAPS `--mid`).
+Compact metric display. `stat-num` (36px 900 `--primary`) + `stat-label` (12px 800 ALL CAPS `--mid`).
 
 ### 7.5 Callout / Note
 
 **Light** (inline note):
 ```css
-.snote { border-left: 3px solid var(--navy); padding: 10px 18px; background: var(--tint); font-size: 14px; font-weight: 700; }
+.snote { border-left: 3px solid var(--primary); padding: 10px 18px; background: var(--tint); font-size: 14px; font-weight: 700; }
 ```
 
 **Dark** (conclusion / recommendation bar):
@@ -591,7 +604,7 @@ Full-width navy block for slide-ending takeaways. Text: 13–16px 700–800, `rg
 
 ```css
 .dt { width: 100%; border-collapse: collapse; font-size: 14px; font-weight: 600; }
-.dt th { background: var(--navy); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; text-align: left; padding: 10px 14px; }
+.dt th { background: var(--primary); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; text-align: left; padding: 10px 14px; }
 .dt td { padding: 10px 14px; color: var(--ink); border-bottom: 1px solid var(--rule); }
 .dt tr.hi td { background: var(--tint); }
 .dt .pos { color: var(--green); font-weight: 800; }
@@ -609,10 +622,10 @@ Full-width navy block for slide-ending takeaways. Text: 13–16px 700–800, `rg
 
 | Type | Primary colour | Secondary | Neutral | Notes |
 |---|---|---|---|---|
-| Bar (H / V) | `--blue` | `--navy` | `--rule` | Animated grow on entrance |
-| Progress / gauge | `--blue` fill | — | `--rule` track | 8px height, 4px radius |
-| Pie / donut | `--navy` | `--blue` | `--rule` | Max 3 segments |
-| Timeline | `--navy` dots | — | `--rule` dots | Key nodes: `--tint` ring |
+| Bar (H / V) | `--accent` | `--primary` | `--rule` | Animated grow on entrance |
+| Progress / gauge | `--accent` fill | — | `--rule` track | 8px height, 4px radius |
+| Pie / donut | `--primary` | `--accent` | `--rule` | Max 3 segments |
+| Timeline | `--primary` dots | — | `--rule` dots | Key nodes: `--tint` ring |
 
 Max 2 colours per chart (+ `--rule` neutral). Animate on entrance: bars grow, counters count up.
 
@@ -621,18 +634,18 @@ Max 2 colours per chart (+ `--rule` neutral). Animate on entrance: bars grow, co
 ```css
 .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
 .tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 '{{PRIMARY_FONT}}'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
-.tb:hover { border-color: var(--blue); color: var(--blue); }
-.tb.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+.tb:hover { border-color: var(--accent); color: var(--accent); }
+.tb.on { background: var(--primary); border-color: var(--primary); color: #fff; }
 .tc { display: none; } .tc.on { display: block; }
 ```
 
 Max 4 tabs.
 
 ### 7.10 Sequential steps / barriers
-Use numeric labels `01` `02` `03` in monospace-weight span, `--blue` colour, rather than bullet points or decorative emoji.
+Use numeric labels `01` `02` `03` in monospace-weight span, `--accent` colour, rather than bullet points or decorative emoji.
 
 ### 7.11 Decision questions
-Prefix with `Q.1` / `Q.2` spans in `--blue`, weight 800, letter-spacing 0.12 em.
+Prefix with `Q.1` / `Q.2` spans in `--accent`, weight 800, letter-spacing 0.12 em.
 
 ### 7.12 Timeline
 
@@ -655,7 +668,7 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 .tl-row { display: flex; position: relative; z-index: 1; }
 .tl-node { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 4px; }
 .tl-date-top {
-  font-size: 22px; font-weight: 900; letter-spacing: -.01em; color: var(--blue);
+  font-size: 22px; font-weight: 900; letter-spacing: -.01em; color: var(--accent);
   min-height: 48px; margin-bottom: 16px;
   display: flex; align-items: flex-end; justify-content: center;
 }
@@ -747,7 +760,7 @@ Keyboard: `← → Space Home End`. Touch: 48px swipe threshold.
 
 All interactive elements ≥ 44×44px tap area. Never use `vh` for font/padding on mobile.
 
-### The inline-flex trap (critical) <!-- ENGINEERING-DNA — DO NOT REMOVE -->
+### The inline-flex trap (critical) <!-- ENGINEERING-DNA: inline-flex-trap -->
 
 **Root cause of most mobile layout failures**: Multi-column layouts written with inline `style="display:flex"` instead of CSS classes (`.g2`, `.g3`). The mobile media query collapses `.g2,.g3` to single-column, but inline `style="display:flex"` is immune to class-based media queries — it keeps the horizontal layout on mobile, making cards tiny and unreadable.
 
@@ -767,7 +780,7 @@ All interactive elements ≥ 44×44px tap area. Never use `vh` for font/padding 
 
 **Checklist addition**: Before shipping, resize the browser to 375px width and verify every slide stacks vertically. Any slide that still shows side-by-side content on mobile is a bug.
 
-### Mobile flip card fix <!-- ENGINEERING-DNA — DO NOT REMOVE -->
+### Mobile flip card fix <!-- ENGINEERING-DNA: flip-card-mobile -->
 
 CSS `:hover` does not work on touch devices. Flip cards **must** have a JS `onclick` handler that toggles a `.on` class. This is the **only** reliable cross-platform flip mechanism.
 
@@ -838,7 +851,7 @@ Every slide fits 720px. If too dense: reduce gaps → reduce body to 14px → sp
 
 **The "blue block" trap**: Dark callout at bottom-right = visual imbalance. Move to full-width bottom, use `.snote` instead, or place dark cards at top.
 
-**The "blue-on-navy" trap**: On dark slides (`--navy` bg), never use `--blue` for text or accent — it creates jarring, cheap-looking contrast. Use white (`#fff`) or semi-transparent white (`rgba(255,255,255,.85)`) for emphasis. For subtle CTAs on dark backgrounds, use `rgba(255,255,255,.08)` bg fill + white text.
+**The "blue-on-navy" trap**: On dark slides (`--primary` bg), never use `--accent` for text or accent — it creates jarring, cheap-looking contrast. Use white (`#fff`) or semi-transparent white (`rgba(255,255,255,.85)`) for emphasis. For subtle CTAs on dark backgrounds, use `rgba(255,255,255,.08)` bg fill + white text.
 
 **The "dark stack" trap**: When a dark element sits directly below another dark element, they visually merge. Always separate dark elements with at least 12px of `--surface` or `--tint` gap.
 
@@ -860,7 +873,7 @@ Every slide fits 720px. If too dense: reduce gaps → reduce body to 14px → sp
 
 ---
 
-## 13. Checklist <!-- ENGINEERING-DNA — verbatim; DO NOT trim -->
+## 13. Checklist <!-- ENGINEERING-DNA: pre-ship-checklist -->
 
 Before sharing a deck, verify every item.
 

@@ -1,6 +1,6 @@
 # Phase 1a guideline — pick which subpages to fetch
 
-You are running the `web-to-design-system` skill. Phase 1a (`fetch_sitemap.sh`) has dumped a few discovery files into `$WS/recon/`:
+You are running the `deckify` skill. Phase 1a (`fetch_sitemap.sh`) has dumped a few discovery files into `$WS/recon/`:
 
 - `home.html` — the brand's home page DOM (post-hydration)
 - `home.png` — desktop screenshot of the home page

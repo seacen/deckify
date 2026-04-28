@@ -116,7 +116,7 @@ A working reference for how to do this is the python script in this commit's his
 
 For `{{LOGO_PATH_ELEMENTS}}`: extract the inner content of `<symbol>...</symbol>` from `samples/<brand>/assets/logo.embed.html`.
 
-**Language rule (Phase 3 step 4)**: if the user picked non-English in Phase 2 Round 0, do a translation pass over **prose only** (philosophy, aesthetic notes, anti-patterns, checklist labels). **Never translate**: token names (`--navy`), CSS/JS/HTML code, viewBox numbers, hex values, comment markers like `<!-- ENGINEERING-DNA -->`. Output must be **single-language throughout** — no leftover English in a Chinese DS.
+**Language rule (Phase 3 step 4)**: if the user picked non-English in Phase 2 Round 0, do a translation pass over **prose only** (philosophy, aesthetic notes, anti-patterns, checklist labels). **Never translate**: token names (`--primary`), CSS/JS/HTML code, viewBox numbers, hex values, comment markers like `<!-- ENGINEERING-DNA -->`. Output must be **single-language throughout** — no leftover English in a Chinese DS.
 
 ### Phase 4 — verification
 
@@ -215,7 +215,7 @@ git push
 
 3. **DS must be single-language**. The template is English. If user picks 中文 in Round 0, translate prose only — never tokens/CSS/code/hex/viewBox. No half-translation. (Last session burned us: §3.1 was Chinese while §3 was English. Took a fix-up commit.)
 
-4. **Token names are stable across brands**: `--navy`, `--blue`, `--surface`, `--ink`, `--mid`, `--rule`, `--tint`, `--green`, `--red`, `--warn`, `--teal`. Hex values change, names don't. This is so downstream slide code is brand-agnostic.
+4. **Token names are stable across brands**: `--primary`, `--accent`, `--surface`, `--ink`, `--mid`, `--rule`, `--tint`, `--green`, `--red`, `--warn`, `--teal`. Hex values change, names don't. This is so downstream slide code is brand-agnostic.
 
 5. **Engineering DNA chapters are verbatim** — never trim, simplify, or "improve". They came from real production bugs:
    - §3.1 Typography Safety
