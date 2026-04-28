@@ -1,0 +1,24 @@
+{
+  "chosen": {
+    "id": "jsonld-tiffany-logo-svg",
+    "kind": "jsonld-logo",
+    "url": "https://www.tiffany.com/on/demandware.static/Sites-Tiffany_US-Site/-/default/dw7f7626fd/images/logo.svg",
+    "page": "(explicit)"
+  },
+  "result": {
+    "ok": true,
+    "format": "svg",
+    "path": "/var/folders/gl/cmnndj_x4gz7t8qdy1qhsqsc0000gn/T/deckify-tiffany-ek8n13xn/assets/logo.svg",
+    "evidence": {
+      "paths": 11,
+      "max_d_len": 1071,
+      "has_inner_image": false,
+      "has_text": false,
+      "dims": [
+        634.0,
+        70.0
+      ]
+    },
+    "url": "https://www.tiffany.com/on/demandware.static/Sites-Tiffany_US-Site/-/default/dw7f7626fd/images/logo.svg"
+  }
+}

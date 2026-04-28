@@ -11,6 +11,10 @@ Thumbs.db
 # Eval run output (regenerated each run)
 skills/*/tests/reports/runs/
 skills/*/tests/reports/visual-check/
+# Repo-root tests/ tree mirrors the same shape — runs/<ts>/ is per-run output;
+# don't commit screenshots / measurements / per-sample reports.
+tests/reports/runs/
+tests/reports/visual-check/
 
 # Sample workspace artifacts that are large + regenerable
 # (keep brand.json + pages.txt + assets/ — they're the LLM/quality-gate output)

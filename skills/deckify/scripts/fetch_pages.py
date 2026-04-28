@@ -30,6 +30,9 @@ import time
 from pathlib import Path
 from urllib.parse import urlparse
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _ab_common import agent_browser_cmd  # noqa: E402
+
 
 PROBE_JS = r"""(() => {
   const out = {
@@ -158,8 +161,33 @@ def slugify(url: str) -> str:
     return slug[:60]
 
 
-def run_ab(args: list[str], capture: bool = True, check: bool = False) -> subprocess.CompletedProcess:
-    return subprocess.run(["agent-browser", *args], capture_output=capture, text=True, check=check, timeout=60)
+def run_ab(args: list[str], capture: bool = True, check: bool = False, timeout: int = 60) -> subprocess.CompletedProcess:
+    return subprocess.run(agent_browser_cmd(*args), capture_output=capture, text=True, check=check, timeout=timeout)
+
+
+def navigate_or_settle(url: str) -> tuple[bool, str]:
+    """Navigate to URL. agent-browser's 'open' waits for networkidle, which
+    on heavy brand sites (videos, ad SDKs, 3p analytics) routinely doesn't
+    fire within the 60s subprocess timeout — even though the DOM is fully
+    hydrated and ready to query. Treat TimeoutExpired as recoverable: if
+    document.readyState is 'interactive' or 'complete' afterwards, we have
+    enough to extract the DOM + run probes. Returns (ok, reason).
+    """
+    try:
+        nav = run_ab(["open", url], timeout=90)
+        if nav.returncode == 0:
+            return True, "navigate ok"
+    except subprocess.TimeoutExpired:
+        pass  # fall through to readiness check
+    # Either non-zero or hard timeout — see if the page is actually loaded.
+    try:
+        chk = run_ab(["eval", "document.readyState"], timeout=20)
+    except subprocess.TimeoutExpired:
+        return False, "readyState probe timed out"
+    state = parse_ab_eval(chk.stdout).strip().strip('"')
+    if state in ("interactive", "complete"):
+        return True, f"settled (readyState={state})"
+    return False, f"not ready (readyState={state!r})"
 
 
 def parse_ab_eval(stdout: str) -> str:
@@ -167,6 +195,45 @@ def parse_ab_eval(stdout: str) -> str:
     if s.startswith('"') and s.endswith('"'):
         s = s[1:-1].encode("utf-8").decode("unicode_escape")
     return s
+
+
+def warmup_daemon(sample_url: str) -> None:
+    """Pre-flight a fresh agent-browser daemon so the first real page load
+    doesn't bear the cost of (cold Chromium boot + first TLS handshake +
+    Akamai bot challenge + cookie issuance) all at once.
+
+    Without warmup, the first navigate on heavy CDN-fronted brands routinely
+    blows past the 60s subprocess timeout AND blocks the recovery readyState
+    probe on the same daemon socket — even though pages 2..N then load in
+    a few seconds each (daemon warm, cookies cached).
+
+    Sequence:
+      1. set viewport — forces daemon to spawn Chrome for Testing
+      2. open about:blank — first navigate is local, completes instantly
+      3. open <site root> — gives Akamai/Cloudflare a chance to issue
+         session cookies that all subsequent same-origin pages reuse.
+         networkidle still won't fire (heavy hero video + ad SDKs), so we
+         catch TimeoutExpired and continue regardless.
+      4. small sleep — let cookies settle before the real loop starts.
+    """
+    from urllib.parse import urlparse
+    parsed = urlparse(sample_url)
+    if not parsed.scheme or not parsed.netloc:
+        return
+    root = f"{parsed.scheme}://{parsed.netloc}/"
+    print(f"[warmup] {root}")
+    run_ab(["set", "viewport", "1440", "900"])
+    try:
+        run_ab(["open", "about:blank"], timeout=30)
+    except subprocess.TimeoutExpired:
+        pass
+    try:
+        run_ab(["open", root], timeout=90)
+        print("    warmup navigate ok")
+    except subprocess.TimeoutExpired:
+        # Expected on heavy brand sites — DOM is hydrated, networkidle isn't.
+        print("    warmup navigate hit networkidle timeout (DOM still hydrated — fine)")
+    time.sleep(2)
 
 
 def kill_chrome_for_testing() -> None:
@@ -208,10 +275,21 @@ def main() -> int:
     consecutive_failures = 0
     i = 0
 
-    for raw_line in pages_file.read_text(encoding="utf-8").splitlines():
-        url = raw_line.split("#", 1)[0].strip()
-        if not url:
-            continue
+    # Pre-flight: warm the daemon + same-origin Akamai/Cloudflare cookies on
+    # the first URL's host before starting the real fetch loop. Without this,
+    # the very first navigate of the loop frequently absorbs (cold Chromium
+    # boot + first TLS handshake + bot challenge) all at once, blowing past
+    # the navigate timeout AND blocking the recovery readyState probe on the
+    # same daemon socket.
+    raw_urls = [
+        line.split("#", 1)[0].strip()
+        for line in pages_file.read_text(encoding="utf-8").splitlines()
+    ]
+    real_urls = [u for u in raw_urls if u]
+    if real_urls:
+        warmup_daemon(real_urls[0])
+
+    for url in real_urls:
         i += 1
         slug = slugify(url)
         page_dir = pages_dir / slug
@@ -221,31 +299,32 @@ def main() -> int:
         print(f"    slug: {slug} → {page_dir}")
 
         run_ab(["set", "viewport", "1440", "900"])
-        nav = run_ab(["open", url])
-        if nav.returncode != 0:
-            print("    ✗ navigate failed; checking if daemon is exhausted...")
+        ok, reason = navigate_or_settle(url)
+        if not ok:
+            print(f"    ✗ navigate failed: {reason}; checking if daemon is exhausted...")
             consecutive_failures += 1
             if consecutive_failures >= 2:
                 print(f"    ⚠ {consecutive_failures} consecutive failures — restarting Chrome for Testing")
                 kill_chrome_for_testing()
                 time.sleep(4)
                 run_ab(["set", "viewport", "1440", "900"])
-                retry = run_ab(["open", url])
-                if retry.returncode == 0:
-                    print("    ✓ retry succeeded after daemon restart")
+                ok2, reason2 = navigate_or_settle(url)
+                if ok2:
+                    print(f"    ✓ retry succeeded after daemon restart ({reason2})")
                     consecutive_failures = 0
                     time.sleep(1.5)
                 else:
                     (page_dir / "probe.json").write_text(
-                        json.dumps({"error": "navigate failed (after daemon restart)"}, indent=2)
+                        json.dumps({"error": f"navigate failed after restart: {reason2}"}, indent=2)
                     )
-                    print("    ✗ retry also failed; skipping")
+                    print(f"    ✗ retry also failed: {reason2}; skipping")
                     continue
             else:
-                (page_dir / "probe.json").write_text(json.dumps({"error": "navigate failed"}, indent=2))
+                (page_dir / "probe.json").write_text(json.dumps({"error": f"navigate failed: {reason}"}, indent=2))
                 continue
         else:
             consecutive_failures = 0
+            print(f"    {reason}")
             time.sleep(1.5)
 
         # DOM

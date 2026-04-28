@@ -1,0 +1,36 @@
+{
+  "language": "中文",
+  "language_code": "zh",
+  "ds_template_source": "references/ds-template.zh.md",
+  "display_font_fallback_chain": [
+    "Cormorant Garamond",
+    "Bodoni 72",
+    "Didot",
+    "Georgia",
+    "serif"
+  ],
+  "display_font_rationale": "Cormorant Garamond (Google Fonts, free) is the closest Didone in spirit to Tiffany's Sterling SSM — both share high-contrast hairline strokes and tight apertures. Bodoni 72 + Didot give the macOS/iOS native fallback. Georgia is the universal safety net.",
+  "slide_emphasis": [
+    "A_cover",
+    "J_pullquote",
+    "I_timeline",
+    "F_two_column_image"
+  ],
+  "slide_emphasis_rationale": "User selected all 4 — Tiffany's voice is most distinctive on (1) cover with Didone wordmark + Tiffany Blue, (2) editorial pull-quote 'Stories. Since 1837.', (3) 188-year heritage timeline (archival force), (4) two-column lifestyle photography + sparse caption (editorial layout language).",
+  "logo_decision": {
+    "method": "auto",
+    "source": "JSON-LD Organization.logo SVG",
+    "url": "https://www.tiffany.com/on/demandware.static/Sites-Tiffany_US-Site/-/default/dw7f7626fd/images/logo.svg",
+    "viewbox": "0 0 634 70",
+    "fill": "currentColor",
+    "passed_quality_gate": true
+  },
+  "palette_decision": {
+    "method": "auto",
+    "primary_hex": "#009CAD",
+    "primary_name": "Tiffany Blue (PMS 1837)",
+    "ink_hex": "#000000",
+    "paper_hex": "#FBF9F7",
+    "rationale": "Tiffany Blue is a registered trademark colour — must be the dominant chord, never softened. Pure black ink + warm off-white 'Tiffany Paper' (#FBF9F7) drawn from real footer computed bg."
+  }
+}

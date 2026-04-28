@@ -28,6 +28,11 @@ import urllib.error
 from pathlib import Path
 from urllib.parse import urlparse
 
+# Local import — sibling helper that wraps agent-browser invocations with the
+# stealth flags every brand-CDN-blocked site needs. See _ab_common.py.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _ab_common import agent_browser_cmd  # noqa: E402
+
 
 JS_NAV_LINKS = r"""(() => {
   const out = { home: location.href, host: location.hostname, links: [] };
@@ -69,7 +74,7 @@ JS_JSONLD = r"""(() => {
 
 def run_ab(args: list[str], capture: bool = True, check: bool = False) -> subprocess.CompletedProcess:
     """Invoke agent-browser with explicit args (no shell)."""
-    return subprocess.run(["agent-browser", *args], capture_output=capture, text=True, check=check, timeout=60)
+    return subprocess.run(agent_browser_cmd(*args), capture_output=capture, text=True, check=check, timeout=60)
 
 
 def parse_ab_eval(stdout: str) -> str:

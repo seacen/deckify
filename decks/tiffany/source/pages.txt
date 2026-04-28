@@ -1,0 +1,20 @@
+# Picked from nav-links.json (152 internal links) + JSON-LD sameAs.
+# Goal: cover brand narrative, signature collections, high-end mood, press kit.
+
+# Brand narrative & heritage — Tiffany's "about/world" hub
+https://www.tiffany.com/world-of-tiffany.html
+
+# Top-of-pyramid mood: high jewelry shows the most aspirational typography + photography
+https://www.tiffany.com/high-jewelry.html
+
+# Signature jewelry collections (Knot / HardWear / Tiffany T) — branded design language
+https://www.tiffany.com/designers-collections/
+
+# Iconic sub-brand: engagement (the Tiffany Blue Box™ pages)
+https://www.tiffany.com/love-engagement.html
+
+# Main jewelry category — typical product layout & navigation feel
+https://www.tiffany.com/jewelry/
+
+# Press subdomain — official media kit, often hosts cleanest wordmark + brand assets
+https://press.tiffany.com/
