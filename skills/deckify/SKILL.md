@@ -108,33 +108,71 @@ If quality-gate fails (exit 1), swap `chosen_logo.id` to the next item in `alt_l
 
 ### Phase 2 — Confirm with the user (latent + AskUserQuestion)
 
-Goal: take the brand.json you produced in 1e and confirm with the user before generating. Most synthesis already happened in 1e — this phase is a sanity-check + scope decision, not redoing the work.
+Goal: take the brand.json you produced in 1e and resolve the decisions YOU couldn't make alone — language, ambiguous logo picks, contested colour direction, proprietary typography fallbacks. Don't ask the user to confirm things YOU already have strong evidence for — that's noise.
 
-**Round 0 (always first): language.** Before any other question, call `AskUserQuestion` to ask which language the rest of the conversation AND the generated DS should be in. The four primary options are 中文 (Simplified Chinese), English, 日本語 (Japanese), Español (Spanish), plus an Other free-text choice. After this answer, conduct every subsequent round AND the Phase 3 generation in that language. Token names (`--navy`, `--blue`, etc.), code snippets, and CSS stay in English regardless — only the prose changes (philosophy paragraph, rules narration, anti-patterns, checklist labels). See `references/decision-questions.md` Round 0 for full guidance.
+**Question philosophy: ask only where you are genuinely uncertain.** A confident, evidence-backed brand.json shouldn't need 4 confirmation rounds — it needs maybe 1 or 2 for the genuinely ambiguous decisions, plus the always-required language round. If a decision is unambiguous (single canonical SVG logo, dominant chord with 100× CSS frequency, body font is the only computed font), commit and don't waste the user's attention.
 
-Then read `$WS/brand.json`. Surface the LLM-derived choices to the user via `AskUserQuestion` (3-4 rounds). Examples:
+**Round 0 (ALWAYS first): language.** Call `AskUserQuestion` with exactly two options: 中文 (Simplified Chinese) and English. These are the only two languages with maintained sister templates (`ds-template.zh.md` and `ds-template.md`). Do NOT offer Japanese / Spanish / Other free-text — there is no `ds-template.<other>.md` to route to, so any non-zh/en answer would silently fall back to the English template + a per-run translation pass, which produces drift and undercuts the language_consistency hard check. If the user genuinely needs another language, they can author it in 中文 or English and re-translate downstream. After this answer, conduct every subsequent round AND Phase 3 generation in that language. Token names (`--primary`, `--accent`, etc.), code snippets, CSS, hex values, viewBox numbers, and HTML comment anchors (`<!-- ENGINEERING-DNA: ... -->`) stay in English regardless — only the prose changes.
 
-- "I read [Brand] as **[aesthetic.mood]** (precedents: [precedents]). Confirm or redirect?"
-- "Palette I picked from the site: brand_primary [hex], secondary [hex], ink [hex], paper [hex], + accents. The chosen logo came from [chosen_logo.why]. Anything to swap?"
-- "Typography: display = [display_font.family], body = [body_font.family]. Substitute? (web fonts often aren't licensable for slides — fallback to Inter/Source Sans is fine if needed.)"
-- "Slide types to emphasize for this deck family: [shortlist]?" (use `references/decision-questions.md` for the 11-type catalog)
+**Round 1 (CONDITIONAL — only if logo is ambiguous): logo selection.** Trigger when you have ≥ 2 candidates that all pass the quality gate AND no clear winner from the synthesize-brand priority order. Use `AskUserQuestion` to surface 2–3 specific candidates with their evidence:
+- Each option labeled with where it came from (e.g. "Nav inline-SVG, viewBox 0 0 67 44, single path" / "JSON-LD knowledge_graph_logo.png, RGB-only" / "apple-touch-icon, 180×180 RGBA").
+- Description explains the trade-off (e.g. "RGB PNG flips badly on dark covers; SVG is cleaner but might be a wordmark not the silhouette").
+- If candidates differ only trivially, pick yourself — don't ask.
+
+**Round 2 (CONDITIONAL — only if dominant chord is contested): palette anchor.** Trigger when colour-frequency analysis has 2+ candidates with similar counts (within 1.5×) AND the screenshots don't clearly resolve which is the brand's actual primary chord (vs a campaign accent). Surface the top 2–3 colours with their hex + role evidence; ask which is the brand's actual `--primary`.
+
+**Round 3 (CONDITIONAL — only if typography needs licensing decision): font fallback.** Trigger when `font.frequencies` show a proprietary face (UnileverDesire, SF Pro, Söhne, Stripe Sans) that won't be licensable for a typical standalone slide deck. Surface 2–3 fallback options:
+- "Helvetica Neue → system-ui" (Apple's actual fallback chain)
+- "Inter / Source Sans" (modern open source)
+- "system-ui only" (zero webfont load, generic)
+
+**Round 4 (ALWAYS, but short): slide-type emphasis for the verification deck.** Multi-select from the 8 required slide types per `references/verification-deck-spec.md` — which 2–3 should the deck particularly lean into for this brand's voice? (e.g. Apple → Type J pullquote + Type F image + Type H chart.)
+
+**Round 5+ (CONDITIONAL — only when needed): scope-of-deck decisions.** Quarterly review vs annual letter vs internal deck — only ask if the user's original prompt didn't clarify. If they said "build me a DS for SaaS pitch decks", that's enough; don't re-ask.
 
 Take the user's responses. Save the final decisions to `$WS/decisions.json`. If the user redirects on a token (e.g., "actually use the secondary as primary"), update brand.json's `palette` accordingly so Phase 3 generation reflects it.
+
+**Anti-pattern**: asking 4 ceremonial confirmation questions when the recon was unambiguous. Each `AskUserQuestion` call costs the user attention — earn it with genuine choices, not with reciting back what you already know.
 
 If the user gives no clear direction on something, default to brand.json's pick (LLM's best evidence-based guess) and note it in the output.
 
 ### Phase 3 — Generation (latent, template-driven)
 
-Open `references/ds-template.md`. It is a complete Design System with:
-- **Brand-variable placeholders** clearly marked: `{{BRAND_NAME}}`, `{{BRAND_SLUG}}`, `{{PHILOSOPHY_PARAGRAPH}}`, `{{NAVY_HEX}}`, `{{BLUE_HEX}}`, etc.
-- **Engineering DNA baked in verbatim**: the entire fit contract section, the single-absorber rule, the mobile section including the inline-flex trap, the flip-card mobile fix, the pre-ship checklist. None of these may be edited or "simplified."
+**Step 0 — Pick the template by language.** Read `decisions.json` for `language`:
+- `English` → use `references/ds-template.md` (the English source-of-truth)
+- `中文` / `Chinese` / `zh` → use `references/ds-template.zh.md` (the Chinese sister template; same engineering-DNA anchors, prose pre-translated)
+
+These are the two and only two supported languages — Phase 2 Round 0 only offers them, so `decisions.json.language` will always be one of these. There is no general translation-pass fallback; if you ever see another value here, treat it as a bug in Round 0 and re-ask the language question instead of silently translating.
+
+Both templates contain identical:
+- **Brand-variable placeholders**: `{{BRAND_NAME}}`, `{{BRAND_SLUG}}`, `{{PHILOSOPHY_PARAGRAPH}}`, `{{PRIMARY_HEX}}`, `{{ACCENT_HEX}}`, `{{BRAND_PALETTE_TOKENS}}`, etc.
+- **Engineering DNA baked in verbatim**: the entire fit contract section, the single-absorber rule, the mobile section including the inline-flex trap, the flip-card mobile fix, the pre-ship checklist. Never edited, never "simplified."
+- **HTML comment ID anchors**: `<!-- ENGINEERING-DNA: fit-contract -->`, `<!-- ENGINEERING-DNA: scale-to-fit -->`, etc. These are language-agnostic stable identifiers used by `evals/hard_checks.py:check_ds_engineering_dna`.
 
 Steps:
 
 1. Fill brand-variable placeholders from `$WS/decisions.json` + `$WS/brand.json` (palette hex, font families, brand name, etc.).
 2. **Logo embed**: paste the contents of `$WS/assets/logo.embed.html` directly into the §4 Logo section's "Definition (once per HTML file)" block. `embed_logo.py` already produced the correct `<symbol id="brand-wm">` snippet — vector or base64-raster form, with hardcoded fills stripped so `currentColor` works. Do not regenerate this; do not re-extract paths.
 3. Set `{{LOGO_VIEWBOX}}` placeholder in §4's `.logo` usage examples to match the viewBox in the embed snippet.
-4. **Language pass** (only if Round 0 picked a non-English language): the template is English. Translate **prose only** — section narration, philosophy paragraph, anti-patterns, checklist labels, mood/aesthetic notes, repair-priority bullets. **Never translate**: token names (`--navy`, `--blue`), CSS / JS / HTML code, viewBox numbers, hex values, comment markers like `<!-- ENGINEERING-DNA -->`, file names. The output must be **single-language throughout** — no half-translated paragraphs and no leftover English sentences mixed into a Chinese DS.
+4. **Language pass** (only when Round 0 picked 中文): if Step 0 already routed you to `ds-template.zh.md`, the prose is already pre-translated — your work in this step is limited to (a) translating the brand-variable text you injected via placeholders (`{{PHILOSOPHY_PARAGRAPH}}`, `{{TYPE_PHILOSOPHY_NOTE}}`, etc.) and (b) checking that no English sentences leaked through. The output must be **single-language throughout** — no leftover English sentences mixed into a Chinese DS.
+
+   **Translate everything that is prose**, including:
+   - Chapter titles (`## 1. Design Philosophy` → `## 1. 设计理念`)
+   - Section narration paragraphs
+   - The Constraints / Freedom / Bespoke bullet contents
+   - The Design Taste anti-AI-slop rules
+   - Slide-type descriptions in §6
+   - The pre-ship Checklist labels (§13)
+   - Anti-pattern explanations
+   - All the words around the code blocks
+
+   **Never translate**:
+   - Token names: `--primary`, `--accent`, `--surface`, `--ink`, `--mid`, `--rule`, `--tint`, `--green`, `--red`, `--warn`, `--teal`, plus brand-palette tokens
+   - All CSS / JS / HTML code blocks (every fenced ```css ``` ```js ``` ```html ``` block stays as-is)
+   - Hex values, viewBox numbers, file names, URLs
+   - **HTML comment anchors**: `<!-- ENGINEERING-DNA: fit-contract -->`, `<!-- ENGINEERING-DNA: typography-safety -->`, etc. These are stable identifiers — the prose around them adapts; the IDs stay.
+
+   **How the engineering-DNA hard check works under translation**: `evals/hard_checks.py:check_ds_engineering_dna` reads the markdown looking for `<!-- ENGINEERING-DNA: <id> -->` HTML comments — NOT for the English chapter titles. As long as you preserve the comment anchors verbatim, the chapter heading and surrounding prose can be in any language. So `### 5.1 单页适配契约 <!-- ENGINEERING-DNA: fit-contract -->` passes the check the same as the English original.
 5. Write the final markdown to the user's chosen path. Default: `./{{BRAND_SLUG}}-PPT-Design-System.md`. Confirm path before writing if it would overwrite an existing file.
 
 ### Phase 4 — Verification deck + runtime hard checks (MANDATORY, not optional)
@@ -165,7 +203,9 @@ Hard checks measure DOM shapes; they don't measure whether the deck *looks* on-b
 For each brand under `tests/reports/runs/<latest>/per-sample/<brand>/slides/`, read the PNGs (Read tool, vision). Re-read the brand's DS markdown for context.
 
 **Step 5b — Score against the rubric.**
-Read `evals/rubric.json` — 5 dimensions (logo present and branded, slide visual quality, brand fidelity, content substantive, engineering DNA visible in DS), each 0–5. Plus 5 disqualifiers (D1 logo missing, D2 dimensions wrong, D3 console errors, D4 mobile horizontal scroll, D5 DS template violated).
+Read `evals/rubric.json` — 6 dimensions (logo present and branded, slide visual quality, brand fidelity, content substantive, engineering DNA visible in DS, CJK typography quality for zh decks), each 0–5. Plus 5 disqualifiers (D1 logo missing, D2 dimensions wrong, D3 console errors, D4 mobile horizontal scroll, D5 DS template violated).
+
+For `cjk_typography_quality`: this is a vision-judged quality score, not a hard constraint. The hard check `cjk_font_quality` only catches the absolute bug (zero CJK fonts in chain). The judge dimension catches "the CJK is technically rendering, but looks thin / cheap / mismatched with Latin / wrong weight / wrong serif-vs-sans pairing." If you score this ≤ 3, the fix routes to DS §3 CJK 字体回退链 — typically swap CJK family to front of font-family chain AND bump body font-weight to 500/600. en decks return 5 for this dimension (not applicable).
 
 **Step 5c — Write `judge.json`.**
 Land at `tests/reports/runs/<latest>/per-sample/<brand>/judge.json` with the schema printed by `run.sh` — scores, reasoning (especially for low scores), regression_flags.
@@ -202,7 +242,7 @@ These parts of the generated DS must be copied verbatim from `references/ds-temp
 
 1. **Single-Slide Fit Contract**: 1280×720 fixed canvas; three-layer `overflow:hidden` safety net (`.slide`, `.sw .sc`, and any `flex:1` absorber); single-absorber rule; 602px content-height budget math; pre-build height checklist; verify at native 1280×720 (the `transform:scale()` masks overflow at scaled sizes).
 2. **Logo as SVG `<symbol>` + `currentColor`**: `<symbol>` defined once in a hidden `<svg>` block at the top of `<body>`; referenced via `<use href="#…">`; `fill: currentColor` set on the outer `<svg>` (NOT on the `<path>` — selectors don't pierce shadow DOM). Variants: `.W` (white-on-dark), `.L` (brand-dark-on-light).
-3. **Token-only color**: every color in slides comes from `:root` CSS variables. No ad-hoc hex values. Token *names* stay stable across brands (`--navy`, `--blue`, `--surface`, `--ink`, `--mid`, `--rule`, `--tint`, `--green`, `--red`, `--warn`, `--teal`) even when the actual hex differs — so downstream slide code doesn't need to know which DS it's using.
+3. **Token-only color**: every color in slides comes from `:root` CSS variables. No ad-hoc hex values. Token *names* stay stable across brands (`--primary`, `--accent`, `--surface`, `--ink`, `--mid`, `--rule`, `--tint`, `--green`, `--red`, `--warn`, `--teal`) even when the actual hex differs — so downstream slide code doesn't need to know which DS it's using.
 4. **Type scale + 12px readability floor**: nothing below 12px ever; enforced default sizes for title (50px), card headline (28px), body (16px), subtitle (20px); changing layout when content doesn't fit, never shrinking font.
 5. **Mobile media query (≤768px) collapses everything to single column** AND **inline-flex trap catch-all CSS** (`@media` rules that override `style="display:flex"` and `style*="grid-template-columns"` in case bespoke slides used inline styles). This is how mobile parity survives bespoke slide compositions.
 6. **Flip card mobile fix**: every flip card carries `onclick="this.classList.toggle('on')"`; mobile CSS kills 3D transforms and uses `display:none/flex` to swap front/back. CSS `:hover` doesn't work on touch.

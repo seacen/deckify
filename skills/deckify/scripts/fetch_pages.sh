@@ -189,11 +189,34 @@ while IFS= read -r raw_url || [[ -n "$raw_url" ]]; do
 
   agent-browser set viewport 1440 900 >/dev/null
   if ! agent-browser open "$url" >/dev/null 2>&1; then
-    echo "    ✗ navigate failed; skipping"
-    echo '{"error":"navigate failed"}' > "$page_dir/probe.json"
-    continue
+    echo "    ✗ navigate failed; checking if daemon is exhausted..."
+    consecutive_failures=$((${consecutive_failures:-0} + 1))
+    # If 2+ consecutive failures, the agent-browser daemon is likely
+    # exhausted (tab pool full, accumulated zombie state). Kill the
+    # underlying Chrome process; agent-browser will spawn a fresh
+    # daemon on next call. Then retry this URL once.
+    if [ "$consecutive_failures" -ge 2 ]; then
+      echo "    ⚠ ${consecutive_failures} consecutive failures — restarting agent-browser daemon"
+      pkill -f "Chrome for Testing" 2>/dev/null
+      sleep 4
+      agent-browser set viewport 1440 900 >/dev/null
+      if agent-browser open "$url" >/dev/null 2>&1; then
+        echo "    ✓ retry succeeded after daemon restart"
+        consecutive_failures=0
+        sleep 1.5
+      else
+        echo '{"error":"navigate failed (after daemon restart)"}' > "$page_dir/probe.json"
+        echo "    ✗ retry also failed; skipping"
+        continue
+      fi
+    else
+      echo '{"error":"navigate failed"}' > "$page_dir/probe.json"
+      continue
+    fi
+  else
+    consecutive_failures=0
+    sleep 1.5
   fi
-  sleep 1.5
 
   # DOM
   agent-browser eval 'document.documentElement.outerHTML' > "$page_dir/dom.raw"

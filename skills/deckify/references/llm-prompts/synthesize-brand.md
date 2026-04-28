@@ -1,6 +1,6 @@
 # Phase 1d guideline — synthesize brand from raw assets
 
-You are running the `web-to-design-system` skill. Phase 1c (`enumerate_assets.py`) has produced `$WS/raw-assets.json`, an exhaustive enumeration of every brand-asset candidate scraped from all fetched pages. Each candidate has a stable `id`. Phase 1b also saved screenshots at `$WS/recon/pages/<slug>/shot.png`.
+You are running the `deckify` skill. Phase 1c (`enumerate_assets.py`) has produced `$WS/raw-assets.json`, an exhaustive enumeration of every brand-asset candidate scraped from all fetched pages. Each candidate has a stable `id`. Phase 1b also saved screenshots at `$WS/recon/pages/<slug>/shot.png`.
 
 Your job: read `raw-assets.json`, **look at the screenshots with the Read tool** (vision), and produce `$WS/brand.json` — a synthesized, opinionated brand profile that the deck generator can use directly.
 
@@ -103,12 +103,34 @@ Heuristics to apply, **in combination, not strictly**:
 - **`<img>` with `alt` containing "logo"** or class names containing `logo` are explicit candidates.
 - **Screenshots are the truth check.** If the candidate you're considering doesn't visually match what you see in `shot.png`'s header, it's wrong.
 
-If multiple candidates pass these tests, prefer:
-1. SVG over raster (resolution-independent)
-2. The one in `<footer>` — footer logos tend to be the canonical, presentation-quality version
-3. The one with higher `maxPathDLen`
+If multiple candidates pass these tests, prefer (in order):
+1. **Nav-region single-path SVG with square-ish viewBox (aspect ratio between 0.8 and 1.3) that visually matches the silhouette in the screenshot.** Most iconic brand marks (Apple silhouette, Twitter X, Nike swoosh, Mercedes star) are 1-path roughly-square SVG icons sitting in the global nav. This is the gold-standard match.
+2. **`<link rel="apple-touch-icon">` PNG (180×180)** — usually RGBA with the brand mark on transparent background. Currentcolor-style flipping doesn't work on rasters, but the alpha channel makes it composite cleanly on dark and light backgrounds without visible squares.
+3. **Single-path or few-path SVG anywhere on the page** — even if not in nav. Vector + currentColor-flippable = clean white-on-dark / brand-on-light.
+4. **SVG over raster** (resolution-independent).
+5. **`<img>` with `class*="logo"` or `alt*="logo"` in nav or footer** — explicit semantic signal.
+6. **JSON-LD `logo` URL** — strong semantic signal but BEWARE: many JSON-LD logos are RGB-only PNGs without alpha channel (see RGB-only PNG warning below). Use only as a fallback when no SVG / apple-touch-icon candidate works.
+7. **Footer logo, higher `maxPathDLen`** — last resort tiebreaker.
 
 If nothing passes — if every SVG is a utility icon and every img is decorative — populate `chosen_logo.id` with the best of a bad lot, **set `alt_logo_ids` to `[]`, and add a `note` field explaining the situation**. The skill's caller can then ask the user for a logo file.
+
+### Disambiguating wordmark glyphs vs icon silhouettes vs Lottie animations <!-- surfaced from Apple end-to-end test -->
+
+Big brands sometimes have 100+ SVG candidates in the recon. Three failure patterns that all pass the basic d-string-length quality gate but produce a wrong "logo" downstream:
+
+- **Wordmark glyphs**: A `<svg>` in nav with viewBox like `60×25` or `67×44` containing one path whose `d` traces letterforms ("Stripe" / "Apple" wordmark / etc.). Width-to-height ratio is wide (≥ 1.4:1), and the path data, when scanned, contains many cubic-bezier curves arranged in the patterns of typeset characters. **Distinguish**: if the brand's actual visible mark on the screenshot is an icon (Apple silhouette, P&G monogram), and the SVG candidate has wide-aspect viewBox, it's likely a wordmark glyph — not the icon. Cross-check by reading the screenshot of the page where the SVG appears.
+- **Lottie animation composites**: A `<svg>` with viewBox like `670×670`, `<defs>`, `<clipPath>`, `transform: translate3d`, multiple paths. These are scrubbed Lottie illustrations, not static logos. **Distinguish**: the presence of `<defs>` / `<clipPath>` / inline `style=` with transform-3d patterns indicates animation. Skip.
+- **Decorative section headings**: A `<svg>` with `class*="logo"` may not actually be the brand mark — sometimes it's a decorative section heading rendered as SVG. Cross-check against the screenshot of the page header.
+
+When in doubt, prefer a small simple nav SVG (1 path, square-ish or near-square viewBox) over a fancy logo-class SVG. The iconic mark is usually the simplest one.
+
+### RGB-only PNG warning <!-- ENGINEERING-DNA — surfaced from Apple end-to-end test -->
+
+Some brands' JSON-LD `logo` URLs return PNG without an alpha channel (RGB only). The PNG renders as a coloured silhouette on a coloured background — and `filter: invert()` or `filter: brightness(0)` on the outer SVG will flip BOTH the silhouette AND its background, producing a visible bright square on the cover. This breaks the `currentColor` flip pattern.
+
+**If the JSON-LD logo is your only candidate**: check `embed_logo.py`'s output for the PNG colour mode (RGBA = ✓, RGB = ⚠). For an RGB-only PNG candidate, prefer ANY single-path SVG (even a wordmark glyph) over the PNG — the SVG will at least flip cleanly. Document this trade-off in `chosen_logo.why`.
+
+In Apple's case specifically, the JSON-LD `knowledge_graph_logo.png` is RGB-only — produces a visible white square on the dark cover. A `<link rel="apple-touch-icon">` PNG (when present) is usually RGBA and works cleanly.
 
 ### Picking the palette
 

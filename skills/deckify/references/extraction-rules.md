@@ -51,5 +51,5 @@ If you're VERY unsure, take an extra screenshot of an inner page like `/about` o
 
 - Don't fabricate color hex values. If `brand-recon.json` doesn't surface a needed token, leave it null in your hypothesis and surface it as a question to the user — don't invent #1A1A1A or any default.
 - Don't substitute a "similar font" without flagging it. If the brand uses a font you don't recognize, ASK rather than picking a "vibe match" — the wrong font is the most-noticed substitution.
-- Don't pick the homepage hero color as `--blue` (the accent) without checking the nav and footer first. Hero colors are often campaign-specific; the nav/footer/buttons usually carry the actual brand accent.
+- Don't pick the homepage hero color as `--accent` (the accent) without checking the nav and footer first. Hero colors are often campaign-specific; the nav/footer/buttons usually carry the actual brand accent.
 - Don't extract decorative gradient backgrounds as brand tokens. A 5-stop pink/orange gradient on a fashion brand homepage is a marketing campaign, not a token.

@@ -1,0 +1,14 @@
+# Phase 1b — LLM-picked Apple subpages
+# Drawn from /tmp/web-to-ds/apple/recon/nav-links.json + sitemap-urls.txt
+
+# Flagship product pages — typical Apple hero typography + product imagery
+https://www.apple.com/macbook-pro
+https://www.apple.com/iphone
+
+# Values-defining content (Apple's voice register lives here)
+https://www.apple.com/environment
+https://www.apple.com/privacy
+https://www.apple.com/accessibility
+
+# Press / news
+https://www.apple.com/newsroom

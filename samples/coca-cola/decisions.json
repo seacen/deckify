@@ -1,0 +1,11 @@
+{
+  "language": "zh",
+  "palette_direction": "full red bg + white wordmark",
+  "typography_choice": "Georgia (serif headline) + Helvetica Neue (sans body)",
+  "emphasized_slide_types": [
+    "J",
+    "C",
+    "F",
+    "H"
+  ]
+}

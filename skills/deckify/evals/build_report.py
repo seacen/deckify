@@ -191,7 +191,7 @@ def repair_actions_for(brand: str, hc: dict, judge: dict) -> list[dict]:
 
 def render_summary(out_dir: Path, threshold: float, samples: list[dict]) -> str:
     lines = []
-    lines.append("# web-to-design-system — auto-eval summary")
+    lines.append("# deckify — auto-eval summary")
     lines.append("")
     lines.append(f"- Run dir: `{out_dir.name}`")
     lines.append(f"- Pass threshold (judge avg): **{threshold}**")

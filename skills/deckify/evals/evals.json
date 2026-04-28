@@ -10,37 +10,175 @@
       "expected_output": "A complete DS markdown that mirrors the structural shape of references/ds-template.md: §1 Design Philosophy with Constraints/Freedom split + Design Taste anti-slop guardrails, §2 Colour Tokens (token names invariant, hex from extraction), §3 Typography with type scale + readability floor + §3.1 Typography Safety, §4 Logo with SVG <symbol> + currentColor, §5 Slide Architecture incl. full Fit Contract + scale-to-fit runtime, §6 11 slide types incl. Type E row-count rule, §7 Component Library, §8 Imagery, §9 Navigation, §10 Mobile incl. inline-flex trap + flip-card mobile fix + cov/sw min-height: 100dvh, §11 Animation, §12 Layout Rules, §13 ~40-item Checklist incl. 375px verification.",
       "files": [],
       "assertions": [
-        {"name": "ds_file_exists",                          "type": "file_exists",   "value": "./unilever-PPT-Design-System.md"},
-        {"name": "has_design_philosophy_section",           "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "## 1. Design Philosophy"},
-        {"name": "has_constraints_vs_freedom",              "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "Constraints vs Freedom"},
-        {"name": "has_design_taste_section",                "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "Design taste"},
-        {"name": "has_anti_ai_slop_rules",                  "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "Anti-AI-slop"},
-        {"name": "has_colour_tokens_section",               "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "## 2. Colour Tokens"},
-        {"name": "uses_navy_token_name",                    "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "--navy:"},
-        {"name": "uses_blue_token_name",                    "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "--blue:"},
-        {"name": "has_typography_safety",                   "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "Typography Safety"},
-        {"name": "has_logo_symbol_pattern",                 "type": "regex_in_file", "file": "./unilever-PPT-Design-System.md", "value": "<symbol id=\"brand-wm\""},
-        {"name": "logo_uses_currentColor",                  "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "fill: currentColor"},
-        {"name": "has_fit_contract_section",                "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "Single-Slide Fit Contract"},
-        {"name": "has_three_layer_overflow_safety_net",     "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "three-layer overflow safety net"},
-        {"name": "has_single_absorber_rule",                "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "single flex:1 absorber"},
-        {"name": "has_602px_budget",                        "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "602"},
-        {"name": "has_scale_to_fit_section",                "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "scale-to-fit"},
-        {"name": "has_scale_to_fit_js_pattern",             "type": "regex_in_file", "file": "./unilever-PPT-Design-System.md", "value": "Math\\.min\\(window\\.innerWidth / 1280, window\\.innerHeight / 720\\)"},
-        {"name": "has_12px_floor",                          "type": "regex_in_file", "file": "./unilever-PPT-Design-System.md", "value": "(12 ?px floor|Nothing below 12 ?px|12 px)"},
-        {"name": "has_inline_flex_trap_section",            "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "inline-flex trap"},
-        {"name": "has_inline_flex_catchall",                "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": ".sc div[style*=\"display:flex\"]"},
-        {"name": "has_flip_card_onclick_pattern",           "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "this.classList.toggle('on')"},
-        {"name": "has_mobile_cov_sw_fill_rule",             "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": ".cov, .sw { min-height: 100dvh"},
-        {"name": "has_375px_verification",                  "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "375"},
-        {"name": "has_no_emoji_rule",                       "type": "regex_in_file", "file": "./unilever-PPT-Design-System.md", "value": "(No emoji|no emoji)"},
-        {"name": "has_pre_ship_checklist",                  "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "## 13. Checklist"},
-        {"name": "has_tap_target_rule",                     "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "44"},
-        {"name": "has_table_row_count_rule",                "type": "file_contains", "file": "./unilever-PPT-Design-System.md", "value": "Row-count rule"},
-        {"name": "philosophy_mentions_unilever_aesthetic",  "type": "regex_in_file", "file": "./unilever-PPT-Design-System.md", "value": "(sustainability|warm|humanist|editorial|earth)"}
+        {
+          "name": "ds_file_exists",
+          "type": "file_exists",
+          "value": "./unilever-PPT-Design-System.md"
+        },
+        {
+          "name": "has_design_philosophy_section",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "## 1. Design Philosophy"
+        },
+        {
+          "name": "has_constraints_vs_freedom",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "Constraints vs Freedom"
+        },
+        {
+          "name": "has_design_taste_section",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: design-taste -->"
+        },
+        {
+          "name": "has_anti_ai_slop_rules",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "Anti-AI-slop"
+        },
+        {
+          "name": "has_colour_tokens_section",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "## 2. Colour Tokens"
+        },
+        {
+          "name": "uses_primary_token_name",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "--primary:"
+        },
+        {
+          "name": "uses_accent_token_name",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "--accent:"
+        },
+        {
+          "name": "has_typography_safety",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: typography-safety -->"
+        },
+        {
+          "name": "has_logo_symbol_pattern",
+          "type": "regex_in_file",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<symbol id=\"brand-wm\""
+        },
+        {
+          "name": "logo_uses_currentColor",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "fill: currentColor"
+        },
+        {
+          "name": "has_fit_contract_section",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: fit-contract -->"
+        },
+        {
+          "name": "has_three_layer_overflow_safety_net",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: three-layer-overflow -->"
+        },
+        {
+          "name": "has_single_absorber_rule",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "single flex:1 absorber"
+        },
+        {
+          "name": "has_602px_budget",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "602"
+        },
+        {
+          "name": "has_scale_to_fit_section",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: scale-to-fit -->"
+        },
+        {
+          "name": "has_scale_to_fit_js_pattern",
+          "type": "regex_in_file",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "Math\\.min\\(window\\.innerWidth / 1280, window\\.innerHeight / 720\\)"
+        },
+        {
+          "name": "has_12px_floor",
+          "type": "regex_in_file",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "(12 ?px floor|Nothing below 12 ?px|12 px)"
+        },
+        {
+          "name": "has_inline_flex_trap_section",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: inline-flex-trap -->"
+        },
+        {
+          "name": "has_inline_flex_catchall",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": ".sc div[style*=\"display:flex\"]"
+        },
+        {
+          "name": "has_flip_card_onclick_pattern",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: flip-card-mobile -->"
+        },
+        {
+          "name": "has_mobile_cov_sw_fill_rule",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": ".cov, .sw { min-height: 100dvh"
+        },
+        {
+          "name": "has_375px_verification",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "375"
+        },
+        {
+          "name": "has_no_emoji_rule",
+          "type": "regex_in_file",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "(No emoji|no emoji)"
+        },
+        {
+          "name": "has_pre_ship_checklist",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "## 13. Checklist"
+        },
+        {
+          "name": "has_tap_target_rule",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "44"
+        },
+        {
+          "name": "has_table_row_count_rule",
+          "type": "file_contains",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: type-e-row-count -->"
+        },
+        {
+          "name": "philosophy_mentions_unilever_aesthetic",
+          "type": "regex_in_file",
+          "file": "./unilever-PPT-Design-System.md",
+          "value": "(sustainability|warm|humanist|editorial|earth)"
+        }
       ]
     },
-
     {
       "id": 2,
       "name": "stripe-engineering-aesthetic",
@@ -49,21 +187,78 @@
       "expected_output": "A DS reading as engineering-calm with lavender restraint (slate navy + iconic indigo + Söhne family). Engineering DNA preserved (fit contract, scale-to-fit, mobile inline-flex trap, flip-card mobile fix, table row-count rule, logo as SVG symbol). Brand-variable parts adapted to Stripe.",
       "files": [],
       "assertions": [
-        {"name": "ds_file_exists",                          "type": "file_exists",   "value": "./stripe-PPT-Design-System.md"},
-        {"name": "engineering_dna_fit_contract_preserved",  "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "Single-Slide Fit Contract"},
-        {"name": "engineering_dna_three_layer_preserved",   "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "three-layer overflow safety net"},
-        {"name": "engineering_dna_inline_flex_trap",        "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "inline-flex trap"},
-        {"name": "engineering_dna_flip_mobile",             "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "this.classList.toggle('on')"},
-        {"name": "engineering_dna_scale_to_fit",            "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "scale-to-fit"},
-        {"name": "engineering_dna_table_row_count",         "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "Row-count rule"},
-        {"name": "tokens_named_navy_not_stripe_slate",      "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "--navy:"},
-        {"name": "tokens_use_var_not_hardcoded",            "type": "regex_in_file", "file": "./stripe-PPT-Design-System.md", "value": "var\\(--(navy|blue|surface|ink|mid|rule)"},
-        {"name": "no_local_path_leakage",                   "type": "not_contains",  "value": "/Users/"},
-        {"name": "logo_has_use_href",                       "type": "file_contains", "file": "./stripe-PPT-Design-System.md", "value": "<use href=\"#"},
-        {"name": "philosophy_mentions_engineering",         "type": "regex_in_file", "file": "./stripe-PPT-Design-System.md", "value": "(engineered|calm|developer|Söhne|slate|indigo)"}
+        {
+          "name": "ds_file_exists",
+          "type": "file_exists",
+          "value": "./stripe-PPT-Design-System.md"
+        },
+        {
+          "name": "engineering_dna_fit_contract_preserved",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: fit-contract -->"
+        },
+        {
+          "name": "engineering_dna_three_layer_preserved",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: three-layer-overflow -->"
+        },
+        {
+          "name": "engineering_dna_inline_flex_trap",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: inline-flex-trap -->"
+        },
+        {
+          "name": "engineering_dna_flip_mobile",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: flip-card-mobile -->"
+        },
+        {
+          "name": "engineering_dna_scale_to_fit",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: scale-to-fit -->"
+        },
+        {
+          "name": "engineering_dna_table_row_count",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: type-e-row-count -->"
+        },
+        {
+          "name": "tokens_named_primary_not_stripe_slate",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "--primary:"
+        },
+        {
+          "name": "tokens_use_var_not_hardcoded",
+          "type": "regex_in_file",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "var\\(--(primary|accent|surface|ink|mid|rule)"
+        },
+        {
+          "name": "no_local_path_leakage",
+          "type": "not_contains",
+          "value": "/Users/"
+        },
+        {
+          "name": "logo_has_use_href",
+          "type": "file_contains",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "<use href=\"#"
+        },
+        {
+          "name": "philosophy_mentions_engineering",
+          "type": "regex_in_file",
+          "file": "./stripe-PPT-Design-System.md",
+          "value": "(engineered|calm|developer|Söhne|slate|indigo)"
+        }
       ]
     },
-
     {
       "id": 3,
       "name": "minimal-monochrome-brand",
@@ -72,17 +267,55 @@
       "expected_output": "A DS where the philosophy paragraph reads minimal/monochrome, palette is restrained, but the same engineering DNA is preserved.",
       "files": [],
       "assertions": [
-        {"name": "ds_file_exists",                          "type": "file_exists",   "value": "./apple-PPT-Design-System.md"},
-        {"name": "philosophy_mentions_minimal_or_restrained","type": "regex_in_file", "file": "./apple-PPT-Design-System.md", "value": "(minimal|restrained|monochrome|reductive|spare|quiet)"},
-        {"name": "engineering_dna_fit_contract_preserved",  "type": "file_contains", "file": "./apple-PPT-Design-System.md", "value": "Single-Slide Fit Contract"},
-        {"name": "engineering_dna_mobile_section_present",  "type": "file_contains", "file": "./apple-PPT-Design-System.md", "value": "## 10. Mobile"},
-        {"name": "engineering_dna_scale_to_fit",            "type": "file_contains", "file": "./apple-PPT-Design-System.md", "value": "scale-to-fit"},
-        {"name": "tap_target_44px_preserved",               "type": "file_contains", "file": "./apple-PPT-Design-System.md", "value": "44"},
-        {"name": "logo_section_present",                    "type": "regex_in_file", "file": "./apple-PPT-Design-System.md", "value": "## 4\\. .*Logo"},
-        {"name": "all_11_slide_types_present",              "type": "regex_in_file", "file": "./apple-PPT-Design-System.md", "value": "Type [A-K]"}
+        {
+          "name": "ds_file_exists",
+          "type": "file_exists",
+          "value": "./apple-PPT-Design-System.md"
+        },
+        {
+          "name": "philosophy_mentions_minimal_or_restrained",
+          "type": "regex_in_file",
+          "file": "./apple-PPT-Design-System.md",
+          "value": "(minimal|restrained|monochrome|reductive|spare|quiet)"
+        },
+        {
+          "name": "engineering_dna_fit_contract_preserved",
+          "type": "file_contains",
+          "file": "./apple-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: fit-contract -->"
+        },
+        {
+          "name": "engineering_dna_mobile_section_present",
+          "type": "file_contains",
+          "file": "./apple-PPT-Design-System.md",
+          "value": "## 10. Mobile"
+        },
+        {
+          "name": "engineering_dna_scale_to_fit",
+          "type": "file_contains",
+          "file": "./apple-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: scale-to-fit -->"
+        },
+        {
+          "name": "tap_target_44px_preserved",
+          "type": "file_contains",
+          "file": "./apple-PPT-Design-System.md",
+          "value": "44"
+        },
+        {
+          "name": "logo_section_present",
+          "type": "regex_in_file",
+          "file": "./apple-PPT-Design-System.md",
+          "value": "## 4\\. .*Logo"
+        },
+        {
+          "name": "all_11_slide_types_present",
+          "type": "regex_in_file",
+          "file": "./apple-PPT-Design-System.md",
+          "value": "Type [A-K]"
+        }
       ]
     },
-
     {
       "id": 4,
       "name": "pg-end-to-end-with-verification-deck",
@@ -91,34 +324,169 @@
       "expected_output": "Two artifacts: (a) DS markdown matching template structure with P&G-specific palette (saturated brand-blue + signature spark-yellow decorative period); (b) HTML deck renders without console errors at native 1280×720, includes all 8 required slide types per verification-deck-spec.md, scales to fit any viewport via the runtime JS, collapses cleanly at 375px width.",
       "files": [],
       "assertions": [
-        {"name": "ds_file_exists",                          "type": "file_exists",   "value": "./pg-PPT-Design-System.md"},
-        {"name": "ds_has_engineering_dna_fit_contract",     "type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": "Single-Slide Fit Contract"},
-        {"name": "ds_has_inline_flex_catchall",             "type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": ".sc div[style*=\"display:flex\"]"},
-        {"name": "ds_has_375px_check",                      "type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": "375"},
-        {"name": "ds_has_scale_to_fit_engineering_dna",     "type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": "scale-to-fit"},
-        {"name": "ds_has_design_taste",                     "type": "file_contains", "file": "./pg-PPT-Design-System.md", "value": "Design taste"},
-        {"name": "deck_file_exists",                        "type": "file_exists",   "value": "./pg-deck.html"},
-        {"name": "deck_has_brand_symbol_block",             "type": "file_contains", "file": "./pg-deck.html", "value": "<symbol id=\"brand-wm\""},
-        {"name": "deck_has_logo_W_class",                   "type": "file_contains", "file": "./pg-deck.html", "value": "logo W"},
-        {"name": "deck_has_logo_L_class",                   "type": "file_contains", "file": "./pg-deck.html", "value": "logo L"},
-        {"name": "deck_uses_var_navy",                      "type": "file_contains", "file": "./pg-deck.html", "value": "var(--navy"},
-        {"name": "deck_has_overflow_hidden_slide",          "type": "regex_in_file", "file": "./pg-deck.html", "value": "\\.slide\\s*\\{[^}]*overflow:\\s*hidden"},
-        {"name": "deck_has_native_1280x720_canvas",         "type": "regex_in_file", "file": "./pg-deck.html", "value": "(1280px|width:\\s*1280)"},
-        {"name": "deck_has_mobile_media_query",             "type": "file_contains", "file": "./pg-deck.html", "value": "@media (max-width: 768px)"},
-        {"name": "deck_has_scale_to_fit_js",                "type": "regex_in_file", "file": "./pg-deck.html", "value": "Math\\.min\\(window\\.innerWidth / 1280, window\\.innerHeight / 720\\)"},
-        {"name": "deck_has_mobile_cov_sw_fill",             "type": "file_contains", "file": "./pg-deck.html", "value": ".cov, .sw { min-height: 100dvh"},
-        {"name": "deck_has_flip_onclick",                   "type": "file_contains", "file": "./pg-deck.html", "value": "this.classList.toggle('on')"},
-        {"name": "deck_has_g2_grid",                        "type": "file_contains", "file": "./pg-deck.html", "value": "class=\"g2"},
-        {"name": "deck_has_flip_row",                       "type": "file_contains", "file": "./pg-deck.html", "value": "class=\"flip-row"},
-        {"name": "deck_has_data_table",                     "type": "regex_in_file", "file": "./pg-deck.html", "value": "<table class=\"tbl"},
-        {"name": "deck_has_chart_pattern",                  "type": "file_contains", "file": "./pg-deck.html", "value": "chart-bar-fill"},
-        {"name": "deck_has_timeline",                       "type": "file_contains", "file": "./pg-deck.html", "value": "tl-track"},
-        {"name": "deck_has_pull_quote",                     "type": "file_contains", "file": "./pg-deck.html", "value": "bigq-text"},
-        {"name": "deck_has_at_least_8_slides",              "type": "regex_in_file", "file": "./pg-deck.html", "value": "data-slide=\"8\""},
-        {"name": "deck_no_emoji",                           "type": "regex_in_file", "file": "./pg-deck.html", "value": "^(?!.*[\\x{1F300}-\\x{1F9FF}]).*$"},
-        {"name": "process_followed_phase_pipeline",         "type": "transcript_contains", "value": "embed_logo.py"},
-        {"name": "process_called_ask_user_question",        "type": "transcript_contains", "value": "AskUserQuestion"},
-        {"name": "process_ran_runtime_eval",                "type": "transcript_contains", "value": "hard_checks.py"}
+        {
+          "name": "ds_file_exists",
+          "type": "file_exists",
+          "value": "./pg-PPT-Design-System.md"
+        },
+        {
+          "name": "ds_has_engineering_dna_fit_contract",
+          "type": "file_contains",
+          "file": "./pg-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: fit-contract -->"
+        },
+        {
+          "name": "ds_has_inline_flex_catchall",
+          "type": "file_contains",
+          "file": "./pg-PPT-Design-System.md",
+          "value": ".sc div[style*=\"display:flex\"]"
+        },
+        {
+          "name": "ds_has_375px_check",
+          "type": "file_contains",
+          "file": "./pg-PPT-Design-System.md",
+          "value": "375"
+        },
+        {
+          "name": "ds_has_scale_to_fit_engineering_dna",
+          "type": "file_contains",
+          "file": "./pg-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: scale-to-fit -->"
+        },
+        {
+          "name": "ds_has_design_taste",
+          "type": "file_contains",
+          "file": "./pg-PPT-Design-System.md",
+          "value": "<!-- ENGINEERING-DNA: design-taste -->"
+        },
+        {
+          "name": "deck_file_exists",
+          "type": "file_exists",
+          "value": "./pg-deck.html"
+        },
+        {
+          "name": "deck_has_brand_symbol_block",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "<symbol id=\"brand-wm\""
+        },
+        {
+          "name": "deck_has_logo_W_class",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "logo W"
+        },
+        {
+          "name": "deck_has_logo_L_class",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "logo L"
+        },
+        {
+          "name": "deck_uses_var_primary",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "var(--primary"
+        },
+        {
+          "name": "deck_has_overflow_hidden_slide",
+          "type": "regex_in_file",
+          "file": "./pg-deck.html",
+          "value": "\\.slide\\s*\\{[^}]*overflow:\\s*hidden"
+        },
+        {
+          "name": "deck_has_native_1280x720_canvas",
+          "type": "regex_in_file",
+          "file": "./pg-deck.html",
+          "value": "(1280px|width:\\s*1280)"
+        },
+        {
+          "name": "deck_has_mobile_media_query",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "@media (max-width: 768px)"
+        },
+        {
+          "name": "deck_has_scale_to_fit_js",
+          "type": "regex_in_file",
+          "file": "./pg-deck.html",
+          "value": "Math\\.min\\(window\\.innerWidth / 1280, window\\.innerHeight / 720\\)"
+        },
+        {
+          "name": "deck_has_mobile_cov_sw_fill",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": ".cov, .sw { min-height: 100dvh"
+        },
+        {
+          "name": "deck_has_flip_onclick",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "<!-- ENGINEERING-DNA: flip-card-mobile -->"
+        },
+        {
+          "name": "deck_has_g2_grid",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "class=\"g2"
+        },
+        {
+          "name": "deck_has_flip_row",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "class=\"flip-row"
+        },
+        {
+          "name": "deck_has_data_table",
+          "type": "regex_in_file",
+          "file": "./pg-deck.html",
+          "value": "<table class=\"tbl"
+        },
+        {
+          "name": "deck_has_chart_pattern",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "chart-bar-fill"
+        },
+        {
+          "name": "deck_has_timeline",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "tl-track"
+        },
+        {
+          "name": "deck_has_pull_quote",
+          "type": "file_contains",
+          "file": "./pg-deck.html",
+          "value": "bigq-text"
+        },
+        {
+          "name": "deck_has_at_least_8_slides",
+          "type": "regex_in_file",
+          "file": "./pg-deck.html",
+          "value": "data-slide=\"8\""
+        },
+        {
+          "name": "deck_no_emoji",
+          "type": "regex_in_file",
+          "file": "./pg-deck.html",
+          "value": "^(?!.*[\\x{1F300}-\\x{1F9FF}]).*$"
+        },
+        {
+          "name": "process_followed_phase_pipeline",
+          "type": "transcript_contains",
+          "value": "embed_logo.py"
+        },
+        {
+          "name": "process_called_ask_user_question",
+          "type": "transcript_contains",
+          "value": "AskUserQuestion"
+        },
+        {
+          "name": "process_ran_runtime_eval",
+          "type": "transcript_contains",
+          "value": "hard_checks.py"
+        }
       ],
       "manual_review": [
         "Open ./pg-deck.html at native 1280×720 — does it look on-brand for P&G?",

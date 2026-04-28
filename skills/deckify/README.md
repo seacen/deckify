@@ -1,4 +1,4 @@
-# web-to-design-system
+# deckify
 
 A Claude Code skill that turns a reference URL into a production-ready Design System markdown for HTML-slide authoring. Brand identity adapts to the source; engineering DNA (1280×720 fit contract, single-absorber rule, mobile inline-flex catch-all, flip-card mobile fix, logo-as-SVG-symbol pattern) stays invariant — those rules came from real, painful slide-deck bugs and the skill prevents you from re-learning any of them.
 
@@ -38,7 +38,7 @@ In Claude Code (or any agent that loads this skill), say something like:
 build me a design system from https://www.unilever.com so I can author slides in their visual language
 ```
 
-The skill triggers on any request that names a URL + slides/decks/design-system/visual-language. If it doesn't fire when you expect, say `/web-to-design-system <URL>` explicitly.
+The skill triggers on any request that names a URL + slides/decks/design-system/visual-language. If it doesn't fire when you expect, say `/deckify <URL>` explicitly.
 
 ## Tests
 
@@ -60,7 +60,7 @@ See [`TESTING.md`](TESTING.md) for the full Skillify 10-step mapping — each la
 ## File layout
 
 ```
-web-to-design-system/
+deckify/
 ├── SKILL.md                          # The contract (what + when + how)
 ├── README.md                         # This file
 ├── TESTING.md                        # Skillify 10-step mapping for this skill

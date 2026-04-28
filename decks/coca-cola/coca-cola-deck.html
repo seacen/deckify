@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coca-Cola — Open the brief</title>
+<style>
+:root {
+  --primary:  #EA0000;
+  --accent:   #EA0000;
+  --surface:  #FFFFFF;
+  --white:    #FFFFFF;
+  --ink:      #000000;
+  --mid:      #4F4F4F;
+  --rule:     #BDBDBD;
+  --tint:     #F8F8F8;
+  --green:    #0E9F6E;  --green-bg: #D1FAE5;
+  --red:      #BF1004;  --red-bg:   #FFE9E2;
+  --warn:     #F59E0B;  --warn-bg:  #FEF3C7;
+  --teal:     #1F96DB;  --teal-bg:  #D6EBFF;
+  /* Brand palette */
+  --red-deep: #BF1004;
+  --red-pale: #FFE9E2;
+  --coral:    #FFA68F;
+  --paper-pure: #FFFFFF;
+  --graphite: #4F4F4F;
+  --stone:    #BDBDBD;
+  --coal:     #353535;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--ink);
+  font-family: 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+.serif { font-family: Georgia, 'Times New Roman', serif; }
+#wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--ink); }
+#deck {
+  width: 1280px; height: 720px; position: relative; overflow: hidden;
+  background: var(--surface); box-shadow: 0 8px 40px rgba(0,0,0,.45);
+  transform-origin: center center; will-change: transform;
+}
+.slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .38s ease; overflow: hidden; }
+.slide.active { opacity: 1; pointer-events: auto; }
+.slide.active .sc, .slide.active .cov-body { animation: enter .42s cubic-bezier(.4,0,.2,1) both; }
+@keyframes enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.logo { display: inline-block; flex: 0 0 auto; line-height: 0; }
+.logo.W { width: 144px; height: 24px; color: var(--white); fill: currentColor; }
+.logo.L { width: 96px; height: 16px; color: var(--primary); fill: currentColor; }
+
+.cov {
+  height: 100%; background: var(--primary); color: var(--white);
+  display: flex; flex-direction: column; padding: 64px 96px;
+}
+.cov-top { display: flex; align-items: flex-start; justify-content: space-between; flex: 0 0 auto; }
+.cov-eb { font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--white); opacity: .85; padding-top: 8px; }
+.cov-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 26px; max-width: 1080px; }
+.cov-title { font-family: Georgia, 'Times New Roman', serif; font-size: 92px; line-height: 1.04; font-weight: 700; letter-spacing: -.02em; color: var(--white); }
+.cov-title .it { font-style: italic; }
+.cov-sub { font-size: 22px; line-height: 1.45; font-weight: 400; max-width: 820px; color: var(--white); opacity: .92; }
+.cov-meta { font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--white); opacity: .7; flex: 0 0 auto; }
+
+.sw { background: var(--surface); display: flex; flex-direction: column; height: 100%; border-top: 4px solid var(--primary); }
+.shd { display: flex; align-items: center; justify-content: space-between; padding: 0 80px 0 96px; flex: 0 0 56px; border-bottom: 1px solid var(--rule); }
+.shd-num { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--primary); }
+.sc { flex: 1; padding: 32px 80px 40px 96px; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+.stitle { font-family: Georgia, 'Times New Roman', serif; font-size: 50px; line-height: 1.1; font-weight: 700; letter-spacing: -.022em; color: var(--ink); flex: 0 0 auto; }
+.ssub { font-size: 19px; line-height: 1.5; font-weight: 400; color: var(--mid); flex: 0 0 auto; max-width: 920px; }
+
+.absorb { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; }
+
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; width: 100%; height: 100%; }
+.stat-card { display: flex; flex-direction: column; padding: 24px 0; gap: 10px; overflow: hidden; justify-content: center; border-top: 2px solid var(--primary); }
+.stat-num { font-family: Georgia, serif; font-size: 64px; line-height: 1; font-weight: 700; color: var(--ink); letter-spacing: -.025em; }
+.stat-label { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); }
+.stat-desc { font-size: 14px; line-height: 1.5; font-weight: 400; color: var(--ink); margin-top: 4px; }
+
+.narr-col { display: flex; flex-direction: column; gap: 26px; width: 100%; justify-content: center; }
+.narr-body { font-size: 18px; line-height: 1.65; font-weight: 400; color: var(--ink); max-width: 920px; }
+.narr-body p { margin: 0 0 14px 0; }
+.pull { font-family: Georgia, serif; font-size: 30px; line-height: 1.32; font-weight: 400; font-style: italic; color: var(--primary); padding: 6px 0 6px 28px; border-left: 3px solid var(--primary); max-width: 980px; }
+.pull-attr { font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); margin-top: 6px; }
+
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; width: 100%; height: 100%; }
+.show-card { display: flex; flex-direction: column; padding: 32px 0; gap: 14px; overflow: hidden; border-top: 2px solid var(--primary); }
+.show-card.dark { background: var(--ink); color: var(--white); padding: 32px 36px; border-top: none; }
+.show-cap { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--primary); }
+.show-card.dark .show-cap { color: var(--coral); }
+.show-title { font-family: Georgia, serif; font-size: 28px; line-height: 1.2; font-weight: 700; color: var(--ink); }
+.show-card.dark .show-title { color: var(--white); }
+.show-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.show-list li { font-size: 16px; line-height: 1.55; font-weight: 400; color: var(--ink); display: flex; gap: 12px; align-items: flex-start; }
+.show-card.dark .show-list li { color: var(--white); opacity: .88; }
+.show-list li .check { color: var(--primary); font-weight: 700; flex: 0 0 auto; }
+.show-card.dark .show-list li .check { color: var(--coral); }
+
+.tbl-wrap { width: 100%; height: 100%; display: flex; align-items: stretch; overflow: hidden; }
+.tbl { width: 100%; border-collapse: collapse; background: var(--white); }
+.tbl thead th { text-align: left; padding: 14px 18px 14px 0; font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); border-bottom: 2px solid var(--primary); }
+.tbl tbody td { padding: 14px 18px 14px 0; font-size: 14px; line-height: 1.5; font-weight: 400; color: var(--ink); border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl tbody tr:last-child td { border-bottom: none; }
+.tbl .row-cap { font-family: Georgia, serif; font-size: 16px; font-weight: 700; color: var(--ink); white-space: nowrap; font-style: italic; }
+.tbl .pos { color: var(--green); font-weight: 700; }
+.tbl .neu { color: var(--teal); font-weight: 700; }
+.tbl .accent { color: var(--primary); font-weight: 700; }
+
+.chart-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; width: 100%; height: 100%; align-items: center; }
+.chart-bars { display: flex; flex-direction: column; gap: 30px; }
+.chart-row { display: flex; flex-direction: column; gap: 10px; }
+.chart-row-label { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.chart-row-name { font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: .12em; text-transform: uppercase; }
+.chart-row-val { font-family: Georgia, serif; font-size: 32px; font-weight: 700; color: var(--primary); letter-spacing: -.018em; }
+.chart-bar-track { height: 12px; background: var(--rule); overflow: hidden; }
+.chart-bar-fill { height: 100%; background: var(--primary); transform-origin: left center; animation: barFill 1s cubic-bezier(.4,0,.2,1) both; }
+@keyframes barFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.chart-bar-meta { font-size: 12px; font-weight: 400; color: var(--mid); }
+.chart-callout { padding: 0 0 0 28px; border-left: 3px solid var(--primary); display: flex; flex-direction: column; gap: 12px; }
+.chart-callout-cap { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--primary); }
+.chart-callout-title { font-family: Georgia, serif; font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.chart-callout-body { font-size: 14px; line-height: 1.55; font-weight: 400; color: var(--mid); }
+
+.flip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; height: 100%; }
+.fc { perspective: 1200px; cursor: pointer; height: 100%; min-height: 0; }
+.fc-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .65s cubic-bezier(.4,0,.2,1); }
+.fc:hover .fc-inner, .fc.on .fc-inner { transform: rotateY(180deg); }
+.ff { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; overflow: hidden; padding: 36px 40px; }
+.ff-front { background: var(--primary); color: var(--white); }
+.ff-back { background: var(--ink); color: var(--white); transform: rotateY(180deg); justify-content: flex-start; }
+.ff-roman { font-family: Georgia, serif; position: absolute; right: 32px; top: 24px; font-size: 80px; line-height: 1; font-weight: 700; color: var(--white); opacity: .25; font-style: italic; }
+.cnm { font-family: Georgia, serif; font-size: 32px; line-height: 1.1; font-weight: 700; margin-top: auto; color: var(--white); letter-spacing: -.018em; }
+.cbd { font-size: 16px; line-height: 1.5; font-weight: 400; color: var(--white); opacity: .9; margin-top: 16px; max-width: 88%; }
+.ht { font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--white); opacity: .7; margin-top: 24px; }
+.bkl { font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--coral); }
+.bkt { font-family: Georgia, serif; font-size: 24px; line-height: 1.22; font-weight: 700; color: var(--white); margin-top: 12px; }
+.bkbody { font-size: 16px; line-height: 1.55; font-weight: 400; color: var(--white); opacity: .92; margin-top: 18px; }
+
+.tl { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 26px; justify-content: center; padding: 0 8px; }
+.tl-track { position: relative; height: 2px; background: var(--rule); margin: 6px 14px 0; }
+.tl-dot { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; border-radius: 50%; background: var(--primary); }
+.tl-dot.is-now { background: var(--ink); }
+.tl-stops { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+.tl-stop { display: flex; flex-direction: column; gap: 8px; }
+.tl-stop-cap { font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--primary); }
+.tl-stop.is-now .tl-stop-cap { color: var(--ink); }
+.tl-stop-title { font-family: Georgia, serif; font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.tl-stop-desc { font-size: 14px; line-height: 1.55; font-weight: 400; color: var(--mid); }
+
+.bigq { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 28px; padding-right: 60px; }
+.bigq-text { font-family: Georgia, serif; font-size: 56px; line-height: 1.18; font-weight: 700; font-style: italic; color: var(--primary); letter-spacing: -.02em; max-width: 1000px; }
+.bigq-attr { font-size: 13px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--mid); }
+
+@media (max-width: 768px) {
+  body { overflow-y: auto; }
+  #wrap { position: static; display: block; }
+  #deck { width: 100%; height: auto; position: static; transform: none !important; box-shadow: none; }
+  .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; }
+  .cov, .sw { min-height: 100dvh; height: auto; }
+  .cov { padding: 32px 20px 36px; }
+  .cov-title { font-size: 48px; }
+  .cov-sub { font-size: 17px; }
+  .stitle { font-size: 32px; }
+  .ssub { font-size: 16px; }
+  .shd { padding: 0 20px; }
+  .sw .sc { padding: 24px 20px 32px; }
+  .g2, .g3, .flip-row, .tabs, .stat-row, .chart-wrap, .tl-stops { grid-template-columns: 1fr !important; flex-direction: column !important; }
+  .tl-track { display: none !important; }
+  .tbl thead th, .tbl tbody td { padding: 10px 12px; font-size: 13px; }
+  .bigq-text { font-size: 30px; }
+  .stat-num { font-size: 44px; }
+  .chart-row-val { font-size: 26px; }
+  .sc div[style*="display:flex"] { flex-direction: column !important; }
+  .sc div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  .fc { perspective: none !important; min-height: auto !important; height: auto !important; }
+  .fc .fc-inner { transform-style: flat !important; transition: none !important; height: auto !important; transform: none !important; }
+  .fc:hover .fc-inner, .fc.on .fc-inner { transform: none !important; }
+  .fc .ff { position: relative !important; backface-visibility: visible !important; transform: none !important; min-height: 240px; }
+  .fc .ff-back { display: none; transform: none !important; }
+  .fc.on .ff-front { display: none; }
+  .fc.on .ff-back { display: flex; transform: none !important; }
+  #nav, #ctr { display: none; }
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 125 20" fill="currentColor">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M72.5852 4.29205L72.5813 4.29009C73.0478 3.78076 73.5646 3.23983 74.1055 2.71938C73.4473 2.39854 72.8394 2.03485 72.2513 1.68303C70.977 0.920686 69.7957 0.214018 68.3976 0.119447C67.3132 0.0523276 66.2276 0.231767 65.2224 0.644291C65.2224 0.644291 64.6789 -0.0934786 63.0054 0.145596C61.3318 0.384671 56.1768 2.53821 51.7838 9.56103C47.8129 15.9096 49.6788 19.5499 52.5309 19.5106C55.6221 19.4677 58.5619 16.031 59.5593 13.1976C60.5567 10.3642 59.38 9.59652 58.476 9.66936C57.4768 9.75341 55.7117 10.6425 54.7405 12.6074C53.7692 14.5723 53.7692 15.7826 53.7692 15.7826C54.1662 15.3661 54.5979 14.9843 55.0599 14.6414C55.4756 14.3167 55.9337 14.0503 56.4215 13.8494C56.5356 13.3417 56.7054 12.8482 56.9276 12.3776C57.2788 11.6455 57.8354 10.8834 58.5227 10.7116C59.9179 10.3623 59.2493 12.9062 58.2239 14.5648C57.6729 15.4501 55.7173 18.0108 54.0382 18.0108C52.3591 18.0108 52.0378 16.3933 52.3908 14.8748C52.7438 13.3563 53.235 11.4363 55.6893 7.9398C58.1436 4.44334 60.7976 2.37011 62.3348 1.5016C63.9131 0.606936 64.5556 0.999167 64.5556 0.999167C64.5556 0.999167 62.5403 2.23563 61.3935 3.72985C60.299 5.15683 59.6434 6.76124 60.1514 7.54757C60.637 8.29655 62.3423 8.31149 64.2231 5.59949C66.0797 2.9211 65.6128 1.3279 65.6128 1.3279C65.735 1.28816 65.8598 1.25695 65.9863 1.23451C66.8922 1.1131 67.6169 1.35404 68.7375 1.92932C69.2841 2.20997 69.8205 2.56943 70.3934 2.95338C71.0511 3.39406 71.757 3.8671 72.5813 4.29009L72.5796 4.29205H72.5852ZM64.9777 1.53522C64.9777 1.53522 63.7823 2.0115 62.3927 3.54307C61.0031 5.07464 60.1925 6.7986 60.792 7.25433C61.0218 7.42803 61.5522 7.45792 62.516 6.59127C63.4046 5.81947 64.1021 4.85216 64.5537 3.76534C65.1402 2.33537 64.9977 1.63432 64.9795 1.54479C64.9784 1.53936 64.9777 1.53618 64.9777 1.53522Z"/>
+<path d="M75.0066 5.15959L75.0058 5.16056C78.2706 5.80681 81.1302 3.78401 82.6506 2.06193C83.2054 1.44566 83.6827 0.763843 84.0719 0.031662C83.3795 0.752537 82.6046 1.38946 81.7634 1.92932L81.754 1.92745C80.3383 2.83519 78.379 3.65887 76.4963 3.4777C76.02 3.97079 75.5101 4.54046 75.0021 5.15869L75.0066 5.15959Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M76.1563 16.7632C75.8855 17.1965 75.5773 18.0276 76.472 17.5103C77.5609 16.8808 79.113 14.5218 79.113 14.5218H79.8153C79.1753 15.5077 78.4623 16.4442 77.6823 17.3235C76.5785 18.5469 75.2318 19.6582 74.283 19.548C73.1754 19.4191 73.5228 17.9641 73.5228 17.9641C73.5228 17.9641 71.9314 19.6451 70.8388 19.5312C69.3576 19.3668 69.8096 17.5364 69.8096 17.5364C69.8096 17.5364 68.1286 19.591 66.993 19.5293C65.2037 19.4266 65.6539 17.2432 66.1507 15.7153C66.4178 14.8954 66.6643 14.251 66.6643 14.251C66.6643 14.251 66.4869 14.2977 66.104 14.3537C65.9041 14.3817 65.5437 14.4023 65.5437 14.4023C65.133 15.1265 64.6854 15.829 64.2026 16.5073C63.6068 17.2992 61.076 20.0205 59.5817 19.4752C58.2033 18.9709 58.659 16.8603 59.4622 15.1793C60.6333 12.7344 63.928 9.2211 65.8276 9.68243C67.7981 10.1606 65.8724 13.7542 65.8724 13.7542C65.8724 13.7542 65.8724 13.7672 65.8929 13.7766C66.0173 13.799 66.1453 13.792 66.2665 13.756C66.5128 13.7062 66.754 13.6343 66.9874 13.5412C66.9874 13.5412 68.9673 9.3948 71.1544 6.68279C73.3416 3.97079 77.7103 -0.694901 79.4231 0.435101C79.8414 0.713398 79.6509 1.6697 79.0869 2.83145C78.8327 2.91184 78.5746 2.97917 78.3136 3.03317C78.6264 2.51439 78.8629 1.95329 79.0159 1.36712C79.2736 -0.0337099 76.0013 2.91924 73.6629 6.09818C72.2565 8.01326 71.0072 10.0389 69.9273 12.1554C70.3498 11.8986 70.7531 11.6114 71.1339 11.2962C72.1771 10.4311 73.1687 9.50555 74.1037 8.52442C75.0007 7.60023 75.8421 6.62353 76.6233 5.59949C76.8735 5.58772 77.1229 5.56216 77.3704 5.52291C76.5155 6.68225 75.5839 7.78297 74.5818 8.81766C74.4992 8.90021 74.4161 8.98347 74.3325 9.06717C73.4706 9.93029 72.5617 10.8405 71.7615 11.5147C70.9802 12.183 70.156 12.7995 69.2941 13.3601C69.2941 13.3601 67.2396 17.4841 68.3603 17.7493C69.014 17.9062 70.3065 15.9171 70.3065 15.9171C70.3065 15.9171 71.9875 13.3451 73.0073 12.1815C74.3857 10.6126 75.5792 9.70858 76.7652 9.6843C77.46 9.67123 77.8691 10.4127 77.8691 10.4127L78.1959 9.90657H80.2075C80.2075 9.90657 76.4514 16.2794 76.1507 16.7594L76.1563 16.7632ZM77.4171 11.1262C77.4416 11.0829 77.4616 11.0372 77.4768 10.9899C77.4673 10.9152 77.4324 10.8461 77.378 10.7941C77.3236 10.7421 77.253 10.7103 77.178 10.7041C76.868 10.6892 76.4421 10.7489 75.3308 11.9798C74.4073 12.999 73.6131 14.1282 72.9662 15.3418C72.3293 16.5054 72.0715 17.372 72.4376 17.5962C72.5563 17.6572 72.6937 17.6712 72.8224 17.6354C73.0708 17.5756 73.3509 17.344 73.7787 16.8491C73.9387 16.6636 74.1131 16.4158 74.3125 16.1326L74.3144 16.1299C74.3634 16.0604 74.4139 15.9886 74.466 15.9152C75.2019 14.9141 77.051 11.7613 77.4171 11.1244V11.1262ZM65.863 12.4635C66.0498 11.9779 66.2852 11.0254 65.7939 10.6518C65.2654 10.254 63.9262 11.186 63.9131 12.146C63.9 13.1061 64.8601 13.5674 65.0898 13.629C65.2205 13.6645 65.2654 13.6589 65.3289 13.5543C65.532 13.2048 65.7105 12.8416 65.863 12.4673V12.4635ZM64.8451 14.2473C64.5117 14.0931 64.2007 13.8946 63.9206 13.6571C63.6385 13.4215 63.4023 13.1359 63.2239 12.8147C63.2084 12.7884 63.193 12.8056 63.1765 12.8239C63.173 12.8278 63.1695 12.8317 63.166 12.8352L63.1656 12.8356C63.1445 12.8567 63.0612 12.94 62.3442 13.9895C61.6232 15.0448 60.525 17.2189 61.5223 17.5906C62.1611 17.8278 63.2239 16.709 63.8066 15.9675C64.2011 15.4503 64.5587 14.9061 64.8769 14.3388C64.9068 14.2753 64.8769 14.2603 64.8451 14.2473Z"/>
+<path d="M53.5208 5.05597H51.6082L50.5268 6.8042H52.4394L53.5208 5.05597Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M49.0307 9.83933H49.7255C49.7255 9.83933 46.2141 14.9141 44.2287 14.6825C43.1211 14.5536 43.4498 13.1882 43.4498 13.1882C43.4498 13.1882 41.8902 15.0093 40.4614 14.6451C39.1651 14.3126 40.0019 12.1591 40.0019 12.1591C39.9798 12.168 39.8983 12.2463 39.7691 12.3705C39.0344 13.0765 36.7561 15.2657 35.0803 14.6208C33.0258 13.8252 34.0885 11.1785 34.4808 10.3828C34.8132 9.71232 35.1812 9.0586 35.1812 9.0586C35.1812 9.0586 34.8655 9.14825 34.6675 9.19308C34.4696 9.2379 34.1726 9.29581 34.1726 9.29581C34.1726 9.29581 33.1976 10.8815 32.6018 11.6716C32.006 12.4617 29.4714 15.1812 27.979 14.6395C26.4867 14.0978 26.8584 12.0097 27.6951 10.3436C29.0549 7.65404 32.2824 4.34808 34.2323 4.84491C36.1823 5.34173 34.5704 8.53002 34.5704 8.53002C34.5704 8.53002 34.9608 8.58045 35.8965 7.94167C36.283 7.67868 36.7043 7.28842 37.1539 6.87205C38.2751 5.83354 39.5716 4.63265 40.9395 4.8393C41.8435 4.97565 42.6859 5.90393 41.5335 7.66524C41.1599 8.22557 40.5454 8.73734 40.071 8.23678C39.7759 7.9286 40.0336 7.35893 40.3437 6.97043C40.4649 6.81211 40.6232 6.68604 40.8046 6.60331C40.986 6.52058 41.185 6.48373 41.384 6.49602C41.384 6.49602 41.7016 5.76572 40.8928 5.78066C40.2372 5.79373 38.5786 7.3197 37.6429 8.86248C36.7949 10.2839 35.4968 12.697 36.7949 13.2237C37.9922 13.7075 40.2708 11.0029 41.3261 9.58531C42.3814 8.16767 44.7834 4.95511 46.8006 4.82623C47.4954 4.7814 47.9082 5.41458 47.9082 5.41458L48.1416 5.04102H50.1551C50.1551 5.04102 46.3635 11.3896 46.0665 11.8659C45.8331 12.2394 45.523 13.0855 46.3822 12.613C47.2414 12.1404 49.0307 9.83933 49.0307 9.83933ZM44.464 11.1038C45.2783 9.98315 47.5234 6.0795 47.5234 6.0795C47.5138 6.00486 47.4789 5.93576 47.4245 5.88375C47.3701 5.83174 47.2996 5.79996 47.2246 5.79374C46.9145 5.77879 46.399 5.88339 45.3568 7.17215C44.3146 8.46091 43.5376 9.48632 42.9586 10.5528C42.3198 11.7164 42.0415 12.5383 42.4076 12.7605C42.5266 12.8207 42.6636 12.8346 42.7923 12.7997C43.0314 12.74 43.3433 12.5009 43.7711 12.0078C43.9728 11.7781 44.2006 11.468 44.4677 11.1038H44.464ZM34.2043 5.81802C33.6757 5.41831 32.3366 6.3522 32.3235 7.31223C32.3104 8.27227 33.5375 8.57111 33.6963 8.57858C33.7317 8.58792 33.7692 8.58528 33.803 8.5711C33.8368 8.55691 33.8649 8.53197 33.8831 8.50014C34.0267 8.21872 34.1558 7.93008 34.2697 7.63536C34.4565 7.14974 34.6899 6.19717 34.1987 5.82362L34.2043 5.81802ZM33.4012 9.18561C33.0368 9.07164 32.6884 8.91159 32.3646 8.70933C32.0487 8.50534 31.7913 8.22279 31.6175 7.88937C31.6012 7.8617 31.5835 7.88226 31.5668 7.90161C31.5644 7.90446 31.562 7.90728 31.5596 7.90992C31.5409 7.93047 31.4326 8.07242 30.7135 9.12771C29.9944 10.183 28.9279 12.3421 29.9271 12.712C30.5659 12.9492 31.6399 11.8266 32.2208 11.0851C32.6585 10.5064 33.0632 9.90335 33.4329 9.279C33.4572 9.21549 33.4329 9.20055 33.3974 9.18934L33.4012 9.18561Z"/>
+<path d="M47.9324 20C46.447 18.972 44.6685 18.4529 42.8633 18.5207C42.3747 18.5339 41.896 18.6622 41.4663 18.8953C41.0366 19.1283 40.668 19.4594 40.3904 19.8618C39.6209 18.5189 38.1005 17.6952 35.749 17.7138C33.758 17.7364 31.7748 18.2283 29.9086 18.6911C28.2139 19.1114 26.6157 19.5078 25.1961 19.5069C22.3309 19.5069 20.2446 17.7064 20.3137 14.5106C20.437 8.90731 25.1699 3.86433 28.7187 1.58938C30.7527 0.281943 32.4542 -0.102817 33.5749 0.0223232C34.3874 0.111976 35.3642 1.05147 34.7478 2.43548C33.842 4.46202 32.5906 4.29205 32.6373 3.32454C32.6567 3.07215 32.7358 2.82797 32.8679 2.61206C33.0001 2.39614 33.1816 2.21465 33.3974 2.08247C33.6266 1.95775 33.8837 1.89347 34.1446 1.8957C34.3313 1.74441 34.4602 0.63682 33.0033 1.00104C31.5465 1.36525 29.7721 2.79783 28.0986 4.64692C26.4251 6.49602 23.8214 9.98875 23.177 13.6571C22.8763 15.3586 23.0761 18.461 27.0993 18.4273C28.6505 18.4146 30.5377 17.944 32.5699 17.4373C35.0134 16.8281 37.6663 16.1666 40.1961 16.186C41.8098 16.1792 43.3946 16.6132 44.7796 17.4412C45.9788 18.1883 47.4151 19.2566 47.925 19.9925L47.9324 20Z"/>
+<path d="M11.2776 12.7344H15.3157L15.1831 11.8154H12.3273V10.6948H14.2511V9.76088H12.3273V8.80831H15.1289L15.2634 7.88937H11.2795L11.2776 12.7344Z"/>
+<path d="M5.30073 12.7344H6.35042V10.592H8.82335V12.7325H9.87677V7.90431H8.82522V9.65441H6.35042V7.90244H5.30634L5.30073 12.7344Z"/>
+<path d="M0 8.84567H1.61002V12.7288H2.66344V8.84567H4.27346V7.90058H0V8.84567Z"/>
+<path d="M123.234 7.91552H124.394L122.483 11.1206V12.7437H121.43V11.1412L119.5 7.91365H120.686L121.966 10.1737L123.234 7.91552Z"/>
+<path d="M117.647 11.1841V7.91552L118.673 7.90991V12.7381H117.614L115.27 9.4116V12.7381H114.244V7.90991H115.335L117.647 11.1841Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M113.322 12.74H112.214L111.812 11.6623H109.692L109.291 12.7344H108.191L110.113 7.90805H111.407L113.322 12.74ZM110.759 8.84006L110.036 10.7545L111.476 10.7527L110.759 8.84006Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M104.001 7.90618H106.484C106.806 7.89576 107.127 7.9637 107.418 8.10416C107.66 8.22403 107.86 8.41408 107.993 8.64955C108.121 8.89159 108.188 9.1612 108.188 9.43495C108.188 9.7087 108.121 9.97831 107.993 10.2203C107.859 10.4561 107.659 10.6471 107.418 10.7695C107.127 10.9106 106.807 10.9792 106.484 10.9693H105.055V12.7325H104.001V7.90618ZM105.062 10.0373H106.465C106.642 10.0488 106.816 9.99201 106.952 9.87854C107.065 9.75818 107.127 9.59963 107.127 9.43495C107.127 9.27027 107.065 9.11172 106.952 8.99135C106.814 8.88092 106.64 8.82568 106.463 8.83633H105.062V10.0373Z"/>
+<path d="M101.187 7.90618H102.601L102.602 12.7362H101.583V9.18747L100.1 12.6615H99.3955L97.9293 9.27526V12.7288H96.9095V7.90618H98.3234L99.769 11.2682L101.187 7.90618Z"/>
+<path d="M93.1822 11.8603C93.1825 11.8603 93.1829 11.8603 93.1833 11.8602H93.1814C93.1816 11.8603 93.1819 11.8603 93.1822 11.8603Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M94.5131 12.4953C94.103 12.7114 93.6449 12.8206 93.1814 12.8128L93.1758 12.8147C92.7123 12.822 92.2544 12.7128 91.8441 12.4972C91.4612 12.2925 91.1435 11.9844 90.927 11.6081C90.7089 11.2115 90.5945 10.7663 90.5945 10.3137C90.5945 9.86116 90.7089 9.41592 90.927 9.01937C91.1442 8.64297 91.4626 8.33497 91.8459 8.13031C92.2586 7.92095 92.7149 7.81184 93.1777 7.81184C93.6404 7.81184 94.0967 7.92095 94.5094 8.13031C94.8983 8.33271 95.222 8.64091 95.4433 9.01937C95.6607 9.4158 95.7747 9.86065 95.7747 10.3128C95.7747 10.7649 95.6607 11.2098 95.4433 11.6062C95.223 11.9842 94.9006 12.2923 94.5131 12.4953ZM92.4156 11.6623C92.6487 11.796 92.9135 11.8644 93.1822 11.8603C93.4512 11.8662 93.7165 11.7976 93.949 11.6623C94.1731 11.533 94.3563 11.3434 94.4776 11.115C94.6029 10.8665 94.6682 10.5921 94.6682 10.3137C94.6682 10.0354 94.6029 9.76098 94.4776 9.51246C94.3574 9.28227 94.174 9.09113 93.949 8.96147C93.7145 8.8323 93.451 8.76457 93.1833 8.76457C92.9155 8.76457 92.652 8.8323 92.4175 8.96147C92.1933 9.0876 92.0089 9.27393 91.8852 9.49939C91.7554 9.74612 91.6911 10.022 91.6984 10.3007C91.6922 10.5792 91.7564 10.8548 91.8852 11.1019C92.0058 11.3349 92.1896 11.5291 92.4156 11.6623Z"/>
+<path d="M89.2105 12.6279C88.8567 12.7556 88.4828 12.8188 88.1067 12.8147L88.1123 12.8203C87.6243 12.8289 87.1417 12.7166 86.7077 12.4934C86.3078 12.2878 85.9723 11.9759 85.738 11.592C85.5038 11.2082 85.3798 10.7672 85.3798 10.3175C85.3798 9.86777 85.5038 9.42678 85.738 9.04291C85.9723 8.65905 86.3078 8.34716 86.7077 8.14152C87.1365 7.92063 87.6132 7.809 88.0955 7.81653C88.4718 7.8098 88.8461 7.87313 89.1993 8.0033C89.5189 8.12009 89.8036 8.3161 90.0267 8.57297L89.3711 9.3014C89.2041 9.1268 89.005 8.98602 88.7847 8.88676C88.5753 8.79899 88.3504 8.75451 88.1235 8.75602C87.8322 8.75215 87.5448 8.82288 87.2886 8.96147C87.0462 9.09207 86.8436 9.28565 86.7021 9.5218C86.5542 9.75996 86.4771 10.0353 86.4798 10.3156C86.476 10.5919 86.5488 10.8639 86.6903 11.1013C86.8317 11.3387 87.0362 11.5323 87.2811 11.6604C87.5416 11.8001 87.8335 11.8709 88.1291 11.8659C88.3652 11.8698 88.5996 11.8249 88.8175 11.7339C89.0354 11.643 89.2322 11.5079 89.3954 11.3373L90.0529 12.0545C89.826 12.3148 89.5359 12.5122 89.2105 12.6279Z"/>
+  </symbol>
+</svg>
+
+<div id="wrap"><div id="deck">
+
+  <div class="slide active" data-slide="1">
+    <div class="cov">
+      <div class="cov-top">
+        <div class="cov-eb">2026 Annual Brief · 内部沟通</div>
+        <svg class="logo W" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="cov-body">
+        <div class="cov-title"><span class="it">Open</span> the brief.</div>
+        <div class="cov-sub">关于一个 1886 年起家的品牌如何在 2026 年继续承担每一次可口可乐的相遇。</div>
+      </div>
+      <div class="cov-meta">The Coca-Cola Company · Corporate Communications</div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="2">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">02 · 一览</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">用四个数字定位现在。</div>
+        <div class="ssub">这些不是营销文案——是 The Coca-Cola Company 当下产品与运营尺寸的客观读数。</div>
+        <div class="absorb">
+          <div class="stat-row">
+            <div class="stat-card">
+              <div class="stat-label">创立</div>
+              <div class="stat-num">1886</div>
+              <div class="stat-desc">Atlanta, Georgia。140 年的产品线累积演进至今。</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">市场</div>
+              <div class="stat-num">200+</div>
+              <div class="stat-desc">国家与地区销售。每一处都有本地的瓶装合作伙伴生态。</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">日服务</div>
+              <div class="stat-num">2.2B</div>
+              <div class="stat-desc">饮品份数——每天全球消费者打开一瓶或一罐 Coca-Cola 系列产品的次数。</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">品牌组合</div>
+              <div class="stat-num">200</div>
+              <div class="stat-desc">超过两百个独立品牌运行在同一套全球分销网络上。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="3">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">03 · 经营基调</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">品牌的承诺没有改写。</div>
+        <div class="ssub">从 1886 年开始 Coca-Cola 就承诺一件事——可负担的、清爽的、能给每一次相遇带来一点光的饮品。</div>
+        <div class="absorb">
+          <div class="narr-col">
+            <div class="narr-body">
+              <p>这个承诺穿过两次世界大战、穿过广告业的兴衰、穿过移动互联网的整个十年——核心从未变过。变化的是我们如何兑现：从 6.5 盎司玻璃瓶到 +one App，从店铺自助贩卖机到 Freestyle 智能饮品系统。每一次产品形态的更新都在回答同一个问题——如何让相遇更顺畅。</p>
+              <p>2026 年，这个问题仍然是 Coca-Cola 公司的运营核心。我们在 200 多个市场每天服务 22 亿次饮品消费——每一次都是一次品牌承诺的兑现。</p>
+            </div>
+            <div class="pull">"It's the real thing."</div>
+            <div class="pull-attr">Coca-Cola, 1969</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="4">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">04 · 产品组合双轨</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">两条产品线并行驱动。</div>
+        <div class="ssub">Power Brands 承担规模与品牌识别；Innovation 通道试验新形态。两条线共享一套全球瓶装与分销网络。</div>
+        <div class="absorb">
+          <div class="g2">
+            <div class="show-card">
+              <div class="show-cap">轨道 01 · Power Brands</div>
+              <div class="show-title">已建立的品类领导者</div>
+              <ul class="show-list">
+                <li><span class="check">→</span><span>Coca-Cola 主品牌——所有产品决策的锚点。</span></li>
+                <li><span class="check">→</span><span>Diet Coke / Coke Zero · Sprite · Fanta——核心碳酸饮料矩阵。</span></li>
+                <li><span class="check">→</span><span>每一个 Power Brand 都已通过 50+ 年的市场验证。</span></li>
+              </ul>
+            </div>
+            <div class="show-card dark">
+              <div class="show-cap">轨道 02 · Innovation</div>
+              <div class="show-title">下一代消费者形态实验</div>
+              <ul class="show-list">
+                <li><span class="check">→</span><span>Freestyle 自动饮品机——一台机器 200+ 种自调饮品。</span></li>
+                <li><span class="check">→</span><span>+one App——零售店忠诚度与个性化推送。</span></li>
+                <li><span class="check">→</span><span>每个实验都先在小范围跑——成功的才进入主流分销。</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="5">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">05 · 价值观矩阵</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">品牌承诺要经得起检验。</div>
+        <div class="ssub">每一条对外承诺都对应到具体的产品行为——不是 PR 口径，是每一次配方调整、每一次包装迭代的输入。</div>
+        <div class="absorb">
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead>
+                <tr>
+                  <th style="width: 22%;">承诺</th>
+                  <th style="width: 42%;">在产品里如何体现</th>
+                  <th style="width: 36%;">怎么衡量</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="row-cap">Refreshment</span></td>
+                  <td>每一次相遇都是清爽的——配方、温度、口感的标准化。</td>
+                  <td><span class="accent">— 每天 2.2B 次消费</span>，每一次都达到品牌口感标准。</td>
+                </tr>
+                <tr>
+                  <td><span class="row-cap">Choice</span></td>
+                  <td>从经典糖到无糖无卡到运动饮料，覆盖所有消费者偏好。</td>
+                  <td><span class="neu">— 200+ 品牌</span>覆盖所有主流饮品类目。</td>
+                </tr>
+                <tr>
+                  <td><span class="row-cap">Sustainability</span></td>
+                  <td>包装可回收、水资源循环、瓶装能源转型。</td>
+                  <td><span class="pos">— World Without Waste</span> 计划公开年度进度。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="6">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">06 · 品牌覆盖</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">每个 Power Brand 的市场份额。</div>
+        <div class="ssub">基于 Coca-Cola 公司 2025 年 4Q 业绩报告中公布的核心品牌全球饮品市场份额。</div>
+        <div class="absorb">
+          <div class="chart-wrap">
+            <div class="chart-bars">
+              <div class="chart-row">
+                <div class="chart-row-label">
+                  <div class="chart-row-name">Coca-Cola Trademark · 主品牌</div>
+                  <div class="chart-row-val">45%</div>
+                </div>
+                <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 45%;"></div></div>
+                <div class="chart-bar-meta">公司核心，全球占比稳定。</div>
+              </div>
+              <div class="chart-row">
+                <div class="chart-row-label">
+                  <div class="chart-row-name">Sparkling 软饮料</div>
+                  <div class="chart-row-val">25%</div>
+                </div>
+                <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 25%;"></div></div>
+                <div class="chart-bar-meta">Sprite + Fanta + Schweppes 等组合。</div>
+              </div>
+              <div class="chart-row">
+                <div class="chart-row-label">
+                  <div class="chart-row-name">健康/水/茶饮</div>
+                  <div class="chart-row-val">30%</div>
+                </div>
+                <div class="chart-bar-track"><div class="chart-bar-fill" style="width: 30%;"></div></div>
+                <div class="chart-bar-meta">smartwater · Vitaminwater · Honest Tea · Costa Coffee。</div>
+              </div>
+            </div>
+            <aside class="chart-callout">
+              <div class="chart-callout-cap">什么意思</div>
+              <div class="chart-callout-title">Coca-Cola 主品牌不是全部——而是组合的支点。</div>
+              <div class="chart-callout-body">主品牌承担最大份额，但 sparkling 矩阵和健康饮品矩阵同样重要。每一类都是独立的运营单元，但共享同一套全球瓶装合作伙伴。</div>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="7">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">07 · 两个大方向 · 点击查看</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">下一个十年的两条线。</div>
+        <div class="ssub">数字化触达和可持续发展是 Coca-Cola 当下两个最大的赌注。点击卡片查看背面。</div>
+        <div class="absorb">
+          <div class="flip-row">
+            <div class="fc" onclick="this.classList.toggle('on')">
+              <div class="fc-inner">
+                <div class="ff ff-front">
+                  <div class="ff-roman">I</div>
+                  <div class="cnm">Digital First</div>
+                  <div class="cbd">+one App + Freestyle 把品牌从超市货架延伸到每一次个人化的消费时刻。</div>
+                  <div class="ht">点击查看</div>
+                </div>
+                <div class="ff ff-back">
+                  <div class="bkl">数字化生态</div>
+                  <div class="bkt">从超市货架到个性化时刻</div>
+                  <div class="bkbody">+one App 让消费者的每一次购买积累为忠诚度激励；Freestyle 让一台机器提供 200+ 种自调饮品组合。两个产品都把品牌从产品本身延伸到消费体验本身。</div>
+                </div>
+              </div>
+            </div>
+            <div class="fc" onclick="this.classList.toggle('on')">
+              <div class="fc-inner">
+                <div class="ff ff-front">
+                  <div class="ff-roman">II</div>
+                  <div class="cnm">World Without Waste</div>
+                  <div class="cbd">2030 包装回收承诺、水资源循环、瓶装能源转型。</div>
+                  <div class="ht">点击查看</div>
+                </div>
+                <div class="ff ff-back">
+                  <div class="bkl">World Without Waste</div>
+                  <div class="bkt">2030 之前每一个包装都被回收</div>
+                  <div class="bkbody">Coca-Cola 公司承诺到 2030 年回收每一个销售出去的包装。这是制造、分销、合作伙伴生态、政策协同的多维工程——不是 PR 口径，是公开的年度进度报告。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="8">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">08 · 品牌曲线</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">140 年的连续性。</div>
+        <div class="ssub">从 Atlanta 一个药店配方到全球 200+ 国家的品牌矩阵。四个时刻定义了今天的 Coca-Cola。</div>
+        <div class="absorb">
+          <div class="tl">
+            <div class="tl-track">
+              <span class="tl-dot" style="left: 12.5%;"></span>
+              <span class="tl-dot" style="left: 37.5%;"></span>
+              <span class="tl-dot" style="left: 62.5%;"></span>
+              <span class="tl-dot is-now" style="left: 87.5%;"></span>
+            </div>
+            <div class="tl-stops">
+              <div class="tl-stop">
+                <div class="tl-stop-cap">1886 · 起点</div>
+                <div class="tl-stop-title">Coca-Cola 配方</div>
+                <div class="tl-stop-desc">John Pemberton 在 Atlanta 的 Jacobs' Pharmacy 调配出第一杯 Coca-Cola。当年共售出 9 杯。</div>
+              </div>
+              <div class="tl-stop">
+                <div class="tl-stop-cap">1915 · 形态</div>
+                <div class="tl-stop-title">Contour Bottle</div>
+                <div class="tl-stop-desc">瓶身设计专利。全球认知度最高的容器形态之一，至今仍在使用。</div>
+              </div>
+              <div class="tl-stop">
+                <div class="tl-stop-cap">1971 · 全球化</div>
+                <div class="tl-stop-title">Hilltop Commercial</div>
+                <div class="tl-stop-desc">"I'd like to buy the world a Coke" 广告将品牌推上全球文化象征级地位。</div>
+              </div>
+              <div class="tl-stop is-now">
+                <div class="tl-stop-cap">2026 · 现在</div>
+                <div class="tl-stop-title">Digital + Sustainability</div>
+                <div class="tl-stop-desc">+one App、Freestyle、World Without Waste——产品形态与运营承诺并行的新阶段。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="9">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-num">09 · 一句话</div>
+        <svg class="logo L" viewBox="0 0 125 20" aria-label="Coca-Cola"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="stitle">这一切归结为一句话。</div>
+        <div class="ssub">Coca-Cola 1969 年的一句广告词——至今仍是品牌承诺的最简表达。</div>
+        <div class="absorb">
+          <div class="bigq">
+            <div class="bigq-text">It's the real thing.</div>
+            <div class="bigq-attr">Coca-Cola · 1969</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div></div>
+
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) { deck.style.transform = 'none'; return; }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+(function () {
+  var slides = Array.from(document.querySelectorAll('.slide'));
+  var i = 0;
+  function show(n) { i = (n + slides.length) % slides.length; slides.forEach(function (s, k) { s.classList.toggle('active', k === i); }); }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') show(i + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') show(i - 1);
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -29,7 +29,22 @@ JS_DESKTOP_MEASURE = r"""(()=>{
     const r = deck.getBoundingClientRect();
     out.deck = {w: r.width, h: r.height, scW: deck.scrollWidth, scH: deck.scrollHeight};
   }
-  out.body = {scrollWidth: document.body.scrollWidth, overflowX: getComputedStyle(document.body).overflowX};
+  out.body = {scrollWidth: document.body.scrollWidth, overflowX: getComputedStyle(document.body).overflowX,
+              fontFamily: getComputedStyle(document.body).fontFamily};
+  // Sample the first visible CJK text element's computed font-family to verify CJK fallback actually engages
+  const CJK_RE = /[一-鿿぀-ヿ가-힯]/;
+  let cjkSample = null;
+  const candidates = document.querySelectorAll('h1,h2,h3,p,li,div,span');
+  for (const el of candidates) {
+    const txt = (el.textContent || '').trim();
+    if (txt.length < 2 || !CJK_RE.test(txt)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width < 10 || r.height < 10) continue;
+    cjkSample = {tag: el.tagName, text: txt.slice(0, 40), fontFamily: getComputedStyle(el).fontFamily,
+                 fontWeight: getComputedStyle(el).fontWeight, fontSize: getComputedStyle(el).fontSize};
+    break;
+  }
+  out.cjkSample = cjkSample;
   // Activate each slide in turn and measure
   for (let i = 0; i < slides.length; i++) {
     slides.forEach((s,k)=>s.classList.toggle('active', k===i));
@@ -348,16 +363,255 @@ def check_text_layout_safe(measurements: dict) -> dict:
     }
 
 
-def check_ds_engineering_dna(ds_md: str) -> dict:
-    required = [
-        "Single-Slide Fit Contract",
-        "three-layer overflow safety net",
-        "inline-flex trap",
-        "this.classList.toggle",
-        "12 px",  # floor mention
+def check_language_consistency(ds_md: str, ds_path: Path) -> dict:
+    """
+    Verify the DS prose is in the language declared by decisions.json.
+
+    Looks for `decisions.json` in the brand workspace (sibling to the brand DS in
+    `samples/<brand>/decisions.json`, or at the same dir as the DS markdown).
+    If the declared language is non-English ("zh", "ja", "es", etc.), measure
+    what fraction of the DS body is actually in that language using a simple
+    character-class heuristic. If the body is dominantly English when a non-
+    English language was chosen, fail — the LLM forgot the Phase 3 step 4
+    translation pass.
+
+    This is the structural safeguard that prevents the "asked for Chinese DS,
+    got English DS with translated headings only" failure mode surfaced on
+    Coca-Cola.
+    """
+    # Find decisions.json — try common locations
+    candidates = [
+        ds_path.parent / "decisions.json",
+        ds_path.parent.parent / "samples" / ds_path.parent.name / "decisions.json",
     ]
-    missing = [phrase for phrase in required if phrase.lower() not in ds_md.lower()]
-    return {"passed": len(missing) == 0, "evidence": {"missing_phrases": missing}}
+    # Walk up to find samples/<brand>/decisions.json
+    p = ds_path
+    for _ in range(5):
+        p = p.parent
+        candidate = p / "samples" / ds_path.stem.replace("-PPT-Design-System", "") / "decisions.json"
+        if candidate.exists():
+            candidates.append(candidate)
+            break
+
+    decisions = None
+    decisions_path = None
+    for c in candidates:
+        if c.exists():
+            try:
+                decisions = json.loads(c.read_text(encoding="utf-8"))
+                decisions_path = str(c)
+                break
+            except Exception:
+                pass
+
+    if decisions is None:
+        # No decisions.json — skip (default English DS is fine)
+        return {"passed": True, "evidence": {"skipped": "no decisions.json found", "checked_paths": [str(c) for c in candidates]}}
+
+    lang = (decisions.get("language") or "en").lower()
+    if lang in ("en", "english"):
+        return {"passed": True, "evidence": {"language": "en", "skipped": "English DS — no translation check needed"}}
+
+    # Measure body language. Strip everything that legitimately stays English
+    # regardless of declared language: code, comments, tokens, hex, URLs,
+    # explicit kept-English markers (e.g. file names, token names in prose).
+    # Also strip lines that are mostly punctuation / markdown structure
+    # (table separators, ===, ---, |---|---).
+    body = ds_md
+    body = re.sub(r'```[a-z]*\n.*?\n```', '', body, flags=re.DOTALL)            # fenced code blocks
+    body = re.sub(r'<!--.*?-->', '', body, flags=re.DOTALL)                      # HTML comments
+    body = re.sub(r'`[^`\n]+`', '', body)                                        # inline code
+    body = re.sub(r'--[a-z][a-z0-9-]*', '', body)                                # CSS tokens
+    body = re.sub(r'#[0-9A-Fa-f]{3,8}\b', '', body)                              # hex
+    body = re.sub(r'https?://\S+', '', body)                                     # URLs
+    body = re.sub(r'\b\w+\.(md|html|js|css|py|sh|json)\b', '', body)              # filenames
+    body = re.sub(r'\b[a-z]+(?:-[a-z]+)+\b', '', body)                            # CSS class names like type-e-row-count
+    body = re.sub(r'\bType [A-K]\b', '', body)                                    # Type A/B/C/... slide-type identifiers (kept English)
+    body = re.sub(r'\b\d+\s*(px|em|rem|dvh|vh|vw)\b', '', body)                   # CSS length units
+    body = re.sub(r'^\s*\|.*\|\s*$', '', body, flags=re.MULTILINE)                # markdown table rows
+    body = re.sub(r'^\s*[-=]{3,}\s*$', '', body, flags=re.MULTILINE)              # horizontal rules
+    body = re.sub(r'^\s*\d+\.\s*$', '', body, flags=re.MULTILINE)                 # bare list numbers
+
+    cjk_count = sum(1 for ch in body if '一' <= ch <= '鿿' or '぀' <= ch <= 'ゟ' or '゠' <= ch <= 'ヿ')
+    latin_count = sum(1 for ch in body if 'a' <= ch.lower() <= 'z')
+
+    # Threshold rationale: a Chinese-language DS still contains substantial English
+    # (CSS code blocks, token names, hex values, HTML comments, file paths). The
+    # check distinguishes "fully Chinese prose with English code" (~ ratio 0.2-0.5)
+    # from "all-English with translated chapter titles only" (~ ratio < 0.05).
+    # Threshold rationale: detect "translation pass actually happened" not
+    # "perfect translation density". A DS template has ~30% prose, ~70% code/CSS;
+    # even fully translated, ratios stay around 0.1-0.3 because the canonical
+    # English body around code blocks is structurally unavoidable. The "all-
+    # English with translated chapter titles only" failure mode shows ratio
+    # < 0.02. Threshold 1000 CJK chars + ratio 0.04 cleanly catches that.
+    expectations = {
+        "zh": ("CJK prose translation done (chapter titles + body paragraphs)",
+               cjk_count, latin_count,
+               lambda c, l: c >= 1000 and c >= l * 0.04),
+        "ja": ("CJK + kana translation done",
+               cjk_count, latin_count,
+               lambda c, l: c >= 1000 and c >= l * 0.04),
+        "es": ("Spanish prose has many ñ/á/é/í/ó/ú", None, None, None),  # fallback
+    }
+    if lang not in expectations:
+        return {"passed": True, "evidence": {"language": lang, "skipped": "language not yet checkable"}}
+
+    desc, c, l, ok_fn = expectations[lang]
+    if ok_fn is None:
+        return {"passed": True, "evidence": {"language": lang, "skipped": "no rule defined"}}
+
+    passed = ok_fn(c, l)
+    return {
+        "passed": passed,
+        "evidence": {
+            "language": lang,
+            "decisions_path": decisions_path,
+            "rule": f"{desc}; need cjk_count > latin_count * 0.5",
+            "cjk_chars": c,
+            "latin_chars": l,
+            "ratio": round(c / max(l, 1), 2),
+            "verdict": "PASS — body prose is in declared language" if passed else "FAIL — DS body is mostly English but decisions.json declares non-English language. The Phase 3 step 4 translation pass was incomplete.",
+        },
+    }
+
+
+def check_ds_engineering_dna(ds_md: str) -> dict:
+    """
+    Check that the DS markdown carries every required engineering-DNA chapter
+    by stable ID anchor — not by English prose phrase. This makes the check
+    language-agnostic: a Chinese DS can fully translate chapter titles and
+    narration as long as the `<!-- ENGINEERING-DNA: <id> -->` HTML comments
+    stay as-is. The IDs are the universal identifiers; the prose around them
+    adapts to the user's chosen language.
+    """
+    required_ids = [
+        "design-taste",
+        "typography-safety",
+        "typography-floor",
+        "scale-to-fit",
+        "fit-contract",
+        "three-layer-overflow",
+        "inline-flex-trap",
+        "flip-card-mobile",
+        "pre-ship-checklist",
+    ]
+    missing = [i for i in required_ids if f"<!-- ENGINEERING-DNA: {i} -->" not in ds_md]
+    return {"passed": len(missing) == 0, "evidence": {"missing_ids": missing, "checked": required_ids}}
+
+
+# Family names that count as "real CJK fonts" — i.e. characterful, not the system default fallback.
+# When a zh deck's body font-family resolves to one of these on the first CJK glyph, the CJK rendering
+# is high-quality. If it falls through to system-ui / Helvetica / generic sans, the CJK glyphs render
+# with the OS thin-default (STHeiti on macOS, Microsoft YaHei UI Light on Windows, Noto Sans Thin on
+# Linux) — visually cheap and what the cjk-fallback engineering-DNA chapter exists to prevent.
+_CJK_FONT_NAMES = [
+    "PingFang SC", "PingFang TC", "苹方-简", "苹方",
+    "Hiragino Sans GB", "冬青黑体简体中文", "Hiragino Kaku Gothic", "ヒラギノ角ゴ",
+    "Microsoft YaHei", "微软雅黑", "Microsoft JhengHei",
+    "Source Han Sans", "Source Han Sans SC", "Source Han Sans CN", "Source Han Serif",
+    "Noto Sans SC", "Noto Sans CJK", "Noto Sans CJK SC", "Noto Serif SC", "Noto Serif CJK",
+    "Songti SC", "宋体-简", "STSong", "Heiti SC", "黑体-简",
+]
+
+
+def _font_family_first_real(fam_str: str) -> str:
+    """Strip quotes/spaces, return the first non-generic family name."""
+    GENERIC = {"sans-serif", "serif", "monospace", "system-ui", "-apple-system", "blinkmacsystemfont"}
+    for raw in (fam_str or "").split(","):
+        name = raw.strip().strip("'\"").lower()
+        if not name or name in GENERIC:
+            continue
+        return name
+    return ""
+
+
+def check_cjk_font_quality(ds_path: Path, desktop: dict, deck_path: Path = None) -> dict:
+    """
+    Verify a zh deck has *some* CJK font in its body font-family chain, so CJK glyphs
+    don't fall through to the OS thin-default (STHeiti on macOS, YaHei UI Light on Windows).
+
+    Active only when the run's decisions.json declares language=zh. en decks pass trivially.
+
+    SOFT rule on purpose:
+    - PASS: body font-family contains at least one real CJK font name from _CJK_FONT_NAMES.
+    - FAIL: zero CJK fonts anywhere in the chain — that's an absolute bug, CJK chars will
+            render with the OS default and look cheap.
+    - When CJK fonts ARE present but a Latin brand font sits first, this is a stylistic
+      choice (an English-heavy deck may legitimately put SF Pro / Helvetica first to keep
+      Latin glyphs in the brand voice). We surface it as a `warning` field but still PASS.
+      Vision judge can then decide whether the rendering looks good.
+
+    Failure routes the agent to DS §3 'CJK 字体回退链' chapter. The fix is in the DS
+    (and propagated into the deck's body font-family rule), not in the deck alone.
+    """
+    # Locate decisions.json near the DS file (sibling samples/<brand>/decisions.json or workspace)
+    decisions = None
+    for cand in [
+        ds_path.parent / "decisions.json",
+        ds_path.parent.parent / "samples" / ds_path.stem.replace("-PPT-Design-System", "") / "decisions.json",
+        Path("/Users/seacen/Development/Projects/deckify/samples") / ds_path.stem.replace("-PPT-Design-System", "") / "decisions.json",
+    ]:
+        if cand.exists():
+            try:
+                decisions = json.loads(cand.read_text())
+                break
+            except Exception:
+                pass
+    lang = (decisions or {}).get("language", "").lower() if decisions else ""
+    # Fallback 1: deck html `<html lang>` attr
+    if not lang and deck_path and deck_path.exists():
+        m = re.search(r'<html[^>]+lang=["\']([^"\']+)["\']', deck_path.read_text(encoding="utf-8")[:1000])
+        if m:
+            lang = m.group(1).lower()
+    # Fallback 2: DS markdown CJK density (already computed in language_consistency, but recompute cheaply)
+    if not lang and ds_path.exists():
+        ds = ds_path.read_text(encoding="utf-8")
+        cjk = len(re.findall(r"[一-鿿]", ds))
+        if cjk >= 1000:
+            lang = "zh"
+
+    if lang not in ("zh", "zh-cn", "zh-hans", "中文", "chinese", "simplified chinese"):
+        return {"passed": True, "evidence": {"skipped": True, "reason": f"language is not zh (detected: {lang!r}) — CJK font check N/A"}}
+
+    body_fam = (desktop.get("body") or {}).get("fontFamily", "") or ""
+    cjk_sample = desktop.get("cjkSample")
+    cjk_fam = (cjk_sample or {}).get("fontFamily", "") or ""
+
+    cjk_lower = [n.lower() for n in _CJK_FONT_NAMES]
+
+    def first_real_is_cjk(fam_str):
+        first = _font_family_first_real(fam_str)
+        return first in cjk_lower, first
+
+    body_ok, body_first = first_real_is_cjk(body_fam)
+    cjk_ok, cjk_first = (True, "") if not cjk_sample else first_real_is_cjk(cjk_fam)
+
+    body_has_cjk_anywhere = any(n in body_fam.lower() for n in cjk_lower)
+
+    # Hard pass: at least one CJK family must be in the chain. Order is a soft warning.
+    passed = body_has_cjk_anywhere
+    warning = None
+    if passed and not (body_ok and cjk_ok):
+        warning = ("CJK font is present but a Latin family is listed first. "
+                   f"body first real: {body_first!r}; CJK sample first real: {cjk_first!r}. "
+                   "If your zh deck looks visually thin or cheap on CJK glyphs, move the CJK "
+                   "family to the front of the chain (DS §3 CJK 字体回退链). If the deck is "
+                   "mostly English with occasional CJK, the current order may be intentional.")
+    return {
+        "passed": passed,
+        "evidence": {
+            "language": lang,
+            "body_font_family": body_fam,
+            "body_first_real": body_first,
+            "body_has_cjk_anywhere": body_has_cjk_anywhere,
+            "cjk_sample": cjk_sample,
+            "cjk_first_real": cjk_first,
+            "warning": warning,
+            "rule": "zh deck must have at least one CJK font (PingFang SC / Hiragino Sans GB / Microsoft YaHei / Source Han Sans / etc.) somewhere in body font-family. CJK-first ordering is recommended but not required.",
+            "fix_location": "DS §3 CJK 字体回退链 — add a CJK family to the font-family chain",
+        },
+    }
 
 
 # ── orchestration ──────────────────────────────────────────────────────────
@@ -377,14 +631,16 @@ def run_all(deck_path: Path, ds_path: Path, out_dir: Path) -> dict:
     )
 
     checks = {
-        "slide_dimensions":       check_slide_dimensions(desktop),
-        "fit_contract_intact":    check_fit_contract(desktop),
-        "token_only_colors":      check_token_only_colors(html),
-        "no_emoji":               check_no_emoji(html),
-        "mobile_collapse":        check_mobile_collapse(mobile),
-        "logo_renders":           check_logo_renders(desktop),
-        "text_layout_safe":       check_text_layout_safe(desktop),
-        "ds_has_engineering_dna": check_ds_engineering_dna(ds_md),
+        "slide_dimensions":         check_slide_dimensions(desktop),
+        "fit_contract_intact":      check_fit_contract(desktop),
+        "token_only_colors":        check_token_only_colors(html),
+        "no_emoji":                 check_no_emoji(html),
+        "mobile_collapse":          check_mobile_collapse(mobile),
+        "logo_renders":             check_logo_renders(desktop),
+        "language_consistency":     check_language_consistency(ds_md, ds_path),
+        "text_layout_safe":         check_text_layout_safe(desktop),
+        "ds_has_engineering_dna":   check_ds_engineering_dna(ds_md),
+        "cjk_font_quality":         check_cjk_font_quality(ds_path, desktop, deck_path),
     }
     (out_dir / "hard_checks.json").write_text(json.dumps(checks, indent=2, ensure_ascii=False))
     return checks

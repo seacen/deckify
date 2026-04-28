@@ -7,8 +7,8 @@
 <style>
 :root {
   /* ── Brand ── */
-  --navy:     #0A2540;
-  --blue:     #635BFF;
+  --primary:     #0A2540;
+  --accent:     #635BFF;
   /* ── Neutrals ── */
   --surface:  #FFFFFF;
   --white:    #FFFFFF;
@@ -33,7 +33,7 @@
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
-  background: var(--navy);
+  background: var(--primary);
   font-family: 'sohne-var', 'Söhne', 'Helvetica Neue', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -43,7 +43,7 @@ html, body {
 #wrap {
   position: fixed; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  background: var(--navy);
+  background: var(--primary);
 }
 #deck {
   width: 1280px; height: 720px;
@@ -74,11 +74,11 @@ html, body {
 
 .logo { display: inline-block; flex: 0 0 auto; line-height: 0; }
 .logo.W { width: 96px; height: 40px; color: var(--white); fill: currentColor; }
-.logo.L { width: 56px; height: 24px; color: var(--navy); fill: currentColor; }
+.logo.L { width: 56px; height: 24px; color: var(--primary); fill: currentColor; }
 
 .cov {
   height: 100%;
-  background: var(--navy);
+  background: var(--primary);
   color: var(--white);
   display: flex; flex-direction: column;
   padding: 56px 96px;
@@ -90,7 +90,7 @@ html, body {
   position: absolute;
   right: -160px; bottom: -180px;
   width: 540px; height: 540px;
-  background: radial-gradient(circle at 30% 30%, var(--blue) 0%, var(--lavender) 55%, transparent 75%);
+  background: radial-gradient(circle at 30% 30%, var(--accent) 0%, var(--lavender) 55%, transparent 75%);
   opacity: .55;
   filter: blur(20px);
   pointer-events: none;
@@ -135,7 +135,7 @@ html, body {
 
 .sw {
   background: var(--surface);
-  border-top: 4px solid var(--blue);
+  border-top: 4px solid var(--accent);
   display: flex; flex-direction: column;
   height: 100%;
 }
@@ -194,7 +194,7 @@ html, body {
 }
 .stat-card .stat-rule {
   height: 3px; width: 32px;
-  background: var(--blue);
+  background: var(--accent);
 }
 .stat-card.alt .stat-rule { background: var(--lavender); }
 .stat-label {
@@ -231,7 +231,7 @@ html, body {
   font-weight: 500;
   color: var(--mid);
   padding: 6px 0 6px 24px;
-  border-left: 3px solid var(--blue);
+  border-left: 3px solid var(--accent);
   max-width: 980px;
 }
 .pull-attr {
@@ -254,14 +254,14 @@ html, body {
   overflow: hidden;
 }
 .show-card.dark {
-  background: var(--navy);
+  background: var(--primary);
   color: var(--white);
   border: none;
 }
 .show-cap {
   font-size: 11px; font-weight: 700;
   letter-spacing: .22em; text-transform: uppercase;
-  color: var(--blue);
+  color: var(--accent);
 }
 .show-card.dark .show-cap { color: var(--lavender); }
 .show-title {
@@ -288,7 +288,7 @@ html, body {
 }
 .show-card.dark .show-list li { color: var(--white); opacity: .88; }
 .show-list li .check {
-  color: var(--blue); font-weight: 700;
+  color: var(--accent); font-weight: 700;
   flex: 0 0 auto;
 }
 .show-card.dark .show-list li .check { color: var(--lavender); }
@@ -328,7 +328,7 @@ html, body {
 }
 .tbl .pos { color: var(--green); font-weight: 700; }
 .tbl .neu { color: var(--teal); font-weight: 700; }
-.tbl .accent { color: var(--blue); font-weight: 700; }
+.tbl .accent { color: var(--accent); font-weight: 700; }
 
 .chart-wrap {
   display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px;
@@ -356,7 +356,7 @@ html, body {
   overflow: hidden;
 }
 .chart-bar-fill {
-  height: 100%; background: var(--blue);
+  height: 100%; background: var(--accent);
   transform-origin: left center;
   animation: barFill 1s cubic-bezier(.4,0,.2,1) both;
 }
@@ -372,14 +372,14 @@ html, body {
 .chart-callout {
   background: var(--white);
   border: 1px solid var(--rule);
-  border-left: 3px solid var(--blue);
+  border-left: 3px solid var(--accent);
   padding: 22px 24px;
   display: flex; flex-direction: column; gap: 10px;
 }
 .chart-callout-cap {
   font-size: 11px; font-weight: 700;
   letter-spacing: .22em; text-transform: uppercase;
-  color: var(--blue);
+  color: var(--accent);
 }
 .chart-callout-title {
   font-size: 18px; font-weight: 600; color: var(--mid);
@@ -418,11 +418,11 @@ html, body {
   padding: 32px 34px;
 }
 .ff-front {
-  background: var(--navy);
+  background: var(--primary);
   color: var(--white);
 }
 .ff-back {
-  background: var(--blue);
+  background: var(--accent);
   color: var(--white);
   transform: rotateY(180deg);
   justify-content: flex-start;
@@ -488,9 +488,9 @@ html, body {
 .tl-dot {
   position: absolute; top: 50%; transform: translate(-50%, -50%);
   width: 14px; height: 14px;
-  background: var(--blue);
+  background: var(--accent);
   border: 3px solid var(--surface);
-  box-shadow: 0 0 0 1px var(--blue);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 .tl-dot.is-now {
   background: var(--lavender);
@@ -506,7 +506,7 @@ html, body {
 .tl-stop-cap {
   font-size: 11px; font-weight: 700;
   letter-spacing: .22em; text-transform: uppercase;
-  color: var(--blue);
+  color: var(--accent);
 }
 .tl-stop.is-now .tl-stop-cap { color: var(--lavender); }
 .tl-stop-title {
@@ -530,7 +530,7 @@ html, body {
   font-size: 42px; line-height: 1.22;
   font-weight: 500; color: var(--mid);
   letter-spacing: -.018em;
-  border-left: 3px solid var(--blue);
+  border-left: 3px solid var(--accent);
   padding-left: 28px;
 }
 .bigq-attr {
