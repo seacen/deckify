@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Tiffany & Co. — Design System 验证 Deck</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --primary:        #000000;
+  --accent:         #009CAD;
+  --surface:        #FBF9F7;
+  --white:          #FFFFFF;
+  --ink:            #000000;
+  --mid:            #565656;
+  --rule:           #C1C1C1;
+  --tint:           #F6F6F4;
+  --green:          #346E4A;
+  --green-bg:       #E8F2EC;
+  --red:            #A02835;
+  --red-bg:         #F5E6E8;
+  --warn:           #A07020;
+  --warn-bg:        #F5EFDF;
+  --teal:           #009CAD;
+  --teal-bg:        #E0F4F6;
+  --tiffany-blue:   #009CAD;
+  --tiffany-paper:  #FBF9F7;
+  --tiffany-ink:    #000000;
+  --tiffany-rule:   #C1C1C1;
+  --tiffany-mid:    #565656;
+  --tiffany-tint:   #F6F6F4;
+  --tiffany-gold:   #A07020;
+  --tiffany-deep:   #003D3F;
+}
+
+/* Reset + global font: Cormorant Garamond + CJK fallback chain */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--ink);
+  color: var(--ink);
+  font-family:
+    'PingFang SC', '苹方-简',
+    'Hiragino Sans GB', '冬青黑体简体中文',
+    'Microsoft YaHei', '微软雅黑',
+    'Source Han Sans SC', 'Noto Sans SC',
+    'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  hyphens: manual;
+  -webkit-hyphens: manual;
+}
+
+/* Cormorant for Latin display layers */
+.lat, .cov-title, .stitle, .pq, .num, .stat-num, .tl-date-top, h1.dt-title {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+}
+
+/* Wrap + deck */
+#wrap {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ink);
+}
+#deck {
+  width: 1280px; height: 720px;
+  position: relative; overflow: hidden;
+  transform-origin: center center; will-change: transform;
+}
+
+/* Slide states */
+.slide {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity .38s ease;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; pointer-events: auto; }
+.slide.active .sc, .slide.active .cov-inner { animation: enter .42s cubic-bezier(.4,0,.2,1) both; }
+@keyframes enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Cover */
+.cov {
+  background: var(--surface);
+  display: flex; flex-direction: column;
+  height: 100%;
+}
+.cov-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 96px 0 96px;
+}
+.cov-eyebrow {
+  font-size: 11px; font-weight: 800; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--accent);
+}
+.cov-inner {
+  flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 0 96px;
+  text-align: center;
+}
+.cov-tiff-rule {
+  width: 88px; height: 1px; background: var(--accent); margin-bottom: 32px;
+}
+.cov-title {
+  font-size: 110px; font-weight: 400; letter-spacing: -.01em;
+  line-height: 1; color: var(--ink);
+}
+.stitle {
+  font-size: 22px; font-weight: 300; font-style: italic; letter-spacing: .04em;
+  color: var(--mid); margin-top: 26px;
+}
+.cov-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 96px 28px 96px;
+  font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--mid);
+}
+.cov-meta .right { color: var(--accent); }
+
+/* Content shells */
+.sw {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  display: flex; flex-direction: column;
+  height: 100%;
+}
+.sw .sc {
+  flex: 1; padding: 24px 80px 40px 96px;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.shd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 80px 0 96px;
+  flex: 0 0 54px;
+  border-bottom: 1px solid var(--rule);
+}
+.shd-num {
+  font-size: 11px; font-weight: 800; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--accent);
+}
+
+/* Logo */
+.logo { height: 26px; width: auto; flex-shrink: 0; fill: currentColor; }
+.logo.W { color: #fff; }
+.logo.L { color: var(--primary); }
+
+/* Headings */
+.eyebrow {
+  font-size: 12px; font-weight: 800; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 18px;
+}
+h1.stitle-lg {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 50px; font-weight: 500; letter-spacing: -.01em; line-height: 1.06;
+  color: var(--ink); margin-bottom: 22px;
+}
+h2.subtitle {
+  font-size: 20px; font-weight: 600; letter-spacing: .01em;
+  color: var(--mid); line-height: 1.3;
+}
+p.body {
+  font-size: 16px; font-weight: 500; line-height: 1.6; color: var(--ink);
+  margin-bottom: 12px;
+}
+
+/* SLIDE 2 — narrative + pullquote */
+.narrative-flow {
+  flex: 1; display: flex; flex-direction: column;
+  overflow: hidden; min-height: 0;
+}
+.narrative-flow p { font-size: 16px; line-height: 1.62; color: var(--ink); margin-bottom: 14px; font-weight: 500; }
+.pq-block {
+  margin: 14px 0 0 0;
+  padding-left: 28px;
+  border-left: 3px solid var(--accent);
+}
+.pq {
+  font-size: 28px; font-weight: 500; line-height: 1.3;
+  color: var(--ink); letter-spacing: -.005em;
+}
+.pq-attr {
+  margin-top: 14px;
+  font-size: 13px; font-weight: 800; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--mid);
+}
+
+/* SLIDE 3 — two columns */
+.g2 {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  flex: 1; min-height: 0; overflow: hidden;
+}
+.show-card {
+  display: flex; flex-direction: column;
+  background: var(--white); border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+  padding: 28px 32px;
+  gap: 12px;
+  overflow: hidden;
+}
+.show-card.accent-primary { border-top-color: var(--primary); }
+.show-card .show-eyebrow {
+  font-size: 11px; font-weight: 800; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--accent);
+}
+.show-card .show-title {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 28px; font-weight: 500; line-height: 1.15;
+  color: var(--ink);
+}
+.show-card .show-desc {
+  font-size: 15px; font-weight: 500; line-height: 1.5; color: var(--mid);
+  margin-top: 6px;
+}
+.show-card ul { list-style: none; margin-top: 8px; }
+.show-card ul li {
+  font-size: 14px; font-weight: 500; line-height: 1.55; color: var(--ink);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--rule);
+  display: flex; gap: 10px;
+}
+.show-card ul li:last-child { border-bottom: none; }
+.show-card ul li::before {
+  content: '→';
+  color: var(--accent); font-weight: 800; flex-shrink: 0;
+}
+
+/* SLIDE 4 — flip cards */
+.flip-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  flex: 1; min-height: 0; overflow: hidden;
+}
+.fc {
+  perspective: 1400px; cursor: pointer;
+  min-height: 360px;
+}
+.fc-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .65s cubic-bezier(.4,0,.2,1);
+}
+.fc:hover .fc-inner, .fc.on .fc-inner { transform: rotateY(180deg); }
+.ff {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 32px;
+  border: 1px solid var(--rule);
+  background: var(--white);
+}
+.ff-front {
+  align-items: flex-start;
+  background: var(--surface);
+  border-top: 3px solid var(--accent);
+}
+.ff-back {
+  background: var(--ink); color: #fff;
+  transform: rotateY(180deg);
+  align-items: flex-start;
+}
+.ff-back.tiffany-blue-back { background: var(--accent); color: #fff; }
+.ff .num {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 56px; font-weight: 400; opacity: .35; line-height: 1;
+}
+.ff .cnm {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 28px; font-weight: 500; line-height: 1.1;
+  margin-top: 16px; color: var(--ink);
+}
+.ff-back .cnm { color: #fff; }
+.ff .cbd {
+  font-size: 16px; font-weight: 500; line-height: 1.55;
+  margin-top: 12px;
+}
+.ff .ht {
+  font-size: 12px; font-weight: 800; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--accent);
+  margin-top: auto;
+}
+.ff-back .ht { color: rgba(255,255,255,.78); }
+.ff .bkl {
+  font-size: 12px; font-weight: 800; letter-spacing: .22em;
+  text-transform: uppercase; color: rgba(255,255,255,.78);
+}
+.ff .bkt {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 24px; font-weight: 500; line-height: 1.2; margin-top: 12px;
+}
+
+/* SLIDE 5 — table */
+h1.dt-title {
+  font-size: 48px; font-weight: 500; letter-spacing: -.01em; color: var(--ink);
+  margin-bottom: 8px;
+}
+.dt-sub {
+  font-size: 14px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--mid);
+  margin-bottom: 24px;
+}
+.dt-wrap { flex: 1; min-height: 0; overflow: hidden; }
+.dt {
+  width: 100%; border-collapse: collapse;
+  font-size: 14px; font-weight: 500;
+}
+.dt th {
+  background: var(--primary); color: #fff;
+  font-size: 12px; font-weight: 800; letter-spacing: .18em;
+  text-transform: uppercase; text-align: left;
+  padding: 12px 16px;
+}
+.dt td {
+  padding: 13px 16px; color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+}
+.dt tr.hi td { background: var(--tint); }
+.dt .pos { color: var(--green); font-weight: 700; }
+.dt .neg { color: var(--red); font-weight: 700; }
+.dt .neu { color: var(--mid); font-weight: 600; }
+
+/* SLIDE 6 — chart */
+.chart-flow { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.bar-set { display: flex; flex-direction: column; gap: 18px; margin-top: 16px; }
+.bar-row { display: grid; grid-template-columns: 220px 1fr 80px; align-items: center; gap: 16px; }
+.bar-label {
+  font-size: 13px; font-weight: 800; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink);
+}
+.bar-track {
+  height: 14px; background: var(--rule);
+  position: relative; overflow: hidden;
+}
+.bar-fill {
+  position: absolute; inset: 0 auto 0 0; height: 100%;
+  background: var(--accent);
+  width: 0;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+}
+.slide.active .bar-fill { transition-delay: .35s; }
+.bar-row[data-d="100"] .bar-fill { width: 100%; }
+.bar-row[data-d="86"]  .bar-fill { width: 86%; }
+.bar-row[data-d="64"]  .bar-fill { width: 64%; }
+.bar-row[data-d="48"]  .bar-fill { width: 48%; }
+.bar-row[data-d="33"]  .bar-fill { width: 33%; }
+.bar-val {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 22px; font-weight: 500; color: var(--ink);
+  text-align: right;
+}
+
+.snote-deep {
+  margin-top: auto;
+  background: var(--ink);
+  color: rgba(255,255,255,.92);
+  padding: 16px 22px;
+  font-size: 14px; line-height: 1.55; font-weight: 500;
+}
+.snote-deep strong { color: #fff; font-weight: 700; }
+
+/* SLIDE 7 — timeline */
+.tl-wrap { position: relative; padding: 0 10px; margin-top: 8px; flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.tl-line { position: absolute; top: 73px; left: 30px; right: 30px; height: 2px; background: var(--rule); }
+.tl-row { display: flex; position: relative; z-index: 1; }
+.tl-node { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 6px; }
+.tl-date-top {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 24px; font-weight: 500; letter-spacing: -.01em; color: var(--accent);
+  min-height: 48px; margin-bottom: 16px;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); margin-bottom: 14px; flex-shrink: 0; }
+.tl-name { font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.25; margin-bottom: 6px; max-width: 160px; }
+.tl-detail { font-size: 13px; font-weight: 500; color: var(--mid); line-height: 1.4; max-width: 170px; }
+.tl-coda {
+  margin-top: auto;
+  text-align: center;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--mid);
+}
+
+/* SLIDE 8 — full pull-quote — uses .sw .sc shell + 'silent' modifier (no left border) */
+.sw.silent { border-left: none; }
+.sw.silent .sc { padding: 0; }
+.pq-rule-top {
+  margin: 0 96px;
+  height: 1px;
+  background: var(--accent);
+  flex: 0 0 1px;
+  margin-top: 16px;
+}
+.pq-page-eyebrow {
+  padding: 24px 96px 0 96px;
+  font-size: 11px; font-weight: 800; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--accent);
+  flex: 0 0 auto;
+}
+.pq-page-body {
+  flex: 1 1 0; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 0 120px;
+}
+.pq-page-text {
+  font-family: 'Cormorant Garamond', 'Bodoni 72', 'Didot', 'Georgia', serif;
+  font-size: 64px; font-weight: 400; line-height: 1.12;
+  color: var(--ink); letter-spacing: -.012em;
+}
+.pq-page-em { color: var(--accent); font-style: italic; }
+.pq-page-attr {
+  margin-top: 36px;
+  font-size: 13px; font-weight: 800; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--mid);
+}
+.pq-page-coda {
+  padding: 22px 96px 28px 96px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--mid);
+  flex: 0 0 auto;
+}
+.pq-page-coda .right { color: var(--accent); }
+
+/* Navigation */
+#nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 99; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.25); cursor: pointer; transition: all .22s ease; }
+.dot.on { width: 20px; border-radius: 3px; background: rgba(255,255,255,.85); }
+#ctr {
+  position: fixed; bottom: 24px; right: 28px; z-index: 99;
+  font-size: 12px; font-weight: 700; letter-spacing: .18em;
+  color: rgba(255,255,255,.35);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  body { overflow-y: auto; }
+  #wrap { position: static; display: block; }
+  #deck { width: 100%; height: auto; position: static; transform: none !important; }
+  .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; height: auto; }
+  .cov, .sw { min-height: 100dvh; height: auto; }
+  .cov-title { font-size: 48px; }
+  .stitle { font-size: 22px; }
+  .pq-page-text { font-size: 36px; }
+  h1.stitle-lg { font-size: 36px; }
+  h1.dt-title { font-size: 32px; }
+  .shd { padding: 0 20px; }
+  .sw .sc { padding: 24px 20px; }
+  .cov-top, .cov-meta, .pq-page-coda, .pq-page-eyebrow, .pq-page-body { padding-left: 20px; padding-right: 20px; }
+  .pq-rule-top { margin: 16px 20px 0; }
+  /* Single col */
+  .g2, .g3, .flip-row, .tabs { grid-template-columns: 1fr; flex-direction: column; }
+  /* Catch-all */
+  .sc div[style*="display:flex"] { flex-direction: column !important; }
+  .sc div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  /* Timeline → vertical stack */
+  .tl-row { flex-direction: column; gap: 24px; }
+  .tl-line { display: none; }
+  .tl-node { flex-direction: row; align-items: flex-start; text-align: left; }
+  .tl-date-top { min-height: 0; margin-bottom: 0; margin-right: 16px; flex: 0 0 100px; }
+  .tl-dot { display: none; }
+  .tl-name, .tl-detail { max-width: none; }
+  /* Bar chart */
+  .bar-row { grid-template-columns: 1fr; gap: 6px; }
+  .bar-val { text-align: left; }
+  /* Flip card mobile fix */
+  .fc { perspective: none !important; min-height: auto !important; }
+  .fc .fc-inner { transform-style: flat !important; transition: none !important; height: auto !important; transform: none !important; }
+  .fc:hover .fc-inner, .fc.on .fc-inner { transform: none !important; }
+  .fc .ff { position: relative !important; backface-visibility: visible !important; transform: none !important; }
+  .fc .ff-back { display: none; transform: none !important; }
+  .fc.on .ff-front { display: none; }
+  .fc.on .ff-back { display: flex; transform: none !important; }
+  /* Hide nav + counter on mobile */
+  #nav, #ctr { display: none; }
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 634 70" fill="currentColor">
+
+<path fill-rule="evenodd" clip-rule="evenodd" d="M523.185 70C533.491 70 543.663 65.4493 547.812 62.1033L549.284 47.2466H547.678C544.198 65.0478 531.216 67.7247 523.72 67.7247C509.533 67.7247 500.699 56.2141 500.699 36.5392C500.699 13.1166 510.068 3.21223 523.453 3.21223C535.231 3.21223 543.931 12.3136 547.009 22.7534H548.615L547.009 0H545.403C545.001 4.0153 543.529 5.21988 541.388 5.21988C537.372 5.21988 532.42 0.936899 522.65 0.936899C504.848 0.936899 489.59 16.0612 489.59 36.5392C489.456 54.2065 503.51 70 523.185 70Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M233.951 14.0535L245.06 42.4283H223.243L233.951 14.0535ZM223.912 68.7954V67.0555C219.495 67.0555 216.685 66.2524 216.685 62.1033C216.685 60.3633 217.086 58.2218 218.157 55.5449L222.306 44.7036H245.996L252.421 60.631C253.09 62.2371 253.224 63.0402 253.224 63.7094C253.224 65.717 251.082 67.0555 247.736 67.0555H246.666V68.7954H272.23V67.0555C267.947 67.0555 265.805 64.914 262.994 58.6233L238.1 0H236.895L215.614 55.0096C211.331 65.8509 207.45 67.0555 202.364 67.0555V68.7954H223.912Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M437.392 66.1185C427.755 66.1185 422.669 59.4263 422.669 51.3957C422.669 44.7036 424.944 38.5468 432.038 34.7992L450.91 59.2925C446.359 64.1108 441.808 66.1185 437.392 66.1185ZM436.053 26.367C432.841 22.2179 429.896 17.8011 429.896 12.5812C429.896 7.49514 433.242 2.94448 438.864 2.94448C444.887 2.94448 448.367 8.16437 448.367 14.7227C448.367 20.0764 446.894 25.8317 438.596 29.7131L436.053 26.367ZM432.841 69.9999C439.399 69.9999 446.091 67.7246 452.516 61.1663L453.453 62.237C455.46 64.6462 457.067 67.3231 457.87 68.7953H479.82V67.0554C472.057 67.0554 467.506 65.8508 458.003 54.0726C469.915 36.2714 471.388 34.933 477.946 34.933V33.193H454.925V34.933C459.877 34.933 461.885 36.8068 461.885 40.0191C461.885 43.0974 460.011 47.3804 456.665 52.3326L439.935 31.4531C451.98 25.9655 454.657 19.1395 454.657 14.455C454.657 6.55823 448.233 0.802979 439.265 0.802979C429.629 0.802979 422.936 8.69975 422.936 16.8642C422.936 21.8164 425.212 26.0994 430.03 32.1223L430.833 33.0592C416.512 40.1529 413.701 48.4512 413.701 54.2064C413.701 64.9139 424.275 69.9999 432.841 69.9999Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M589.839 67.8585C578.462 67.8585 567.888 57.6864 567.888 35.4684C567.888 13.2505 578.462 3.07835 589.839 3.07835C601.215 3.07835 611.789 13.3843 611.789 35.4684C611.655 57.6864 601.215 67.8585 589.839 67.8585ZM589.839 70C608.309 70 623.032 54.4742 623.032 35.3346C623.032 16.3288 608.309 0.669189 589.839 0.669189C571.368 0.669189 556.646 16.3288 556.646 35.3346C556.646 54.4742 571.368 70 589.839 70Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M43.6252 68.7955V67.0555H41.7514C35.8623 67.0555 35.0592 65.7171 35.0592 58.8911V4.14917H38.1376C50.1835 4.14917 55.5372 7.76293 58.7495 15.6597H60.3556L57.1434 2.00769H3.20454L-0.00769043 15.6597H1.59842C4.81066 7.76293 10.1644 4.14917 22.2103 4.14917H25.2887V58.8911C25.2887 65.7171 24.4856 67.0555 18.5965 67.0555H16.7227V68.7955H43.6252Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M93.5492 68.7955V67.0555H92.4785C86.5894 67.0555 85.7863 65.7171 85.7863 58.8911V11.9121C85.7863 5.21992 86.5894 3.74764 92.4785 3.74764H93.5492V2.00769H68.119V3.74764H69.1898C75.0789 3.74764 75.8819 5.08608 75.8819 11.9121V58.8911C75.8819 65.7171 75.0789 67.0555 69.1898 67.0555H68.119V68.7955H93.5492Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M132.764 68.7955V67.0555H129.686C124.198 67.0555 123.395 65.7171 123.395 58.8911V34.5316H128.214C138.386 34.5316 142.535 36.9408 142.803 45.5067H144.409V21.9503H142.803C142.535 31.1855 136.512 32.6578 128.214 32.6578H123.395V4.01534H129.552C143.472 4.01534 149.762 5.75529 153.242 15.7935H154.848L152.038 2.00769H105.862V3.74764H107.468C112.956 3.74764 113.892 5.08608 113.892 11.9121V58.8911C113.892 65.7171 113.089 67.0555 107.468 67.0555H105.862V68.7955H132.764Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M187.373 68.7955V67.0555H184.295C178.807 67.0555 178.004 65.7171 178.004 58.8911V34.5316H182.823C192.995 34.5316 197.144 36.9408 197.412 45.5067H199.018V21.9503H197.412C197.144 31.1855 191.121 32.6578 182.823 32.6578H178.004V4.01534H184.161C198.081 4.01534 204.371 5.75529 207.851 15.7935H209.457L206.647 2.00769H160.471V3.74764H162.077C167.565 3.74764 168.501 5.08608 168.501 11.9121V58.8911C168.501 65.7171 167.698 67.0555 162.077 67.0555H160.471V68.7955H187.373Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M329.381 69.5985V11.2428C329.381 6.29061 331.656 3.61375 335.806 3.61375V1.87378H318.674V3.61375H320.414C324.563 3.61375 326.838 6.29061 326.838 11.2428V51.9311L289.228 1.87378H270.892V3.61375C274.907 3.61375 278.922 4.68449 282.67 9.63669V59.4264C282.67 64.3786 280.394 67.0555 276.245 67.0555V68.7954H293.779V67.0555H291.503C287.354 67.0555 285.079 64.3786 285.079 59.4264V12.4474L328.043 69.4646H329.381V69.5985Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M387.469 68.7954V67.0555H384.658C379.706 67.0555 378.903 66.2524 378.903 61.3002V37.0745L393.224 14.8566C399.782 4.6845 402.058 3.61375 408.214 3.61375V1.87378H384.792V3.61375C390.279 3.61375 392.421 5.08601 392.421 8.43209C392.421 10.9751 390.949 13.652 388.941 16.7304L377.297 35.2007L362.306 10.0382C361.236 8.29826 360.7 7.09367 360.7 6.02293C360.7 4.6845 361.503 3.74758 364.448 3.74758H367.258V2.00763H340.891V3.74758C346.111 3.74758 348.119 4.14911 351.465 9.77052L369.132 39.0822V61.434C369.132 66.3862 368.329 67.1893 363.377 67.1893H360.566V68.9293H387.469V68.7954Z"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M628.253 69.0631C631.465 69.0631 634.008 66.5201 634.008 63.3079C634.008 60.0956 631.465 57.5526 628.253 57.5526C625.041 57.5526 622.498 60.0956 622.498 63.3079C622.364 66.5201 625.041 69.0631 628.253 69.0631Z"/>
+
+  </symbol>
+</svg>
+
+<div id="wrap">
+  <div id="deck">
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 1 — TYPE A — Cover (Tiffany Blue chord, Didone wordmark) -->
+    <section class="slide active cov" data-num="01">
+      <div class="cov-top">
+        <span class="cov-eyebrow">Design System · 验证 Deck</span>
+        <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+          <use href="#brand-wm"/>
+        </svg>
+      </div>
+      <div class="cov-inner">
+        <div class="cov-tiff-rule"></div>
+        <h1 class="cov-title lat">TIFFANY &amp; CO.</h1>
+        <div class="stitle lat">Stories. Since 1837.</div>
+      </div>
+      <div class="cov-meta">
+        <span>Visual Language · v1.0</span>
+        <span class="right">PMS 1837 · Robin's Egg Blue</span>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 2 — TYPE C — Full-width narrative + pullquote -->
+    <section class="slide sw" data-num="02">
+      <div class="shd">
+        <span class="shd-num">02 · 品牌叙事</span>
+        <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+          <use href="#brand-wm"/>
+        </svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow">Heritage</div>
+        <h1 class="stitle-lg">从一家文具店到一种颜色的版图</h1>
+        <div class="narrative-flow">
+          <p class="body">1837 年，Charles Lewis Tiffany 与 John B. Young 在纽约百老汇 259 号开了一家"奇珍异品店"，第一天的销售额是 4.98 美元。十年后他们改卖钻石，再二十年就成为美国第一家本土钻石商。1845 年的《蓝皮书》（Blue Book）开创了奢侈品邮购传统 — 那张封面的蓝色，后来成了 Pantone 1837。</p>
+          <p class="body">188 年来，Tiffany 把"颜色"做成了一种叙事工具：每一只蓝盒子都是承诺，每一根白丝带都是仪式。这种克制 — 而非繁复 — 才是奢侈的真正语言。</p>
+          <div class="pq-block">
+            <div class="pq lat">"What's important is what's inside the Tiffany Blue Box."</div>
+            <div class="pq-attr">— Tiffany 内部传统说法</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 3 — TYPE B — Two-column comparison (.g2 — mobile collapse target) -->
+    <section class="slide sw" data-num="03">
+      <div class="shd">
+        <span class="shd-num">03 · 字体语言</span>
+        <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+          <use href="#brand-wm"/>
+        </svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow">Type System · Display vs Body</div>
+        <h1 class="stitle-lg">两个字体家族，各司其职</h1>
+        <div class="g2" style="margin-top: 18px;">
+          <div class="show-card accent-primary">
+            <span class="show-eyebrow">Display</span>
+            <div class="show-title lat">Cormorant Garamond</div>
+            <div class="show-desc">Sterling SSM 的 web fallback。高对比度 hairline 衬线、Didone 骨架，承担 wordmark、封面大字、标题、引述。</div>
+            <ul>
+              <li>封面 110 px / 字重 400</li>
+              <li>内页大标 50 px / 字重 500</li>
+              <li>Pull-quote 28–64 px / 字重 400–500</li>
+              <li>Bodoni 72 → Didot → Georgia 系统兜底</li>
+            </ul>
+          </div>
+          <div class="show-card">
+            <span class="show-eyebrow">Body · CJK 优先</span>
+            <div class="show-title lat">PingFang SC</div>
+            <div class="show-desc">中文 deck 的工作字体。承担正文、列表、表格、说明文字 — 与 Didone 拉丁配对时不会喧宾夺主。</div>
+            <ul>
+              <li>正文 16 px / 字重 500</li>
+              <li>列表 14 px / 字重 500</li>
+              <li>表头 / 徽章 13 px 字重 800 全大写</li>
+              <li>Hiragino → 微软雅黑 → Source Han Sans 兜底</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 4 — TYPE D — Flip cards (onclick for mobile, hover for desktop) -->
+    <section class="slide sw" data-num="04">
+      <div class="shd">
+        <span class="shd-num">04 · 标志资产</span>
+        <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+          <use href="#brand-wm"/>
+        </svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow">Trademark Assets · 鼠标悬停或点击翻面</div>
+        <h1 class="stitle-lg">两件不可妥协的注册资产</h1>
+        <div class="flip-row" style="margin-top: 18px;">
+          <div class="fc" onclick="this.classList.toggle('on')">
+            <div class="fc-inner">
+              <div class="ff ff-front">
+                <span class="num lat">01</span>
+                <div class="cnm lat">Tiffany Blue® Box</div>
+                <div class="cbd">蓝盒子。1845 年开始，Tiffany 规定盒子只随同店内购物离店 — 它必须代表一次成交，不允许独立出售。这是奢侈品最早的"包装即承诺"案例。</div>
+                <div class="ht">点击翻面查看规则</div>
+              </div>
+              <div class="ff ff-back tiffany-blue-back">
+                <span class="bkl">使用规则</span>
+                <div class="bkt lat">从不独立销售</div>
+                <div class="cbd">蓝盒子永远只伴随 Tiffany 商品离店；不在二级市场流通；颜色复制必须严格遵循 PMS 1837；丝带白色 sole — 任何替代色违反商标规范。</div>
+                <div class="ht">SOURCE: tiffany.com / world-of-tiffany</div>
+              </div>
+            </div>
+          </div>
+          <div class="fc" onclick="this.classList.toggle('on')">
+            <div class="fc-inner">
+              <div class="ff ff-front">
+                <span class="num lat">02</span>
+                <div class="cnm lat">PMS 1837 · Robin's Egg Blue</div>
+                <div class="cbd">注册商标颜色。Pantone 为 Tiffany 单独定制色号 — 1837 取自创始年。色值 #009CAD，禁止用任何近似蓝代替；Tiffany 法务对未授权使用零容忍。</div>
+                <div class="ht">点击翻面查看应用</div>
+              </div>
+              <div class="ff ff-back tiffany-blue-back">
+                <span class="bkl">允许的应用</span>
+                <div class="bkt lat">Chord，不是基调</div>
+                <div class="cbd">Tiffany Blue 是和弦 — 出现在顶部 banner、单条 hairline rule、accent 高亮处；从不作为大块封面填色。封面始终是黑墨在暖纸上，蓝是点睛。</div>
+                <div class="ht">SOURCE: tiffany.com / press-kit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 5 — TYPE E — Data table (semantic colors, real recon-ish data) -->
+    <section class="slide sw" data-num="05">
+      <div class="shd">
+        <span class="shd-num">05 · 经典系列</span>
+        <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+          <use href="#brand-wm"/>
+        </svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow">Signature Collections · 系列规格</div>
+        <h1 class="dt-title">五个系列，一个语言</h1>
+        <div class="dt-sub">Source: tiffany.com / designers-collections, jewelry — 2026-04</div>
+        <div class="dt-wrap">
+          <table class="dt">
+            <thead>
+              <tr>
+                <th style="width: 22%;">系列</th>
+                <th style="width: 17%;">设计师 / 年代</th>
+                <th style="width: 14%;">主材质</th>
+                <th style="width: 16%;">入门价 (USD)</th>
+                <th style="width: 14%;">高端价</th>
+                <th style="width: 17%;">商标地位</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hi">
+                <td><strong>Tiffany T</strong></td>
+                <td>2014</td>
+                <td>18K 黄金</td>
+                <td class="pos">$2,175</td>
+                <td>$10,500</td>
+                <td class="pos">现代旗舰</td>
+              </tr>
+              <tr>
+                <td><strong>HardWear</strong></td>
+                <td>2017</td>
+                <td>18K / 玫瑰金</td>
+                <td>$1,950</td>
+                <td>$9,800</td>
+                <td class="neu">城市精神</td>
+              </tr>
+              <tr>
+                <td><strong>Knot</strong></td>
+                <td>2022</td>
+                <td>18K + 钻石</td>
+                <td>$1,650</td>
+                <td>$22,000</td>
+                <td class="neu">几何叙事</td>
+              </tr>
+              <tr>
+                <td><strong>Schlumberger</strong></td>
+                <td>1956</td>
+                <td>18K + 宝石</td>
+                <td class="neg">$3,950</td>
+                <td>$185,000+</td>
+                <td class="pos">档案级</td>
+              </tr>
+              <tr>
+                <td><strong>Blue Book</strong></td>
+                <td>每年一册 (1845–)</td>
+                <td>Platinum + 大宝石</td>
+                <td class="neg">— 询价 —</td>
+                <td>无上限</td>
+                <td class="pos">High Jewelry</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 6 — TYPE H — Chart (one primary insight, animated entrance) -->
+    <section class="slide sw" data-num="06">
+      <div class="shd">
+        <span class="shd-num">06 · 数据洞察</span>
+        <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+          <use href="#brand-wm"/>
+        </svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow">Brand Awareness · 全球认知度调研</div>
+        <h1 class="stitle-lg">"颜色即品牌"在五大市场都成立</h1>
+        <h2 class="subtitle">受访者中能仅凭蓝色色卡识别出 Tiffany 的比例（2024 — Brand Recognition Index 模拟数据）</h2>
+        <div class="chart-flow">
+          <div class="bar-set">
+            <div class="bar-row" data-d="100">
+              <div class="bar-label">美国</div>
+              <div class="bar-track"><div class="bar-fill"></div></div>
+              <div class="bar-val">94%</div>
+            </div>
+            <div class="bar-row" data-d="86">
+              <div class="bar-label">英国</div>
+              <div class="bar-track"><div class="bar-fill"></div></div>
+              <div class="bar-val">81%</div>
+            </div>
+            <div class="bar-row" data-d="64">
+              <div class="bar-label">日本</div>
+              <div class="bar-track"><div class="bar-fill"></div></div>
+              <div class="bar-val">60%</div>
+            </div>
+            <div class="bar-row" data-d="48">
+              <div class="bar-label">中国大陆</div>
+              <div class="bar-track"><div class="bar-fill"></div></div>
+              <div class="bar-val">45%</div>
+            </div>
+            <div class="bar-row" data-d="33">
+              <div class="bar-label">印度</div>
+              <div class="bar-track"><div class="bar-fill"></div></div>
+              <div class="bar-val">31%</div>
+            </div>
+          </div>
+          <div class="snote-deep">
+            <strong>启示</strong>：颜色识别度与销售网络密度高度相关。下一步 — 在亚洲新兴市场 deck 中，<strong>Tiffany Blue 应作为单一视觉锚点</strong>承担"教育市场"的认知工作；不要被设计师诱惑加入第二种品牌色。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 7 — TYPE K — Timeline (5–6 milestones, archival heritage) -->
+    <section class="slide sw" data-num="07">
+      <div class="shd">
+        <span class="shd-num">07 · 188 年时间线</span>
+        <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+          <use href="#brand-wm"/>
+        </svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow">Heritage Timeline · 1837 → Today</div>
+        <h1 class="stitle-lg">六个关键节点</h1>
+        <div class="tl-wrap">
+          <div class="tl-line"></div>
+          <div class="tl-row">
+            <div class="tl-node">
+              <div class="tl-date-top lat">1837</div>
+              <div class="tl-dot"></div>
+              <div class="tl-name">百老汇 259 号</div>
+              <div class="tl-detail">Charles Lewis Tiffany 与 John B. Young 创立"奇珍异品店"</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top lat">1845</div>
+              <div class="tl-dot"></div>
+              <div class="tl-name">第一本《Blue Book》</div>
+              <div class="tl-detail">奢侈品邮购目录的开端 — 蓝色封面成了一种叙事工具</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top lat">1886</div>
+              <div class="tl-dot"></div>
+              <div class="tl-name">六爪订婚戒</div>
+              <div class="tl-detail">Tiffany Setting 发明 — 钻石被托举至光线之上，沿用至今</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top lat">1956</div>
+              <div class="tl-dot"></div>
+              <div class="tl-name">Schlumberger 加盟</div>
+              <div class="tl-detail">Jean Schlumberger 入主，开启 High Jewelry 档案级时代</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top lat">1961</div>
+              <div class="tl-dot"></div>
+              <div class="tl-name">第五大道早餐</div>
+              <div class="tl-detail">Audrey Hepburn 站在橱窗前 — Tiffany 进入流行文化叙事</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top lat">2021</div>
+              <div class="tl-dot"></div>
+              <div class="tl-name">LVMH 收购</div>
+              <div class="tl-detail">158 亿美元交易 — 美国最古老的奢侈品牌进入新章节</div>
+            </div>
+          </div>
+          <div class="tl-coda">PMS 1837 · 见证每一个节点</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- Slide 8 — TYPE J — Pull-quote (single striking statement, archival epigraph) -->
+    <section class="slide sw silent" data-num="08">
+      <div class="sc">
+        <div class="pq-page-eyebrow">Brand Voice · Closing</div>
+        <div class="pq-rule-top"></div>
+        <div class="pq-page-body">
+          <div class="pq-page-text lat">
+            Stories.<br>
+            <span class="pq-page-em">Since</span> 1837.
+          </div>
+          <div class="pq-page-attr">— Tiffany &amp; Co. · Newsroom Tagline</div>
+        </div>
+        <div class="pq-page-coda">
+          <span>SOURCE: press.tiffany.com</span>
+          <svg class="logo L" viewBox="0 0 634 70" aria-label="Tiffany & Co.">
+            <use href="#brand-wm"/>
+          </svg>
+          <span class="right">08 / 08</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div id="nav"></div>
+<div id="ctr">SLIDE <span id="ctr-n">1</span> / 8</div>
+
+<script>
+(function(){
+  // Build dot nav
+  var slides = document.querySelectorAll('.slide');
+  var nav = document.getElementById('nav');
+  for (var i = 0; i < slides.length; i++) {
+    var d = document.createElement('span');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.dataset.i = i;
+    d.addEventListener('click', function(e){ go(parseInt(e.currentTarget.dataset.i, 10)); });
+    nav.appendChild(d);
+  }
+  var idx = 0;
+  function go(i){
+    if (i < 0 || i >= slides.length) return;
+    slides[idx].classList.remove('active');
+    document.querySelectorAll('.dot')[idx].classList.remove('on');
+    idx = i;
+    slides[idx].classList.add('active');
+    document.querySelectorAll('.dot')[idx].classList.add('on');
+    document.getElementById('ctr-n').textContent = (idx + 1);
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ') go(idx + 1);
+    else if (e.key === 'ArrowLeft') go(idx - 1);
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length - 1);
+  });
+})();
+
+// Scale-to-fit at runtime
+(function () {
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      deck.style.transform = 'none';
+      return;
+    }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+</script>
+</body>
+</html>

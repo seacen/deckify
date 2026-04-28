@@ -35,6 +35,9 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _ab_common import agent_browser_cmd  # noqa: E402
+
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) "
       "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
 BROWSER_HEADERS = {
@@ -93,7 +96,7 @@ def http_get(url: str, referer: str | None = None) -> tuple[bytes, str]:
     # Navigate the browser AT the asset URL itself — this is the most reliable
     # path for both same-origin assets and third-party CMS CDNs.
     try:
-        subprocess.run(["agent-browser", "open", url],
+        subprocess.run(agent_browser_cmd("open", url),
                        capture_output=True, timeout=30, check=False)
     except Exception:
         pass
@@ -110,7 +113,7 @@ def http_get(url: str, referer: str | None = None) -> tuple[bytes, str]:
         "})()"
     )
     try:
-        result = subprocess.run(["agent-browser", "eval", js],
+        result = subprocess.run(agent_browser_cmd("eval", js),
                                 capture_output=True, timeout=90, check=False)
     except FileNotFoundError:
         # Last-resort fallback if agent-browser is somehow missing — try urllib
@@ -346,21 +349,44 @@ def main(workspace: str) -> int:
         return 2
     raw_assets = json.loads(raw_path.read_text(encoding="utf-8"))
     brand = json.loads(brand_path.read_text(encoding="utf-8"))
-    logo_id = (brand.get("chosen_logo") or {}).get("id") or brand.get("chosen_logo_id")
-    if not logo_id:
-        print("ERROR: brand.json must include chosen_logo.id (or chosen_logo_id)", file=sys.stderr)
+    chosen = brand.get("chosen_logo") or {}
+    logo_id = chosen.get("id") or brand.get("chosen_logo_id")
+    explicit_url = chosen.get("url")
+    explicit_kind = chosen.get("kind") or "jsonld-logo"
+    if not logo_id and not explicit_url:
+        print("ERROR: brand.json must include chosen_logo.id, chosen_logo_id, or chosen_logo.url",
+              file=sys.stderr)
         return 2
 
     assets_dir = ws / "assets"
     assets_dir.mkdir(exist_ok=True)
 
-    cand = find_candidate(raw_assets, logo_id)
-    if not cand:
-        print(f"ERROR: no candidate with id={logo_id} in raw-assets.json", file=sys.stderr)
-        return 2
-
     base_url = brand.get("base_url") or f"https://{raw_assets.get('host', '')}"
-    print(f"chosen logo:  id={logo_id}  kind={cand['kind']}  page={cand.get('page', '?')}")
+
+    # Two ways to point at a logo:
+    # 1. Standard path — chosen_logo.id refers to a stable candidate id in
+    #    raw-assets.json (the schema synthesize-brand.md describes).
+    # 2. Direct URL — chosen_logo.url + (optional) chosen_logo.kind. Used when
+    #    the LLM identified an authoritative source (e.g. JSON-LD
+    #    Organization.logo or a press-kit URL) that wasn't enumerated as a
+    #    discrete candidate by enumerate_assets.py. The candidate enumerator
+    #    can't always know which JSON-LD logos are organisational vs product
+    #    listings, so this escape hatch lets the LLM pick what evidence shows.
+    cand: dict
+    if logo_id:
+        found = find_candidate(raw_assets, logo_id)
+        if not found:
+            if not explicit_url:
+                print(f"ERROR: no candidate with id={logo_id} in raw-assets.json", file=sys.stderr)
+                return 2
+            print(f"note: id={logo_id} not in raw-assets.json — falling back to chosen_logo.url")
+            cand = {"id": logo_id, "kind": explicit_kind, "url": explicit_url, "page": "(explicit)"}
+        else:
+            cand = found
+    else:
+        cand = {"id": "(explicit-url)", "kind": explicit_kind, "url": explicit_url, "page": "(explicit)"}
+
+    print(f"chosen logo:  id={cand.get('id')}  kind={cand['kind']}  page={cand.get('page', '?')}")
 
     if cand["kind"] == "inline-svg":
         result = materialize_inline_svg(cand, assets_dir)

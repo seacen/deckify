@@ -1,0 +1,86 @@
+{
+  "host": "www.tiffany.com",
+  "brand_name": "Tiffany & Co.",
+  "base_url": "https://www.tiffany.com/",
+
+  "chosen_logo": {
+    "id": "jsonld-tiffany-logo-svg",
+    "kind": "jsonld-logo",
+    "url": "https://www.tiffany.com/on/demandware.static/Sites-Tiffany_US-Site/-/default/dw7f7626fd/images/logo.svg",
+    "why": "Official Schema.org Organization.logo URL declared in JSON-LD on every page (Corporation + Organization @types both reference the same hash). It is a vector wordmark, currentColor-flippable, and matches the visible 'TIFFANY & CO.' wordmark in every shot.png header."
+  },
+
+  "alt_logo_ids": [
+    "press-newsroom-logo-png",
+    "favicon-196-jpg"
+  ],
+  "alt_logo_sources": {
+    "press-newsroom-logo-png": "https://press.tiffany.com/wp-content/themes/tiffany/assets/images/tiffany-newsroom-logo-2025.png",
+    "favicon-196-jpg": "https://www.tiffany.com/on/demandware.static/Sites-Tiffany_US-Site/-/default/dw4ef11a2f/images/favicons/favicon-196x196.jpg"
+  },
+
+  "palette": {
+    "brand_primary":   { "hex": "#009CAD", "name": "tiffany-blue", "evidence": "Iconic 'Tiffany Blue' (Pantone 1837 / 'Robin's Egg Blue'). Visible as the persistent top promo banner across home/world-of-tiffany/high-jewelry/jewelry/love-engagement/press, and also the hover/accent chord on press.tiffany.com header. Color value cross-referenced to public PMS 1837 (#009CAD published by Tiffany)." },
+    "brand_secondary": { "hex": "#FBF9F7", "name": "tiffany-paper", "evidence": "Footer background rgb(251,249,247) computed on designers-collections/footer; appears as the primary off-white surface across product grid pages — warmer than pure white, the brand's signature 'paper'." },
+    "ink":             { "hex": "#000000", "name": "ink", "evidence": "computed body color rgb(0,0,0) across every page; Tiffany ALWAYS uses pure black for type, never softened grey. CTA backgrounds also rgb(0,0,0)." },
+    "paper":           { "hex": "#FFFFFF", "name": "paper", "evidence": "Pure white used on overlays (cookie modal, sub-modal panels) and product card bg; secondary paper ground." },
+    "accents": [
+      { "hex": "#1F1F1F", "name": "graphite", "evidence": "Body copy darker tone seen in editorial paragraphs on world-of-tiffany; subtle separation from pure black for long-form." },
+      { "hex": "#C1C1C1", "name": "rule",     "evidence": "Frequency #C1C1C1 = 25 in CSS color frequency dump; used as the 1px hairline divider between sections — Tiffany's restrained 'editorial rule'." },
+      { "hex": "#6CC04A", "name": "verdure",  "evidence": "Frequency #6CC04A and #346E4A appear in checkout/availability flows; semantic positive accent (in-stock / verified)." },
+      { "hex": "#E50739", "name": "alert",    "evidence": "Frequency #E50739; semantic negative (out of stock / error)." }
+    ]
+  },
+
+  "typography": {
+    "display_font": {
+      "family": "Sterling SSM",
+      "fallback": ["Sterling Fallback", "Didot", "Bodoni 72", "Georgia", "serif"],
+      "evidence": "Computed [class*='hero' i] uses 'Sterling SSM, Sterling Fallback, serif' weight 325 size 20px. Counted 18 occurrences (font.frequencies). Sterling is Tiffany's licensed Didone display face, used exclusively for the wordmark + editorial hero headlines."
+    },
+    "body_font": {
+      "family": "Santral Book",
+      "fallback": ["Verdana", "system-ui", "sans-serif"],
+      "evidence": "computed_primary = ['Santral Book', 'Verdana']; appears in body, header, nav, h1 (40px weight 500), button. 32 occurrences in font.frequencies — the workhorse face."
+    },
+    "weight_for_emphasis": {
+      "family": "Santral Semibold",
+      "evidence": "btn-primary uses 'Santral Semibold' 11px tracked uppercase; explicit semibold cut for CTAs and small caps lockups. 15 occurrences."
+    }
+  },
+
+  "spacing_radius_shadow": {
+    "radius_style": "sharp",
+    "shadow_style": "flat",
+    "spacing_density": "airy",
+    "evidence": "Every computed surface (body/header/nav/h1/buttons/btn-primary/footer) returns radius:0px AND shadow:none. CTA padding 32×22 (large horizontal) signals airy. Footer padY:96px confirms generous vertical breathing room across hero/section transitions."
+  },
+
+  "aesthetic": {
+    "mood": "studio luxury restraint",
+    "style_keywords": ["editorial", "hairline", "Didone", "monochrome", "uppercase-traced", "airy"],
+    "precedents": [
+      "old Vogue editorial spreads (1960s-80s)",
+      "Hermès print catalogues (uppercase Didone wordmark + airy product photography)",
+      "modern Bottega Veneta web (radius:0 + monochrome + restraint)"
+    ],
+    "voice_register": "aspirational, archival, understated"
+  },
+
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/world-of-tiffany-html/shot.png",
+    "recon/pages/high-jewelry-html/shot.png",
+    "recon/pages/designers-collections/shot.png",
+    "recon/pages/love-engagement-html/shot.png",
+    "recon/pages/jewelry/shot.png",
+    "recon/pages/index/shot.png"
+  ],
+
+  "notes": [
+    "Tiffany Blue (#009CAD / PMS 1837) is the brand's most powerful trademark — the colour itself is registered. It MUST appear as a deliberate, restrained chord on every cover slide, never as a generic 'accent'. Use it like Hermès uses Hermès Orange.",
+    "Sterling SSM is a proprietary licensed face. The DS will use a Didone fallback (Bodoni / Didot / Georgia) and document the trade-off; runtime decks should use the closest free Didone (Playfair Display + Cormorant Garamond as Sterling-adjacent web alternatives).",
+    "Tiffany typography is markedly UPPERCASE-traced for the wordmark + nav (TIFFANY & CO., GIFTS, HIGH JEWELRY, JEWELRY) — sentence case is reserved for body/editorial. The DS should bake this into the type-pairing rule.",
+    "Sharp 0-radius everything is non-negotiable Tiffany — soft-rounded chrome would read as fast-fashion."
+  ]
+}
