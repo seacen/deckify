@@ -31,20 +31,39 @@ import sys
 from pathlib import Path
 
 
-def find_repo_root(start: Path) -> Path:
-    """Walk up from the script location to find the repo root (a `decks/` sibling)."""
-    p = start.resolve()
+def find_repo_root() -> Path:
+    """Find the user's project root, where decks/<brand-slug>/source/ should land.
+
+    Search order matters here. The script is shipped inside the deckify skill,
+    which gets symlinked / installed into Claude's plugin cache (e.g.
+    ~/.claude/plugins/.../skills/deckify/scripts/) — so the script's *own
+    location* points at the deckify repo, NOT at wherever the user is actually
+    working. A user running deckify on their own brand from a totally
+    different project would otherwise have their durable artefacts written
+    into the deckify source repo. That's the Mars-session bug we are fixing.
+
+    Resolution order:
+      1. cwd, then walking up — this is the user's project. Highest priority.
+      2. cwd unconditionally — even if no `decks/` exists yet, persist into
+         a fresh `<cwd>/decks/<brand>/source/`. The user is here for a reason;
+         create the directory rather than escaping to the skill's repo.
+      3. (No script-location fallback. If cwd genuinely isn't a project, the
+         user will see the artefacts in cwd and can move them manually — far
+         better than silently dumping into Claude's plugin cache.)
+    """
+    cwd = Path.cwd().resolve()
+    # Walk up from cwd looking for an existing decks/ — the strongest signal
+    # that this is a deckify project.
+    p = cwd
     for _ in range(8):
         if (p / "decks").is_dir():
             return p
         if p == p.parent:
             break
         p = p.parent
-    # Fallback: cwd
-    cwd = Path.cwd()
-    if (cwd / "decks").is_dir():
-        return cwd
-    return cwd  # Last resort — let mkdir create decks/
+    # No decks/ ancestor found — persist into cwd anyway. This is the
+    # "first run on a new project" case; mkdir will create decks/<brand>/.
+    return cwd
 
 
 def main() -> int:
@@ -60,7 +79,7 @@ def main() -> int:
         print(f"workspace not found: {ws}", file=sys.stderr)
         return 1
 
-    repo_root = find_repo_root(Path(__file__).parent)
+    repo_root = find_repo_root()
     target = repo_root / "decks" / safe_slug / "source"
     target.mkdir(parents=True, exist_ok=True)
 
