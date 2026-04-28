@@ -1,18 +1,26 @@
 #!/usr/bin/env python3
 """run_phase_a.py — Layer 1 (Phase A) skill-quality optimization loop.
 
-Runs hard_checks.py over the deckify N-brand panel (currently 5 brands chosen
-for diversity: sans + serif, blue + red + black + cream, en + zh), then
-prompts the LLM to score each brand's judge.json against rubric.json, then
-aggregates a Phase A scoreboard.
+Three-stage pipeline:
 
-A failure in this run is a **skill source bug**, not a per-brand bug. See
-`evals/README.md` Layer 1 fix-mapping table — the cure is in `SKILL.md`,
-`references/ds-template.md`, `references/llm-prompts/*.md`, `scripts/*.py`,
-or `evals/hard_checks.py` itself, NEVER in the brand DS markdown alone.
+  1. audit_skill.py — DRY + reachability + ENGINEERING-DNA + path-leakage check.
+     Fails fast on structural / referential bugs in the skill source. No point
+     running brands if the skill itself doesn't audit clean.
+
+  2. hard_checks.py — runs over the N-brand panel (currently 5 brands chosen
+     for diversity: sans + serif, blue + red + black + cream, en + zh).
+
+  3. build_report.py — aggregates per-brand hard_checks + judge.json into a
+     Phase A scoreboard. Judge.json is the LLM's job (see step 4 below).
+
+A failure anywhere in this pipeline is a **skill source bug**, not a per-brand
+bug. See `evals/README.md` Layer 1 fix-mapping table — the cure is in
+`SKILL.md`, `references/ds-template.md`, `references/llm-prompts/*.md`,
+`scripts/*.py`, or `evals/hard_checks.py` itself, NEVER in the brand DS
+markdown alone.
 
 Usage:
-    # Full run: hard checks + emit judge instructions for the LLM
+    # Full Layer 1 run: audit + hard checks + emit judge instructions
     python3 evals/run_phase_a.py
 
     # After the LLM has written all judge.json files, fold them in:
@@ -20,6 +28,9 @@ Usage:
 
     # Limit to a subset of brands:
     python3 evals/run_phase_a.py --brands unilever,coca-cola
+
+    # Skip the audit step (useful when iterating on hard_checks logic):
+    python3 evals/run_phase_a.py --skip-audit
 """
 import argparse
 import datetime
@@ -79,6 +90,17 @@ def build_sample_args(brands: list[tuple[str, str]], decks_dir: Path) -> list[st
         ds = decks_dir / slug / f"{slug}-PPT-Design-System.md"
         out.append(f"{slug}|{url}|{deck}|{ds}")
     return out
+
+
+def run_audit(skill_dir: Path) -> int:
+    """Step 1 of Layer 1: structural audit. Fail-fast before touching brands."""
+    audit_script = skill_dir / "evals" / "audit_skill.py"
+    print()
+    print("═══════════════════════════════════════════════════════════")
+    print(" Phase A step 1 — audit_skill.py (DRY + reachability)")
+    print("═══════════════════════════════════════════════════════════")
+    proc = subprocess.run([sys.executable, str(audit_script)])
+    return proc.returncode
 
 
 def run_hard_checks(brands: list[tuple[str, str]], decks_dir: Path, out_dir: Path,
@@ -171,6 +193,8 @@ def main() -> int:
                     help="Comma-separated subset of brand slugs to run (default: all in panel)")
     ap.add_argument("--out-dir", default="",
                     help="Override the output directory (default: auto-create with timestamp).")
+    ap.add_argument("--skip-audit", action="store_true",
+                    help="Skip the audit_skill.py structural pre-check (useful when iterating on hard_checks).")
     args = ap.parse_args()
 
     skill_dir = Path(__file__).resolve().parent.parent
@@ -200,6 +224,16 @@ def main() -> int:
         out_dir = reports_root / "runs" / f"{ts}-phase-a"
         out_dir.mkdir(parents=True, exist_ok=True)
 
+    # Step 1: structural audit (fail-fast on skill source bugs).
+    if not args.aggregate_only and not args.skip_audit:
+        audit_rc = run_audit(skill_dir)
+        if audit_rc != 0:
+            print()
+            print("Phase A halted — audit_skill.py reported failures.")
+            print("Fix the structural / reachability issues above before running brand panel.")
+            return audit_rc
+
+    # Step 2: hard checks across the brand panel.
     if not args.aggregate_only:
         run_hard_checks(panel, decks_dir, out_dir, skill_dir)
 

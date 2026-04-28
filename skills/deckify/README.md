@@ -51,12 +51,22 @@ Three orthogonal test surfaces (`evals/README.md` is the authoritative descripti
 
 Used by **us, the skill authors**, to make deckify better. Same `hard_checks.py` + `rubric.json` tooling as Layer 2, but scoped to a multi-brand panel and aimed at fixing **skill source code**.
 
+`run_phase_a.py` is the single entry point. It runs three stages:
+
+1. **`audit_skill.py`** — DRY + reachability check (SKILL.md mentions every script / reference, ENGINEERING-DNA invariants are baked in, no hardcoded paths leaked). Fails fast on structural / referential bugs.
+2. **`hard_checks.py`** across the 5-brand panel (Unilever / P&G / Stripe / Apple / Coca-Cola) — chosen for diversity (sans + serif, blue + red + black + cream, en + zh).
+3. **`build_report.py`** — aggregates per-brand hard_checks + judge.json into a Phase A scoreboard.
+
 ```bash
-# Run hard checks across the 5-brand panel (Unilever / P&G / Stripe / Apple / Coca-Cola)
+# Full Layer 1 run (audit → hard checks → emit judge instructions)
 python3 evals/run_phase_a.py
 
-# After writing per-brand judge.json files (LLM step), aggregate the scoreboard
+# After writing per-brand judge.json files (LLM step), fold them in
 python3 evals/run_phase_a.py --aggregate-only
+
+# Useful options
+python3 evals/run_phase_a.py --brands unilever,coca-cola   # subset
+python3 evals/run_phase_a.py --skip-audit                  # iterate hard_checks fast
 ```
 
 A failure in Layer 1 means the **skill source has a gap** (template / prompt / hard_check / script). The fix never goes into a single brand's DS — that heals one brand and lets the bug ship to all others. Trace upstream.
@@ -71,12 +81,18 @@ Invoked automatically by `SKILL.md` Phase 4 every time the skill executes on a u
 
 ### Dev-time tooling
 
+There is no separate dev-time test surface — `evals/run_phase_a.py` covers everything:
+- Structural correctness via the `audit_skill.py` step
+- Phase 1 plumbing via the live brand panel (each brand exercises fetch_sitemap → fetch_pages → enumerate_assets → embed_logo)
+- Brand-specific output quality via hard_checks + judge
+
+If you only want the structural audit (no network, no brand panel):
+
 ```bash
-bash tests/audit_skill.sh         # DRY + reachability audit (no network)
-bash tests/smoke_unilever.sh      # Phase 1 end-to-end smoke (live)
-bash tests/test_integration.sh    # 3-brand Phase 1 integration (live)
-bash tests/run_trigger_evals.sh   # static keyword scan of trigger_evals.json
+python3 evals/audit_skill.py
 ```
+
+The `tests/` directory now contains only `reports/` — the auto-eval output from past runs.
 
 ## File layout
 
@@ -102,17 +118,15 @@ deckify/
 │       └── synthesize-brand.md           # 1e: how to pick logo / palette / mood from raw assets
 ├── evals/                                # See evals/README.md for full architecture
 │   ├── README.md                         # Layer 1 / Layer 2 / marketplace grader explained
+│   ├── audit_skill.py                    # Structural / DRY / reachability audit (Layer 1 step 1)
 │   ├── hard_checks.py                    # 10 deterministic checks (Layer 1 + Layer 2)
 │   ├── rubric.json                       # 6 visual judge dimensions + 5 disqualifiers
 │   ├── build_report.py                   # Per-brand scoreboard aggregation
-│   ├── run_phase_a.py                    # Layer 1 multi-brand panel orchestrator
+│   ├── run_phase_a.py                    # Layer 1 entry: audit → panel → aggregate
 │   ├── evals.json                        # Marketplace grader: 4 declarative cases
 │   └── trigger_evals.json                # Marketplace grader: 22 routing samples
-└── tests/                                # Dev-time only — bash OK here, never on runtime path
-    ├── audit_skill.sh                    # DRY + reachability audit
-    ├── smoke_unilever.sh                 # Phase 1 end-to-end smoke
-    ├── test_integration.sh               # 3-brand Phase 1 integration
-    └── run_trigger_evals.sh              # Static keyword scan
+└── tests/                                # Auto-eval run output only (gitignored)
+    └── reports/                          # tests/reports/runs/<ts>-phase-a/per-sample/<brand>/
 ```
 
 ## Philosophy
@@ -127,6 +141,7 @@ If a new brand surfaces a class of bug the skill doesn't catch:
 1. Add a hard check to `evals/hard_checks.py` that detects the bad output deterministically.
 2. Trace the bug upstream to the rule that should have prevented it — usually `references/ds-template.md` (or `.zh.md`), occasionally `references/llm-prompts/synthesize-brand.md`. Fix THERE.
 3. Regenerate the offending brand's DS + deck from the updated template, re-run `python3 evals/run_phase_a.py` across the full panel, confirm the fix doesn't regress other brands.
-4. Sanity-check `bash tests/audit_skill.sh` before pushing.
+
+`run_phase_a.py` runs `audit_skill.py` first as a fail-fast gate; if you broke a SKILL.md cross-reference or removed an engineering-DNA chapter, you'll see it before any brand starts churning.
 
 This is the Layer 1 loop. The skill is supposed to get better with every brand we add, not patched ad-hoc.

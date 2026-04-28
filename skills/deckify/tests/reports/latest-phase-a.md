@@ -1,6 +1,6 @@
 # deckify — auto-eval summary
 
-- Run dir: `2026-04-28T17-19-09-phase-a`
+- Run dir: `2026-04-28T17-46-48-phase-a`
 - Pass threshold (judge avg): **4.0**
 - Samples: **5**
 
