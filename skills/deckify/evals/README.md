@@ -55,10 +55,11 @@ The Layer 1 toolset is a strict superset of Layer 2's:
 
 | File | Role | Shared with Layer 2? |
 |---|---|---|
-| `hard_checks.py` | 10 deterministic checks | yes |
+| `audit_skill.py` | **Structural pre-check** — DRY + reachability + ENGINEERING-DNA + path-leakage. Runs first; fails fast on skill-source bugs before any brand panel work. | **Layer 1 only** |
+| `hard_checks.py` | 10 deterministic checks per brand | yes |
 | `rubric.json` | 6 visual judge dimensions | yes |
 | `build_report.py` | Per-brand scoreboard aggregation | yes |
-| `run_phase_a.py` | **Multi-brand orchestrator** — iterates the registered brand panel, lands a per-brand report, aggregates a Phase A scoreboard. Cross-platform Python (no shell). | **Layer 1 only** |
+| `run_phase_a.py` | **Layer 1 entry point** — orchestrates `audit_skill.py` → `hard_checks.py` over the registered brand panel → emit judge instructions → `build_report.py`. Cross-platform Python (no shell). | **Layer 1 only** |
 | `evals.json` | 4 declarative cases for Anthropic's marketplace grader | Layer 1 only (marketplace) |
 | `trigger_evals.json` | 22 routing samples for the marketplace grader | Layer 1 only (marketplace) |
 
@@ -67,17 +68,27 @@ The Layer 1 toolset is a strict superset of Layer 2's:
 ### Running Layer 1 locally
 
 ```bash
-# 1. Run hard checks across the brand panel (5 brands by default)
+# 1. Full Layer 1 run (audit → hard checks across brand panel → emit judge instructions)
 python3 skills/deckify/evals/run_phase_a.py
 
 # 2. The script prints which brands need a judge.json. For each:
-#    - Read the slide screenshots in tests/reports/runs/<latest>/per-sample/<brand>/slides/
+#    - View the slide screenshots in tests/reports/runs/<latest>-phase-a/per-sample/<brand>/slides/
 #    - Read the brand DS markdown
 #    - Score against rubric.json
-#    - Write tests/reports/runs/<latest>/per-sample/<brand>/judge.json
+#    - Write tests/reports/runs/<latest>-phase-a/per-sample/<brand>/judge.json
 
 # 3. Re-run aggregation to fold the judge scores in
 python3 skills/deckify/evals/run_phase_a.py --aggregate-only
+
+# Useful options:
+# --brands unilever,coca-cola   limit panel to a subset
+# --skip-audit                  skip step 1 (when iterating on hard_checks)
+```
+
+If `audit_skill.py` (step 1) reports failures, `run_phase_a.py` halts before touching the brand panel — fix the structural issue first. To run the audit standalone (no network, no brand panel):
+
+```bash
+python3 skills/deckify/evals/audit_skill.py
 ```
 
 ### When a Layer 1 brand fails
@@ -170,8 +181,7 @@ They are NOT the Layer 1 optimization loop. They're a downstream contract that t
 
 | Trigger | What runs | Fix target on failure |
 |---|---|---|
-| Skill author tunes skill | `python3 evals/run_phase_a.py` over N brands | **Skill source** (template, prompts, scripts, hard_checks) |
+| Skill author tunes skill | `python3 evals/run_phase_a.py` (audit → panel → aggregate) | **Skill source** (template, prompts, scripts, hard_checks) |
+| Author wants the structural audit only (no brand network calls) | `python3 evals/audit_skill.py` | **SKILL.md / docs / references / template that drifted** |
 | Marketplace submission | `evals.json` + `trigger_evals.json` (Anthropic harness) | **Skill source** (same — these are Layer 1) |
 | End user runs the skill | `python3 evals/hard_checks.py` + `build_report.py` (auto, in Phase 4) | **User's brand DS markdown** |
-| Author smoke-tests Phase 1 plumbing | `tests/smoke_unilever.sh` | **The Phase 1 script that broke** |
-| Author audits SKILL.md cross-refs | `tests/audit_skill.sh` | **SKILL.md / docs / references that drifted** |
