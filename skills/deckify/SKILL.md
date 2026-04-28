@@ -113,7 +113,25 @@ If quality-gate fails (exit 1), swap `chosen_logo.id` to the next item in `alt_l
 
 Goal: take the brand.json you produced in 1e and resolve the decisions YOU couldn't make alone — language, ambiguous logo picks, contested colour direction, proprietary typography fallbacks. Don't ask the user to confirm things YOU already have strong evidence for — that's noise.
 
-**Host portability note**: this phase asks the user interactive questions. Use whatever interactive-question mechanism your host provides — `AskUserQuestion` in Claude Code, the equivalent prompt mechanism in Codex / OpenClaw, or just plain `print` + read-stdin if you're a script. The framing below is host-agnostic; the rounds are what matters, not the specific tool name.
+**Host-conditional interaction rule** (this is a hard rule on Claude Code, a recommendation elsewhere — read carefully):
+
+| Host environment | Required mechanism | If unavailable |
+|---|---|---|
+| **Claude Code / Claude Desktop** | **MUST use the `AskUserQuestion` tool** for every Round below. If the tool is *deferred* (schema not loaded at session start), invoke `ToolSearch` with `query: "select:AskUserQuestion"` first to load its schema, then call it. **Do not substitute plain text questions** — that bypasses the structured-choice UI, loses analytics, and produces ambiguous free-text answers the rest of this phase depends on. |  No graceful fallback — refuse to proceed and tell the user the tool is missing. |
+| **Codex CLI / OpenClaw / similar AI hosts** | Use the host's nearest equivalent structured-question mechanism if it exists (each host names it differently). | If no structured mechanism exists, fall back to a single block of clearly-numbered text questions with explicit option labels. |
+| **Headless / scripted runs** (no human in the loop) | Skip Phase 2 entirely; commit `brand.json` as-is and write `decisions.json` with `interaction_mode: "headless-defaults"` and the synthesizer's best evidence-based picks for every required field. |  N/A — by definition there's no user to ask. |
+
+After Phase 2 finishes, **always record which mode was actually used** in `decisions.json`:
+
+```jsonc
+{
+  "interaction_mode": "ask-user-question" | "host-equivalent" | "text-fallback" | "headless-defaults",
+  "host": "claude-code" | "codex" | "openclaw" | "other-name" | "headless",
+  // ... rest of decisions.json (language, slide_emphasis, etc.) ...
+}
+```
+
+This field is what `audit_skill.py` and `build_report.py` use to detect "this run silently downgraded interaction quality" — a recurring failure mode where an agent skips structured Q&A and the resulting brand DS reflects guesswork instead of user choice.
 
 **Question philosophy: ask only where you are genuinely uncertain.** A confident, evidence-backed brand.json shouldn't need 4 confirmation rounds — it needs maybe 1 or 2 for the genuinely ambiguous decisions, plus the always-required language round. If a decision is unambiguous (single canonical SVG logo, dominant chord with 100× CSS frequency, body font is the only computed font), commit and don't waste the user's attention.
 
