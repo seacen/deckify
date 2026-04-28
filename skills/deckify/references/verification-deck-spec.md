@@ -68,11 +68,11 @@ Across the whole deck, these must all be hit:
 
 If any required slide above causes a hard check to fail, **fix the slide**, don't drop the type. Dropping a type to game the eval defeats the purpose.
 
-## 6. Per-brand emphasis
+## 6. Per-brand emphasis (illustrative — not a closed list)
 
-Same eight required types, but brands have natural strengths:
+Same eight required types, but brands have natural strengths. The table below illustrates the kind of tilt to look for, using brands from our Layer 1 panel as examples — it is NOT a whitelist. For any new brand, infer the analogous tilt from Phase 1 recon (the brand's own page rhythm, voice register, and content density).
 
-| Brand | Lean into | De-emphasize |
+| Example brand | Lean into | De-emphasize |
 |-------|-----------|---------------|
 | Unilever | Sustainability narrative (Type C), pull-quotes from leadership (Type J), brand-portfolio image slide (Type F if recon has good photography) | Heavy interactive demos (Type G) |
 | P&G | Brand portfolio (Type F), category data (Type E table), consumer trend chart (Type H) | Long pull-quote slides — P&G voice is operational, not editorial |

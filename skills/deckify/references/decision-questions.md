@@ -1,8 +1,10 @@
 # Phase 2 — decision questions
 
-The questions to walk through with the user via `AskUserQuestion` before you generate the DS. Goal: turn raw recon into committed decisions, prevent overfit, surface taste choices the data can't decide on its own.
+The questions to walk through with the user before you generate the DS. Goal: turn raw recon into committed decisions, prevent overfit, surface taste choices the data can't decide on its own.
 
-**Bundle into 4–5 batched calls** to `AskUserQuestion` (max 4 questions per call, max 4 options per question). Don't ask one at a time — that's annoying.
+**Host portability**: ask via whatever interactive mechanism your host provides — `AskUserQuestion` in Claude Code, the equivalent prompt mechanism in Codex / OpenClaw, or plain stdin if you're a scripted host. The structure of the rounds matters; the specific tool name doesn't.
+
+**Bundle into 4–5 batched calls** (max 4 questions per call, max 4 options per question). Don't ask one at a time — that's annoying.
 
 ## Round 0 — Language (ask FIRST)
 

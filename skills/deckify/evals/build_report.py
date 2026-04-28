@@ -2,7 +2,8 @@
 """
 build_report.py — aggregate per-sample hard_checks + judge results into reports.
 
-Inputs (from run.sh):
+Inputs (called by run_phase_a.py for Layer 1, or directly during Phase 4 of SKILL.md
+for Layer 2 — both cross-platform Python, no shell wrapper):
     argv[1]   = OUT_DIR (tests/reports/runs/<ts>/)
     argv[2]   = pass_threshold (numeric, e.g. "4")
     argv[3..] = sample tuples "brand|url|deck|ds"
@@ -241,7 +242,7 @@ def render_summary(out_dir: Path, threshold: float, samples: list[dict]) -> str:
     lines.append("## Self-closure")
     lines.append("")
     lines.append("`repair_actions.json` lists every actionable fix. The skill author (or a follow-up agent) "
-                 "should resolve every blocker action before regenerating decks. Re-run `eval/run.sh` to confirm green.")
+                 "should resolve every blocker action before regenerating decks. Re-run `python3 evals/run_phase_a.py` (Layer 1) or `python3 evals/hard_checks.py` (Layer 2) to confirm green.")
     return "\n".join(lines) + "\n"
 
 

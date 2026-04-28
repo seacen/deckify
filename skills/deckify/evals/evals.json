@@ -1,6 +1,6 @@
 {
   "skill_name": "deckify",
-  "description": "Skill-quality evals run by the marketplace harness. Each case fires a user prompt, the skill produces brand artifacts, and assertions verify both structural correctness (DS markdown + deck HTML) AND engineering-DNA preservation. Runtime auto-eval (hard_checks.py + rubric.json + run.sh in this same directory) is invoked by the skill itself during Phase 4-5; assertions below mirror its hard-check coverage so the harness can verify produced artifacts without spinning up agent-browser.",
+  "description": "Skill-quality evals run by the marketplace harness. Each case fires a user prompt, the skill produces brand artifacts, and assertions verify both structural correctness (DS markdown + deck HTML) AND engineering-DNA preservation. Runtime auto-eval (hard_checks.py + rubric.json + build_report.py in this same directory) is invoked by the skill itself during Phase 4-5; assertions below mirror its hard-check coverage so the harness can verify produced artifacts without spinning up agent-browser.",
   "evals": [
     {
       "id": 1,

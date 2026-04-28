@@ -95,7 +95,7 @@ Merges every page's `probe.json` into one `$WS/raw-assets.json`. Each logo candi
 Read `references/llm-prompts/synthesize-brand.md`. Then:
 
 1. Read `$WS/raw-assets.json`
-2. Use the Read tool to look at `$WS/recon/pages/<slug>/shot.png` for each indexed page (vision)
+2. Look at `$WS/recon/pages/<slug>/shot.png` for each indexed page using your host's image-viewing capability (the `Read` tool in Claude Code, the equivalent in Codex / OpenClaw, or your own image loader if scripted)
 3. Pick the chosen logo (by candidate `id`), brand_primary / secondary / ink / paper / accents (with hex + evidence), display + body fonts, spacing/radius/shadow style, aesthetic mood + precedents
 4. Write `$WS/brand.json` per the schema in synthesize-brand.md, including `chosen_logo.id` plus 2–3 `alt_logo_ids`
 
@@ -109,15 +109,17 @@ Looks up `chosen_logo.id` in raw-assets, downloads if remote, runs the quality g
 
 If quality-gate fails (exit 1), swap `chosen_logo.id` to the next item in `alt_logo_ids` in `brand.json` and rerun. If all alternatives fail, **stop** and ask the user for a logo URL or file path. Never invent a typographic placeholder.
 
-### Phase 2 — Confirm with the user (latent + AskUserQuestion)
+### Phase 2 — Confirm with the user (latent — interactive Q&A)
 
 Goal: take the brand.json you produced in 1e and resolve the decisions YOU couldn't make alone — language, ambiguous logo picks, contested colour direction, proprietary typography fallbacks. Don't ask the user to confirm things YOU already have strong evidence for — that's noise.
 
+**Host portability note**: this phase asks the user interactive questions. Use whatever interactive-question mechanism your host provides — `AskUserQuestion` in Claude Code, the equivalent prompt mechanism in Codex / OpenClaw, or just plain `print` + read-stdin if you're a script. The framing below is host-agnostic; the rounds are what matters, not the specific tool name.
+
 **Question philosophy: ask only where you are genuinely uncertain.** A confident, evidence-backed brand.json shouldn't need 4 confirmation rounds — it needs maybe 1 or 2 for the genuinely ambiguous decisions, plus the always-required language round. If a decision is unambiguous (single canonical SVG logo, dominant chord with 100× CSS frequency, body font is the only computed font), commit and don't waste the user's attention.
 
-**Round 0 (ALWAYS first): language.** Call `AskUserQuestion` with exactly two options: 中文 (Simplified Chinese) and English. These are the only two languages with maintained sister templates (`ds-template.zh.md` and `ds-template.md`). Do NOT offer Japanese / Spanish / Other free-text — there is no `ds-template.<other>.md` to route to, so any non-zh/en answer would silently fall back to the English template + a per-run translation pass, which produces drift and undercuts the language_consistency hard check. If the user genuinely needs another language, they can author it in 中文 or English and re-translate downstream. After this answer, conduct every subsequent round AND Phase 3 generation in that language. Token names (`--primary`, `--accent`, etc.), code snippets, CSS, hex values, viewBox numbers, and HTML comment anchors (`<!-- ENGINEERING-DNA: ... -->`) stay in English regardless — only the prose changes.
+**Round 0 (ALWAYS first): language.** Ask the user with exactly two options: 中文 (Simplified Chinese) and English. These are the only two languages with maintained sister templates (`ds-template.zh.md` and `ds-template.md`). Do NOT offer Japanese / Spanish / Other free-text — there is no `ds-template.<other>.md` to route to, so any non-zh/en answer would silently fall back to the English template + a per-run translation pass, which produces drift and undercuts the language_consistency hard check. If the user genuinely needs another language, they can author it in 中文 or English and re-translate downstream. After this answer, conduct every subsequent round AND Phase 3 generation in that language. Token names (`--primary`, `--accent`, etc.), code snippets, CSS, hex values, viewBox numbers, and HTML comment anchors (`<!-- ENGINEERING-DNA: ... -->`) stay in English regardless — only the prose changes.
 
-**Round 1 (CONDITIONAL — only if logo is ambiguous): logo selection.** Trigger when you have ≥ 2 candidates that all pass the quality gate AND no clear winner from the synthesize-brand priority order. Use `AskUserQuestion` to surface 2–3 specific candidates with their evidence:
+**Round 1 (CONDITIONAL — only if logo is ambiguous): logo selection.** Trigger when you have ≥ 2 candidates that all pass the quality gate AND no clear winner from the synthesize-brand priority order. Surface 2–3 specific candidates with their evidence:
 - Each option labeled with where it came from (e.g. "Nav inline-SVG, viewBox 0 0 67 44, single path" / "JSON-LD knowledge_graph_logo.png, RGB-only" / "apple-touch-icon, 180×180 RGBA").
 - Description explains the trade-off (e.g. "RGB PNG flips badly on dark covers; SVG is cleaner but might be a wordmark not the silhouette").
 - If candidates differ only trivially, pick yourself — don't ask.
@@ -135,7 +137,7 @@ Goal: take the brand.json you produced in 1e and resolve the decisions YOU could
 
 Take the user's responses. Save the final decisions to `$WS/decisions.json`. If the user redirects on a token (e.g., "actually use the secondary as primary"), update brand.json's `palette` accordingly so Phase 3 generation reflects it.
 
-**Anti-pattern**: asking 4 ceremonial confirmation questions when the recon was unambiguous. Each `AskUserQuestion` call costs the user attention — earn it with genuine choices, not with reciting back what you already know.
+**Anti-pattern**: asking 4 ceremonial confirmation questions when the recon was unambiguous. Each interactive question costs the user attention — earn it with genuine choices, not with reciting back what you already know.
 
 If the user gives no clear direction on something, default to brand.json's pick (LLM's best evidence-based guess) and note it in the output.
 
@@ -187,23 +189,38 @@ Read `references/verification-deck-spec.md`. It defines the 8 required slide typ
 
 **Step 4b — Run the runtime hard checks (deterministic).**
 
+For Layer 2 (single brand the user just generated), run `hard_checks.py` directly. Cross-platform — only Python, no shell required:
+
 ```bash
-bash evals/run.sh
+# Pick a per-run output dir
+REPORTS=skills/deckify/tests/reports/runs/$(date +%Y-%m-%dT%H-%M-%S)
+mkdir -p "$REPORTS/per-sample/<brand>"
+
+# 10 deterministic checks: slide dimensions (1280×720), fit contract intact,
+# token-only colors, no emoji, mobile collapse at 375 px, logo renders,
+# language consistency, text layout safe (no truncation, no glued-to-bottom),
+# DS engineering DNA preserved, CJK font quality (zh decks only).
+python3 skills/deckify/evals/hard_checks.py \
+  decks/<brand>/<brand>-deck.html \
+  decks/<brand>/<brand>-PPT-Design-System.md \
+  "$REPORTS/per-sample/<brand>"
 ```
 
-This invokes `evals/hard_checks.py` over each registered brand sample, lands measurements under `tests/reports/runs/<ts>/per-sample/<brand>/`. The 8 checks are: slide dimensions (1280×720), fit contract intact, token-only colors, no emoji, mobile collapse at 375 px, logo renders, text layout safe (no truncation, no glued-to-bottom), DS engineering DNA preserved.
+Phase A skill-author note: the multi-brand panel runner is `python3 skills/deckify/evals/run_phase_a.py` — see `evals/README.md` Layer 1.
 
 **Step 4c — On any hard-check failure, FIX THE BRAND DS — never the deck alone.**
 The brand DS markdown is your tunable; the deck is the verification artifact. When a check fails, trace it to the relevant section of *your brand's DS* (use the fail → DS-section mapping table in `references/verification-deck-spec.md`), update the DS, regenerate the deck from the updated DS, re-run hard checks. **If you find yourself editing only the deck to make a check pass, you are doing it wrong** — the DS is the spec, the deck just exercises it.
 
-Iterate until hard checks are 8/8 PASS.
+Iterate until hard checks are 9/10+ PASS (cjk_font_quality is soft for en decks).
 
 ### Phase 5 — Visual judge (LLM, you) — MANDATORY
 
 Hard checks measure DOM shapes; they don't measure whether the deck *looks* on-brand. That's your job.
 
+Phase 5 is **single-brand** — it scores the one deck the user just generated. Do not iterate over a panel here; that's Layer 1 (skill-author territory, see `evals/run_phase_a.py`).
+
 **Step 5a — Read the per-slide screenshots.**
-For each brand under `tests/reports/runs/<latest>/per-sample/<brand>/slides/`, read the PNGs (Read tool, vision). Re-read the brand's DS markdown for context.
+For the user's brand at `tests/reports/runs/<latest>/per-sample/<brand>/slides/`, view the PNGs using your host's image-viewing capability (`Read` tool in Claude Code, equivalents elsewhere). Re-read the brand's DS markdown for context.
 
 **Step 5b — Score against the rubric.**
 Read `evals/rubric.json` — 6 dimensions (logo present and branded, slide visual quality, brand fidelity, content substantive, engineering DNA visible in DS, CJK typography quality for zh decks), each 0–5. Plus 5 disqualifiers (D1 logo missing, D2 dimensions wrong, D3 console errors, D4 mobile horizontal scroll, D5 DS template violated).
@@ -211,25 +228,45 @@ Read `evals/rubric.json` — 6 dimensions (logo present and branded, slide visua
 For `cjk_typography_quality`: this is a vision-judged quality score, not a hard constraint. The hard check `cjk_font_quality` only catches the absolute bug (zero CJK fonts in chain). The judge dimension catches "the CJK is technically rendering, but looks thin / cheap / mismatched with Latin / wrong weight / wrong serif-vs-sans pairing." If you score this ≤ 3, the fix routes to DS §3 CJK 字体回退链 — typically swap CJK family to front of font-family chain AND bump body font-weight to 500/600. en decks return 5 for this dimension (not applicable).
 
 **Step 5c — Write `judge.json`.**
-Land at `tests/reports/runs/<latest>/per-sample/<brand>/judge.json` with the schema printed by `run.sh` — scores, reasoning (especially for low scores), regression_flags.
+Land at `tests/reports/runs/<latest>/per-sample/<brand>/judge.json` with this schema:
 
-**Step 5d — Aggregate.**
-
-```bash
-python3 evals/build_report.py <run-dir> 4 \
-  "<brand>|<url>|<deck-path>|<ds-path>" ...
+```json
+{
+  "ok": true,
+  "judged_by": "<your model id>",
+  "scores": {
+    "scores": {
+      "logo_present_and_branded":      0,
+      "slide_visual_quality":          0,
+      "brand_fidelity":                0,
+      "content_substantive":           0,
+      "engineering_dna_visible_in_ds": 0,
+      "cjk_typography_quality":        0
+    },
+    "reasoning": "<2-3 sentences explaining the lowest scores>",
+    "regression_flags": []
+  }
+}
 ```
 
-PASS criteria (per `rubric.json`): hard 8/8 AND judge avg ≥ 4 AND no disqualifier triggered.
+**Step 5d — Aggregate (single brand).**
 
-**Step 5e — Failure handling.**
-- Judge score < 4 on `brand_fidelity` → revisit the brand.json (was the mood paragraph too generic? did the palette flatten to white+grey+single-accent?). Update brand.json with sharper evidence, regenerate the brand DS §1 + §2, regenerate the deck, re-judge.
-- Judge score < 4 on `slide_visual_quality` → tighten the brand DS §6 (per-slide-type spec) or §7 (component density). Update the relevant section in *your brand's* DS, regenerate the deck, re-judge.
-- Judge score < 4 on `content_substantive` → the recon copy was thin; revisit Phase 1b page picks (broader subpages) or pull more from the existing recon corpus into the deck content.
-- Judge score < 4 on `engineering_dna_visible_in_ds` → your brand DS is missing a required chapter or it got diluted during the language/translation pass. Restore the chapter verbatim from `references/ds-template.md`.
-- Disqualifier triggered → see the fail → DS-section mapping table in `references/verification-deck-spec.md`.
+```bash
+python3 skills/deckify/evals/build_report.py <run-dir> 4 \
+  "<brand>|<source-url>|decks/<brand>/<brand>-deck.html|decks/<brand>/<brand>-PPT-Design-System.md"
+```
 
-Iterate until PASS. The skill is not done until both hard 8/8 AND judge ≥ 4.
+PASS criteria (per `rubric.json`): hard 9/10+ AND judge avg ≥ 4 AND no disqualifier triggered.
+
+**Step 5e — Failure handling.** All routes go to **the user's brand DS** (this is Layer 2; never edit skill source from a Phase 5 failure):
+- Judge score < 4 on `brand_fidelity` → revisit `decks/<brand>/source/brand.json` (was the mood paragraph too generic? did the palette flatten to white+grey+single-accent?). Update with sharper evidence, regenerate the brand DS §1 + §2, regenerate the deck, re-judge.
+- Judge score < 4 on `slide_visual_quality` → tighten the user's brand DS §6 (per-slide-type spec) or §7 (component density), regenerate the deck, re-judge.
+- Judge score < 4 on `content_substantive` → the Phase 1 recon corpus was thin; widen `pages.txt` to broader subpages OR pull more verbatim phrases from existing recon screenshots into the deck.
+- Judge score < 4 on `engineering_dna_visible_in_ds` → the user's brand DS is missing a required chapter or it got diluted during the language pass. Restore the chapter verbatim from `references/ds-template.md` (or `.zh.md` for zh decks).
+- Judge score < 4 on `cjk_typography_quality` → fix `decks/<brand>/<brand>-PPT-Design-System.md` §3 CJK 字体回退链, then propagate the new font-family chain into the deck.
+- Disqualifier triggered → see the fail-mapping table in `references/verification-deck-spec.md` §8.
+
+Iterate until PASS. The skill is not done until both hard 9/10+ AND judge ≥ 4.
 
 ### Phase 6 — Persist + hand back
 
@@ -315,5 +352,6 @@ If any of these is missing from the generated DS, the DS will produce broken dec
 - `scripts/setup.py` — Phase 0 dependency check.
 - `evals/` — quality contract directory (see `evals/README.md`). Two layers in one folder:
   - `evals/evals.json` + `evals/trigger_evals.json` — marketplace harness contract (Anthropic skill-eval format).
-  - `evals/hard_checks.py` + `evals/rubric.json` + `evals/build_report.py` + `evals/run.sh` — runtime auto-eval invoked by Phase 4-5.
+  - `evals/hard_checks.py` + `evals/rubric.json` + `evals/build_report.py` — Layer 2 runtime auto-eval invoked by Phase 4-5 (cross-platform Python; no shell wrapper).
+  - `evals/run_phase_a.py` — Layer 1 multi-brand panel orchestrator (skill author use only, not part of the runtime path).
 - `tests/` — unit + integration + smoke tests.
