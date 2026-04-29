@@ -202,6 +202,36 @@ Steps:
 
 The DS markdown is the deliverable. The verification deck is the **proof that the DS produces correct slides**. Skipping this means shipping an unverified spec — don't.
 
+<EXTREMELY-IMPORTANT>
+
+**The Phase B fix-routing rule, enforced structurally.** When a hard check
+fails, the fix lives in the brand DS — never in the deck alone. This is
+not advice; this is the workflow contract that makes Phase B work at all,
+because if you patch the deck to make the check pass, you've healed one
+slide and left the spec wrong. The next deck built from this DS will have
+the same bug; every other brand sharing the affected DS pattern will too.
+
+**Starting now this is checked**: `hard_checks.py` includes a
+`phase_b_workflow` check that hashes the deck and the DS each run. On a
+re-run, if the deck changed but the DS didn't, the check FAILS with
+`deck_modified_without_ds_update`. There is no way around this short of
+also editing the DS — which is the point.
+
+The correct loop is:
+1. Run hard_checks → see which check fails.
+2. Look up that check in `references/verification-deck-spec.md` §8 — it
+   names the brand DS section that owns the rule.
+3. Edit that DS section.
+4. Regenerate the deck from the updated DS (literally re-do Phase 4a
+   using the new DS as source).
+5. Re-run hard_checks.
+
+If after step 5 the same check still fails, the fix you applied to the
+DS didn't actually capture the rule — go back to step 2 and read the
+fix-mapping more carefully, or pick a different DS section.
+
+</EXTREMELY-IMPORTANT>
+
 **Step 4a — Write the verification deck.**
 Read `references/verification-deck-spec.md`. It defines the 8 required slide types (cover, narrative+pullquote, two-column, data table, chart, flip cards, timeline, big pull-quote) and 6 coverage rules (multi-column collapse, click interaction, semantic colour, real numbers, bespoke composition, absorber variety). Write the deck to `decks/<brand>/<brand>-deck.html` using copy drawn from the recon corpus — **never invented stats**.
 
@@ -210,26 +240,28 @@ Read `references/verification-deck-spec.md`. It defines the 8 required slide typ
 For Layer 2 (single brand the user just generated), run `hard_checks.py` directly. Cross-platform — only Python, no shell required:
 
 ```bash
-# Pick a per-run output dir
+# Pick a per-run output dir. Re-use the same out_dir across re-runs of the
+# same brand — that's how phase_b_workflow can compare SHAs.
 REPORTS=skills/deckify/tests/reports/runs/$(date +%Y-%m-%dT%H-%M-%S)
 mkdir -p "$REPORTS/per-sample/<brand>"
 
-# 10 deterministic checks: slide dimensions (1280×720), fit contract intact,
+# 11 deterministic checks: slide dimensions (1280×720), fit contract intact,
 # token-only colors, no emoji, mobile collapse at 375 px, logo renders,
 # language consistency, text layout safe (no truncation, no glued-to-bottom),
-# DS engineering DNA preserved, CJK font quality (zh decks only).
+# DS engineering DNA preserved, CJK font quality (zh decks only),
+# AND phase_b_workflow (no deck-only fixes — see EXTREMELY-IMPORTANT above).
 python3 skills/deckify/evals/hard_checks.py \
   decks/<brand>/<brand>-deck.html \
   decks/<brand>/<brand>-PPT-Design-System.md \
   "$REPORTS/per-sample/<brand>"
 ```
 
-Phase A skill-author note: the multi-brand panel runner is `python3 skills/deckify/evals/run_phase_a.py` — see `evals/README.md` Layer 1.
+Phase A skill-author note: the multi-brand panel runner is `python3 tools/phase-a/run_phase_a.py` — see `tools/phase-a/README.md`.
 
 **Step 4c — On any hard-check failure, FIX THE BRAND DS — never the deck alone.**
-The brand DS markdown is your tunable; the deck is the verification artifact. When a check fails, trace it to the relevant section of *your brand's DS* (use the fail → DS-section mapping table in `references/verification-deck-spec.md`), update the DS, regenerate the deck from the updated DS, re-run hard checks. **If you find yourself editing only the deck to make a check pass, you are doing it wrong** — the DS is the spec, the deck just exercises it.
+See the `<EXTREMELY-IMPORTANT>` block above. The brand DS markdown is your tunable; the deck is the verification artifact. When a check fails, trace it to the relevant section of *your brand's DS* (use the fail → DS-section mapping table in `references/verification-deck-spec.md` §8), update the DS, regenerate the deck from the updated DS, re-run hard checks.
 
-Iterate until hard checks are 9/10+ PASS (cjk_font_quality is soft for en decks).
+Iterate until hard checks are 10/11+ PASS (cjk_font_quality is soft for en decks; the rest including phase_b_workflow must all pass).
 
 ### Phase 5 — Visual judge (LLM, you) — MANDATORY
 

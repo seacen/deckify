@@ -669,6 +669,110 @@ def check_cjk_font_quality(ds_path: Path, desktop: dict, deck_path: Path = None)
     }
 
 
+# ── Phase B workflow gate ─────────────────────────────────────────────────
+
+def _sha256(text: str) -> str:
+    import hashlib
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def check_phase_b_workflow(deck_text: str, ds_text: str, out_dir: Path) -> dict:
+    """Enforce: deck must not change unless DS also changes.
+
+    Phase B's whole architecture says the brand DS markdown is the spec
+    and the deck is the test of that spec. When a hard check fails, the
+    fix lives in the DS — change the DS section that owns the rule, then
+    regenerate the deck from the updated DS, then re-run.
+
+    The temptation in practice is to skip the regenerate step: edit the
+    deck.html directly to make the check pass. That heals one slide and
+    leaves the DS spec wrong; the next deck built from this DS will have
+    the same bug. The repo's CLAUDE.md / SKILL.md / verification-deck-spec
+    all say "deck is not a fix target" — but that's a documentation rule,
+    and humans-and-LLMs alike are very willing to take the shortcut.
+
+    This check enforces it structurally. We hash both files at the end of
+    every run and write `<out_dir>/.provenance.json`. On the next run, if
+    we find a previous provenance file:
+      - deck SHA changed AND ds SHA unchanged  → FAIL (deck-only fix)
+      - deck SHA changed AND ds SHA changed    → PASS (legitimate cycle)
+      - deck SHA unchanged AND ds SHA changed  → WARN (DS edited, deck
+                                                  not regenerated yet)
+      - both unchanged                          → PASS (re-run after no edits)
+
+    First-run case: no provenance file exists → PASS, write the baseline.
+    """
+    deck_sha = _sha256(deck_text)
+    ds_sha = _sha256(ds_text)
+    prov_path = out_dir / ".provenance.json"
+    prev = None
+    if prov_path.is_file():
+        try:
+            prev = json.loads(prov_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            prev = None
+
+    if not prev:
+        # First run — record baseline, pass.
+        prov_path.write_text(json.dumps({"deck_sha": deck_sha, "ds_sha": ds_sha}, indent=2))
+        return {
+            "passed": True,
+            "evidence": {"first_run": True, "deck_sha": deck_sha[:12], "ds_sha": ds_sha[:12]},
+        }
+
+    deck_changed = deck_sha != prev.get("deck_sha")
+    ds_changed = ds_sha != prev.get("ds_sha")
+
+    # Always update the baseline so subsequent runs compare against the
+    # most recent state. (If we kept the original baseline forever, every
+    # legitimate "fix DS, regenerate deck, re-run" cycle would still flag
+    # because we're still different from baseline.)
+    prov_path.write_text(json.dumps({"deck_sha": deck_sha, "ds_sha": ds_sha}, indent=2))
+
+    if deck_changed and not ds_changed:
+        return {
+            "passed": False,
+            "evidence": {
+                "violation": "deck_modified_without_ds_update",
+                "explanation": (
+                    "The deck HTML changed since the previous run, but the "
+                    "brand DS markdown did not. Phase B forbids deck-only fixes: "
+                    "every hard-check failure must be resolved by editing the "
+                    "brand DS section that owns the rule, then regenerating "
+                    "the deck from the updated DS. See "
+                    "verification-deck-spec.md §8 for the fix-mapping table."
+                ),
+                "previous_deck_sha": prev.get("deck_sha", "")[:12],
+                "current_deck_sha": deck_sha[:12],
+                "ds_sha_unchanged": ds_sha[:12],
+            },
+        }
+    if not deck_changed and ds_changed:
+        return {
+            "passed": True,  # Not a failure — but the user should know.
+            "evidence": {
+                "warning": "ds_modified_deck_not_regenerated",
+                "explanation": (
+                    "DS markdown changed but the deck didn't. If you intended "
+                    "to apply a DS-side fix, regenerate the deck from the "
+                    "updated DS and re-run. If you only edited DS narration "
+                    "(no rule change), this run is fine."
+                ),
+                "previous_ds_sha": prev.get("ds_sha", "")[:12],
+                "current_ds_sha": ds_sha[:12],
+            },
+        }
+    return {
+        "passed": True,
+        "evidence": {
+            "deck_changed": deck_changed,
+            "ds_changed": ds_changed,
+            "deck_sha": deck_sha[:12],
+            "ds_sha": ds_sha[:12],
+        },
+    }
+
+
 # ── orchestration ──────────────────────────────────────────────────────────
 
 def run_all(deck_path: Path, ds_path: Path, out_dir: Path) -> dict:
@@ -696,6 +800,7 @@ def run_all(deck_path: Path, ds_path: Path, out_dir: Path) -> dict:
         "text_layout_safe":         check_text_layout_safe(desktop),
         "ds_has_engineering_dna":   check_ds_engineering_dna(ds_md),
         "cjk_font_quality":         check_cjk_font_quality(ds_path, desktop, deck_path),
+        "phase_b_workflow":         check_phase_b_workflow(html, ds_md, out_dir),
     }
     (out_dir / "hard_checks.json").write_text(json.dumps(checks, indent=2, ensure_ascii=False))
     return checks
