@@ -10,11 +10,12 @@
 | **When** | After any change to the skill source | Every time a user runs the skill on their brand |
 | **Scope** | 5-brand panel (Unilever / P&G / Stripe / Apple / Coca-Cola) | Single brand (the one the user is working on) |
 | **Failure means** | Bug in **skill source** | Bug in **user's brand DS** |
-| **Fix lives in** | `skills/deckify/{SKILL.md, references/, scripts/, evals/hard_checks.py}` | `decks/<brand>/<brand>-PPT-Design-System.md` |
-| **Tooling** | `tools/phase-a/` | `skills/deckify/evals/` |
-| **Run by** | `python3 tools/phase-a/run_phase_a.py` | `SKILL.md` Phase 4 (automatic) or `python3 skills/deckify/evals/hard_checks.py` (manual) |
+| **Fix lives in** | `skills/deckify/{SKILL.md, references/, scripts/, evals/hard_checks.py}` | `~/deckify/decks/<brand>/<brand>-PPT-Design-System.md` |
+| **Brand artefacts location** | `<repo>/decks/<brand>/` (in-repo reference panel) | `~/deckify/decks/<brand>/` (user's home tree, outside any repo) |
+| **Tooling** | `tools/phase-a/` (in this repo) | `skills/deckify/evals/` (ships with the skill) |
+| **Run by** | `python3 tools/phase-a/run_phase_a.py` | `SKILL.md` Phase 4 (automatic) or `python3 <skill-path>/evals/hard_checks.py` (manual) |
 
-**Same 10 hard checks + same 6 judge dimensions are used by both phases.** The only thing that changes is *what gets fixed when something fails*. That's the whole architectural insight.
+**Same 11 hard checks + same 6 judge dimensions are used by both phases.** The only thing that changes is *what gets fixed when something fails* and *where the artefacts live* (repo's `decks/` for Phase A, `~/deckify/decks/` for Phase B). That's the whole architectural insight.
 
 ---
 
@@ -34,7 +35,7 @@ The implementation reuses code aggressively — `hard_checks.py`, `rubric.json`,
 ## Repository layout
 
 ```
-deckify/
+deckify/                              ← maintainer's repo
 ├── skills/deckify/                  ← what gets shipped to marketplace users
 │   ├── SKILL.md                       ← entry point
 │   ├── scripts/                       ← deterministic Phase 1 pipeline
@@ -52,25 +53,40 @@ deckify/
 │   ├── evals.json                     ← 5-brand panel + marketplace grader cases
 │   └── README.md                      ← Phase A docs only
 │
-├── decks/<brand>/                   ← per-brand outputs (one passing example each)
-│   ├── <brand>-PPT-Design-System.md
-│   ├── <brand>-deck.html
+├── decks/<brand>/                   ← MAINTAINER reference panel (committed)
+│   ├── <brand>-PPT-Design-System.md   ← Used by tools/phase-a to tune the skill source.
+│   ├── <brand>-deck.html              ← Not the user's path — see ~/deckify/ below.
 │   └── source/                        ← brand.json + decisions.json + assets/ + pages.txt
 │
-├── tests/reports/runs/              ← per-run output (gitignored)
-│   └── <ts>(-phase-a)/per-sample/<brand>/{slides/, hard_checks.json, judge.json, ...}
+├── tests/reports/runs/              ← Phase A panel run output (gitignored)
+│   └── <ts>-phase-a/per-sample/<brand>/{slides/, hard_checks.json, judge.json, ...}
 │
 ├── README.md                          ← user-facing project intro
 ├── CLAUDE.md                          ← agent operating rules in this repo
 ├── HANDOFF.md                         ← rolling session-to-session state log
 └── TESTING.md                         ← this file
+
+
+~/deckify/                            ← END USER's home tree (separate from this repo)
+├── decks/<brand>/                     ← per-user-brand outputs from Phase B runs
+│   ├── <brand>-PPT-Design-System.md   ← The deliverable the user keeps.
+│   ├── <brand>-deck.html              ← Verification deck.
+│   └── source/                        ← Persisted by scripts/persist_brand_source.py
+│       ├── brand.json
+│       ├── decisions.json
+│       ├── pages.txt
+│       └── assets/{logo.svg, logo.embed.html, logo.dataurl, logo.report.json}
+└── reports/runs/                      ← per-Phase-B-run output
+    └── <ts>/per-sample/<brand>/{slides/, hard_checks.json, judge.json, .provenance.json}
 ```
 
 **The boundary that matters**: `skills/deckify/` is what gets zipped up and submitted to the marketplace. Anything outside `skills/deckify/` is repo-internal. If you ever need to ask "should this go in `skills/deckify/` or somewhere else?", the test is: *does an end user pulling deckify from the marketplace need this file to run their brand?* If no, it doesn't belong inside `skills/deckify/`.
 
+**The other boundary that matters**: end-user runs never write into this repo. `scripts/persist_brand_source.py` resolves to `~/deckify/` regardless of cwd; SKILL.md Phase 4 and 6 instruct the LLM to use `~/deckify/` paths exclusively. The repo's `decks/<brand>/` is the maintainer's reference panel — committed for reproducibility, used by `tools/phase-a/`, and treated as immutable from any Phase B perspective.
+
 ---
 
-## The 10 hard checks
+## The 11 hard checks
 
 Defined in [`skills/deckify/evals/hard_checks.py`](skills/deckify/evals/hard_checks.py). All deterministic — no LLM. Cross-platform Python (no shell).
 
@@ -81,13 +97,14 @@ Defined in [`skills/deckify/evals/hard_checks.py`](skills/deckify/evals/hard_che
 | 3 | `token_only_colors` | Slide CSS contains no ad-hoc hex literals outside `:root` |
 | 4 | `no_emoji` | Body contains no emoji-range characters |
 | 5 | `mobile_collapse` | At 375×812: `body.scrollWidth ≤ 375`, every `.g2/.g3/.flip-row/.tabs` collapses to single column |
-| 6 | `logo_renders` | Every `.logo` SVG renders with non-zero bounding box; `<symbol id="brand-wm">` has real `<path d>` ≥ 40 chars OR `<image href>` |
+| 6 | `logo_renders` | Every `.logo` SVG renders with non-zero bounding box; `<symbol id="brand-wm">` has real `<path d>` ≥ 40 chars OR `<image href>`. Tier-aware: mono-tier logos get strict no-inner-fill; multi/raster tiers skip the inner-fill rule. |
 | 7 | `text_layout_safe` | No truncated text, no glued-to-bottom, H1/H2/H3 ≤ 3 lines |
 | 8 | `language_consistency` | DS markdown is single-language throughout (no leaked English in zh DS or vice versa) |
 | 9 | `ds_has_engineering_dna` | DS markdown carries the ENGINEERING-DNA HTML comment anchors that hard_checks expects |
 | 10 | `cjk_font_quality` | (zh decks only) at least one CJK font in body font-family chain — hard FAIL if zero, soft warning if Latin-first |
+| 11 | `phase_b_workflow` | Phase B governance gate. SHA-256 hashes deck + DS each run; if a re-run shows the deck changed but the DS didn't, FAILS as `deck_modified_without_ds_update`. Phase B forbids deck-only fixes — every check failure must be resolved by editing the brand DS section that owns the rule and regenerating the deck. |
 
-A brand passes hard checks when **all 10 pass** (or when only `cjk_font_quality` is in soft-warning state for an en deck).
+A brand passes hard checks when **all 11 pass** (or when only `cjk_font_quality` is in soft-warning state for an en deck).
 
 ## The 6 judge dimensions
 
@@ -105,7 +122,7 @@ Plus 5 disqualifiers: D1 logo missing, D2 dimensions wrong, D3 console errors, D
 ## Pass criteria
 
 ```
-PASS = (hard_checks == 10/10  OR  9/10 with only cjk_font_quality soft)
+PASS = (hard_checks == 11/11  OR  10/11 with only cjk_font_quality soft)
        AND (judge_avg ≥ 4.0)
        AND (no disqualifier triggered)
 ```
@@ -118,8 +135,8 @@ In Phase A, **every brand in the panel** must individually PASS. In Phase B, **t
 
 The panel currently has 5 brands chosen for visual / typographic / language diversity. Adding a brand means:
 
-1. Run the skill end-to-end on the new brand → produces `decks/<new-brand>/`.
-2. Verify it PASSes (hard 10/10 + judge ≥ 4) on its own first — if it doesn't, that's a skill bug to fix before adding to panel.
+1. Run the skill end-to-end on the new brand from a Phase A maintainer cwd (i.e., let it land under the maintainer panel `decks/<new-brand>/`, not `~/deckify/`).
+2. Verify it PASSes (hard 11/11 + judge ≥ 4) on its own first — if it doesn't, that's a skill bug to fix before adding to panel.
 3. Add a row to `PANEL` in [`tools/phase-a/run_phase_a.py`](tools/phase-a/run_phase_a.py).
 4. Re-run `tools/phase-a/run_phase_a.py` to make sure all `len(PANEL)` brands still PASS.
 

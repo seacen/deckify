@@ -41,6 +41,8 @@ If the user is on Linux and Chrome won't download, suggest `agent-browser instal
 
 Do NOT silently fall back to `curl` if `agent-browser` is missing — modern brand sites hydrate client-side and curl returns a near-empty shell, breaking the whole pipeline. Surface the install command and stop.
 
+> **All user artefacts land in `~/deckify/`** — independent of the cwd you run from. The brand's DS markdown, verification deck, persisted recon source, and per-run reports all go to `~/deckify/decks/<brand>/` and `~/deckify/reports/`. Do not write user artefacts into the deckify source repo, into the cwd, into a temp dir, or anywhere else. `~/deckify/` is created on first use; subsequent runs reuse it. This is enforced by `scripts/persist_brand_source.py` at Phase 6 — it always resolves to `~/deckify/`, ignoring cwd. (If you're a skill maintainer running the Phase A panel, see `tools/phase-a/README.md` — that path is separate and writes to the deckify repo's `tests/`, not to `~/deckify/`.)
+
 ### Phase 1 — Reconnaissance (5 steps: thin deterministic harness + LLM exploration)
 
 Architecture: Python scripts only do what's deterministic (fetch, enumerate, quality-gate, embed). Every act of *judgment* — which subpages to crawl, which candidate is the real wordmark, what the brand palette actually is — is done by **you**, the LLM running this skill, using the guideline files in `references/llm-prompts/`.
@@ -233,16 +235,20 @@ fix-mapping more carefully, or pick a different DS section.
 </EXTREMELY-IMPORTANT>
 
 **Step 4a — Write the verification deck.**
-Read `references/verification-deck-spec.md`. It defines the 8 required slide types (cover, narrative+pullquote, two-column, data table, chart, flip cards, timeline, big pull-quote) and 6 coverage rules (multi-column collapse, click interaction, semantic colour, real numbers, bespoke composition, absorber variety). Write the deck to `decks/<brand>/<brand>-deck.html` using copy drawn from the recon corpus — **never invented stats**.
+Read `references/verification-deck-spec.md`. It defines the 8 required slide types (cover, narrative+pullquote, two-column, data table, chart, flip cards, timeline, big pull-quote) and 6 coverage rules (multi-column collapse, click interaction, semantic colour, real numbers, bespoke composition, absorber variety). Write the deck to `~/deckify/decks/<brand>/<brand>-deck.html` using copy drawn from the recon corpus — **never invented stats**.
+
+> **Where artefacts live**: every brand the user generates lands under `~/deckify/decks/<brand>/` (a fixed home-directory convention — independent of the cwd you happen to be in, the deckify source repo, or any project structure). The brand DS markdown, the verification deck, the persisted recon source, and per-run hard-check reports all live under that single tree. `~/deckify/` is created on first use; it is the only path you should write user artefacts to. Do not write into the deckify source repo (the maintainer's `decks/` there is a reference panel — not your output target).
 
 **Step 4b — Run the runtime hard checks (deterministic).**
 
 For Layer 2 (single brand the user just generated), run `hard_checks.py` directly. Cross-platform — only Python, no shell required:
 
 ```bash
-# Pick a per-run output dir. Re-use the same out_dir across re-runs of the
-# same brand — that's how phase_b_workflow can compare SHAs.
-REPORTS=skills/deckify/tests/reports/runs/$(date +%Y-%m-%dT%H-%M-%S)
+# Pick a per-run output dir under ~/deckify/. Re-use the same out_dir across
+# re-runs of the same brand — that's how phase_b_workflow can compare SHAs
+# (it persists a .provenance.json there). A fresh timestamped dir per
+# attempt also works; the gate will treat it as a first run each time.
+REPORTS="$HOME/deckify/reports/runs/$(date +%Y-%m-%dT%H-%M-%S)"
 mkdir -p "$REPORTS/per-sample/<brand>"
 
 # 11 deterministic checks: slide dimensions (1280×720), fit contract intact,
@@ -250,13 +256,13 @@ mkdir -p "$REPORTS/per-sample/<brand>"
 # language consistency, text layout safe (no truncation, no glued-to-bottom),
 # DS engineering DNA preserved, CJK font quality (zh decks only),
 # AND phase_b_workflow (no deck-only fixes — see EXTREMELY-IMPORTANT above).
-python3 skills/deckify/evals/hard_checks.py \
-  decks/<brand>/<brand>-deck.html \
-  decks/<brand>/<brand>-PPT-Design-System.md \
+python3 <skill-path>/evals/hard_checks.py \
+  "$HOME/deckify/decks/<brand>/<brand>-deck.html" \
+  "$HOME/deckify/decks/<brand>/<brand>-PPT-Design-System.md" \
   "$REPORTS/per-sample/<brand>"
 ```
 
-Phase A skill-author note: the multi-brand panel runner is `python3 tools/phase-a/run_phase_a.py` — see `tools/phase-a/README.md`.
+Phase A skill-author note: the multi-brand panel runner is `python3 tools/phase-a/run_phase_a.py` — see `tools/phase-a/README.md`. That tool is for skill maintainers tuning the deckify skill against the reference brand panel; it writes to the deckify repo's `tests/reports/`, not to `~/deckify/`. End-user runs always use `~/deckify/`.
 
 **Step 4c — On any hard-check failure, FIX THE BRAND DS — never the deck alone.**
 See the `<EXTREMELY-IMPORTANT>` block above. The brand DS markdown is your tunable; the deck is the verification artifact. When a check fails, trace it to the relevant section of *your brand's DS* (use the fail → DS-section mapping table in `references/verification-deck-spec.md` §8), update the DS, regenerate the deck from the updated DS, re-run hard checks.
@@ -270,7 +276,7 @@ Hard checks measure DOM shapes; they don't measure whether the deck *looks* on-b
 Phase 5 is **single-brand** — it scores the one deck the user just generated. Do not iterate over a panel here; that's Layer 1 (skill-author territory, see `evals/run_phase_a.py`).
 
 **Step 5a — Read the per-slide screenshots.**
-For the user's brand at `tests/reports/runs/<latest>/per-sample/<brand>/slides/`, view the PNGs using your host's image-viewing capability (`Read` tool in Claude Code, equivalents elsewhere). Re-read the brand's DS markdown for context.
+For the user's brand at `~/deckify/reports/runs/<latest>/per-sample/<brand>/slides/`, view the PNGs using your host's image-viewing capability (`Read` tool in Claude Code, equivalents elsewhere). Re-read the brand's DS markdown for context.
 
 **Step 5b — Score against the rubric.**
 Read `evals/rubric.json` — 6 dimensions (logo present and branded, slide visual quality, brand fidelity, content substantive, engineering DNA visible in DS, CJK typography quality for zh decks), each 0–5. Plus 5 disqualifiers (D1 logo missing, D2 dimensions wrong, D3 console errors, D4 mobile horizontal scroll, D5 DS template violated).
@@ -278,7 +284,7 @@ Read `evals/rubric.json` — 6 dimensions (logo present and branded, slide visua
 For `cjk_typography_quality`: this is a vision-judged quality score, not a hard constraint. The hard check `cjk_font_quality` only catches the absolute bug (zero CJK fonts in chain). The judge dimension catches "the CJK is technically rendering, but looks thin / cheap / mismatched with Latin / wrong weight / wrong serif-vs-sans pairing." If you score this ≤ 3, the fix routes to DS §3 CJK 字体回退链 — typically swap CJK family to front of font-family chain AND bump body font-weight to 500/600. en decks return 5 for this dimension (not applicable).
 
 **Step 5c — Write `judge.json`.**
-Land at `tests/reports/runs/<latest>/per-sample/<brand>/judge.json` with this schema:
+Land at `~/deckify/reports/runs/<latest>/per-sample/<brand>/judge.json` with this schema:
 
 ```json
 {
@@ -302,56 +308,60 @@ Land at `tests/reports/runs/<latest>/per-sample/<brand>/judge.json` with this sc
 **Step 5d — Aggregate (single brand).**
 
 ```bash
-python3 skills/deckify/evals/build_report.py <run-dir> 4 \
-  "<brand>|<source-url>|decks/<brand>/<brand>-deck.html|decks/<brand>/<brand>-PPT-Design-System.md"
+python3 <skill-path>/evals/build_report.py <run-dir> 4 \
+  "<brand>|<source-url>|$HOME/deckify/decks/<brand>/<brand>-deck.html|$HOME/deckify/decks/<brand>/<brand>-PPT-Design-System.md"
 ```
 
 PASS criteria (per `rubric.json`): hard 9/10+ AND judge avg ≥ 4 AND no disqualifier triggered.
 
 **Step 5e — Failure handling.** All routes go to **the user's brand DS** (this is Layer 2; never edit skill source from a Phase 5 failure):
-- Judge score < 4 on `brand_fidelity` → revisit `decks/<brand>/source/brand.json` (was the mood paragraph too generic? did the palette flatten to white+grey+single-accent?). Update with sharper evidence, regenerate the brand DS §1 + §2, regenerate the deck, re-judge.
+- Judge score < 4 on `brand_fidelity` → revisit `~/deckify/decks/<brand>/source/brand.json` (was the mood paragraph too generic? did the palette flatten to white+grey+single-accent?). Update with sharper evidence, regenerate the brand DS §1 + §2, regenerate the deck, re-judge.
 - Judge score < 4 on `slide_visual_quality` → tighten the user's brand DS §6 (per-slide-type spec) or §7 (component density), regenerate the deck, re-judge.
 - Judge score < 4 on `content_substantive` → the Phase 1 recon corpus was thin; widen `pages.txt` to broader subpages OR pull more verbatim phrases from existing recon screenshots into the deck.
 - Judge score < 4 on `engineering_dna_visible_in_ds` → the user's brand DS is missing a required chapter or it got diluted during the language pass. Restore the chapter verbatim from `references/ds-template.md` (or `.zh.md` for zh decks).
-- Judge score < 4 on `cjk_typography_quality` → fix `decks/<brand>/<brand>-PPT-Design-System.md` §3 CJK 字体回退链, then propagate the new font-family chain into the deck.
+- Judge score < 4 on `cjk_typography_quality` → fix `~/deckify/decks/<brand>/<brand>-PPT-Design-System.md` §3 CJK 字体回退链, then propagate the new font-family chain into the deck.
 - Disqualifier triggered → see the fail-mapping table in `references/verification-deck-spec.md` §8.
 
 Iterate until PASS. The skill is not done until both hard 9/10+ AND judge ≥ 4.
 
 ### Phase 6 — Persist + hand back
 
-**Step 6a — Persist durable artifacts out of the temp workspace.** Before the OS sweeps `$WS`, copy the parts that encode user judgment + LLM synthesis into the user's repo:
+**Step 6a — Persist durable artifacts out of the temp workspace.** Before the OS sweeps `$WS`, copy the parts that encode user judgment + LLM synthesis into the user's home deckify directory:
 
 ```bash
-python3 scripts/persist_brand_source.py "$WS" <brand-slug>
+python3 <skill-path>/scripts/persist_brand_source.py "$WS" <brand-slug>
 ```
 
-This copies `brand.json`, `decisions.json`, `pages.txt`, and `assets/` (logo files) from `$WS` into `decks/<brand-slug>/source/` — sitting next to the DS markdown and the deck HTML. The `recon/` DOM dumps + `raw-assets.json` are intentionally **not** copied — those are large + regenerable from the URL, and the OS will sweep them on its own.
+This copies `brand.json`, `decisions.json`, `pages.txt`, and `assets/` (logo files) from `$WS` into `~/deckify/decks/<brand-slug>/source/` — sitting next to the DS markdown and the deck HTML. The `recon/` DOM dumps + `raw-assets.json` are intentionally **not** copied — those are large + regenerable from the URL, and the OS will sweep them on its own.
 
-After this step, the brand has a complete persisted bundle:
+After this step, the brand has a complete persisted bundle in the user's home tree:
 
 ```
-decks/<brand>/
-├── <brand>-PPT-Design-System.md   ← the deliverable
-├── <brand>-deck.html              ← verification deck
-└── source/
-    ├── brand.json                 ← LLM synthesis
-    ├── decisions.json             ← user choices (Phase 2)
-    ├── pages.txt                  ← LLM-picked subpages
-    └── assets/                    ← embedded logo files
-        ├── logo.svg
-        ├── logo.embed.html
-        ├── logo.dataurl
-        └── logo.report.json
+~/deckify/
+└── decks/
+    └── <brand>/
+        ├── <brand>-PPT-Design-System.md   ← the deliverable
+        ├── <brand>-deck.html              ← verification deck
+        └── source/
+            ├── brand.json                 ← LLM synthesis
+            ├── decisions.json             ← user choices (Phase 2)
+            ├── pages.txt                  ← LLM-picked subpages
+            └── assets/                    ← embedded logo files
+                ├── logo.svg
+                ├── logo.embed.html
+                ├── logo.dataurl
+                └── logo.report.json
 ```
+
+Per-run hard-check + judge reports live alongside, under `~/deckify/reports/runs/<ts>/per-sample/<brand>/`.
 
 **Step 6b — Hand back to the user.**
 
 Give the user:
-1. The DS markdown path + the deck HTML path
+1. The DS markdown path + the deck HTML path (both under `~/deckify/decks/<brand>/`)
 2. A 5-line summary: palette, font, logo source, aesthetic mood, slide-type emphasis
-3. The eval scoreboard: hard 9/10+, judge avg, status PASS/WARN/FAIL
-4. Path to `tests/reports/runs/<latest>/summary.md` for the full per-brand breakdown
+3. The eval scoreboard: hard 10/11+, judge avg, status PASS/WARN/FAIL
+4. Path to `~/deckify/reports/runs/<latest>/summary.md` for the full per-brand breakdown
 
 ## Hard rules — engineering DNA (NEVER violate, NEVER simplify)
 
