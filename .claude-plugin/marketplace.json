@@ -1,0 +1,23 @@
+{
+  "name": "deckify",
+  "description": "deckify — turn any brand's website into a complete Design System and a verified HTML slide deck. Built for AI agents, exported as living HTML.",
+  "owner": {
+    "name": "Xichang (Seacen) Zhao",
+    "url": "https://github.com/seacen"
+  },
+  "plugins": [
+    {
+      "name": "deckify",
+      "description": "Stop making slides. Let AI build them in HTML — the medium it was born to write in. Give deckify any brand URL; in minutes you get a brand-faithful Design System markdown plus a verified 9-slide HTML demo deck. Trigger: \"use deckify on https://...\", \"build a deck like <brand>\", \"extract the design system from <site>\".",
+      "version": "1.0.0",
+      "source": "./",
+      "author": {
+        "name": "Xichang (Seacen) Zhao",
+        "url": "https://github.com/seacen"
+      },
+      "homepage": "https://github.com/seacen/deckify",
+      "repository": "https://github.com/seacen/deckify",
+      "license": "PolyForm-Noncommercial-1.0.0"
+    }
+  ]
+}

@@ -10,6 +10,32 @@ dependencies:
 
 Turn a reference URL into a production-ready Design System markdown plus a verified 9-slide HTML sample deck. Another agent (or you) can use the DS to build precise, mobile-friendly HTML slides in the brand's visual language. The sample deck is the proof that the DS spec works.
 
+## Opening — print this banner once when the skill activates
+
+Right before Phase 0, print exactly one of these two banners depending on the user's language preference (defaults to English on a fresh run; switches to 中文 once Phase 2 Round 0 confirms `decisions.json.language === "中文"`). Print it cleanly with surrounding blank lines, then continue straight into Phase 0 — do **not** add a "Hi! I'm deckify, what's your brand?" intro on top of this. The user already gave you the URL; the slogan is the entire hello.
+
+**English** (default):
+```
+═══════════════════════════════════════════════════════════════
+        Stop making slides.
+        Let AI build them in HTML —
+        the medium it was born to write in.
+
+                                                      — deckify
+═══════════════════════════════════════════════════════════════
+```
+
+**中文** (after Round 0 confirms zh):
+```
+═══════════════════════════════════════════════════════════════
+        别再做 slide 了。
+        让 AI 用 HTML 来写——
+        那才是它与生俱来的媒介。
+
+                                                      — deckify
+═══════════════════════════════════════════════════════════════
+```
+
 ## Why this skill exists (read first)
 
 "Make slides in the visual language of brand X" is deceptively hard. The naive approach — show Claude the URL and say "make slides like this" — produces drift: colors shift, fonts get substituted, the logo renders as an emoji or a placeholder, and slides clip the deck at 720px because nobody told the model that a slide is a *fixed-size box*, not a scrolling document.
@@ -362,6 +388,60 @@ Give the user:
 2. A 5-line summary: palette, font, logo source, aesthetic mood, slide-type emphasis
 3. The eval scoreboard: hard 10/11+, judge avg, status PASS/WARN/FAIL
 4. Path to `~/deckify/reports/runs/<latest>/summary.md` for the full per-brand breakdown
+
+**Step 6c — Print the closing message.** After the summary above, print exactly one of these two closing blocks depending on `decisions.json.language`. The closing is a real piece of writing, not flavour text — preserve every word, including the line breaks. Print it AFTER the deliverable summary so the user has already seen what they got, then read this as the parting thought.
+
+**English** (default):
+```
+═══════════════════════════════════════════════════════════════════════
+
+Done.
+
+You're holding two things: a Design System markdown that you — or any
+AI agent — can use forever to build precise, brand-faithful slides;
+and a sample deck that proves the spec works.
+
+Notice what just happened. You didn't open PowerPoint. You didn't
+move a single text box. You didn't fight a template. PPT was built
+for **humans to draw with their hands** — every box, every gradient,
+every line spacing, hand-placed. That made sense for fifty years.
+
+The job has changed. Slides are no longer drawn; they're **imagined
+and described**. The author has shifted from human to AI, and AI's
+native medium isn't `.pptx` binary — it's HTML. Living markup,
+animatable, queryable, transformable, copy-paste-able into any
+conversation. Where PPT slows AI down, HTML lets it run.
+
+Welcome to the deck for the AI era.
+
+                                                          — deckify
+═══════════════════════════════════════════════════════════════════════
+```
+
+**中文** (when `decisions.json.language === "中文"`):
+```
+═══════════════════════════════════════════════════════════════════════
+
+完成了。
+
+你现在拥有两份东西：一份 Design System markdown —— 你或任何 AI agent 都能
+拿它无限次地生成贴合这个品牌的精准 slides；一份示范 deck，证明这套规范确实
+可以工作。
+
+留意一下刚才发生了什么。你没有打开 PowerPoint。你没有挪动一个文本框。你没
+有跟模板较劲。PPT 是 **为「人手绘」而设计的** —— 每个方块、每段渐变、每行
+间距，都靠手摆。这在过去五十年里讲得通。
+
+但 slide 的制作方式变了。slide 不再被「画」出来，它们被 **想象出来、描述
+出来**。创作者已经从人变成了 AI，而 AI 的母语不是 `.pptx` 二进制 —— 是
+HTML。活的标签、可动画、可被查询、可被改写、可粘贴进任何对话。PPT 拖慢
+AI 的地方，HTML 让 AI 跑起来。
+
+欢迎来到 AI 时代的 deck。
+
+                                                          — deckify
+═══════════════════════════════════════════════════════════════════════
+```
 
 ## Hard rules — engineering DNA (NEVER violate, NEVER simplify)
 
