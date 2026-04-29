@@ -380,20 +380,56 @@ def build_embed(result: dict) -> tuple[str, str, str]:
             )
         else:
             # Multi-colour or gradient SVG (P&G radial badge, Starbucks
-            # green-on-white, Netflix N, etc). Keep the SVG verbatim — do
-            # NOT touch fills, do NOT add fill="currentColor" on the
-            # <symbol>. The logo always renders in its native colours;
-            # `.logo.W` / `.logo.L` flipping is a no-op (raster-like
-            # behaviour). Brand DS §1 multi-color caveat acknowledges
-            # that cover slides for these brands need a backplate / light
-            # background to ensure contrast.
+            # green-on-white, Netflix N, etc).
+            #
+            # WHY NOT INLINE THE SVG INSIDE <symbol>:
+            # When inlined inside <symbol> and instantiated via <use>, the
+            # symbol's contents enter a shadow DOM. CSS `fill` set on the
+            # outer .logo SVG (or the *default* SVG fill of `black` when no
+            # CSS rule sets it) cascades INTO the shadow tree and overrides
+            # every inner <path fill="url(#GRAD)">/<path fill="#fff"> via
+            # CSS-specificity-beats-presentation-attribute. The badge
+            # collapses to a single colour and renders 100 % invisible
+            # against any same-colour backplate. The `logo_renders` byte
+            # check still passes (path d > 40, bounding rect > 0) — the
+            # bug is silent. See P&G regression for the full diagnosis.
+            #
+            # FIX: wrap the SVG itself as a base64 data: URL inside an
+            # <image href="data:image/svg+xml;..."/> element, exactly the
+            # way tier C wraps a PNG. The browser draws the SVG as an
+            # opaque image — fully vector, full native colours, no shadow
+            # DOM crossing for fills. .logo.W / .logo.L flipping is still a
+            # no-op (consistent with previous tier B behaviour), and cover
+            # slides should still rely on a contrast-friendly background or
+            # an explicit white backplate when the logo's native colours
+            # don't separate cleanly from the cover. The dataurl envelope
+            # is the same as tier C; the payload MIME (image/svg+xml vs
+            # image/png) is what keeps the two tiers semantically distinct
+            # — colour_handling stays "multi" so downstream code can still
+            # apply tier-B-specific guidance (cover backplate guidance,
+            # vector-quality assumptions, etc).
+            d = svg_dims(svg) or (None, None)
+            if not d[0] or not d[1]:
+                # fall back to viewBox dims for the <image> width/height
+                vb_parts = viewbox.split()
+                if len(vb_parts) == 4:
+                    try:
+                        d = (float(vb_parts[2]), float(vb_parts[3]))
+                    except ValueError:
+                        d = (720, 720)
+                else:
+                    d = (720, 720)
+            b64_svg = base64.b64encode(svg.encode("utf-8")).decode("ascii")
+            dataurl_svg = f"data:image/svg+xml;base64,{b64_svg}"
             embed = (
-                '<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">\n'
+                '<svg style="display:none" xmlns="http://www.w3.org/2000/svg"\n'
+                '     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">\n'
                 f'  <symbol id="brand-wm" viewBox="{viewbox}">\n'
-                f'{inner}\n'
+                f'    <image href="{dataurl_svg}" width="{d[0]:g}" height="{d[1]:g}"/>\n'
                 '  </symbol>\n'
                 '</svg>'
             )
+            return embed, dataurl_svg, kind
 
         b64 = base64.b64encode(svg.encode("utf-8")).decode("ascii")
         return embed, f"data:image/svg+xml;base64,{b64}", kind

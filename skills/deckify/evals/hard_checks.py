@@ -147,13 +147,24 @@ JS_DESKTOP_MEASURE = r"""(()=>{
   const sym = document.querySelector('symbol#brand-wm');
   if (sym) {
     const symFill = (sym.getAttribute('fill') || '').toLowerCase();
-    const hasImage = sym.querySelectorAll('image').length > 0;
-    const colourHandling = hasImage ? 'raster' : (symFill === 'currentcolor' ? 'mono' : 'multi');
+    const imageEl = sym.querySelector('image');
+    const hasImage = !!imageEl;
+    // The dataurl MIME tells us tier B (svg+xml payload — vector logo
+    // wrapped to dodge the shadow-DOM fill cascade) vs tier C (raster
+    // payload — no SVG was available). Both share the <image href> envelope.
+    const imageHref = imageEl ? (imageEl.getAttribute('href') || imageEl.getAttribute('xlink:href') || '') : '';
+    const isSvgImage = imageHref.toLowerCase().startsWith('data:image/svg+xml');
+    let colourHandling;
+    if (hasImage && isSvgImage)        colourHandling = 'multi';   // tier B (vector wrapped as image)
+    else if (hasImage)                  colourHandling = 'raster';  // tier C (raster wrapped as image)
+    else if (symFill === 'currentcolor') colourHandling = 'mono';   // tier A
+    else                                 colourHandling = 'multi';  // legacy/inline-multi (kept for back-compat)
     out.brandSymbol = {
       pathCount: sym.querySelectorAll('path').length,
       pathDLen: Array.from(sym.querySelectorAll('path')).map(p => (p.getAttribute('d')||'').length),
       textCount: sym.querySelectorAll('text').length,
       imageCount: sym.querySelectorAll('image').length,
+      imageHrefMime: imageHref ? imageHref.split(';')[0].replace('data:', '') : null,
       circleCount: sym.querySelectorAll('circle').length,
       colourHandling: colourHandling,
       // hasInnerFill is only meaningful in 'mono' mode. Computed in all
@@ -163,6 +174,24 @@ JS_DESKTOP_MEASURE = r"""(()=>{
     };
   } else {
     out.brandSymbol = null;
+  }
+  // Capture the cover slide's first .logo bounding rect for downstream
+  // logo_visible_pixels — pixel-level visibility check that catches
+  // "logo embedded but rendered same-colour-as-bg-and-invisible". The
+  // byte-level logo_renders check cannot see this; the regression is
+  // silent. We need the bounding rect on the cover (slide 0) to crop
+  // the screenshot.
+  out.coverLogo = null;
+  const cover = document.querySelectorAll('.slide')[0];
+  if (cover) {
+    const lg = cover.querySelector('.logo');
+    if (lg) {
+      const r = lg.getBoundingClientRect();
+      // Sample the cover's background for contrast comparison
+      const coverInner = cover.querySelector('.cov, .sw, .j-full') || cover;
+      const bg = getComputedStyle(coverInner).backgroundColor;
+      out.coverLogo = {x: r.left, y: r.top, w: r.width, h: r.height, coverBg: bg};
+    }
   }
   return JSON.stringify(out);
 })()"""
@@ -356,6 +385,84 @@ def check_logo_renders(measurements: dict) -> dict:
             "visible_on_cover": visible_on_cover,
             "has_inner_fill_violation": has_inner_fill_violation,
             "symbol_summary": sym,
+        },
+    }
+
+
+def check_logo_visible_pixels(measurements: dict, out_dir: Path) -> dict:
+    """Pixel-level visibility check for the cover logo.
+
+    The byte-level `logo_renders` check verifies the logo is *embedded* and
+    has a non-zero bounding rect. It cannot tell if the logo is rendering
+    in the same colour as its background — the silent failure mode that
+    bit P&G's tier B run, where CSS `fill: currentColor` cascaded through
+    <use> shadow DOM and collapsed every gradient stop to white, leaving
+    a perfectly-sized but invisible badge against a white .logo-chip.
+
+    This check crops the cover screenshot to the logo's bounding rect,
+    samples its pixels, and compares them against the cover's background
+    colour. If 95 %+ of the logo's region is within a small RGB distance
+    of the background, the logo is invisible and the check FAILS.
+
+    Skipped (PASS, with reason) if PIL is unavailable, the cover screenshot
+    is missing, or the JS measurement didn't expose coverLogo. Treat the
+    skip as advisory — visual review still catches the case.
+    """
+    cover_logo = measurements.get("coverLogo")
+    if not cover_logo:
+        return {"passed": True, "evidence": {"skipped": "no coverLogo measurement"}}
+    shot_path = out_dir / "slides" / "slide-01.png"
+    if not shot_path.exists():
+        return {"passed": True, "evidence": {"skipped": f"missing screenshot: {shot_path.name}"}}
+    try:
+        from PIL import Image
+    except ImportError:
+        return {"passed": True, "evidence": {"skipped": "Pillow (PIL) not installed"}}
+
+    def _parse_rgb(s: str) -> tuple[int, int, int]:
+        m = re.match(r"rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)", s or "")
+        if not m:
+            return (255, 255, 255)
+        return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
+
+    img = Image.open(shot_path).convert("RGB")
+    iw, ih = img.size
+    x = max(0, int(round(cover_logo.get("x", 0))))
+    y = max(0, int(round(cover_logo.get("y", 0))))
+    w = max(1, int(round(cover_logo.get("w", 0))))
+    h = max(1, int(round(cover_logo.get("h", 0))))
+    # clamp to image
+    x2 = min(iw, x + w); y2 = min(ih, y + h)
+    if x >= x2 or y >= y2:
+        return {"passed": True, "evidence": {"skipped": "logo bounding rect outside screenshot"}}
+    crop = img.crop((x, y, x2, y2))
+    # Background reference: prefer the JS-reported cover bg; fall back to a
+    # 4-corner sample of the screenshot just outside the logo if missing.
+    bg = _parse_rgb(cover_logo.get("coverBg") or "")
+    # Distance threshold: anything within 30 RGB-Euclidean units of bg is
+    # "indistinguishable from the background" — empirically tuned.
+    THRESHOLD = 30
+    pixels = list(crop.getdata())
+    if not pixels:
+        return {"passed": True, "evidence": {"skipped": "empty crop"}}
+    invisible = 0
+    for (r, g, b) in pixels:
+        dr, dg, db = r - bg[0], g - bg[1], b - bg[2]
+        if (dr * dr + dg * dg + db * db) <= THRESHOLD * THRESHOLD:
+            invisible += 1
+    invisible_ratio = invisible / len(pixels)
+    # 95 %+ same-as-bg pixels means the logo is effectively invisible
+    INVISIBLE_RATIO_FAIL = 0.95
+    passed = invisible_ratio < INVISIBLE_RATIO_FAIL
+    return {
+        "passed": passed,
+        "evidence": {
+            "cover_bg_rgb": list(bg),
+            "logo_rect": {"x": x, "y": y, "w": w, "h": h},
+            "pixel_count": len(pixels),
+            "indistinguishable_from_bg_ratio": round(invisible_ratio, 4),
+            "threshold_rgb_distance": THRESHOLD,
+            "fail_threshold_ratio": INVISIBLE_RATIO_FAIL,
         },
     }
 
@@ -796,6 +903,7 @@ def run_all(deck_path: Path, ds_path: Path, out_dir: Path) -> dict:
         "no_emoji":                 check_no_emoji(html),
         "mobile_collapse":          check_mobile_collapse(mobile),
         "logo_renders":             check_logo_renders(desktop),
+        "logo_visible_pixels":      check_logo_visible_pixels(desktop, out_dir),
         "language_consistency":     check_language_consistency(ds_md, ds_path),
         "text_layout_safe":         check_text_layout_safe(desktop),
         "ds_has_engineering_dna":   check_ds_engineering_dna(ds_md),

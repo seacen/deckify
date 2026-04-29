@@ -1,25 +1,14 @@
-# {{BRAND_NAME}}-PPT-Design-System
+# Procter & Gamble-PPT-Design-System
 
-> The visual language for all decks produced for {{BRAND_NAME}}. Follow it precisely so every new deck is immediately recognisable as part of the same family.
+> The visual language for all decks produced for Procter & Gamble. Follow it precisely so every new deck is immediately recognisable as part of the same family.
 
 ---
-
-<!--
-  TEMPLATE NOTES (delete this comment block in the generated output):
-
-  Sections marked <!-- BRAND-VARIABLE --> must be filled with brand-specific content.
-  Sections marked <!-- ENGINEERING-DNA --> must be copied verbatim. They came from
-  real, painful bugs in production decks. Do NOT "simplify" or "trim" them — every
-  line earns its place.
-
-  Placeholder syntax: {{TOKEN}}. Replace each from $WS/decisions.json.
--->
 
 ## 1. Design Philosophy
 
 <!-- BRAND-VARIABLE: 1-2 paragraphs capturing the brand's mood + a "Constraints vs Freedom" block -->
 
-**{{PHILOSOPHY_PARAGRAPH}}**
+**draws from the modern P&G corporate identity — 188 years of consumer trust expressed through saturated brand-blue confidence, modular geometric composition, and bright accent flashes (cyan, optimism yellow, innovation orange, sustainability green). Hero typography is geometric sans at extra-bold weights; covers are full-bleed `--primary` blue with the iconic radial-gradient sphere monogram. Slides feel like a page from the 2025 P&G Annual Report: disciplined data, modular quartered circles, and one bright dot-accent at the period of a key sentence ("Named #1 Most Innovative in Household Products for Third Consecutive Year**.**"). The voice is optimistic corporate — confident, consumer-facing, never austere**
 
 > Example mood paragraphs to draw from (pick or remix the closest match, then customize):
 > - **Premium / editorial / typographically-led**: "draws from luxury brand communications: generous whitespace, high-contrast type, restrained colour. Every element earns its place. No decorative gradients, no stock icons, no emoji."
@@ -50,7 +39,7 @@ This Design System defines **hard constraints** (what you must never break) and 
 
 **Hard constraints (locked):**
 - Colour palette (§2 tokens only — no ad-hoc colours)
-- {{PRIMARY_FONT}} typeface, no serif/display fonts {{FONT_RESTRICTION_NOTES}}
+- Montserrat typeface, no serif/display fonts (no serif/display fonts; the geometric sans IS the voice)
 - 12px readability floor
 - Logo on every slide
 - **Every slide content lives inside a `.sc` container** (even bespoke full-bleed Type J / Type A compositions). The `.sc` is what `fit_contract_intact` measures — bespoke layouts that draw straight into a custom shell silently bypass absorber detection, mobile catch-all, and the 602 px content budget. No `.sc`, no contract.
@@ -64,7 +53,7 @@ This Design System defines **hard constraints** (what you must never break) and 
 - §7 Component Library provides cards, tables, charts, tabs, marks — use them when they fit. Skip them when a bespoke layout serves the content better.
 
 **Bespoke elements (encouraged):**
-- **Invent freely** within the colour palette. {{BESPOKE_EXAMPLES_PARAGRAPH}}
+- **Invent freely** within the colour palette. Examples of in-system bespoke compositions for P&G: a **segmented-circle motif** built from four quarter-arcs in alternating `--accent` / `--primary` / `--paper-tint` tones (the Annual Report 2025 cover signature); a **stacked product-portfolio mosaic** of brand cards on `--primary` background (Pampers / Tide / Bounty / Always / Gillette / Olay); a **giant-numeral hero** with one yellow dot endcap (`var(--spark)` 14 px circle at the title's full-stop, exactly like the home hero); a **modular four-quadrant value layout** segmenting a hero by a thin cross-divider (`--rule` at 1 px). All these are token-only — no off-brand colour, no off-brand type, no decorative ornament
 - The test is: does the element use only the defined colour tokens, the brand typeface, and respect the readability floor? If yes, it's in-system even if it doesn't match any named component.
 - **Do not self-restrict to the named components.** If a slide needs something that doesn't exist in §7, design it from the tokens. The best slides are bespoke compositions built from system tokens.
 
@@ -81,26 +70,34 @@ The token system has three layers:
 ```css
 :root {
   /* ── Core role tokens (invariant names) ── */
-  --primary:  {{NAVY_HEX}};   /* Dominant brand chord — cover bg, primary mark colour */
-  --accent:   {{BLUE_HEX}};   /* CTA / link / single saturated highlight */
+  --primary:  #003DA5;   /* Dominant brand chord — cover bg, primary mark colour */
+  --accent:   #00A3E0;   /* CTA / link / single saturated highlight */
   /* ── Neutrals ── */
-  --surface:  {{SURFACE_HEX}};   /* Paper / slide bg */
+  --surface:  #FFFFFF;   /* Paper / slide bg */
   --white:    #FFFFFF;
-  --ink:      {{INK_HEX}};   /* Body text on light surfaces */
-  --mid:      {{MID_HEX}};   /* Secondary text / muted labels */
-  --rule:     {{RULE_HEX}};   /* Dividers / hairlines */
-  --tint:     {{TINT_HEX}};   /* Subtle row / section bg */
+  --ink:      #2E2E2E;   /* Body text on light surfaces */
+  --mid:      #5C6478;   /* Secondary text / muted labels */
+  --rule:     #E1E5EE;   /* Dividers / hairlines */
+  --tint:     #F2F7FF;   /* Subtle row / section bg */
   /* ── Semantic (invariant names; values may map to brand-palette colours) ── */
-  --green:    {{GREEN_HEX}};   /* Positive */
-  --green-bg: {{GREEN_BG_HEX}};
-  --red:      {{RED_HEX}};   /* Negative */
-  --red-bg:   {{RED_BG_HEX}};
-  --warn:     {{WARN_HEX}};   /* Warning / caution */
-  --warn-bg:  {{WARN_BG_HEX}};
-  --teal:     {{TEAL_HEX}};   /* Informational / neutral highlight */
-  --teal-bg:  {{TEAL_BG_HEX}};
+  --green:    #4F8E1A;   /* Positive */
+  --green-bg: #EFF7E5;
+  --red:      #C13030;   /* Negative */
+  --red-bg:   #FBEAEA;
+  --warn:     #C7A902;   /* Warning / caution */
+  --warn-bg:  #FEF6CC;
+  --teal:     #0F5780;   /* Informational / neutral highlight */
+  --teal-bg:  #DCE9F2;
   /* ── Brand palette (brand-specific names; expanded from brand.json accents+neutrals) ── */
-{{BRAND_PALETTE_TOKENS}}
+  /* P&G specific palette (additional accents on top of core/semantic) */
+  --pg-blue:      #003DA5;   /* same as --primary; provided for legibility in slide CSS that wants to read the brand colour by name */
+  --primary-deep: #0A2A66;   /* deep navy — flip-card back, footer band, dark stack on dark */
+  --sky:          #00A3E0;   /* same as --accent; the bright cyan that does the hero-data heavy lifting */
+  --paper-tint:   #F2F7FF;   /* very-light blue paper, same as --tint; alt name when used as a surface */
+  --spark:        #F6D706;   /* P&G optimism yellow — the iconic dot-accent at sentence endings, max 1 use per slide */
+  --innov-orange: #E87722;   /* Innovation page accent — Tide-orange register, used for category-innovation callouts */
+  --eco-green:    #97D700;   /* Sustainability spectrum — Gillette neon green, used for environmental / impact callouts */
+  --deep-sky:     #0F5780;   /* Sustainability page deeper sky — secondary surface for dark cards on light backgrounds */
 }
 ```
 
@@ -116,9 +113,9 @@ The token system has three layers:
 
 ## 3. Typography <!-- BRAND-VARIABLE: font family + fallback; the scale below is mostly invariant -->
 
-**{{PRIMARY_FONT}}** — sole typeface. Weights {{WEIGHT_RANGE}}{{ITALIC_NOTE}}. `{{FALLBACK_FONT}}` fallback for {{FALLBACK_USE_CASE}}.
+**Montserrat** — sole typeface. Weights 300/400/500/600/700/800/900. Italics reserved for cover subtitle (300 italic) only. `system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif` fallback for transient fallback while Montserrat loads — never as a deliberate design choice.
 
-> {{TYPE_PHILOSOPHY_NOTE}}
+> **Montserrat** is a geometric sans built for confident brand statements — perfectly circular `O`, broad apertures, generous x-height. The 900 / Black weights at 50 px+ are the entire P&G display voice; lighter weights (400-600) carry body. The geometry feels modern and consumer-friendly — exactly the optimistic register P&G earns through its products. Never substitute a neo-grotesque (Helvetica, Inter) for the display weights — it flattens the brand to generic SaaS
 
 ### Type scale <!-- ENGINEERING-DNA — sizes are invariant; the scale is what makes decks readable -->
 
@@ -185,7 +182,7 @@ Slide "looks good" is engineering-quantifiable. The rules below are hard rules; 
 
 ---
 
-## 4. {{BRAND_NAME}} Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
+## 4. Procter & Gamble Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
 
 ### Definition (once per HTML file)
 
@@ -197,8 +194,8 @@ Used when the source SVG is a single-colour wordmark (Tiffany "TIFFANY&CO.", Uni
 
 ```html
 <svg style="display:none" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}" fill="currentColor">
-    {{LOGO_PATH_ELEMENTS}}  <!-- inner <path>/<g> carry NO fill attribute at all -->
+  <symbol id="brand-wm" viewBox="0 0 720 720" fill="currentColor">
+    <!-- not used: P&G is a tier-B (multi-colour gradient) logo; the runtime block uses <image href="data:..."> — see the actual embed in §4 below -->  <!-- inner <path>/<g> carry NO fill attribute at all -->
   </symbol>
 </svg>
 ```
@@ -221,12 +218,12 @@ Used when the source SVG contains `<linearGradient>`, `<radialGradient>`, `fill=
 ```html
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}">
+  <symbol id="brand-wm" viewBox="0 0 720 720">
     <!-- The full SVG is base64-wrapped as data:image/svg+xml so the browser
          renders it as an image — fully vector, full native colours — without
          the inner <path>/<gradient> ever entering <use> shadow DOM. -->
-    <image href="data:image/svg+xml;base64,{{LOGO_SVG_B64}}"
-           width="{{LOGO_W}}" height="{{LOGO_H}}"/>
+    <image href="data:image/svg+xml;base64,<!-- materialized below -->"
+           width="720" height="720"/>
   </symbol>
 </svg>
 ```
@@ -260,8 +257,8 @@ Used only when no SVG source is available and a raster logo passes the quality g
 ```html
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="0 0 {{LOGO_W}} {{LOGO_H}}">
-    <image href="data:image/png;base64,{{LOGO_BASE64}}" width="{{LOGO_W}}" height="{{LOGO_H}}"/>
+  <symbol id="brand-wm" viewBox="0 0 720 720">
+    <image href="data:image/png;base64,{{LOGO_BASE64}}" width="720" height="720"/>
   </symbol>
 </svg>
 ```
@@ -269,6 +266,19 @@ Used only when no SVG source is available and a raster logo passes the quality g
 Like tier B, `.logo.W` / `.logo.L` flipping is a no-op (raster pixels don't respond to CSS `color:`). Same cover-handling caveat applies. Resolution-bound — prefer tiers A/B whenever an SVG source can be found, even if the raster gate also passes.
 
 > ⚠️ **Typographic placeholders are forbidden**: faking a logo with `<text>` of the brand name (e.g. `<text>P&G</text>`, a generic disc-with-letter) is a build failure. The `logo_renders` hard check rejects `<symbol>` blocks that contain only `<text>`. If no source produces a real logo, **stop and ask the user** for an original file — never invent a placeholder.
+
+#### Materialized P&G embed (tier B, paste verbatim into every deck)
+
+```html
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 720 720">
+    <image href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJMb2dvIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA3MjAgNzIwIiB2aWV3Qm94PSIwIDAgNzIwIDcyMCI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJTVkdJRF8xXyIgY3g9IjE1Ni4wOSIgY3k9IjE0My43MSIgcj0iNjYxLjI3IiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKC02IC02KSBzY2FsZSgxLjAxNjcpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwMGExZGYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjEzIiBzdG9wLWNvbG9yPSIjMDA5MmQ3Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4zNyIgc3RvcC1jb2xvcj0iIzAwNmNjMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNjIiIHN0b3AtY29sb3I9IiMwMDNkYTYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjczIiBzdG9wLWNvbG9yPSIjMDQzNzk5Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii45MyIgc3RvcC1jb2xvcj0iIzEwMjc3NyIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTUyMTY5Ii8+CiAgPC9yYWRpYWxHcmFkaWVudD4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIzNjAiIHI9IjM2MCIgZmlsbD0idXJsKCNTVkdJRF8xXykiLz4KICA8cmFkaWFsR3JhZGllbnQgaWQ9IlNWR0lEXzJfIiBjeD0iMTA3Ljk1IiBjeT0iNjAuNSIgcj0iMTA5Ni40MyIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSgtNiAtNikgc2NhbGUoMS4wMTY3KSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgPHN0b3Agb2Zmc2V0PSIuMDIiIHN0b3AtY29sb3I9IiNmZmYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjAzIiBzdG9wLWNvbG9yPSIjZmJmZWZmIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4wOSIgc3RvcC1jb2xvcj0iI2JhZTdmOSIvPgogICAgPHN0b3Agb2Zmc2V0PSIuMTQiIHN0b3AtY29sb3I9IiM4N2Q1ZjQiLz4KICAgIDxzdG9wIG9mZnNldD0iLjE5IiBzdG9wLWNvbG9yPSIjNjNjOWYxIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4yMyIgc3RvcC1jb2xvcj0iIzRjYzFlZiIvPgogICAgPHN0b3Agb2Zmc2V0PSIuMjYiIHN0b3AtY29sb3I9IiM0NGJlZWUiLz4KICAgIDxzdG9wIG9mZnNldD0iLjI4IiBzdG9wLWNvbG9yPSIjMzdiOGViIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4zNSIgc3RvcC1jb2xvcj0iIzE5YWNlNSIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDEiIHN0b3AtY29sb3I9IiMwN2E0ZTAiLz4KICAgIDxzdG9wIG9mZnNldD0iLjQ1IiBzdG9wLWNvbG9yPSIjMDBhMWRmIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii43OSIgc3RvcC1jb2xvcj0iIzAwNDVhYiIvPgogICAgPHN0b3Agb2Zmc2V0PSIuODIiIHN0b3AtY29sb3I9IiMwMDNkYTYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjk2IiBzdG9wLWNvbG9yPSIjMDA1OWI2Ii8+CiAgPC9yYWRpYWxHcmFkaWVudD4KICA8cGF0aCBmaWxsPSJ1cmwoI1NWR0lEXzJfKSIgZD0iTTk1LjYgMzU5LjlDOTUuNiAxOTUgMTk5LjcgNTQuNCAzNDUuOC4zIDE1My42IDcuOCAwIDE2NS45IDAgMzYwYzAgMTk0LjMgMTUzLjkgMzUyLjYgMzQ2LjQgMzU5LjdDMjAwLjEgNjY1LjcgOTUuNiA1MjUgOTUuNiAzNTkuOXoiLz4KICA8ZGVmcz4KICAgIDxmaWx0ZXIgaWQ9IkFkb2JlX09wYWNpdHlNYXNrRmlsdGVyIiB3aWR0aD0iMzQ2LjQiIGhlaWdodD0iNzE5LjQiIHg9IjAiIHk9Ii4zIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8ZmVDb2xvck1hdHJpeCB2YWx1ZXM9IjEgMCAwIDAgMCAwIDEgMCAwIDAgMCAwIDEgMCAwIDAgMCAwIDEgMCIvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxtYXNrIGlkPSJTVkdJRF8zXyIgd2lkdGg9IjM0Ni40IiBoZWlnaHQ9IjcxOS40IiB4PSIwIiB5PSIuMyIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICA8ZyBmaWx0ZXI9InVybCgjQWRvYmVfT3BhY2l0eU1hc2tGaWx0ZXIpIj4KICAgICAgPHJhZGlhbEdyYWRpZW50IGlkPSJTVkdJRF80XyIgY3g9IjMwMi45NSIgY3k9IjM0OS4yMSIgcj0iMzgxLjM3IiBmeD0iMi4xOCIgZnk9IjM1NC4zMyIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCguMDMxMzYgLTEuMDE2MiAxLjAzNDEgLjAzMTkyIC02OC42MyA2NDUuNzQpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjM1IiBzdG9wLWNvbG9yPSIjZmRmZGZkIi8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmNmY2ZjYiLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9Ii41MSIgc3RvcC1jb2xvcj0iI2VhZWFlYSIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjU3IiBzdG9wLWNvbG9yPSIjZDlkOWQ5Ii8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuNjIiIHN0b3AtY29sb3I9IiNjM2MzYzMiLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9Ii42NiIgc3RvcC1jb2xvcj0iI2E3YTdhNyIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjciIHN0b3AtY29sb3I9IiM4Njg2ODYiLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9Ii43MyIgc3RvcC1jb2xvcj0iIzYwNjA2MCIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjc3IiBzdG9wLWNvbG9yPSIjMzUzNTM1Ii8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuOCIgc3RvcC1jb2xvcj0iIzA2MDYwNiIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjgiLz4KICAgICAgPC9yYWRpYWxHcmFkaWVudD4KICAgICAgPHBhdGggZmlsbD0idXJsKCNTVkdJRF80XykiIGQ9Ik05NS42IDM1OS45Qzk1LjYgMTk1IDE5OS43IDU0LjQgMzQ1LjguMyAxNTMuNiA3LjggMCAxNjUuOSAwIDM2MGMwIDE5NC4zIDE1My45IDM1Mi42IDM0Ni40IDM1OS43QzIwMC4xIDY2NS43IDk1LjYgNTI1IDk1LjYgMzU5Ljl6Ii8+CiAgICA8L2c+CiAgPC9tYXNrPgogIDxyYWRpYWxHcmFkaWVudCBpZD0iU1ZHSURfNV8iIGN4PSIyODEuMzYiIGN5PSIyOTAuOSIgcj0iNDQ1LjQ5IiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKC02IC02KSBzY2FsZSgxLjAxNjcpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICA8c3RvcCBvZmZzZXQ9Ii4zMiIgc3RvcC1jb2xvcj0iIzQ0YmVlZSIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40OCIgc3RvcC1jb2xvcj0iIzJiOTlkOSIgc3RvcC1vcGFjaXR5PSIuMjciLz4KICAgIDxzdG9wIG9mZnNldD0iLjY3IiBzdG9wLWNvbG9yPSIjMTQ3NmM2IiBzdG9wLW9wYWNpdHk9Ii41OCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuODIiIHN0b3AtY29sb3I9IiMwNTYxYmEiIHN0b3Atb3BhY2l0eT0iLjg0Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii45MiIgc3RvcC1jb2xvcj0iIzAwNTliNiIvPgogIDwvcmFkaWFsR3JhZGllbnQ+CiAgPHBhdGggZmlsbD0idXJsKCNTVkdJRF81XykiIGQ9Ik05NS42IDM1OS45Qzk1LjYgMTk1IDE5OS43IDU0LjQgMzQ1LjguMyAxNTMuNiA3LjggMCAxNjUuOSAwIDM2MGMwIDE5NC4zIDE1My45IDM1Mi42IDM0Ni40IDM1OS43QzIwMC4xIDY2NS43IDk1LjYgNTI1IDk1LjYgMzU5Ljl6IiBtYXNrPSJ1cmwoI1NWR0lEXzNfKSIvPgogIDxnPgogICAgPHBhdGggZD0iTTM1My45IDMyNS43YzIzLjktNTguOS0yMC44LTc0LjktNDkuOS03NC45aC05Ni40YzggNS41IDYuNyAxMi44IDUuMSAxNy4zbC01Ni4yIDE3OS41Yy0yLjIgNy4xLTEwLjYgMTQuNi0xNS4xIDE1LjdoNzhjLTQuMy0uOC0xMC40LTYuOS04LjItMTUuMmwyMC40LTY0LjljLjEgMCA5My45IDEyLjcgMTIyLjMtNTcuNXptLTc1LjgtNTguNGMxMC4yIDAgMzguNSAxLjQgMjAuMiA1NC45LTE5LjEgNTYuMi02MS41IDQ0LjYtNjEuNSA0NC42bDMxLjItOTkuNWgxMC4xeiIgZmlsbD0iI2ZmZiIvPgogICAgPHBhdGggZD0iTTQxNi4zIDQ2My40aDUyLjVjLTE2LjgtNS40LTQxLjYtMjEuMy01MS41LTMyLjYgOC04LjcgMTcuOS0xOS43IDE5LjctNDJoLTI3LjJzNS4yIDMgNS4yIDkuNGMwIDUuOS0yLjQgMTQuMS03IDE5LjgtOC0xMS44LTE2LjUtMjUuMy0xOS41LTQ1LjEgMTAuNy01LjMgMjUuNy0xMS4xIDM3LjYtMjEuNSAxMS4zLTkuOSAxMy45LTE5LjMgMTQuMS0yNS40di0uOGMwLTYuNC0yLjUtMTIuNC03LjEtMTYuOS03LjktNy44LTIwLjMtMTEtMzMuNC04LjYtMTAuNSAyLTE5LjQgNy42LTIzLjkgMTEuNy0xNS44IDE0LjktMTcuOCAzOS40LTE3LjggNTAuNSAwIDIuNy4xIDQuNy4yIDUuOS0uOS40LTIuNSAxLTIuNSAxLTExLjYgNC4zLTQyLjUgMTIuNS01My41IDM3LjktMS40IDMuMi0zLjQgMTAuMi0zLjQgMTguMyAwIDcgMS41IDE0LjggNiAyMS45IDcuOCAxMi4yIDIxIDE5LjkgNDIuMiAxOS41IDIzLS40IDQ1LjctMTYuMSA0OS43LTE5IDMuOSAzLjcgMTQuMiAxMy40IDE5LjYgMTZ6bTAtMTQyYy0yLjcgMTcuMS0yNC45IDM0LjQtMzAuMyAzNi43LTEtOS42LS41LTI0LjggNy41LTM3LjIgNS4zLTguMiAxMi40LTExLjggMTguMS05LjggNC42IDEuNiA1LjEgNS44IDQuNyAxMC4zem0tMzAuOCAxMTQuNGMtMy4xIDEuOS0xNS4zIDguMS0yNi43IDkuMi0xMC42IDEtMjguMi0zLjEtMjguMS0yNC4zIDAtMTguMSAxOS43LTMxLjQgMzAuNC0zNiA0LjMgMTcuNSAxNCAzNy4zIDI0LjQgNTEuMXoiIGZpbGw9IiNmZmYiLz4KICAgIDxwYXRoIGQ9Ik01NzUuOCAyNjcuNWMzMS4yLTcuNSA1Ni45IDE2LjkgNTkuMiAxOC42bDguOS0yOC4zYy0xMi4zLTMuNy0xMDEuOC0zNC0xNjUuMSAzOC4yLTM4LjkgNDQuNC00OC40IDEzNS40LjkgMTU5LjggNTIuOCAyNi4xIDExMS4xLTQgMTE1LjQtNi4xbDI0LjEtNzYuOGMyLjYtOS4zIDguNS0xNS4zIDE4LjktMTkuMmgtODMuOGMxMi4yIDUuMSAxMS4zIDE0LjMgMTAuNCAxOC4xbC0yNC4xIDc2LjhjLTMuMi42LTcwLjYgMTcuNC0zMi45LTEwMC41IDguMy0yNS4zIDMxLTcxLjcgNjguMS04MC42eiIgZmlsbD0iI2ZmZiIvPgogIDwvZz4KPC9zdmc+" width="720" height="720"/>
+  </symbol>
+</svg>
+```
+
+Per the §4 Tier-B rule above, the inner SVG is base64-wrapped inside `<image href>` — the radial-gradient sphere never enters `<use>` shadow DOM, so CSS `fill:` on `.logo` is correctly a no-op. The badge always renders in its native cyan-to-deep-navy gradient.
 
 #### Multi-colour cover handling (tiers B and C only) <!-- ENGINEERING-DNA: logo-multicolor-cover -->
 
@@ -299,12 +309,12 @@ Source resolution order (the actual order `embed_logo.py` tries):
 
 ```html
 <!-- White (on dark slides) -->
-<svg class="logo W" viewBox="{{LOGO_VIEWBOX}}" aria-label="{{BRAND_NAME}}">
+<svg class="logo W" viewBox="0 0 720 720" aria-label="Procter & Gamble">
   <use href="#brand-wm"/>
 </svg>
 
 <!-- Brand-dark (on light slides) -->
-<svg class="logo L" viewBox="{{LOGO_VIEWBOX}}" aria-label="{{BRAND_NAME}}">
+<svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble">
   <use href="#brand-wm"/>
 </svg>
 ```
@@ -316,7 +326,7 @@ Source resolution order (the actual order `embed_logo.py` tries):
    fill: currentColor must be on .logo — NOT on .logo path.
    CSS selectors do not pierce SVG <use> shadow DOM, but the inherited
    fill on the outer <svg> cascades correctly into the symbol's shadow. */
-.logo   { height: {{LOGO_HEIGHT}}; width: auto; flex-shrink: 0; fill: currentColor; }
+.logo   { height: 32px; width: auto; flex-shrink: 0; fill: currentColor; }
 .logo.W { color: #fff; }
 .logo.L { color: var(--primary); }
 
@@ -326,7 +336,7 @@ Source resolution order (the actual order `embed_logo.py` tries):
    the rendering even though the byte check still passes. .W / .L are kept
    as no-op classes so the same `<svg class="logo W">` markup works across
    brands without conditional templates downstream. */
-.logo               { height: {{LOGO_HEIGHT}}; width: auto; flex-shrink: 0; display: block; }
+.logo               { height: 32px; width: auto; flex-shrink: 0; display: block; }
 .logo.W, .logo.L    { /* intentionally empty — see comment above */ }
 
 /* Optional .logo-chip backplate for tier B / C — see §4 "Multi-colour cover handling".
@@ -342,10 +352,12 @@ Source resolution order (the actual order `embed_logo.py` tries):
 - **Every slide** must carry the logo — cover and all content slides.
 - **Cover**: top-right corner of the `.cov-top` flex row.
 - **Content slides**: right end of the `.shd` header strip (left = title eyebrow / slide number, right = logo).
-- Minimum clear space around the logo = logo height ({{LOGO_HEIGHT}}) on all sides.
+- Minimum clear space around the logo = logo height (32px) on all sides.
 - Never stretch, recolour outside `W`/`L`, or overlay the logo on a patterned area.
 
-{{LOGO_BRAND_RESTRICTIONS_NOTE}}
+
+**P&G logo specifics (tier B):** the embedded SVG is the canonical *P_G_Logo_RGB.svg* served from Contentful (declared as the `Organization.logo` in JSON-LD on every us.pg.com page). It contains the radial-gradient sphere with the cursive "P&G" wordmark — `colour_handling: multi`. CSS `fill:` on `.logo` is therefore a no-op; never set it. On `--primary` covers the badge's own internal cyan-to-deep-navy gradient delivers contrast natively — **no chip needed by default**. If you ever place the badge on a same-toned cyan tile, fall back to a `padding: 0` chip with `border-radius: 50%` and `background: var(--white)`.
+
 
 ---
 
@@ -475,6 +487,15 @@ A vertical stack of N sections inside `.sc` must have **exactly one** section th
 
 The absorber MUST carry `min-height: 0` (so it can shrink below its content's natural size) AND `overflow: hidden` (so its children clip instead of pushing it taller). Both are required — missing either breaks the contract.
 
+> ⚠️ **Layout-class collision** <!-- ENGINEERING-DNA: absorber-class-collision -->
+> A common bug: combining a layout class (`.g2`, `.g3`, `.flip-row`) with a generic absorber utility that also sets `display: flex; flex-direction: column`. CSS specificity ties; cascade order decides — and the utility class declared *after* the layout class wins, silently turning your two-column grid into a vertical stack.
+>
+> Two safe patterns:
+> - **Combined class** (preferred): bake absorber properties INTO the layout class. `.flip-row { display: grid; grid-template-columns: 1fr 1fr; flex: 1 1 0; min-height: 0; overflow: hidden }` — no separate absorber utility needed.
+> - **Absorber-only utility**: a class like `.absorb { flex: 1 1 0; min-height: 0; overflow: hidden }` that does NOT set `display`, paired with `.g2` / `.g3` for layout. `<div class="g2 absorb">` keeps grid layout intact.
+>
+> Forbidden: a `.row-x { display: flex; flex-direction: column; flex: 1 1 0; ... }` paired with `.g2` on the same element. The `.g2` grid is silently lost.
+
 #### Asymmetric bottom padding — visible breathing room
 
 Default `.sc` padding is symmetric `32 80 32 96`. For weekly-status / progress-report slides where the audience reads top-down and the bottom edge carries visual weight, prefer:
@@ -506,12 +527,12 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 ## 6. Slide Types <!-- BRAND-VARIABLE: emphasis order varies; the type definitions are mostly invariant -->
 
-> **Emphasis for {{BRAND_NAME}}**: {{SLIDE_TYPE_EMPHASIS_NOTE}}
-> Foreground these types when designing decks: {{EMPHASIZED_TYPES_LIST}}.
-> Use sparingly: {{DEEMPHASIZED_TYPES_LIST}}.
+> **Emphasis for Procter & Gamble**: P&G decks lean into the corporate-report rhythm of the Annual Report: a Type-A hero cover; a Type-J pullquote stating the year's anchor message; one or two Type-H data slides (financials / market share / category growth); Type-C two-column modular comparisons that echo the quartered-circle motif; and Type-F slides showing the actual product portfolio. Avoid Type-G interactive demos unless the deck is an internal product walkthrough — the public brand register is editorial, not tool-like
+> Foreground these types when designing decks: **Type H (Chart / data insight)**, **Type C (Full-width narrative / two-column modular)**, and **Type J (Giant pull-quote / hero numbers)**.
+> Use sparingly: Type G (interactive demo) — the brand voice is editorial and corporate, not interactive-tool; only use Type G when the deck is for an internal product walkthrough.
 
 ### Type A — Cover
-- Background: `{{COVER_BACKGROUND}}`
+- Background: `var(--primary) — the saturated #003DA5 P&G blue. The corporate uniform; never substitute paper or accent on a cover`
 - Structure: Logo top-right → Eyebrow → Giant headline → Italic subtitle → Meta row
 - **No decorative lines of any kind** — no hairlines, no accent lines, no gradient borders. The background is the surface.
 
@@ -522,7 +543,7 @@ Comparisons, feature lists, metrics. `grid-template-columns: 1fr 1fr; gap: 20px`
 Single column, large type, pull-quotes. For context, summary, recommendation slides.
 
 ### Type D — Flip cards
-Two cards side-by-side. Front = `--primary`, back = `{{FLIP_BACK_COLOR}}` (softer than `--accent`). **Hover + click flip** — JS `onclick` toggles `.on` class (required for mobile). Ghost Roman numerals on front. Spacious back (32px padding, ≤ 4 content elements).
+Two cards side-by-side. Front = `--primary`, back = `a deeper navy (`#0A2A66`, the `--primary-deep` brand-palette token) — softer than `--accent` cyan but darker than `--primary`, so back/front read as two stops on the same blue ladder` (softer than `--accent`). **Hover + click flip** — JS `onclick` toggles `.on` class (required for mobile). Ghost Roman numerals on front. Spacious back (32px padding, ≤ 4 content elements).
 
 **Typography — must be large and commanding:**
 
@@ -538,6 +559,22 @@ Two cards side-by-side. Front = `--primary`, back = `{{FLIP_BACK_COLOR}}` (softe
 | Conclusion | `.ccl` | **15px** | 600 |
 
 **Do not use inline style overrides** to shrink flip card text below these sizes. If content doesn't fit, reduce the number of items — never the font size.
+
+**Copy budget rule** <!-- ENGINEERING-DNA: type-d-copy-budget -->
+- **Front body** (`.cbd` 17 px / 1.4 line-height): ≤ 25 words. The card is a reveal hook, not a paragraph.
+- **Back body** (`.bkb` 15 px / 1.5 line-height): ≤ 40 words. Back faces overflow easily because their absorber is the card's full height minus 24 px padding × 2 minus the ~80 px title block.
+- A flip card with paragraph-length copy is a Type C narrative slide in disguise — split it.
+
+**Ghost-numeral overflow rule** <!-- ENGINEERING-DNA: type-d-ghost-num -->
+The optional ghost Roman numeral (`.ff-num`) is decoration, but its glyph box is taller than the visible glyph and silently overflows the `.ff` container — `text_layout_safe` flags it even with `overflow: hidden` because `scrollHeight` measures positioned descendants regardless of clipping. Three legal placements:
+
+1. **Skip it.** Default for production decks — the card title carries the same hierarchical weight without the overflow risk.
+2. **Inside, anchored bottom-right.** `position: absolute; right: 16px; bottom: 16px; font-size: 128px; line-height: .82` — the `line-height: .82` collapses the leading so the glyph box ≈ glyph height; with the 16 px gap the box stays within `.ff`.
+3. **Watermarked, inside.** Use `font-size: 96px` instead of 128 px and place at `bottom: 0` with `line-height: .78`. Smaller glyph buys you margin against measurement drift across browsers.
+
+**Never** position with `bottom: -20px` "for breathing room" — the visible 20 px below the card edge is real overflow that `scrollHeight` reports as a 30+ px violation.
+
+> **When in doubt, skip.** The line-height / glyph-box math depends on the exact font's metrics; Montserrat 900 reads slightly taller than the metric box at the documented size, which can leak ~10 px past the bottom even after collapsing leading. If a `.ff-num` value matters at all to a slide's hierarchy, the slide is already over-decorated — drop it and let the title carry the weight.
 
 ### Type E — Data / comparison slide
 Slide dominated by a table or structured data grid. Used for feature comparisons, TCO analysis, specification matrices. The table component spec (§7.7) defines the element-level design; this type defines when to use it and how to lay out the slide around it.
@@ -577,7 +614,7 @@ Slide led by one or more data visualizations. Used for quantitative arguments, t
 
 **Principles:**
 - One primary chart per slide. A secondary small chart is acceptable if it directly supports the primary.
-- Title states the insight, not the chart type. Good: "{{BRAND_NAME}} leads on all three dimensions". Bad: "Bar Chart Comparison".
+- Title states the insight, not the chart type. Good: "Procter & Gamble leads on all three dimensions". Bad: "Bar Chart Comparison".
 - Chart fills 50–70% of slide area. Remaining space: title + one paragraph of interpretation or a callout.
 - Animate on entrance for narrative impact.
 
@@ -623,6 +660,11 @@ Full-height comparison panels. Used when 2–3 options need deep, structured com
 ```
 
 Internal: `.cap` eyebrow → title (18–22px 900) → rows (`.panel-row`: surface bg, 8px 12px padding) → optional callout.
+
+**Bullet-count rule** <!-- ENGINEERING-DNA: panel-bullet-count -->
+- **5 bullets is the comfortable max** at default `.panel { padding: 22px; gap: 8px }` and 14 px / 1.45 body. Each bullet ~25 px tall + 8 px gap; budget = (~5 × 33) + ~50 px title-block + ~30 px cap + 44 px V-padding = ~290 px — fits in a half-height absorber slot (~310-330 px in a `.g2` row).
+- **6+ bullets** require one of: (a) tightening to `.panel { padding: 16px 20px; gap: 6px }`, (b) cutting each bullet to ≤ 12 words so they wrap less, OR (c) splitting into two stacked panels. Do **not** keep 6+ verbose multi-line bullets in default padding — `text_layout_safe` will fail.
+- A panel that needs 7+ bullets is almost always two panels in disguise (e.g. "constraints" + "examples"). Split.
 
 ### 7.2 Showcase Card (Tier 2 — "block card")
 
@@ -731,11 +773,16 @@ Full-width navy block for slide-ending takeaways. Text: 13–16px 700–800, `rg
 
 Max 2 colours per chart (+ `--rule` neutral). Animate on entrance: bars grow, counters count up.
 
+**Bar-row count rule** <!-- ENGINEERING-DNA: chart-bar-count -->
+- **6 bar-rows** is the comfortable max in a half-height chart absorber (~280-300 px clientH) at default 12 px row gap and 18 px bar-track height. Each row ~30 px (18 px track + 12 px gap) × 6 = ~180 px + chart V-padding 44 px + title/cap 60 px = ~284 px.
+- **7+ rows** require one of: (a) tighten gap to 8 px AND track to 14 px, (b) split into two stacked charts on the same slide, OR (c) collapse the lowest-volume rows into an "Other" row. Do **not** keep 7+ rows at default density — the chart absorber will clip and `text_layout_safe` will fail.
+- For a categorical breakdown of >7 categories, prefer a horizontal stat-card row (§7.4) showing top 4 + an "Other" total — it preserves comprehension without forcing the bar chart to compete with itself.
+
 ### 7.9 Tabs
 
 ```css
 .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 '{{PRIMARY_FONT}}'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
+.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 'Montserrat'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
 .tb:hover { border-color: var(--accent); color: var(--accent); }
 .tb.on { background: var(--primary); border-color: var(--primary); color: #fff; }
 .tc { display: none; } .tc.on { display: block; }
@@ -800,7 +847,13 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 
 ### Principle
 
-{{IMAGERY_PHILOSOPHY_NOTE}}
+P&G is a consumer-products company. **Imagery serves the products and the people who use them — not abstract design ornaments.** Prefer:
+- **Real product packaging** at hero scale (Pampers blue bag, Tide orange tub, Bounty green roll, Always teal, Olay white-and-pink) — saturated colour against `--primary` reads cleanly.
+- **Diagram + product hybrids**: render a modular grid where each cell holds one product silhouette + one stat (revenue, household penetration, growth %).
+- **Real photography** of families, scientists in labs, factory floors — never generic stock that could be any company.
+- **CSS-drawn category symbols** (a leaf for sustainability, a beaker for innovation, a heart for community impact) using `--accent` strokes on `--paper`. Reserved for slides where a real product photo would distract.
+
+**Forbidden**: gradient blobs, abstract isometric SaaS illustrations, Storyset-style flat-people compositions, AI-generated placeholder art. They erase brand specificity
 
 ### When to include images
 
@@ -969,7 +1022,7 @@ Every slide fits 720px. If too dense: reduce gaps → reduce body to 14px → sp
 | Header height | 54 px |
 | Card gap | 20 px |
 | Card inner padding | 32 px |
-| Border radius | {{BORDER_RADIUS}} |
+| Border radius | 4 px on data/cards / 24 px pill on buttons & nav chips (the header CTA precedent) |
 | Rule thickness | 1 px |
 | Accent border | 3 px |
 
@@ -988,8 +1041,8 @@ Before sharing a deck, verify every item.
 - [ ] Colours: only system tokens — no ad-hoc hex values
 - [ ] All bespoke elements built from system tokens only (§1 Constraints vs Freedom)
 - [ ] No emoji (👍🎉 etc.) — typographic symbols (✓ − ! ×) are fine
-- [ ] {{PRIMARY_FONT}} {{WEIGHT_RANGE}}{{ITALIC_NOTE_SHORT}} loaded; no serif or display fonts
-- [ ] Cover subtitle: {{PRIMARY_FONT}} 300 italic only (or brand-equivalent if 300 italic unavailable)
+- [ ] Montserrat 300/400/500/600/700/800/900 / 300 italic loaded; no serif or display fonts
+- [ ] Cover subtitle: Montserrat 300 italic only (or brand-equivalent if 300 italic unavailable)
 
 ### Typography & readability
 - [ ] No text below 12px — check badge/label columns especially
