@@ -16,24 +16,23 @@ Right before Phase 0, print exactly one of these two banners depending on the us
 
 **English** (default):
 ```
-═══════════════════════════════════════════════════════════════
-        Stop making slides.
-        Let AI build them in HTML —
-        the medium it was born to write in.
+═══════════════════════════════════════════════════════════════════════
+        PPT just turned the page.
+        AI takes the canvas from here —
+        in HTML, where stories run further.
 
-                                                      — deckify
-═══════════════════════════════════════════════════════════════
+                                                              — deckify
+═══════════════════════════════════════════════════════════════════════
 ```
 
 **中文** (after Round 0 confirms zh):
 ```
-═══════════════════════════════════════════════════════════════
-        别再做 slide 了。
-        让 AI 用 HTML 来写——
-        那才是它与生俱来的媒介。
+═══════════════════════════════════════════════════════════════════════
+        PPT 翻篇了，
+        AI 用 HTML 接管讲故事的边界。
 
-                                                      — deckify
-═══════════════════════════════════════════════════════════════
+                                                              — deckify
+═══════════════════════════════════════════════════════════════════════
 ```
 
 ## Why this skill exists (read first)

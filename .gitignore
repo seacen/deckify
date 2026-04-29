@@ -43,3 +43,10 @@ decks/backup/
 
 # Claude Code session state
 .claude/
+
+# Maintainer-local agent rules — kept on disk for the maintainer's own
+# AI-assisted workflow inside this repo, but never committed. Each
+# contributor can keep their own personal version (or none). The shipped
+# project documentation lives in README.md / TESTING.md / SKILL.md.
+CLAUDE.md
+AGENTS.md

@@ -1,0 +1,53 @@
+{
+  "host": "us.pg.com",
+  "brand_name": "Procter & Gamble",
+  "base_url": "https://us.pg.com/",
+
+  "chosen_logo": {
+    "id": "74d017a9",
+    "why": "Header SVG 'P_G_Logo_RGB.svg' (50×50, alt='Go to Procter & Gamble homepage') from the annual report. This is the canonical P&G monogram (blue moon-and-stars circular badge with 'P&G' wordmark) — visible in every page screenshot's header. Vector, currentColor-flippable, square viewBox. Strongest evidence-backed pick."
+  },
+
+  "alt_logo_ids": ["d481e89a", "8694278a", "e2a6ac71"],
+
+  "palette": {
+    "brand_primary":   { "hex": "#003DA5", "name": "--primary",   "evidence": "Computed nav color, h2 color, footer bg, button color across all 8 pages; 115 hits in color-frequency, 2nd only to white. The P&G Blue." },
+    "brand_secondary": { "hex": "#00A3E0", "name": "--accent",    "evidence": "Cyan accent on Annual Report hero (the giant clover graphic) and Brands page; 6 hits across annualreport2025+brands. Acts as the lighter chord of the blue family." },
+    "ink":             { "hex": "#0A1A2F", "name": "--ink",       "evidence": "Body text near-black; raised slightly toward navy from pure #000 (107 hits) to harmonise with brand-primary blue and avoid the AI-slop pure-black flatness." },
+    "paper":           { "hex": "#FFFFFF", "name": "--surface",   "evidence": "Default page background, 150 hits, all pages." },
+    "accents": [
+      { "hex": "#F2F7FF", "name": "--tint",   "evidence": "Light-blue surface variant; 23 hits across innovation/citizenship/pg-history/who-we-are. The P&G hero-section pale background." },
+      { "hex": "#E87722", "name": "--warn",   "evidence": "Innovation page accent (Innovation_Orange.svg + 3 color-frequency hits on innovation). Codifies the section-color system." },
+      { "hex": "#97D700", "name": "--green",  "evidence": "Sustainability page accent (3 color-frequency hits on environmental-sustainability). The eco/nature accent of the section system." },
+      { "hex": "#0F5780", "name": "--teal",   "evidence": "Deep ocean blue from sustainability palette (3 hits). Reinforces water/nature semantic." }
+    ]
+  },
+
+  "typography": {
+    "display_font": { "family": "Montserrat", "evidence": "fonts.frequencies count 67 (highest non-fallback); computed_heading h1/h2/h3 across all 8 pages all use Montserrat. Used at 75-96px / weight 700 for heroes." },
+    "body_font":    { "family": "Montserrat", "evidence": "Montserrat is the universal UI face on this site (header, nav, button, h1-h3 all use it); the recon's body-element 'Times' is just default UA serif on bare <body> not actual content. Real rendered body copy uses Montserrat." },
+    "mono_font":    { "family": "ui-monospace", "evidence": "no monospace usage detected; pick a system stack as a fallback for any code/numeric tabular data in slides." }
+  },
+
+  "spacing_radius_shadow": {
+    "radius_style":  "sharp",
+    "shadow_style":  "flat",
+    "spacing_density": "airy",
+    "evidence": "Buttons/h1/h2/main all radius 0px across every surface. Shadow 'none' everywhere. main padY 66px, footer padY 50px — generous vertical breathing room. The exception is link-pill <a> at radius 50px (the rounded CTA pill), which is a deliberate component-level call-out, not a global radius. Capture both: sharp default, pill for primary CTAs."
+  },
+
+  "aesthetic": {
+    "mood": "corporate gravitas, scientific optimism",
+    "style_keywords": ["editorial", "weighty", "civic", "monogram-led", "sectionally-coded"],
+    "precedents": ["IBM annual reports of the 1980s", "Patagonia citizenship report typographic restraint", "Nestlé corporate-blue chrome"],
+    "voice_register": "formal corporate, civic-aspirational; first-person plural ('we'); declares values plainly without slogans"
+  },
+
+  "evidence_screenshots": [
+    "recon/pages/annualreport2025/shot.png",
+    "recon/pages/who-we-are/shot.png",
+    "recon/pages/innovation/shot.png",
+    "recon/pages/environmental-sustainability/shot.png",
+    "recon/pages/citizenship/shot.png"
+  ]
+}

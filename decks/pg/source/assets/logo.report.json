@@ -1,0 +1,30 @@
+{
+  "chosen": {
+    "id": "74d017a9",
+    "kind": "img",
+    "page": "annualreport2025",
+    "region": "header",
+    "src": "https://images.ctfassets.net/oggad6svuzkv/7znyJc3Y7SecEoKSYKWoaQ/4a24e9015c360799cfb072adcd92cc5e/P_G_Logo_RGB.svg",
+    "alt": "Go to Procter & Gamble homepage",
+    "width": 50,
+    "height": 50,
+    "classNames": "image__file"
+  },
+  "result": {
+    "ok": true,
+    "format": "svg",
+    "path": "/var/folders/gl/cmnndj_x4gz7t8qdy1qhsqsc0000gn/T/deckify-pg-vivskpc3/assets/logo.svg",
+    "evidence": {
+      "paths": 6,
+      "max_d_len": 725,
+      "has_inner_image": false,
+      "has_text": false,
+      "dims": [
+        720.0,
+        720.0
+      ]
+    },
+    "url": "https://images.ctfassets.net/oggad6svuzkv/7znyJc3Y7SecEoKSYKWoaQ/4a24e9015c360799cfb072adcd92cc5e/P_G_Logo_RGB.svg"
+  },
+  "colour_handling": "multi"
+}

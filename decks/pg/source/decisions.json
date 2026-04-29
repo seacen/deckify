@@ -1,0 +1,21 @@
+{
+  "interaction_mode": "ask-user-question",
+  "host": "claude-code",
+  "language": "English",
+  "logo_choice": "74d017a9",
+  "logo_choice_reason": "Single canonical SVG (P_G_Logo_RGB.svg) found in every header. Multi-color self-contained gradient — used as-is in both light and dark contexts. No ambiguity — Round 1 skipped.",
+  "palette_anchor": "#003DA5",
+  "palette_anchor_reason": "P&G Blue dominant 115/150 vs paper-white. 100× over any other accent. No Round 2 needed.",
+  "font_fallback": "Montserrat -> sans-serif system stack",
+  "font_fallback_reason": "Site loads Montserrat via Google Fonts; freely licensable. No licensing concern. Round 3 skipped.",
+  "slide_emphasis": [
+    "cover_type_a",
+    "big_pullquote_type_j",
+    "data_table_type_g",
+    "chart_type_h",
+    "two_column_type_f",
+    "flip_cards_type_e",
+    "timeline_type_i"
+  ],
+  "slide_emphasis_reason": "User selected all categories. Build a comprehensive deck that exercises every slide type — useful as a wide proof for P&G annual report / ESG / brand portfolio decks."
+}
