@@ -1,0 +1,13 @@
+# L'Oreal Group corporate site — pages picked for brand recon
+# Group/about pages typically expose real wordmark, palette tokens, hero typography
+https://www.loreal.com/en/group/
+https://www.loreal.com/en/group/about-loreal/our-purpose/
+https://www.loreal.com/en/group/about-loreal/strategy-and-model/
+https://www.loreal.com/en/group/culture-and-heritage/l-oreal-history/
+https://www.loreal.com/en/group/culture-and-heritage/our-values-and-mindset/
+# Brands portfolio — rich imagery, brand-system polish
+https://www.loreal.com/en/our-global-brands-portfolio/
+# Mediaroom — usually has brand assets / press kits
+https://www.loreal.com/en/mediaroom/
+# Commitments — long-form copy register
+https://www.loreal.com/en/commitments-and-responsibilities/

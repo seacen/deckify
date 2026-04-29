@@ -1,0 +1,51 @@
+{
+  "host": "www.loreal.com",
+  "brand_name": "L'Oréal",
+  "base_url": "https://www.loreal.com/",
+
+  "chosen_logo": {
+    "id": "f26c5564",
+    "why": "Inline SVG sitting in <header>, viewBox 0 0 137 36 (the canonical wordmark aspect ratio), 9 paths with maxPathDLen ≈ 3023 — clearly the typeset 'L'ORÉAL' wordmark visible at the top center of every screenshot. Currentcolor-flippable so it works on both white and dark covers."
+  },
+
+  "alt_logo_ids": ["2ac779af", "b5522703"],
+
+  "palette": {
+    "brand_primary":   { "hex": "#000000", "name": "ink-black",      "evidence": "color_frequency #1 (331 occurrences across all 8 pages) — used for wordmark, body type, hairlines and primary CTA borders. The L'Oréal corporate identity is fundamentally black-on-white." },
+    "brand_secondary": { "hex": "#CDC4BA", "name": "stone-beige",    "evidence": "color_frequency #11 (48 occurrences, all 8 pages) — the warm neutral seen as section-divider band on the brands-portfolio screenshot and in editorial hero overlays. The signature L'Oréal warm tone that lifts the design out of pure corporate B/W into luxury beauty." },
+    "ink":             { "hex": "#3D3D3D", "name": "graphite",       "evidence": "color_frequency #3 (216 occurrences) — body-text color, softer than pure black, gives editorial copy a slightly warm-grey feel." },
+    "paper":           { "hex": "#FFFFFF", "name": "paper-white",    "evidence": "color_frequency #2 (329 occurrences) — page background. L'Oréal's surfaces are uncompromisingly white, making the typography and photography do all the work." },
+    "accents": [
+      { "hex": "#3860BE", "name": "link-blue",   "evidence": "color_frequency 80 — link / interactive accent. Restrained corporate blue, used sparingly for inline links and secondary CTAs." },
+      { "hex": "#68B631", "name": "commit-green","evidence": "color_frequency 32 — appears on the For-The-Planet sustainability commitments pages. Semantic green for environmental/positive content." },
+      { "hex": "#2E3644", "name": "deep-navy",   "evidence": "color_frequency 32 — used on dark editorial cards and image overlays as an alternative to pure black for hero treatments." },
+      { "hex": "#F4F4F4", "name": "fog-grey",    "evidence": "color_frequency 32 — light surface tint for alternate-section banding and card backgrounds." }
+    ]
+  },
+
+  "typography": {
+    "display_font": { "family": "Halesworth, 'Times New Roman', Times, serif", "evidence": "fonts.computed_heading lists Halesworth (proprietary L'Oréal serif) with Times New Roman / Times as fallback chain. Visible as light-weight serif italic in 'Who We Are' / 'Our History' hero treatments." },
+    "body_font":    { "family": "'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif", "evidence": "fonts.computed_primary = HelveticaNowDisplay (101 occurrences, dominates body and chrome). HelveticaNowDisplay is a paid Monotype face — fallback chain provides graceful degrade." },
+    "mono_font":    { "family": "'SF Mono', Menlo, Consolas, monospace", "evidence": "Not present on the recon site, included as a generic technical fallback for tabular figures and code blocks." }
+  },
+
+  "spacing_radius_shadow": {
+    "radius_style":  "sharp",
+    "shadow_style":  "flat",
+    "spacing_density": "airy",
+    "evidence": "Computed surfaces show buttons with 0px or near-0px radius (square CTAs in the cookie banner), no shadow elevation in the chrome, and section padding is generous. The chrome avoids any SaaS-style soft-shadow card look — everything sits on the page like editorial typesetting."
+  },
+
+  "aesthetic": {
+    "mood": "Parisian editorial gravitas",
+    "style_keywords": ["editorial", "humanist-serif", "luxury-restraint", "scientific-corporate", "warm-monochrome", "art-directed"],
+    "precedents": ["Vogue print editorial", "modernist Parisian beauty industry advertising", "Hermès corporate communications"],
+    "voice_register": "aspirational-corporate"
+  },
+
+  "evidence_screenshots": [
+    "recon/pages/en-group/shot.png",
+    "recon/pages/en-group-culture-and-heritage-l-oreal-history/shot.png",
+    "recon/pages/en-our-global-brands-portfolio/shot.png"
+  ]
+}
