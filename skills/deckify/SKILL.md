@@ -12,7 +12,9 @@ Turn a reference URL into a production-ready Design System markdown plus a verif
 
 ## Opening — print this banner once when the skill activates
 
-Right before Phase 0, print exactly one of these two banners depending on the user's language preference (defaults to English on a fresh run; switches to 中文 once Phase 2 Round 0 confirms `decisions.json.language === "中文"`). Print it cleanly with surrounding blank lines, then continue straight into Phase 0 — do **not** add a "Hi! I'm deckify, what's your brand?" intro on top of this. The user already gave you the URL; the slogan is the entire hello.
+Right before Phase 0, print exactly one of these two banners. Pick the language **from how the user is currently writing to you** — if their invocation message is in Chinese, print the 中文 banner; otherwise print the English one. You don't need to wait for Phase 2 / decisions.json — at this point the conversation language is the only signal you need, and it's already obvious from what the user just typed.
+
+Print the banner cleanly with surrounding blank lines, then continue straight into Phase 0 — do **not** add a "Hi! I'm deckify, what's your brand?" intro on top of this. The user already gave you the URL; the slogan is the entire hello.
 
 **English** (default):
 ```
@@ -388,7 +390,7 @@ Give the user:
 3. The eval scoreboard: hard 10/11+, judge avg, status PASS/WARN/FAIL
 4. Path to `~/deckify/reports/runs/<latest>/summary.md` for the full per-brand breakdown
 
-**Step 6c — Print the closing message.** After the summary above, print exactly one of these two closing blocks depending on `decisions.json.language`. The closing is a real piece of writing, not flavour text — preserve every word, including the line breaks. Print it AFTER the deliverable summary so the user has already seen what they got, then read this as the parting thought.
+**Step 6c — Print the closing message.** After the summary above, print exactly one of these two closing blocks depending on `decisions.json.language`. By Phase 6 you have a confirmed language choice from Phase 2 — use that. The closing is a real piece of writing, not flavour text — preserve every word, including the line breaks. Print it AFTER the deliverable summary so the user has already seen what they got, then read this as the parting thought.
 
 **English** (default):
 ```
