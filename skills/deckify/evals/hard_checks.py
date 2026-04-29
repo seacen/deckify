@@ -130,20 +130,35 @@ JS_DESKTOP_MEASURE = r"""(()=>{
   }
   // Reset to slide 0
   slides.forEach((s,k)=>s.classList.toggle('active', k===0));
-  // Also probe the brand-wm symbol contents
+  // Also probe the brand-wm symbol contents.
+  // The colour-handling contract is INFERRED from the symbol structure itself,
+  // so the check works on any deck regardless of how it was built:
+  //   - mono   : <symbol fill="currentColor"> wrapping vector paths.
+  //              The cascade colours the whole shape; .logo.W / .logo.L
+  //              flip white/dark via CSS `color:`. ANY inner fill attribute
+  //              (including fill="none") breaks that cascade — strict check.
+  //   - multi  : <symbol> with NO fill="currentColor" attribute, wrapping
+  //              vector paths that carry their own native fills (P&G radial
+  //              gradient, Starbucks green-on-white, etc). The logo always
+  //              renders in its native colours; inner fills are EXPECTED
+  //              and required — skip the hasInnerFill check.
+  //   - raster : <symbol> wrapping <image href="data:..."> for PNG/JPG
+  //              embedding. Inner fills don't apply at all — skip.
   const sym = document.querySelector('symbol#brand-wm');
   if (sym) {
+    const symFill = (sym.getAttribute('fill') || '').toLowerCase();
+    const hasImage = sym.querySelectorAll('image').length > 0;
+    const colourHandling = hasImage ? 'raster' : (symFill === 'currentcolor' ? 'mono' : 'multi');
     out.brandSymbol = {
       pathCount: sym.querySelectorAll('path').length,
       pathDLen: Array.from(sym.querySelectorAll('path')).map(p => (p.getAttribute('d')||'').length),
       textCount: sym.querySelectorAll('text').length,
       imageCount: sym.querySelectorAll('image').length,
       circleCount: sym.querySelectorAll('circle').length,
-      // ANY inner fill attribute is a violation, INCLUDING fill="none".
-      // fill="none" on a wrapper <g> silently zeroes out the entire logo because the
-      // parent <symbol fill="currentColor"> cascade gets overridden — the wordmark
-      // renders 100% invisible while every other check (path d > 40, viewBox sane,
-      // visible_on_cover via getBoundingClientRect) still says PASS. Catch it here.
+      colourHandling: colourHandling,
+      // hasInnerFill is only meaningful in 'mono' mode. Computed in all
+      // modes for diagnostics, but check_logo_renders only fails on it
+      // when colourHandling === 'mono'.
       hasInnerFill: !!sym.querySelector('[fill]:not([fill="currentColor"])'),
     };
   } else {
@@ -304,19 +319,38 @@ def check_logo_renders(measurements: dict) -> dict:
     sym = measurements.get("brandSymbol")
     if not sym:
         return {"passed": False, "evidence": "no <symbol id='brand-wm'> defined"}
-    # must contain either a path with d>40 chars, OR an <image href> (raster fallback embedded)
+    # The contract is structural: must contain either a real <path d=...> OR
+    # an <image href> (raster fallback). Both are valid embed forms.
     has_real_vector = any(d > 40 for d in sym.get("pathDLen", []))
     has_image = sym.get("imageCount", 0) > 0
-    has_inner_fill_violation = sym.get("hasInnerFill", False)
-    # Also confirm logos rendered visibly on at least the cover
+
+    # Visibility check is universal: the logo MUST render with non-zero
+    # bounding box on the cover, regardless of colour-handling mode.
     visible_on_cover = False
     if measurements.get("slides"):
         cover = measurements["slides"][0]
         visible_on_cover = any(b.get("visible") for b in cover.get("logoBboxes", []))
+
+    # The hasInnerFill check is contract-conditional:
+    #   - mono : strict — any inner fill (including fill="none") breaks the
+    #            currentColor cascade and silently zeroes out the logo.
+    #            This is the Mars regression; embed_logo's strip pass
+    #            catches it for vetted SVG sources but a hand-pasted logo
+    #            could re-introduce it, which is why we still check.
+    #   - multi: native colours expected — inner fills are required for the
+    #            logo to render at all. Skip the check.
+    #   - raster: native bytes inside <image>; the concept doesn't apply.
+    colour_handling = sym.get("colourHandling", "mono")  # default to strict
+    if colour_handling == "mono":
+        has_inner_fill_violation = sym.get("hasInnerFill", False)
+    else:
+        has_inner_fill_violation = False
+
     passed = (has_real_vector or has_image) and visible_on_cover and not has_inner_fill_violation
     return {
         "passed": passed,
         "evidence": {
+            "colour_handling": colour_handling,
             "has_real_vector_path": has_real_vector,
             "has_embedded_image": has_image,
             "visible_on_cover": visible_on_cover,

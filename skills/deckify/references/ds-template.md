@@ -189,31 +189,50 @@ Slide "looks good" is engineering-quantifiable. The rules below are hard rules; 
 
 ### Definition (once per HTML file)
 
-The logo must be a real brand identity asset, **fully inlined** into the HTML (no external network dependency). Two embed paths are allowed; `embed_logo.py` picks one automatically:
+The logo must be a real brand identity asset, **fully inlined** into the HTML (no external network dependency). `embed_logo.py` automatically chooses one of three colour-handling tiers based on what the source SVG actually contains. The tier you got is recorded in `<brand>/source/assets/logo.report.json` as `colour_handling`.
 
-**A. SVG vector path** (preferred) — when an SVG source can be obtained from the brand site, Wikipedia, or a brand-asset page:
+#### Tier A — `mono` (single-colour wordmark or silhouette)
+
+Used when the source SVG is a single-colour wordmark (Tiffany "TIFFANY&CO.", Unilever wordmark, Apple silhouette, Stripe wordmark, etc). Inner fills are stripped so the `<symbol fill="currentColor">` cascade colours the whole shape; `.logo.W` / `.logo.L` flip white-on-dark / brand-dark-on-light by setting CSS `color:`.
 
 ```html
 <svg style="display:none" aria-hidden="true">
   <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}" fill="currentColor">
-    {{LOGO_PATH_ELEMENTS}}  <!-- inner <path>/<g> must carry NO fill attribute at all,
-                                  so currentColor cascades in. See "fill-cascade pitfall" below. -->
+    {{LOGO_PATH_ELEMENTS}}  <!-- inner <path>/<g> carry NO fill attribute at all -->
   </symbol>
 </svg>
 ```
 
 > ⚠️ **fill-cascade pitfall** <!-- ENGINEERING-DNA: logo-inner-fill -->
-> Many brand-site SVG exporters wrap real glyph paths inside a defaulting group:
-> `<g fill="none" fill-rule="evenodd"><g><path d="..."/></g></g>`. Pasted as-is into our
+> Many SVG exporters wrap real glyph paths inside a defaulting group:
+> `<g fill="none" fill-rule="evenodd"><g><path d="..."/></g></g>`. Pasted into our
 > `<symbol fill="currentColor">`, the inner `fill="none"` **wins** over the parent
 > currentColor cascade — the wordmark renders 100% invisible while every byte-level
 > check (path-d length, viewBox, even `visible_on_cover` via getBoundingClientRect)
-> still says PASS. **Strip every inner `fill` attribute (including `fill="none"`)
-> before embedding.** `embed_logo.py` does this automatically; if you ever hand-paste
-> a logo, do it manually. The `logo_renders` hard check rejects any inner `fill` other
-> than `fill="currentColor"`.
+> still says PASS. **In tier A every inner `fill` (including `fill="none"`) MUST
+> be stripped.** `embed_logo.py` does this automatically; the `logo_renders` hard
+> check enforces it (mono-mode only) by rejecting any inner `fill` that isn't
+> `fill="currentColor"`. If you hand-paste a logo, strip manually.
 
-**B. PNG/JPG/WebP base64 embed** (raster fallback) — when only a raster logo is available (minimum 64×64), base64-encode it and wrap it in the same `<symbol>` via `<image href>`:
+#### Tier B — `multi` (multi-colour or gradient SVG)
+
+Used when the source SVG contains `<linearGradient>`, `<radialGradient>`, `fill="url(#…)"`, or two-or-more distinct fill colours — typically circular badges (P&G), figurative marks (Starbucks green-on-white, Netflix N), tri-colour glyphs, or tint-on-tint logos.
+
+```html
+<svg style="display:none" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}">  <!-- NO fill="currentColor" on the symbol -->
+    {{LOGO_PATH_ELEMENTS}}  <!-- inner <path>/<g>/<defs>/<gradient> kept verbatim with their native fills -->
+  </symbol>
+</svg>
+```
+
+The logo always renders in its native colours. **`.logo.W` / `.logo.L` flipping is a no-op** in this tier — gradient stops do not accept the `currentColor` cascade. Cover slides for tier-B brands need a layout that ensures contrast natively (see "Multi-colour cover handling" below).
+
+> The `logo_renders` hard check inspects `<symbol>` for `fill="currentColor"`; if it's absent and `<image>` is also absent, the check infers tier B and **skips** the `hasInnerFill` rule. Inner fills are expected and required.
+
+#### Tier C — `raster` (PNG/JPG/WebP fallback)
+
+Used only when no SVG source is available and a raster logo passes the quality gate (minimum 64×64). The bytes are base64-embedded inside an `<image href>`:
 
 ```html
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg"
@@ -224,7 +243,18 @@ The logo must be a real brand identity asset, **fully inlined** into the HTML (n
 </svg>
 ```
 
+Like tier B, `.logo.W` / `.logo.L` flipping is a no-op (raster pixels don't respond to CSS `color:`). Same cover-handling caveat applies. Resolution-bound — prefer tiers A/B whenever an SVG source can be found, even if the raster gate also passes.
+
 > ⚠️ **Typographic placeholders are forbidden**: faking a logo with `<text>` of the brand name (e.g. `<text>P&G</text>`, a generic disc-with-letter) is a build failure. The `logo_renders` hard check rejects `<symbol>` blocks that contain only `<text>`. If no source produces a real logo, **stop and ask the user** for an original file — never invent a placeholder.
+
+#### Multi-colour cover handling (tiers B and C only) <!-- ENGINEERING-DNA: logo-multicolor-cover -->
+
+Tier-A logos flip cleanly on any background via `.logo.W` / `.logo.L`. Tiers B and C don't — the logo renders in its native colours regardless. Two design responses, in order of preference:
+
+1. **Choose a cover background where the native logo reads cleanly.** A P&G blue-and-white badge sits on its own white circular plate or on a light cover; a Starbucks green-and-white siren sits on cream. The cover doesn't need to be `var(--surface)` — it just needs enough contrast around the logo's bounding box. **Don't try to flip via CSS** — the symbol won't respond.
+2. **Use a backplate** when a dark cover is non-negotiable (brand mood requires it). Wrap the `.logo` in a `.logo-chip` with `background: #fff; border-radius: 50%; padding: 8px;` (size to taste). The badge then floats on white inside a small chip, the chip floats on the dark cover. This pattern was used in early P&G / Starbucks deckify runs and is acceptable when option 1 won't fit the brand voice.
+
+The pre-ship checklist (§13) enforces "logo visibly renders on cover" regardless of tier — but does NOT enforce `.W` / `.L` flip on tiers B/C.
 
 Source resolution order (the actual order `embed_logo.py` tries):
 1. Inline SVG inside the page's `<header>` (filtered to drop utility icons with viewBox < 60px)
