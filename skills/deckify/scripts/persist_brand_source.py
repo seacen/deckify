@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """persist_brand_source.py — copy durable Phase 1/2 artifacts out of the
-transient workspace into the user's repo.
+transient workspace into the user's home deckify directory.
 
 Phase 1 produces a temp workspace under the OS tempdir (/var/folders/.../T/
 deckify-<slug>-<rand>/ on macOS, %TEMP%\\deckify-... on Windows). When the
@@ -11,9 +11,9 @@ OS sweeps that dir, we don't want to lose:
   - assets/          (quality-gated logo files: .svg / .png / .embed.html / .dataurl)
 
 These are durable artifacts: they encode judgment + user input that's
-expensive to recreate. They go into <repo>/decks/<brand>/source/ alongside
-the DS markdown and the verification deck — that's the "everything you'd
-need to regenerate the deck" bundle.
+expensive to recreate. They go into ~/deckify/decks/<brand>/source/
+alongside the DS markdown and the verification deck — that's the
+"everything you'd need to regenerate the deck" bundle.
 
 The big regenerable junk (recon/ DOM dumps, raw-assets.json, screenshots)
 stays in the tempdir and is swept by the OS.
@@ -21,7 +21,7 @@ stays in the tempdir and is swept by the OS.
 Usage:
     python3 persist_brand_source.py <workspace_dir> <brand-slug>
 
-Outputs to: <repo-root>/decks/<brand-slug>/source/
+Outputs to: ~/deckify/decks/<brand-slug>/source/
 
 Idempotent: re-running overwrites the source/ tree, so this is safe to call
 at the end of any successful run.
@@ -31,39 +31,33 @@ import sys
 from pathlib import Path
 
 
-def find_repo_root() -> Path:
-    """Find the user's project root, where decks/<brand-slug>/source/ should land.
+def user_deckify_root() -> Path:
+    """Resolve the user-level home deckify directory: ~/deckify/.
 
-    Search order matters here. The script is shipped inside the deckify skill,
-    which gets symlinked / installed into Claude's plugin cache (e.g.
-    ~/.claude/plugins/.../skills/deckify/scripts/) — so the script's *own
-    location* points at the deckify repo, NOT at wherever the user is actually
-    working. A user running deckify on their own brand from a totally
-    different project would otherwise have their durable artefacts written
-    into the deckify source repo. That's the Mars-session bug we are fixing.
+    Why home-fixed instead of cwd-derived: every previous resolution
+    strategy had a failure mode in practice.
 
-    Resolution order:
-      1. cwd, then walking up — this is the user's project. Highest priority.
-      2. cwd unconditionally — even if no `decks/` exists yet, persist into
-         a fresh `<cwd>/decks/<brand>/source/`. The user is here for a reason;
-         create the directory rather than escaping to the skill's repo.
-      3. (No script-location fallback. If cwd genuinely isn't a project, the
-         user will see the artefacts in cwd and can move them manually — far
-         better than silently dumping into Claude's plugin cache.)
+      - script-location: walked up from this file's location and landed in
+        the deckify skill source repo (because the skill is symlinked into
+        Claude's plugin cache). Mars session reproduced this bug —
+        artefacts wrote into the skill's own decks/ tree.
+      - cwd-first: a user running deckify *from* the deckify source repo
+        would still drop artefacts there. P&G and L'Oréal sessions
+        reproduced this — even after the cwd-first fix, repo-internal
+        cwds remained ambiguous.
+
+    A fixed home-directory convention removes all ambiguity. Every
+    deckify run for every brand from every cwd writes to the same
+    predictable place: ~/deckify/decks/<brand>/. The skill source repo
+    keeps its own decks/<brand>/ as a maintainer-only reference panel
+    (Tiffany / Unilever / Stripe / Apple / Coca-Cola); user runs never
+    touch it.
+
+    The directory is created on first use. No environment variable
+    override is supported (cf. previous failure modes — every escape
+    hatch we've added has been the bug we're fixing later).
     """
-    cwd = Path.cwd().resolve()
-    # Walk up from cwd looking for an existing decks/ — the strongest signal
-    # that this is a deckify project.
-    p = cwd
-    for _ in range(8):
-        if (p / "decks").is_dir():
-            return p
-        if p == p.parent:
-            break
-        p = p.parent
-    # No decks/ ancestor found — persist into cwd anyway. This is the
-    # "first run on a new project" case; mkdir will create decks/<brand>/.
-    return cwd
+    return Path.home() / "deckify"
 
 
 def main() -> int:
@@ -79,8 +73,8 @@ def main() -> int:
         print(f"workspace not found: {ws}", file=sys.stderr)
         return 1
 
-    repo_root = find_repo_root()
-    target = repo_root / "decks" / safe_slug / "source"
+    home_root = user_deckify_root()
+    target = home_root / "decks" / safe_slug / "source"
     target.mkdir(parents=True, exist_ok=True)
 
     copied = []
