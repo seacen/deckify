@@ -19,9 +19,10 @@ Print the banner cleanly with surrounding blank lines, then continue straight in
 **English** (default):
 ```
 ═══════════════════════════════════════════════════════════════════════
-        PPT just turned the page.
-        AI takes the canvas from here —
-        in HTML, where stories run further.
+        The next deck writes itself.
+
+        Train deckify on your brand once.
+        Every deck after that is just a prompt.
 
                                                               — deckify
 ═══════════════════════════════════════════════════════════════════════

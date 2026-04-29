@@ -1,0 +1,53 @@
+{
+  "host": "www.mi.com",
+  "brand_name": "Xiaomi",
+  "base_url": "https://www.mi.com/global/",
+
+  "chosen_logo": {
+    "id": "c34120b0",
+    "why": "Inline SVG with class 'logo__mi' sitting in the global header on every page. ViewBox 0 0 112 112 (square), 2 paths (orange rounded-square shell + inner white 'mi' mark). Visually matches the canonical orange squircle in the home / about / mobile / smart-home shot.png headers. Vector + already two-tone, no need for currentColor flipping."
+  },
+
+  "alt_logo_ids": ["34b661ba", "ae25b930", "f1a4a3a9"],
+
+  "palette": {
+    "brand_primary":   { "hex": "#FF6700", "name": "xiaomi-orange",      "evidence": "color_frequency: #FF6700 ×24 across 6 pages + #FF6900 ×8 (logo-internal variant). The single recognisable brand chord across the entire global site." },
+    "brand_secondary": { "hex": "#191919", "name": "ink-deep",            "evidence": "color_frequency: #191919 ×35 across 6 pages — used for display headings on white surfaces (about / mobile / smart-home heroes)." },
+    "ink":             { "hex": "#191919", "name": "ink",                 "evidence": "Same as secondary — Xiaomi pairs ink-deep #191919 with paper white as the base reading colour, not pure #000." },
+    "paper":           { "hex": "#FFFFFF", "name": "paper",               "evidence": "color_frequency: #FFFFFF ×49 across 7 pages — dominant page surface on about / mobile / smart-home / 17 Ultra (white-out base for product photography)." },
+    "accents": [
+      { "hex": "#898989", "name": "mid",     "evidence": "color_frequency: #898989 ×72 across 4 pages — secondary text + meta labels + spec bullets." },
+      { "hex": "#F5F5F5", "name": "surface", "evidence": "color_frequency: #F5F5F5 + #F7F7F7 + #EFEFEF — neutral wash for product cards / 'Featured Products' track on home." },
+      { "hex": "#1D4ED8", "name": "link",    "evidence": "color_frequency: #1D4ED8 ×10 across 5 pages — used for hyperlink semantics (legal, support, sustainability)." },
+      { "hex": "#000000", "name": "stage",   "evidence": "color_frequency: #000000 ×94 — the dark cinematic stage Xiaomi uses for hero / product launch covers (Leica imaging cooperation banner, 17 Ultra photography)." }
+    ]
+  },
+
+  "typography": {
+    "display_font": { "family": "MiSans Latin",     "evidence": "fonts.computed_heading + fonts.frequencies: 'MiSans Latin' ×49 — Xiaomi's proprietary geometric sans, freely licensed. Used for every display surface from nav to hero to product names." },
+    "body_font":    { "family": "MiSans Latin",     "evidence": "fonts.computed_primary + fonts.frequencies: same family carried into long-form body, paired with 'MiSans' / 'Hiragino Sans GB' / 'Microsoft Yahei' for CJK fallback chain." },
+    "mono_font":    { "family": "SFMono-Regular",   "evidence": "Default-stack fallback — Xiaomi global doesn't ship a custom mono; SF Mono / Menlo on Apple, Consolas on Windows is the visual register their docs pages use." }
+  },
+
+  "spacing_radius_shadow": {
+    "radius_style":    "softly-rounded with pill CTAs",
+    "shadow_style":    "flat with photographic depth",
+    "spacing_density": "airy",
+    "evidence": "Computed_palette across about / mobile / smart-home shows white-out flat surfaces, no card shadows. CTAs are fully-rounded pills ('Learn more' on home hero, 'Buy Now' green pill on product pages). Cards are 8-12 px radius. Hero photography provides depth instead of shadows. Section padding is generous (multi-screen scroll rhythm)."
+  },
+
+  "aesthetic": {
+    "mood": "engineered cinematic confidence",
+    "style_keywords": ["engineered", "cinematic", "geometric", "premium-accessible", "photographic"],
+    "precedents": ["Apple product page rhythm (white-out + dramatic product photography)", "Leica brand poise (Xiaomi × Leica imaging cooperation is on the home banner)", "Samsung Galaxy flagship pages (dense spec-led typography on dark stages)", "Sony Xperia / Bravia campaign mood"],
+    "voice_register": "aspirational-technical — 'Innovation for everyone' is the corporate slogan: democratised flagship-grade engineering, restated with confidence, not marketing fluff"
+  },
+
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/global-about/shot.png",
+    "recon/pages/global-product-xiaomi-17-ultra/shot.png",
+    "recon/pages/global-hyperos/shot.png",
+    "recon/pages/global-about-sustainability/shot.png"
+  ]
+}

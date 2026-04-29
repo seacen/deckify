@@ -515,6 +515,29 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 - Structure: Logo top-right → Eyebrow → Giant headline → Italic subtitle → Meta row
 - **No decorative lines of any kind** — no hairlines, no accent lines, no gradient borders. The background is the surface.
 
+#### Cover vertical anchor rule <!-- ENGINEERING-DNA: cover-vertical-anchor -->
+
+**Cover content is centered by default, never `flex-end`-glued to the bottom.** The cover is a fixed 720 px canvas, but the hero headline should sit **visually anchored around the upper-middle** of the frame — that's the universal product-page hero rhythm (title + subtitle land in the 40–55% viewport band).
+
+```css
+.cov          { display: flex; flex-direction: column; }
+.cov-top      { flex: 0 0 auto; padding: 36px 48px 0 96px; }    /* eyebrow + logo row, not part of absorber */
+.cov-sc       { flex: 1 1 0; min-height: 0; overflow: hidden;   /* this IS the cover's absorber */
+                display: flex; flex-direction: column; justify-content: center;
+                padding: 0 96px; gap: 22px; }
+.cov-bot      { position: absolute; bottom: 28px; left: 96px; right: 96px;   /* meta row absolutely positioned, doesn't steal absorber height */
+                display: flex; justify-content: space-between; align-items: center; }
+```
+
+**Anti-patterns (known failures):**
+- `.cov-sc { justify-content: flex-end; padding: 0 96px 28px 96px; }` — pins title + subtitle to the cover's bottom edge; meta row sits right under them; the lower half packs while the upper half is empty, breaking the visual balance.
+- Putting the meta row ("SOURCE · ... · N SLIDES · ...") inside `.cov-sc` with flex `gap` instead of absolutely positioning it. The meta row then participates in the absorber's height calculation and pushes title + subtitle even lower. **The meta row must escape the flex flow** (absolute) or live in its own `flex: 0 0 auto` band.
+
+**Subtitle wrapping discipline:**
+- Subtitle `max-width: 640px` (don't go full-bleed; long lines break in awkward places, especially in CJK)
+- Keep copy ≤ 2 lines (≤ ~80 chars in Latin, ~64 chars in CJK)
+- Don't write multi-clause subtitles — write one declarative sentence + one optional footnote-style fragment
+
 ### Type B — Two-column content
 Comparisons, feature lists, metrics. `grid-template-columns: 1fr 1fr; gap: 20px`. Collapses on mobile.
 
@@ -548,6 +571,42 @@ Slide dominated by a table or structured data grid. Used for feature comparisons
 - 5 rows is the comfortable count at standard 14 px row-padding (cell `padding: 14px 18px`).
 - 6+ rows require either (a) tightening cell padding to `padding: 10px 16px` or (b) splitting the data across two slides. Do not let the absorber clip — the `text_layout_safe` hard check catches it.
 - If the table needs 6+ rows AND a side callout in the absorber, split. Don't pack.
+
+#### Tables must scroll horizontally on mobile <!-- ENGINEERING-DNA: type-e-mobile-scroll -->
+
+**The problem**: tables don't auto-collapse the way grid / flex layouts do. A 6-column table at 375 px viewport width gives each column ~55 px, and longer cell content (spec strings, product names, technical parameters) either **overflows the deck horizontally or compresses into an unreadable character pile**. The `mobile_collapse` hard check **does not catch this** — it only inspects `body.scrollWidth`, but a table inside an absorber with `overflow:hidden` won't push `body` wider; the table is visually broken while every automated check still passes.
+
+**Mandatory rule**: every Type E slide must switch `.dt-wrap` into a horizontal-scroll container in the mobile media query:
+
+```css
+@media (max-width: 768px) {
+  .dt-wrap {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dt {
+    min-width: 560px;          /* below this, horizontal scroll engages */
+    font-size: 13px;
+  }
+  .dt th, .dt td {
+    padding: 8px 12px;
+    white-space: nowrap;        /* prevent narrow columns from line-wrapping cells */
+  }
+  .dt th:first-child, .dt td:first-child { padding-left: 16px; }
+  .dt th:last-child,  .dt td:last-child  { padding-right: 16px; }
+  .dt-foot { flex-wrap: wrap; gap: 8px; }
+}
+```
+
+**Why `min-width: 560px`**: 560 ≈ "6 columns × 90 px average" — enough headroom for ALL-CAPS header labels and most spec content to render on one line. Tune by column count: 3 cols → 360, 4 → 440, 5 → 500, 6 → 560, 7+ → ≥ 640.
+
+**Anti-patterns:**
+- Don't shrink `.dt` font below 11 px on mobile to fit the original column widths in the viewport — violates the §3 12 px floor.
+- Don't `display: grid` the table cells on mobile to rearrange them — breaks accessibility (screen readers navigate by `<th>` / `<td>` relationships).
+- Don't convert the table to "card view" (each row becomes a label-value card) — loses inter-column comparison and is expensive to implement. Horizontal scroll is the most restrained fix.
+
+`.dt-wrap` **still** keeps `overflow: hidden` on desktop (one of the three layers in the fit contract). The mobile switch is isolated by the `@media` selector; the two states don't interfere.
 
 ### Type F — Image slide
 One or more images dominate the slide, with text anchored to a calm area. Used to show real product UI, real screenshots, or contextual photography that makes an abstract concept concrete.

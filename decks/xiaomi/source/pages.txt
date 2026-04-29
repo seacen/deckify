@@ -1,0 +1,14 @@
+# About — primary brand page, expected to expose wordmark + values + palette
+https://www.mi.com/global/about/
+# Founder/Leadership — long-form prose, brand voice
+https://www.mi.com/global/about/founder/
+# ESG / Sustainability — values + mood pages tend to expose extended palette
+https://www.mi.com/global/about/sustainability/
+# HyperOS — flagship software brand showcase, often reveals premium aesthetic + typography
+https://www.mi.com/global/hyperos/
+# Flagship product page — Xiaomi 17 Ultra (Leica camera tie-in, premium visual mood)
+https://www.mi.com/global/product/xiaomi-17-ultra/
+# Mobile category landing — typography + brand color in long form
+https://www.mi.com/global/mobile/
+# Smart Home category — lifestyle mood + secondary palette
+https://www.mi.com/global/smart-home/

@@ -1,31 +1,18 @@
-# {{BRAND_NAME}}-PPT-Design-System
+# 小米-PPT-Design-System
 
-> 为 {{BRAND_NAME}} 制作的所有 deck 共用的视觉语言。请严格遵循，让每一份新 deck 都一眼被识别为同一家族。
+> 为 小米（Xiaomi）制作的所有 deck 共用的视觉语言。请严格遵循，让每一份新 deck 都一眼被识别为同一家族。
+
+来源：基于 https://www.mi.com/global/ 抓取的 7 个子页（home / about / about-founder / about-sustainability / hyperos / mobile / smart-home / xiaomi-17-ultra）合成。
 
 ---
 
-<!--
-  TEMPLATE NOTES (delete this comment block in the generated output):
-
-  Sections marked <!-- BRAND-VARIABLE --> must be filled with brand-specific content.
-  Sections marked <!-- ENGINEERING-DNA --> must be copied verbatim. They came from
-  real, painful bugs in production decks. Do NOT "simplify" or "trim" them — every
-  line earns its place.
-
-  Placeholder syntax: {{TOKEN}}. Replace each from $WS/decisions.json.
--->
-
 ## 1. 设计理念
 
-<!-- BRAND-VARIABLE: 1-2 paragraphs capturing the brand's mood + a "Constraints vs Freedom" block -->
+**Xiaomi 的视觉语言是一句话：「工程精度 × 戏剧性产品摄影 × 单一橙色徽章。」**
 
-**{{PHILOSOPHY_PARAGRAPH}}**
+白色是停顿、黑色是舞台、橙色 squircle 是签名。每一张 slide 像 Xiaomi 自己的产品页那样运作：大尺寸 hero（往往是黑底高质感产品照或人物特写）+ 极简几何字体（MiSans Latin）+ 唯一一抹 #FF6700 在 logo / eyebrow / CTA 上点睛。其余全部是中性灰阶，把视觉权重让给摄影和字号本身。
 
-> 可参考的 mood 段落示例（挑一个最贴近的、混合或改写后再用）：
-> - **奢侈品 / 编辑 / 字体主导**："借鉴奢侈品牌传播语言：慷慨的留白、高对比的字体、克制的颜色。每个元素都凭功能存在。不要装饰性渐变、不要 stock icon、不要 emoji。"
-> - **工程感 / 网格驱动**："像开发者文档站点一样组织：紧凑网格、monospace 强调、可复制的 code block、大量克制的灰度配一个强 accent。"
-> - **大胆色彩 / 消费向**："高能量、高饱和度、英雄字体、大块插画形状。留白是为了让颜色更亮，不是为了降低噪音。"
-> - **极简单色**："还原性强、近单色调色板、accent 仅用于强调，字体承担所有视觉重量。"
+参考的 mood：**工程美学 × 影院级产品光线 × 平价旗舰的克制**。Apple 产品页的留白节奏、Leica 的镜头气质（Xiaomi 现在把 Leica 联名挂在首屏）、Samsung Galaxy 旗舰页的 spec 密度——但比这三家都更白、更克制、更让产品摄影承担深度。
 
 **两种模式：**
 - **桌面端 (≥ 769 px)**：1280 × 720 px 画布，运行时 scale-to-fit (§5)，键盘/点击导航。
@@ -33,30 +20,30 @@
 
 ### 设计品味 <!-- ENGINEERING-DNA: design-taste -->
 
-**承诺一个清晰的审美立场。** 本 DS 是品牌工具，不是 SaaS 通用模板。基于它做的每一份 deck 第一眼就该让人认出这是 *该品牌* — 不是"又一份得体的商务演示"。极致繁复与极致简约都能成立；失败模式是中庸。
+**承诺一个清晰的审美立场。** 本 DS 是品牌工具，不是 SaaS 通用模板。基于它做的每一份 deck 第一眼就该让人认出这是 *小米* —— 不是"又一份得体的商务演示"。Xiaomi 的失败模式是中庸：紫色渐变 + 灰字 + 一堆等权 stat card —— 那是 SaaS slop，不是小米。
 
 **反 AI 套路规则**（每张 slide、每个组件、每个变体都适用）：
 
-- **不用通用字体默认值。** 品牌字体在 §3 已指定，必须使用。需要 fallback 时也应选最有辨识度的，不能把 Arial / system-ui 当做"设计选择"。
-- **不用陈词滥调的配色。** 纯白底 + 一个紫/蓝色 accent + 板岩灰字 = AI 套路签名。§2 调色板有主导和弦与辅助 accent — 按层级使用，不要扁平化成"白+灰+一种 accent"。
-- **不用等权重的多色装饰网格。** 6 个等权 accent 看起来像 Storybook 配色矩阵，不像品牌。一个主导和弦 + 2–3 个语义 accent（含明确含义）才是正确形态。
-- **不用现成 SaaS 仪表盘 chrome。** 每个组件都 8 px 圆角 + 柔和 drop-shadow + 整齐间距，会把所有品牌做成一个样。按 §2 匹配品牌实际的圆角 / 阴影 / 密度。
-- **不用空洞的氛围词。** "现代、简洁、大胆"什么都形容因此什么都不形容。Slide 标题和段落文案应该具体、具象。
-- **一个编排好的入场动效，而非分散的小动画。** 大部分 slide 只需要一次激活时的内容错时显现；不要给每张卡都加 hover 抖动。
+- **不用通用字体默认值。** MiSans Latin 在 §3 已指定，必须使用 —— 通过 Xiaomi 官方 CDN `@import` 加载。fallback 链里 PingFang SC / Hiragino Sans GB / Microsoft YaHei 兜底 CJK；不要把 Inter / Arial / system-ui 当做"设计选择"。
+- **不用陈词滥调的配色。** 紫/蓝色 accent + 板岩灰字 = AI 套路。Xiaomi 的色谱是 `--ink`（深灰近黑）+ `--paper`（纯白）+ `--accent`（#FF6700 橙）。不要塞紫、青、洋红进 accent 槽。
+- **不用等权重的多色装饰网格。** 6 张 stat card 各染不同色 = Storybook 配色矩阵。Xiaomi 只有一个主导色（橙），其余全部是字号 + 灰阶层级。
+- **不用现成 SaaS 仪表盘 chrome。** 不要每张卡都加柔和 drop-shadow。Xiaomi 的产品页几乎是平的——深度由摄影提供，不由阴影提供。
+- **不用空洞的氛围词。** "现代、简洁、大胆"什么都形容因此什么都不形容。Xiaomi 的 voice 是 **「为发烧而生 / Innovation for everyone」**——具体、技术、平价旗舰式自信。
+- **一个编排好的入场动效，而非分散的小动画。** 大 hero 适合一次 fade-up；不要给每张 stat card 加 hover 抖动。
 
 ### 约束 vs 自由 <!-- ENGINEERING-DNA framing; bullet contents are BRAND-VARIABLE -->
 
-本 Design System 定义了 **硬约束**（永远不能破的）与 **可复用组件**（按需选用的）。它不定义现成配方 — 每张 slide 都应为它自己的内容构图，而不是从模板拼接。
+本 Design System 定义了 **硬约束**（永远不能破的）与 **可复用组件**（按需选用的）。它不定义现成配方 —— 每张 slide 都应为它自己的内容构图，而不是从模板拼接。
 
 **硬约束（锁死）：**
 - Colour palette (§2 tokens only — no ad-hoc colours)
-- {{PRIMARY_FONT}} typeface, no serif/display fonts {{FONT_RESTRICTION_NOTES}}
+- MiSans Latin typeface, no serif/display fonts；CJK 走 PingFang SC / Hiragino Sans GB / Microsoft YaHei 系
 - 12 px 可读性下限
 - 每一张 slide 都必须有 logo
 - **每张 slide 的内容必须包在一个 `.sc` 容器里**（即使是 bespoke 满屏的 Type J / Type A 也是）。`.sc` 是 `fit_contract_intact` 唯一扫描的位置 — bespoke 布局如果直接画在自定义 shell 里，会**静默绕过** absorber 检测、移动端 catch-all、602 px 预算这三道保险。没有 `.sc`，就没有契约。
-- **Logo `<symbol>` 内部不能含任何 `fill` 属性**（包括 wrapper `<g>` 上的 `fill="none"`）。任何内层 fill 都会盖过 `currentColor` 级联，使 wordmark 完全不可见 —— 而 byte 级检查（path d 长度、viewBox、visible_on_cover）会一切显示 PASS。`embed_logo.py` 在物化时已 strip 这些；`logo_renders` hard check 会拒绝任何漏网的。
+- **Logo 是 B 档（multi）**：橙色 squircle + 内白 mi 标，必须保留双色，**永远不要**通过 CSS `fill:` 给 `.logo` 重新染色（会把 squircle 压成单色不可见，详见 §4）。
 - 不用 emoji (👍🎉 等) — 排版符号 (✓ − ! ×) 和几何指示符允许
-- 不用装饰性 stock photography
+- 不用装饰性 stock photography —— Xiaomi 用真实产品摄影 / 真实截图
 - `.shd` header strip on content slides
 - `.sw` border-left accent
 
@@ -64,7 +51,7 @@
 - §7 组件库提供卡片、表格、图表、标签、标记 — 适合时用，不适合时跳过用 bespoke 布局。
 
 **Bespoke 元素（鼓励）：**
-- **在调色板内自由发挥。** {{BESPOKE_EXAMPLES_PARAGRAPH}}
+- **在调色板内自由发挥。** 例如：满屏黑色 hero + 大字白色标题 + 右上橙色 squircle；产品摄影占 60% 宽 + 左侧 spec 数字大字纵列；时间线上里程碑节点用 `--accent` 实心圆 + `--mid` 虚连线。
 - 判定标准是：该元素是否只用了定义过的颜色 token、品牌字体、并尊重可读性下限？如果是，即便不匹配任何具名组件也算"在系统内"。
 - **不要自我限制在具名组件里。** 如果某 slide 需要 §7 不存在的东西，就从 token 出发自己造。最好的 slide 都是从系统 token 出发的 bespoke 构图。
 
@@ -74,84 +61,99 @@
 
 颜色 token 系统有三层：
 
-1. **核心角色 token** — 所有品牌之间名字不变。它们标识颜色 *扮演什么角色*，而不是 *它是什么颜色*。红色品牌的 `--primary` 是红色；蓝色品牌的 `--primary` 是蓝色。
-2. **语义 token** — 所有品牌之间名字不变；编码含义（正向 / 负向 / 警告 / 信息）而不是颜色身份。
-3. **品牌调色 token** — 品牌特有的名字 + hex。这些是品牌实际用到的额外 accent（如 Unilever 的 `--lilac` 和 `--water`、P&G 的 `--spark`、Stripe 的 `--lavender`）。命名按品牌实际叫法 — Phase 1 时从 `brand.json` 抓取。
+1. **核心角色 token** — 所有品牌之间名字不变。它们标识颜色 *扮演什么角色*，而不是 *它是什么颜色*。
+2. **语义 token** — 所有品牌之间名字不变；编码含义（正向 / 负向 / 警告 / 信息）。
+3. **品牌调色 token** — 小米特有的命名 + hex（橙、深炭、舞台黑）。
 
 ```css
 :root {
   /* ── Core role tokens (invariant names) ── */
-  --primary:  {{NAVY_HEX}};   /* Dominant brand chord — cover bg, primary mark colour */
-  --accent:   {{BLUE_HEX}};   /* CTA / link / single saturated highlight */
+  --primary:  #191919;   /* Dominant brand chord — cover bg, primary mark colour (Xiaomi 的"舞台深炭") */
+  --accent:   #FF6700;   /* CTA / link / single saturated highlight — Xiaomi 橙 */
   /* ── Neutrals ── */
-  --surface:  {{SURFACE_HEX}};   /* Paper / slide bg */
+  --surface:  #FFFFFF;   /* Paper / slide bg — Xiaomi 全球站主表面 */
   --white:    #FFFFFF;
-  --ink:      {{INK_HEX}};   /* Body text on light surfaces */
-  --mid:      {{MID_HEX}};   /* Secondary text / muted labels */
-  --rule:     {{RULE_HEX}};   /* Dividers / hairlines */
-  --tint:     {{TINT_HEX}};   /* Subtle row / section bg */
+  --ink:      #191919;   /* Body text on light surfaces — 与 --primary 同源 */
+  --mid:      #898989;   /* Secondary text / muted labels (recon 中 #898989 ×72) */
+  --rule:     #E5E5E5;   /* Dividers / hairlines — 与 --tint 区分 */
+  --tint:     #F5F5F5;   /* Subtle row / section bg (recon 中 #F5F5F5 + #F7F7F7) */
   /* ── Semantic (invariant names; values may map to brand-palette colours) ── */
-  --green:    {{GREEN_HEX}};   /* Positive */
-  --green-bg: {{GREEN_BG_HEX}};
-  --red:      {{RED_HEX}};   /* Negative */
-  --red-bg:   {{RED_BG_HEX}};
-  --warn:     {{WARN_HEX}};   /* Warning / caution */
-  --warn-bg:  {{WARN_BG_HEX}};
-  --teal:     {{TEAL_HEX}};   /* Informational / neutral highlight */
-  --teal-bg:  {{TEAL_BG_HEX}};
+  --green:    #2DA44E;   /* Positive — Xiaomi 商城 "Buy Now" 绿 */
+  --green-bg: #E6F7EC;
+  --red:      #E11D48;   /* Negative */
+  --red-bg:   #FCE7EB;
+  --warn:     #F0C36D;   /* Warning / caution — recon 中的黄色 #F0C36D 系 */
+  --warn-bg:  #FEF3C7;
+  --teal:     #1D4ED8;   /* Informational / neutral highlight — recon link 蓝 */
+  --teal-bg:  #DBEAFE;
   /* ── Brand palette (brand-specific names; expanded from brand.json accents+neutrals) ── */
-{{BRAND_PALETTE_TOKENS}}
+  --xiaomi-orange: #FF6700;   /* The signature chord — same value as --accent, separate name for semantic clarity */
+  --xiaomi-orange-soft: #FF6900;   /* Logo-internal variant from the inline-svg fill */
+  --stage:    #000000;        /* Pure black — for cinematic hero/cover stages (Leica banner, 17 Ultra) */
+  --carbon:   #191919;        /* Deep ink — content bg alternative; same as --ink */
+  --carbon-light: #2A2A2A;    /* Lighter carbon — for camera-ring inner, depth highlights on dark stages, low-contrast bezels */
+  --halo-tint: rgba(255,103,0,0.08);   /* Used on dark covers as faint orange wash behind eyebrows */
 }
 ```
 
 **规则：** <!-- ENGINEERING-DNA -->
-- **Token 名是角色抽象，不是颜色名。** `--primary` 是品牌的主导和弦，不论那是 navy / red / yellow / black。Slide CSS 读 `var(--primary)` 就能拿到当前 brand DS 对应的正确颜色。
-- **每张 slide 只有 *一个* 主导 accent 颜色。** 用 `--accent` 做 slide 的标志性高亮（CTA、callout 边线、chart 主条）。品牌调色 token（如 `var(--lilac)`）是按需取用的装饰，不是并行 accent — 一张 slide 最多用一个装饰性品牌色。
-- **语义颜色仅在含义彼此独立、相对时才同时出现** — 例如一张对比 slide 的 ✓ (`--green`) / ✗ (`--red`)。否则只取一种。
-- **`--tint` 用于行底色，不用于卡片填充。**
-- **永远不用纯黑。** `--primary` 是品牌真实的深色；如果品牌没有深色，用 `--ink` 作为本会用到黑的位置。
+- **Token 名是角色抽象，不是颜色名。** `--primary` 是品牌的主导和弦 —— Xiaomi 的主导色是深炭舞台 #191919；`--accent` 是单一的橙色徽章。Slide CSS 读 `var(--primary)` 拿到的就是当前 brand DS 对应的正确颜色。
+- **每张 slide 只有 *一个* 主导 accent 颜色。** 用 `--accent` 做 slide 的标志性高亮（CTA、callout 边线、chart 主条、eyebrow 上的 ✦）。`--xiaomi-orange-soft` 仅在 logo 内部出现，不要拿来做 slide accent。一张 slide 最多用一个橙色高亮 —— 双橙立刻廉价。
+- **语义颜色仅在含义彼此独立、相对时才同时出现** — 例如规格对比 slide 的 ✓ (`--green`) / ✗ (`--red`)。否则只取一种。
+- **`--tint` 用于行底色，不用于卡片填充。** 卡片填白（`--white`）。
+- **永远不用纯黑做正文。** `--primary` (#191919) 已经是 Xiaomi 真实的深炭，纯 #000 留给 cover stage。
 - **永远不在 slide CSS 里写临时 hex。** 每个颜色都必须来自 token（核心 / 语义 / 品牌调色）。`token_only_colors` hard check 会强制执行。
+
+**深色 cover 配色处方：**
+- 背景：`var(--stage)` 或 `var(--primary)`
+- 标题：`#FFFFFF`（直接用 `--white`）
+- Eyebrow：`var(--accent)`（橙色徽章+小三角符号 ✦）
+- 副标：`rgba(255,255,255,.7)`
+- 不要在深色 cover 上同时用 `--accent` 和 `--teal` —— 会刺眼
 
 ---
 
 ## 3. 字体 <!-- BRAND-VARIABLE: font family + fallback; the scale below is mostly invariant -->
 
-**{{PRIMARY_FONT}}** — 唯一字体。字重 {{WEIGHT_RANGE}}{{ITALIC_NOTE}}。`{{FALLBACK_FONT}}` 作为 {{FALLBACK_USE_CASE}}。
+**MiSans Latin** —— 唯一字体。字重 300 / 400 / 500 / 600 / 700（无斜体；Xiaomi 没有发布 italic 子集）。`PingFang SC / Hiragino Sans GB / Microsoft YaHei` 作为 CJK 字符的回退。
 
-> {{TYPE_PHILOSOPHY_NOTE}}
+> MiSans Latin 是小米 2021 年开源发布的几何无衬线，由汉仪与小米联合设计 —— 字面方正、字重过渡平滑、x-height 较高（屏幕可读性强）。在 Xiaomi 全球站，它统一了从导航到产品 hero 到 spec 表的所有西文字符。Deck 沿用同一字体即视觉一致。
+
+### 加载方式（Xiaomi 官方 CDN）
+
+```css
+/* 在 deck HTML <head> 第一行加这一句即可，无需自托管 woff2 */
+@import url('https://i02.appmifile.com/i18n/fonts/MiSansLatin/index.css');
+```
+
+这是 Xiaomi 自己的 CDN，已包含 light / regular / medium / semibold / bold 五个字重的全 Unicode 子集（Latin / Latin-Ext / Cyrillic / Greek / Vietnamese）。`font-display: swap` 由 Xiaomi 端配置，离线时 fallback 链接管。
 
 ### CJK 字体回退链 <!-- ENGINEERING-DNA: cjk-fallback -->
 
-中文 deck 不能直接用拉丁字体当 body font。Century Gothic / Helvetica Neue / SF Pro / Stripe Sans / Georgia 等都不含 CJK 字形，浏览器对 CJK 字符自动回退到系统默认（macOS 上是 STHeiti 细体，Windows 是微软雅黑 Light），**视觉上立刻显得廉价**。
+中文 deck 不能直接用拉丁字体当 body font。MiSans Latin 不含 CJK 字形，浏览器对 CJK 字符自动回退到系统默认（macOS 上是 STHeiti 细体，Windows 是微软雅黑 Light），**视觉上立刻显得廉价**。
 
 **最低要求**：font-family 链里**必须至少出现一个 CJK 字体名**（PingFang SC / Hiragino Sans GB / Microsoft YaHei / Source Han Sans 等），否则 CJK 字符 100% 落到 OS 默认。`cjk_font_quality` hard check 会强制执行这一条。
 
-**两种合理的字体顺序**（按 deck 的语言比例选）：
-
-1. **CJK-first**（推荐用于中文密度高的 deck）：CJK 字体放最前，拉丁 brand 字体兜底。中英混排时 PingFang 的拉丁补丁会渲染英文，整体风格最统一，中文不会因为字重不匹配显得瘦弱。
-2. **Latin-first**（适用于 brand 拉丁字面强、deck 大量英文术语的场景，如 Stripe API 文档风格）：拉丁 brand 字体放前，CJK 字体跟在后面。CJK 字符会走 CJK 字体，但拉丁部分保留 brand 表达。`cjk_font_quality` 在这种情况下会带 `warning`（不阻断），由 vision judge 决定视觉是否可接受。
+**Xiaomi 中文 deck 的字体链（CJK-first，推荐）：**
 
 ```css
-/* 中文 deck 推荐字体链 — CJK 优先，拉丁兜底 */
+/* 中文 deck 推荐字体链 — CJK 优先，MiSans Latin 兜底拉丁 */
 font-family:
-  /* macOS / iOS 中文（最高优先级 — 对中英都比 brand-latin 干净） */
+  /* macOS / iOS 中文（最高优先级 — 干净、与 MiSans 同为现代几何无衬线） */
   'PingFang SC', '苹方-简',
   /* macOS 较旧 / 阅读体严肃面 */
   'Hiragino Sans GB', '冬青黑体简体中文',
   /* Windows 中文 */
   'Microsoft YaHei', '微软雅黑',
   /* Linux / Android / 通用 */
-  'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC',
-  /* Brand 拉丁字体 — 仅作 brand-mark / display 修饰 */
-  '[BRAND-LATIN]',
+  'Source Han Sans SC', 'Noto Sans SC',
+  /* 拉丁 brand 字体 — 渲染所有英文/数字 */
+  'MiSans Latin', 'MiSans',
   /* 系统通用 */
-  system-ui, -apple-system, sans-serif;
+  system-ui, -apple-system, 'Helvetica Neue', sans-serif;
 ```
 
-**Sans-serif brand**（Unilever / Stripe / Apple / P&G）→ 配 PingFang SC / Microsoft YaHei / Source Han Sans 这类 sans CJK 字体。
-**Serif brand**（Coca-Cola Georgia / 编辑感品牌）→ 配 `'Songti SC', '宋体-简', 'Source Han Serif SC', 'Noto Serif SC'`，否则 Georgia + 黑体的混搭会跳戏。
-
-**字重提升（CJK-first 时尤其重要）**：PingFang SC 的 Regular（400）较细 — 大字标题用 700（Semibold/Bold），正文用 500（Medium）以上，避免"中文显瘦"的廉价感。
+**字重提升**：PingFang SC 的 Regular（400）较细 —— 大字标题用 700（Bold），正文用 500（Medium）以上，避免"中文显瘦"的廉价感。MiSans Latin 与 PingFang SC Medium 在视觉权重上匹配良好，混排不跳戏。
 
 **禁止**：font-family 链里完全没有 CJK 字体。`cjk_font_quality` hard check 会立刻 FAIL。
 
@@ -159,15 +161,17 @@ font-family:
 
 | 用途 | 字号 | 字重 | 字距 | 备注 |
 |---|---|---|---|---|
-| 封面大标 | 82 px | 900 | −0.03 em | 行高 0.98 |
-| 封面副标 | 22 px | 300 斜体 | +0.01 em | |
-| 内页标题 | 50 px | 900 | −0.025 em | 行高 1.06 |
+| 封面大标 | 82 px | 700 | −0.03 em | 行高 0.98（MiSans 没有 900 字重，700 是最重） |
+| 封面副标 | 22 px | 300 | +0.01 em | 不用斜体（MiSans 无斜体；用 300 weight 区分层级） |
+| 内页标题 | 50 px | 700 | −0.025 em | 行高 1.06 |
 | 内页副标 | 20 px | 600 | +0.01 em | `--mid` |
-| Eyebrow / 徽章 | 11–12 px | 800 | +0.18–0.24 em | 全大写 |
-| 卡片标题 | 28 px | 900 | −0.01 em | |
-| 正文 / 列表 | 16 px | 600 | 默认 | 行高 1.5–1.6 |
-| 表格 / 数据 | 13–14 px | 700–800 | +0.1 em | 全大写 |
-| 说明 / 元信息 | 12–13 px | 700–800 | +0.14 em | 绝不低于 12 px |
+| Eyebrow / 徽章 | 11–12 px | 700 | +0.18–0.24 em | 全大写，配 ✦ 三角作前缀 |
+| 卡片标题 | 28 px | 700 | −0.01 em | |
+| 正文 / 列表 | 16 px | 500 | 默认 | 行高 1.5–1.6 |
+| 表格 / 数据 | 13–14 px | 600 | +0.1 em | 全大写表头 |
+| 说明 / 元信息 | 12–13 px | 600 | +0.14 em | 绝不低于 12 px |
+
+> 注：MiSans Latin 不附 900 黑体字重（最重为 700 Bold）。模板里的"900 字重"在所有地方都映射到 MiSans 的 700。如果同时混排 PingFang SC，PingFang Bold 与 MiSans Bold 视觉权重一致。
 
 ### 可读性 <!-- ENGINEERING-DNA -->
 
@@ -220,151 +224,124 @@ Slide "好看"是可工程量化的。下面的规则是硬规则；`text_layout
 
 ---
 
-## 4. {{BRAND_NAME}} Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
+## 4. 小米 Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
 
 ### 定义（每份 HTML 一次）
 
-Logo 必须是真实的品牌身份资产，**完整内嵌**到 HTML 中（不依赖外部网络）。`embed_logo.py` 会根据源 SVG 的实际内容自动选三档之一。你拿到的档位会写在 `<brand>/source/assets/logo.report.json` 的 `colour_handling` 字段。
+Logo 必须是真实的品牌身份资产，**完整内嵌**到 HTML 中（不依赖外部网络）。Xiaomi 的 canonical logo 来自 JSON-LD `Organization.logo` 声明：`https://i01.appmifile.com/webfile/globalimg/mobile/logo/mi.png` —— 196×196 RGBA PNG 的橙色 squircle + 白色「mi」wordmark。这是 **C 档（raster）**。
 
-#### A 档 — `mono`（单色 wordmark / silhouette）
-
-源 SVG 是单色 wordmark（Tiffany "TIFFANY&CO."、Unilever wordmark、Apple silhouette、Stripe wordmark 等）时使用。内层 fill 全部被 strip 掉，让 `<symbol fill="currentColor">` 的级联给整个形状染色；`.logo.W` / `.logo.L` 通过 CSS `color:` 翻白/翻品牌深色。
-
-```html
-<svg style="display:none" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}" fill="currentColor">
-    {{LOGO_PATH_ELEMENTS}}  <!-- 内层 <path>/<g> 不能携带任何 fill 属性 -->
-  </symbol>
-</svg>
-```
-
-> ⚠️ **fill 级联陷阱** <!-- ENGINEERING-DNA: logo-inner-fill -->
-> 很多 SVG 导出器会把真实字形 path 包在一个默认组里：
-> `<g fill="none" fill-rule="evenodd"><g><path d="..."/></g></g>`。原样粘贴进我们的
-> `<symbol fill="currentColor">` 会让内层 `fill="none"` **赢过** 父级 currentColor 级联 ——
-> wordmark 渲染出来 **100% 不可见**，而 byte 级检查（path d 长度、viewBox、
-> `visible_on_cover` 通过 getBoundingClientRect）全都会显示 PASS。
-> **A 档下所有内层 `fill`（包括 `fill="none"`）必须被 strip。**
-> `embed_logo.py` 会自动 strip；`logo_renders` hard check（仅在 mono 档）拒绝任何
-> 不是 `fill="currentColor"` 的内层 fill。手工粘贴时必须手工 strip。
-
-#### B 档 — `multi`（多色 / gradient SVG）
-
-源 SVG 含 `<linearGradient>`、`<radialGradient>`、`fill="url(#…)"` 或两个及以上不同 fill 颜色时使用 —— 典型如圆形徽章（P&G）、具象 mark（Starbucks 绿白美人鱼、Netflix N）、三色字形、tint-on-tint logo。
-
-```html
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}">
-    <!-- 整张 SVG 以 base64 编码包成 data:image/svg+xml，浏览器把它当作 image
-         整体绘制 —— 仍是矢量、保留全部原色 —— 内层 <path>/<gradient> 不进
-         <use> 的 shadow DOM。 -->
-    <image href="data:image/svg+xml;base64,{{LOGO_SVG_B64}}"
-           width="{{LOGO_W}}" height="{{LOGO_H}}"/>
-  </symbol>
-</svg>
-```
-
-Logo 始终以原色渲染。**B 档下 `.logo.W` / `.logo.L` 翻色失效** —— 包在 `<image>` 里的 SVG 不响应 CSS `color:`。B 档品牌的封面需要用版式手段保证对比度（见下方"多色 cover 处理"）。
-
-> ⚠️ **shadow DOM fill 级联陷阱** <!-- ENGINEERING-DNA: tier-b-no-css-fill -->
-> 早期 deckify 把 B 档 SVG 内容（`<radialGradient>`、`<path fill="url(#GRAD)">`）直接 inline 进 `<symbol>`。`<use>` 实例化 symbol 时，内容进入 shadow DOM。**外层 `.logo` SVG 上的 CSS `fill`（即便没显式设，SVG 默认 `fill: black` 也算）会级联进 shadow tree，覆盖每一个内层 `<path fill="url(#…)">` —— 因为 CSS specificity 高于 presentation attribute。** 徽章会被压成单色，在同色 backplate 上完全不可见 —— 这是 P&G 第一次跑被打中的静默失效模式，所有 byte 级检查依然 PASS。
+> ⚠️ **不要用 `<symbol> + <use> + <image href>` 模式装载 raster logo** <!-- ENGINEERING-DNA: tier-c-img-not-symbol -->
+> deckify 早期把 raster logo base64 进 `<image href>` 再包到 `<symbol id="brand-wm">`，slides 用 `<svg class="logo"><use href="#brand-wm"/></svg>` 引用。**这个模式在某些 Chromium 版本下会静默失败** —— `<image>` 在 `<symbol>` 实例化为 `<use>` 时进入 shadow DOM，data-URI 解码或图片加载在 shadow tree 里有时不会触发，**logo 完全看不见但 byte 检查全过**。这是 deckify 命中过的 stealth bug。
 >
-> 修复就是上面那个 `<image href>` envelope：浏览器把 SVG 当作整体 image 渲染，没有 shadow-DOM 的 fill 跨界。**B 档（和 C 档）的 `.logo` 上永远不要通过 CSS 设 `fill:`** —— 详见下方 §4 "用法" CSS 块。`logo_visible_pixels` hard check 是兜底：截 cover 截图、裁出 logo 区域，如果 ≥ 95 % 像素和 cover 背景同色就 FAIL。
+> Xiaomi DS 的 raster logo **必须用直接 `<img>` 元素**，src 是 base64 PNG data URI。这绕开 SVG/symbol/use 的所有 shadow-DOM 渲染陷阱。
 
-> `logo_renders` hard check 从 `<image>` 元素的 `data:image/svg+xml` href 推断为 B 档，**跳过** `hasInnerFill` 规则。内层 fill 现在已经不在 DOM 中（封装在 image 字节里），它看不见。
+#### C 档 — `raster`（直接 `<img>` 模式，推荐）
 
-#### C 档 — `raster`（PNG/JPG/WebP fallback）
-
-仅在没有 SVG 源、且位图 logo 通过质量门（最小 64×64）时使用。原始字节 base64 内嵌进 `<image href>`：
+每张 slide 直接放一个 `<img class="logo W lg" src="data:image/png;base64,…" alt="Xiaomi">`：
 
 ```html
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="0 0 {{LOGO_W}} {{LOGO_H}}">
-    <image href="data:image/png;base64,{{LOGO_BASE64}}" width="{{LOGO_W}}" height="{{LOGO_H}}"/>
-  </symbol>
-</svg>
+<!-- 封面（深底白色变体，44 px） -->
+<img class="logo W lg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMQAAADECA…(略，完整 base64 见 source/assets/logo.png 的 base64 编码)" alt="Xiaomi">
+
+<!-- 内容页（浅底品牌深色变体，36 px） -->
+<img class="logo L" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMQAAADECA…" alt="Xiaomi">
 ```
 
-和 B 档一样，`.logo.W` / `.logo.L` 翻色失效（位图像素不响应 CSS `color:`）。同样需要遵守"多色 cover 处理"。受分辨率所限 —— 只要能找到 SVG 源就优先 A/B 档，即使位图门也通过。
+> 注：每张 slide 都要重复完整 base64 字符串。9 张 slide × 6 KB ≈ 54 KB 额外字节。完全可接受 —— 比 `<symbol>+<use>` 模式 16% 文件膨胀换 100% 渲染可靠性。
 
-> ⚠️ **禁止用文字 placeholder 伪装 logo**：用品牌名 `<text>` 假冒 logo（如 `<text>P&G</text>`、字母圆盘）属于构建失败。`logo_renders` hard check 会拒绝只含 `<text>` 的 `<symbol>` 块。如果没有任何来源能产出真实 logo，**停下来向用户索要原始文件** —— 永远不要编造 placeholder。
+#### 已废弃 — B 档 `<symbol> + <image href>` 模式
 
-#### 多色 cover 处理（仅 B / C 档）<!-- ENGINEERING-DNA: logo-multicolor-cover -->
+> ⚠️ **历史教训** <!-- ENGINEERING-DNA: tier-b-symbol-image-deprecated -->
+> 早期 `embed_logo.py` 默认输出这个：
+>
+> ```html
+> <svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+>   <symbol id="brand-wm" viewBox="0 0 196 196">
+>     <image href="data:image/png;base64,..." width="196" height="196"/>
+>   </symbol>
+> </svg>
+> ```
+> 然后用 `<svg class="logo"><use href="#brand-wm"/></svg>` 引用。在某些 Chromium 版本（包括 agent-browser bundled Chromium 当前版本）下，`<image>` 在 shadow DOM 中**完全不渲染**，但 `logo_renders` byte-level check 看到合法 SVG 结构 + `logo_visible_pixels` 看到非透明像素（broken-image placeholder）就 PASS。
+>
+> **永远用直接 `<img>`。** raster 不需要 `<symbol>` 跨 slide 复用 —— `<img>` 已经是最轻量的图片元素。
 
-A 档 logo 通过 `.logo.W` / `.logo.L` 在任何背景上都能干净翻色。B / C 档不行 —— logo 无论如何都以原色渲染。三条版式应对，按优先级：
+#### A 档 — `mono`（单色 wordmark / silhouette，Xiaomi 当前不适用）
 
-1. **不加 chip —— 裸 logo 直接放上 cover。** 默认。多数多色品牌徽章自身就有强烈的内部对比（P&G 的 cyan→深蓝渐变 + 白色字标；Starbucks 的绿白美人鱼；BMW 的蓝白四分圆）。在同色系封面（P&G 用 `--primary`、Starbucks 用深绿等）上，logo 自身的内部对比就够 —— 视觉读取的是徽章外缘相对 cover 背景的反差，不需要其他帮忙。先这样试；只有当裸 logo 对比度真的不够时，才升级到 chip。
-
-2. **chip 加 `padding: 0` —— 不可见的对比度层。** 仅当 logo 外缘色调和 cover 背景太接近、且方案 1 失败时使用。把 `.logo` 包进 `.logo-chip`，**`padding: 0`**，`border-radius` 匹配 logo 轮廓（圆形徽章用 `50%`、矩形字标用 `4px`）。chip 尺寸 = logo 尺寸，因此没有可见的"边框" —— 它的唯一职责是在 logo 边缘与 cover 之间夹一层不同色。零白晕。
-
-3. **chip 加 `padding > 0` —— opt-in 的卡片 / 贴纸效果。** 仅当设计**有意**让 logo 看起来像贴在 cover 上的一张卡片或贴纸时（比如品牌习惯把 logo 盖在杂乱的 hero 照片上）。padding 是让 chip 的白底以"边框"形式可见的东西。**这会产生有意为之的可见白色边框。如果你不想看到白色，就不要用这个。** 仅在"logo 作为可见卡片"是预期视觉效果时使用。
-
-> ⚠️ **Padding 的真实语义** <!-- ENGINEERING-DNA: chip-padding-semantics -->
-> `.logo-chip` 上的 `padding` **不是** "可以按口味调的呼吸空间"。它就是让 chip 看起来像一张卡片的*可见白色边框*。`padding: 0` 表示"chip 不可见，仅提供颜色对比"；`padding: 8px` 表示"8 px 的白色边框是设计的一部分"。要主动选。Skill 对 B / C 档 cover slide 的默认是**完全不加 chip**；如果加了 chip，默认 **`padding: 0`**；正向 padding 是 opt-in 的卡片化设计决定。
-
-> 圆形 logo 配 `padding: 8px` + `border-radius: 50%` 出现的那圈白环，不是 bug —— 它就是 padding 在做 padding 该做的事，必然可见。修法是 `padding: 0`，不是换个 `border-radius`。
-
-发布前 checklist（§13）强制要求"封面 logo 可见"无论档位 —— 但**不要求 B / C 档实现 `.W` / `.L` 翻色**。
-
-来源解析顺序（`embed_logo.py` 实际尝试的顺序）：
-1. 页面 `<header>` 中的 inline SVG（过滤掉 viewBox < 60 px 的实用图标）
-2. 品牌的 Wikipedia infobox logo 文件
-3. apple-touch-icon（通常 ≥ 180 px PNG）
-4. favicon（SVG 或 PNG）
-5. og:image / twitter:image
-6. 常见路径猜测（/logo.svg、/assets/logo.svg ……）
-
-### 用法
+A 档保留给未来 Xiaomi 切换到单色 wordmark 的场景。当前正式 logo 是双色（橙 + 白），不是单色 silhouette。如果未来切换：
 
 ```html
-<!-- 白色（深色 slide 上） -->
-<svg class="logo W" viewBox="{{LOGO_VIEWBOX}}" aria-label="{{BRAND_NAME}}">
-  <use href="#brand-wm"/>
-</svg>
-
-<!-- 品牌深色（浅色 slide 上） -->
-<svg class="logo L" viewBox="{{LOGO_VIEWBOX}}" aria-label="{{BRAND_NAME}}">
-  <use href="#brand-wm"/>
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 W H" fill="currentColor">
+    <path d="..."/>  <!-- 内层 fill 必须 strip; 任何 fill="none" 也算 -->
+  </symbol>
 </svg>
 ```
 
 ```css
-/* 按档位选 CSS — 根据你的 colour_handling 用对应那段： */
-
-/* A 档（mono）：
-   fill: currentColor 必须放在 .logo 上 — 不要放在 .logo path 上。
-   CSS 选择器无法穿透 SVG <use> 的 shadow DOM，但外层 <svg> 上的继承 fill
-   能正确级联进 symbol 的 shadow tree。 */
-.logo   { height: {{LOGO_HEIGHT}}; width: auto; flex-shrink: 0; fill: currentColor; }
+.logo   { height: 36px; width: auto; flex-shrink: 0; fill: currentColor; }
 .logo.W { color: #fff; }
-.logo.L { color: var(--primary); }
+.logo.L { color: var(--accent); }
+```
 
-/* B 档（multi）和 C 档（raster）— 不要在 CSS 设 fill。<!-- ENGINEERING-DNA: tier-b-no-css-fill -->
-   徽章是通过 <symbol> 内的 <image href="data:..."> 渲染的；任何 .logo 上的
-   CSS fill 都会通过 <use> shadow DOM 级联破坏渲染（即便 byte 检查仍 PASS）。
-   保留 .W / .L 作为空类，让相同的 `<svg class="logo W">` 标记可以在不同
-   品牌之间复用，不需要下游模板做条件分支。 */
-.logo               { height: {{LOGO_HEIGHT}}; width: auto; flex-shrink: 0; display: block; }
+A 档 inner fill 级联陷阱依然适用 —— 详见上方"⚠️ A 档 fill 级联陷阱"块。
+
+<details><summary>已废弃的 B 档 base64 SVG image 模式（点击展开 —— 不要再用）</summary>
+
+> 早期 `embed_logo.py` 默认输出 `<symbol>` + `<image href="data:image/svg+xml;base64,...">` —— 在某些 Chromium 下 base64 SVG **缺 `xmlns="http://www.w3.org/2000/svg"`** 时直接失效（浏览器把它当 XML 而非 SVG），渲染成 broken-image placeholder。即使 xmlns 正确，`<image>` 在 `<symbol>` shadow DOM 中的 data-URI 解码也时常失败。**已统一切到直接 `<img>` 模式。**
+
+</details>
+
+<!-- 历史 base64 fragment 已 strip，详见 source/assets/logo.png（PNG 字节）以及上方 §4 C 档 <img src="data:image/png;base64,..."> 直注模式。 -->
+
+> ⚠️ **A 档 fill 级联陷阱（Xiaomi 不适用，但保留约束以备未来切换）** <!-- ENGINEERING-DNA: logo-inner-fill -->
+> 如果未来 Xiaomi 切换到单色 wordmark / silhouette logo（A 档），那时 `<symbol id="brand-wm" fill="currentColor">` 内任何 `<path>/<g>` 上的 `fill` 属性（包括 `fill="none"`）都会**赢过**父级 currentColor 级联，wordmark 渲染出来 100% 不可见 —— 而 byte 级检查（path d 长度、viewBox、`visible_on_cover`）全都会显示 PASS。**A 档下所有内层 `fill` 必须被 strip。** Xiaomi 当前是 C 档（raster `<img>`），inner fill 完全不适用；`logo_renders` hard check 在 raster 档下跳过 `hasInnerFill` 规则。
+
+> ⚠️ **禁止用文字 placeholder 伪装 logo**：用 `<text>X</text>` 假冒 logo（如字母圆盘）属于构建失败。`logo_renders` hard check 会拒绝只含 `<text>` 的 `<symbol>` 块。如果你的 logo 不显示，**停下来**回到 §4 选官方 PNG（JSON-LD `Organization.logo`）+ 直接 `<img>` 模式，永远不要编造 placeholder。
+
+#### 多色 cover 处理（C 档默认）<!-- ENGINEERING-DNA: logo-multicolor-cover -->
+
+Xiaomi 的 squircle 自身已经有强对比（橙底 + 白色内 mi）。**默认裸 logo 直接放上 cover，不加 chip**。三种 cover 背景下都成立：
+
+1. **白底 cover (`--surface`)**：橙色 squircle 直接置于白底，对比强烈（小米全球站 about / mobile / smart-home 全是这个用法）。
+2. **黑底 stage cover (`--stage`)**：橙色 squircle 直接置于纯黑，对比同样强烈，是 hero 大片（Leica banner、17 Ultra）的默认处理。
+3. **深炭 cover (`--primary`)**：同上，#191919 与橙色形成自然对比。
+
+**只有当 cover bg 与橙色色相过近**（如假想的橙色满版 cover）时，才用 `.logo-chip` 包白底（`padding: 0`）做不可见对比层。Xiaomi 实际不会出现这种情况（橙色不做满版 bg），所以 chip 在 Xiaomi DS 中**几乎用不到**。
+
+### 用法
+
+```html
+<!-- 直接 <img>，每张 slide 一份完整 base64 -->
+<img class="logo W lg" src="data:image/png;base64,iVBORw0KGgoAAAA…" alt="Xiaomi">
+```
+
+```css
+/* C 档（raster） — <img> + base64 PNG。<!-- ENGINEERING-DNA: tier-b-no-css-fill -->
+   不要给 .logo 设 fill 或 color —— 那些只对 SVG 内 path 有效，对 raster 无效；
+   且如果未来切回 SVG <symbol>+<use> 模式，CSS fill 会通过 shadow DOM 级联
+   把图层压成单色（B 档历史教训）。保留 .W / .L 作为空类，让相同的
+   `<img class="logo W">` 标记可以在不同品牌之间复用，不需要下游模板做
+   条件分支。 */
+.logo {
+  display: inline-block;
+  flex-shrink: 0;
+  height: 36px; width: 36px;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
 .logo.W, .logo.L    { /* 故意留空 — 见上方注释 */ }
-
-/* B / C 档可选 .logo-chip 背板 — 见 §4 "多色 cover 处理"。
-   默认是不加 chip。如果加，padding 必须为 0，除非你**有意**想要可见的
-   白色卡片边框（这正是 padding > 0 的语义）。border-radius 匹配 logo 轮廓：
-   圆形徽章 50%，矩形字标 4px，方形块 mark 0。 */
-.logo-chip { display: inline-flex; padding: 0; background: var(--white); border-radius: 50%; line-height: 0; }
-.logo-chip .logo { display: block; }
+.logo.lg            { height: 44px; width: 44px; }
 ```
 
 ### 摆放规则 <!-- ENGINEERING-DNA -->
 - **每张 slide** 都必须有 logo — 封面与所有内容页。
 - **封面**：`.cov-top` flex 行的右上角。
 - **内容页**：`.shd` 页头条的右端（左 = 标题 eyebrow / slide 编号，右 = logo）。
-- Logo 周围最小留白 = logo 高度（{{LOGO_HEIGHT}}）四周都留。
-- 不要拉伸、不要在 `W`/`L` 之外重新着色、不要把 logo 叠在带图案的区域上。
+- Logo 周围最小留白 = logo 高度（36 px）四周都留。
+- 不要拉伸、不要重新着色、不要把 logo 叠在带图案的区域上 —— 找一块净色衬底。
 
-{{LOGO_BRAND_RESTRICTIONS_NOTE}}
+> Xiaomi squircle 是 1:1 方形，宽高都按 36px 默认渲染。在 cover 上可以放大到 48px；在 `.shd` 上保持 36px。不要超过 60px，否则视觉过于沉重。
 
 ---
 
@@ -377,7 +354,7 @@ A 档 logo 通过 `.logo.W` / `.logo.L` 在任何背景上都能干净翻色。B
     .slide × N — absolute inset, opacity show/hide, overflow:hidden (hard contract)
 ```
 
-`#wrap` 与 `body` 的 background **必须用 `var(--ink)`**，不能写死 `#000` / `#1A1A1A` / `#1F1F22` — 这些会被 `token_only_colors` hard check 抓到。每个 brand 的 `--ink` 已经是各自真实的深色基调（Coca-Cola 纯黑、Unilever warm graphite、Apple near-black），letterbox 跟随它就是对的。
+`#wrap` 与 `body` 的 background **必须用 `var(--ink)`**，不能写死 `#000` / `#1A1A1A` / `#1F1F22` — 这些会被 `token_only_colors` hard check 抓到。Xiaomi 的 `--ink` 是 #191919（深炭舞台），letterbox 跟随它就是对的。
 
 ### 全屏适配 — 运行时缩放 <!-- ENGINEERING-DNA: scale-to-fit -->
 
@@ -414,7 +391,7 @@ The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any view
 - A viewport-relative `width: 100vw` on the canvas would warp the type scale; a slide tuned for 50 px headlines becomes 38 px on a small laptop.
 - Mobile is exempt: the mobile media query already turns the deck into a flow document, so `transform: none` is required there or the stacked slides scale with the canvas and break.
 
-**Anti-pattern**: shipping a deck without `scaleDeck()` lets `#wrap`'s flex-centre place a 1280×720 deck inside a 1920×1080 viewport with 320 px / 180 px of dark border — the deck looks unfinished even when content is correct. Every brand DS must wire scale-to-fit into the verification deck.
+**Anti-pattern**: shipping a deck without `scaleDeck()` lets `#wrap`'s flex-centre place a 1280×720 deck inside a 1920×1080 viewport with 320 px / 180 px of dark border — the deck looks unfinished even when content is correct. Every Xiaomi deck must wire scale-to-fit into the verification deck.
 
 ### 显示状态
 ```css
@@ -433,7 +410,7 @@ The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any view
 ### 页头条 (`.shd`) — 每张内容页都有
 ```css
 .shd { display: flex; align-items: center; justify-content: space-between; padding: 0 80px 0 96px; flex: 0 0 54px; border-bottom: 1px solid var(--rule); }
-.shd-num { font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+.shd-num { font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
 ```
 
 ---
@@ -496,10 +473,10 @@ The absorber MUST carry `min-height: 0` (so it can shrink below its content's na
 
 #### 非对称下内边距 — 看得见的呼吸空间
 
-Default `.sc` padding is symmetric `32 80 32 96`. For weekly-status / progress-report slides where the audience reads top-down and the bottom edge carries visual weight, prefer:
+Default `.sc` padding is symmetric `32 80 32 96`. Xiaomi 的产品页是高呼吸感的，建议默认就用非对称：
 
 ```css
-.sw .sc { padding: 24px 80px 40px 96px; }   /* 24 top / 40 bottom */
+.sw .sc { padding: 24px 80px 40px 96px; }   /* 24 top / 40 bottom — Xiaomi 默认 */
 ```
 
 The extra bottom padding creates deliberate visible breathing — roughly half a section-gap worth — between the last content block and the deck edge. This reads as "composed" rather than "crammed."
@@ -507,7 +484,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 #### 编写前清单（写 HTML 之前做）
 
 1. **List your sections** and assign each a role: `absorber` (exactly one) or `natural`.
-2. **Estimate natural heights** using the type scale. A card with head (30) + label (14) + 5 single-line 13 px bullets (~125) + V-padding (34) = ~203 px.
+2. **Estimate natural heights** using the type scale. A card with head (28) + label (13) + 5 single-line 13 px bullets (~125) + V-padding (34) = ~200 px.
 3. **Sum fixed sections + gaps**. Confirm total ≤ (602 − absorber minimum) — the absorber needs at least ~160 px to hold meaningful content.
 4. **Write the copy short enough that single-line bullets don't wrap**. In a half-width column at 13 px CJK, budget ~28 characters per bullet before wrapping.
 5. **Render at 1280×720 and eye the bottom edge.** Not at 1920×1080 (the `transform: scale()` masks overflow by rescaling). The native canvas is the source of truth.
@@ -525,18 +502,19 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 ## 6. 幻灯片类型 <!-- BRAND-VARIABLE: emphasis order varies; the type definitions are mostly invariant -->
 
-> **Emphasis for {{BRAND_NAME}}**: {{SLIDE_TYPE_EMPHASIS_NOTE}}
-> Foreground these types when designing decks: {{EMPHASIZED_TYPES_LIST}}.
-> Use sparingly: {{DEEMPHASIZED_TYPES_LIST}}.
+> **Emphasis for Xiaomi**: 重点四类 —— Type A 戏剧性 hero 封面、Type F 图文左右分栏（产品摄影 + spec 数字大字）、Type H 数据表 / 性能图表、Type J 大 pull-quote 价值主张。
+> Foreground these types when designing decks: **Type A, Type F, Type H, Type J**。
+> Use sparingly: Type G 交互演示（小米 deck 不需要交互 prototype；产品摄影本身就是 demo）。
 
 ### Type A — 封面
-- 背景：`{{COVER_BACKGROUND}}`
-- 结构：Logo 右上角 → Eyebrow → 巨型标题 → 斜体副标 → Meta 行
-- **不允许任何装饰线** — 不要 hairline、不要 accent line、不要渐变边框。背景就是表面。
+- 背景：`var(--stage)` (#000) 或 `var(--primary)` (#191919) —— Xiaomi 默认 cinematic 黑底
+- 结构：Logo 右上角（橙 squircle）→ Eyebrow（橙色 ✦ + 全大写小字）→ 巨型标题（白色 700 weight）→ 副标（300 weight，70% 白）→ Meta 行
+- **不允许任何装饰线** — 不要 hairline、不要 accent line、不要渐变边框。背景就是表面（产品摄影或纯色舞台）。
+- Xiaomi 偏爱：产品摄影满版 hero（17 Ultra 拿绿色相机 silhouette、SU7 黄色车身），前景配大字标题；或纯黑 stage + 单个橙色 mark + 大标。
 
 #### 封面垂直构图规则 <!-- ENGINEERING-DNA: cover-vertical-anchor -->
 
-**封面内容默认居中、不要 flex-end 贴底。** 封面是一张固定 720 px 的画布，但 hero 标题应当**视觉上锚定在画面中线偏上**位置 —— 这是产品页 hero 的通用节奏（参考多数 brand 主页 hero：title + subtitle 大约在 viewport 40–55% 区间）。
+**封面内容默认居中、不要 flex-end 贴底。** 封面是一张固定 720 px 的画布，但 hero 标题应当**视觉上锚定在画面中线偏上**位置 —— 这是产品页 hero 的通用节奏（参考 mi.com/global 主页：title + subtitle 大约在 viewport 40–55% 区间）。
 
 ```css
 .cov          { display: flex; flex-direction: column; }
@@ -549,7 +527,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 ```
 
 **反模式（已知失败）：**
-- `.cov-sc { justify-content: flex-end; padding: 0 96px 28px 96px; }` —— 把 title + sub 钉死在 cover 底部，视觉上"贴底"，meta 行又紧挨着，整张封面下半部塞满、上半部完全空，视觉权重严重失衡。
+- `.cov-sc { justify-content: flex-end; padding: 0 96px 28px 96px; }` —— 把 title + sub 钉死在 cover 底部，视觉上"贴底"，meta 行又紧挨着，整张封面下半部塞满、上半部完全空。视觉权重严重失衡。
 - 把 meta 行（"SOURCE · ... · N SLIDES · ..."）放进 `.cov-sc` 内部用 flex `gap` 排列，结果 meta 行参与了 absorber 的高度计算，把 title + sub 顶得更靠下。**meta 行必须脱离 flex 流（绝对定位）**或放进独立的 `flex: 0 0 auto` 带子。
 
 **封面副标的换行控制：**
@@ -564,25 +542,25 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 单栏、大字号、配 pull-quote。用于上下文、摘要、推荐建议页。
 
 ### Type D — 翻面卡片
-两张卡片并排。正面 = `--primary`，背面 = `{{FLIP_BACK_COLOR}}`（比 `--accent` 柔和）。**Hover + 点击翻面** — JS `onclick` 切换 `.on` class（移动端必需）。正面有 ghost 罗马数字。背面留白宽（32 px padding，≤ 4 个内容元素）。
+两张卡片并排。正面 = `--primary` (#191919)，背面 = `var(--accent)` (#FF6700) 柔化版本（用 `rgba(255,103,0,0.92)` 避免过饱和）。**Hover + 点击翻面** — JS `onclick` 切换 `.on` class（移动端必需）。正面有 ghost 罗马数字。背面留白宽（32 px padding，≤ 4 个内容元素）。
 
-**字体 — 必须大而有力：**
+**字体 — 必须大而有力（MiSans 没有 900，全部映射到 700）：**
 
 | 元素 | Class | 字号 | 字重 |
 |---|---|---|---|
-| 正面标题 | `.cnm` | **28px** | 900 |
-| 正面正文 | `.cbd` | **17px** | 600 |
-| 正面提示 | `.ht` | 13px | 800 |
-| 背面标签 | `.bkl` | 13px | 800 |
-| 背面标题 | `.bkt` | **22px** | 900 |
-| 对比标签 | `.vs .vt` | 13px | 900 |
-| 对比正文 | `.vs .vb` | **16px** | 700 |
-| 结论 | `.ccl` | **15px** | 600 |
+| 正面标题 | `.cnm` | **28px** | 700 |
+| 正面正文 | `.cbd` | **17px** | 500 |
+| 正面提示 | `.ht` | 13px | 700 |
+| 背面标签 | `.bkl` | 13px | 700 |
+| 背面标题 | `.bkt` | **22px** | 700 |
+| 对比标签 | `.vs .vt` | 13px | 700 |
+| 对比正文 | `.vs .vb` | **16px** | 600 |
+| 结论 | `.ccl` | **15px** | 500 |
 
 **不要用 inline style 覆盖** 把 flip card 文字缩到这些字号以下。装不下就减项数 — 不要减字号。
 
 ### Type E — 数据/对比页
-以表格或结构化数据网格为主体的 slide。用于特性对比、TCO 分析、规格矩阵。表格组件规范（§7.7）定义元素级设计；本类型定义何时用、以及如何在它周围布局。
+以表格或结构化数据网格为主体的 slide。用于 Xiaomi 17 Ultra vs 17 Pro 规格对比、各代手机配置 diff、HyperOS 跨设备特性矩阵。表格组件规范（§7.7）定义元素级设计；本类型定义何时用、以及如何在它周围布局。
 
 **原则：** 表格是主角 — 标题 + 表格 + 底部可选一行 callout。不要有侧栏抢戏。如果表格有 6 列以上，让它占满整宽。
 
@@ -593,7 +571,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 #### 表格在移动端必须横向滚动 <!-- ENGINEERING-DNA: type-e-mobile-scroll -->
 
-**问题**：表格不像 grid / flex，**不会**自动折叠成单列。一张 6 列表格在 375 px 视口里每列只有 ~55 px，长内容（spec 字符串、产品名、技术参数）会**横向溢出 deck 或挤成不可读字符堆**。`mobile_collapse` hard check 抓不到这种 case —— 它只看 `body.scrollWidth`，但表格在 absorber 里 overflow:hidden 时不会推大 body，视觉上是坏的，自动检查全过。
+**问题**：表格不像 grid / flex，**不会**自动折叠成单列。一张 6 列表格在 375 px 视口里每列只有 ~55 px，"Snapdragon 8 Elite Gen 5"、"75–100mm telephoto" 这种内容会**横向溢出 deck 或挤成不可读的字符堆**。`mobile_collapse` hard check 抓不到这种 case（它只看 `body.scrollWidth`，但表格在 absorber 里 overflow:hidden 时不会推大 body）—— 视觉上是坏的，自动检查全过。
 
 **强制规则**：每张 Type E 的 slide 都必须在 mobile media query 里把 `.dt-wrap` 切到横滚模式：
 
@@ -618,7 +596,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 }
 ```
 
-**为什么 `min-width: 560px`**：560 ≈ "6 列 × 平均 90 px"，足以让表头大写标签和大多数 spec 内容单行渲染。具体数字按列数调：3 列用 360、4 列 440、5 列 500、6 列 560、7+ 列 ≥ 640。
+**为什么 `min-width: 560px`**：560 ≈ "6 列 × 平均 90 px"，足以让表头大写标签和 spec 内容（"200MP · 75–100mm"、"Snapdragon 8 Elite Gen 5"）单行渲染。具体数字按列数调：3 列用 360、4 列 440、5 列 500、6 列 560、7+ 列 ≥ 640。
 
 **反模式：**
 - 不要在 mobile 里把 `.dt` 字体缩到 11 px 以下塞下原始列宽 —— 违反 §3 12 px 下限。
@@ -628,56 +606,60 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 `.dt-wrap` 在桌面端**仍然**要保持 `overflow: hidden`（fit contract 三层安全网之一）。Mobile 切换通过 `@media` 选择器隔离，互不干扰。
 
 ### Type F — 图像页
-一张或多张图占据 slide 主体，文字锚定在安静区域。用于展示真实产品 UI、真实截图、或将抽象概念具象化的环境照片。
+**Xiaomi DS 的招牌类型之一。** 一张产品摄影或截图占据 slide 主体，文字锚定在安静区域。用于展示真实产品 hero、UI 截图、Leica 联名摄影、SU7 车身照片。
 
 **原则：**
-- 图像必须服务于理解 — 不要装饰性 stock photo。优先：产品 UI 截图、真实数据可视化、能说明具体观点的环境照片。
-- 构建 deck 时，**主动 web 搜相关图片**（产品 logo、UI 截图、现实案例）来支撑叙事。
-- 图像处理：`border-radius: 4px`，可选 `1px solid var(--rule)` 边框。深色背景不需要边框。
+- 图像必须服务于理解 — 不要装饰性 stock photo。优先：Xiaomi 官方产品摄影（mi.com 资源）、HyperOS UI 截图、真实数据可视化、Leica 镜头测试照。
+- 构建 deck 时，**主动从 mi.com 找配图**（产品 hero、规格图、UI 截图）来支撑叙事。
+- 图像处理：`border-radius: 4px`，浅色背景上可选 `1px solid var(--rule)` 边框。深色背景不需要边框。
 - 布局：图像占 slide 区域 50–70%。文字放在旁边或叠在带 tint 的区域上。绝不在繁忙图片上直接放文字而不加 scrim。
-- 图下说明：`.cap` 样式（13 px、字重 800、全大写、`--mid`）。
+- 图下说明：`.cap` 样式（13 px、字重 700、全大写、`--mid`）。
+
+**Xiaomi-specific Type F 配方**（左图右数字）：
+```
+┌──────────────────────────┬──────────────────┐
+│                          │  EYEBROW · IMAGING│
+│                          │                   │
+│   产品摄影 (60% 宽)       │  200MP            │
+│   border-radius: 4px      │  ──────           │
+│                          │  Leica Summilux   │
+│                          │  徕卡光学          │
+└──────────────────────────┴──────────────────┘
+```
+左侧图占 60-65% 宽，右侧大字号数字（48-72 px、700）+ 解释行（13-14 px、`--mid`）。每条配一个 hairline ruler 分隔。
 
 ### Type G — 交互演示
-嵌在 slide 内的自包含、点击推进的微体验。目的：让观众 *看到* 概念在工作，而不只是读它。
-
-**何时用：** 场景演练、前后对比、多步流程可视化。
-
-**结构：** 一块"屏幕"区域（深色 bg `--primary` 或 `#1a1a2e`，4 px 圆角）+ 点击推进的逐步内容。控件：前后按钮或带编号的步骤。内容通过 CSS transition 出现。
-
-**设计规则：**
-- 必须像精致的产品 demo，不是 prototype。整洁字体、克制动效。
-- 只用 CSS `@keyframes` — 不用 JS 动效库。每个 demo 的 CSS 不超过 50 行。
-- 每一步只承载一个清晰想法。每个 demo 最多 5 步。
-- 移动端：滚动时自动推进，或点击目标 ≥ 44 px。
+嵌在 slide 内的自包含、点击推进的微体验。**Xiaomi DS 中 use sparingly** —— 产品摄影本身已经是最好的 demo，不需要 interactive prototype。除非演示 HyperOS 跨设备流转之类必须动态展示的场景，否则跳过。
 
 ### Type H — 图表/数据洞察
-由一个或多个数据可视化主导的 slide。用于定量论证、趋势分析、性能对比。图表组件规范（§7.8）定义元素级设计；本类型定义 slide 级原则。
+**Xiaomi DS 的招牌类型之一。** 由一个或多个数据可视化主导的 slide。用于跑分对比、能耗曲线、Sales 增长、Market share。图表组件规范（§7.8）定义元素级设计；本类型定义 slide 级原则。
 
 **原则：**
 - 每张 slide 一个主图。次要小图可接受 — 但必须直接支撑主图。
-- 标题陈述洞察，不是图表类型。好："{{BRAND_NAME}} 在三项维度都领先"。坏："柱状图对比"。
+- 标题陈述洞察，不是图表类型。好："Xiaomi 全球出货量连续四个季度增长"。坏："柱状图对比"。
 - 图表占 slide 区域 50–70%。剩余空间：标题 + 一段解读或一个 callout。
 - 入场动效以增强叙事冲击力。
+- Xiaomi chart 规范：主条 `--accent` 橙、对比条 `--mid` 灰、grid `--rule` —— **永远不要** 拿 `--green/--red/--teal` 当图表色，那些专给语义状态用。
 
 ### Type I — 标签页
-多个内容视图通过标签切换。当内容有自然分类时，能在一张 slide 上容纳更多信息。Tab 组件规范见 §7.9。
+多个内容视图通过标签切换。当内容有自然分类时（例如 Mobile / Wearables / Smart Home / Lifestyle 四大产品线），能在一张 slide 上容纳更多信息。Tab 组件规范见 §7.9。
 
 **原则：** 最多 4 个标签。每个 tab panel 都是自包含的"slide-中-slide" — 可以用 §7 任何组件。不要把标签当成 slide 内容塞太满的拐杖；如果 2 个标签各自都显稀疏，就合并成一个视图。
 
 ### Type J — 引言/抽词
-一句强烈的话锚定叙事时刻。用于关键 takeaway、受众重置、可记忆的金句。
+**Xiaomi DS 的招牌类型之一。** 一句强烈的话锚定叙事时刻 ——「Innovation for everyone」「为发烧而生」「Engineered to be loved」 这种品牌价值宣言。
 
 **结构（标准版）：** 大号引用文字（28–36 px、字重 700、`--ink`）居中或左对齐。可选下方署名（14 px、`--mid`）。左边 accent 边线（`3px solid --accent`）或无。
 
-**结构（满屏 bespoke 变体）：** 部分品牌偏爱整张满屏 `--primary` + 多行海报型大字（如 Mars Five Principles 页：6 行 Inter Black 900 竖排，部分词用 `--accent` 或某个品牌色染色）。这种 slide：
+**结构（满屏 bespoke 变体 —— Xiaomi 推荐）：** 整张满屏 `--stage`（黑）或 `--primary`（深炭）+ 多行海报型大字（如 4-5 行 MiSans Latin 700，部分关键词用 `--accent` 橙染色）。这种 slide：
 
-1. **构图依然必须包在 `.sw + .sc` 里。** 用 `.sw`（覆写 `background: var(--primary)`）+ 一个 `.sc` 装自定义布局。**不要**自创平级 shell class（`.fpwrap`、`.poster-wrap` 等）—— bespoke shell 会**静默绕过** `fit_contract_intact`（没有 `.sc` = absorber 数 0 = `bad_slides: [{absorbers: 0}]`）。
+1. **构图依然必须包在 `.sw + .sc` 里。** 用 `.sw`（覆写 `background: var(--stage)`）+ 一个 `.sc` 装自定义布局。**不要**自创平级 shell class（`.fpwrap`、`.poster-wrap` 等）—— bespoke shell 会**静默绕过** `fit_contract_intact`（没有 `.sc` = absorber 数 0 = `bad_slides: [{absorbers: 0}]`）。
 2. **`.sc` 内必须恰好一个 absorber**，带 `flex: 1 1 0; min-height: 0; overflow: hidden` —— 通常是装大字的中间带。顶部 header 带和底部署名带都 `flex: 0 0 auto`。
-3. **按行数反推字号上限。** absorber 的 `clientH` ≈ `(720 − 54 header − 32 top − 32 bottom) − 顶部带 − 底部带`。例如 5 行排版下顶部带约 120 px、底部带约 30 px，absorber ≈ 420 px —— 每行字号 ≤ `floor((420 − 4×gap) / 5) ≈ 78 px`。**84 px × 5 行会溢出约 40 px。** 字号来自预算，不是反过来。
+3. **按行数反推字号上限。** absorber 的 `clientH` ≈ `(720 − 54 header − 24 top − 40 bottom) − 顶部带 − 底部带`。例如 5 行排版下顶部带约 120 px、底部带约 30 px，absorber ≈ 452 px —— 每行字号 ≤ `floor((452 − 4×gap) / 5) ≈ 84 px`。**字号来自预算，不是反过来。**
 4. **满屏 Type J 不用 `.shd` 页头条。** Logo + slide-eyebrow 直接写在 `.sc` 顶部一行。
 
 ### Type K — 时间线/路线图
-横向或纵向的里程碑序列。用于项目计划、演化叙事、阶段描述。组件规范见 §7.12。
+横向或纵向的里程碑序列。用于 Xiaomi 公司发展（2010 创立 → 2014 进入印度 → 2018 港交所上市 → 2024 SU7 量产 → 2026 当前）、产品代际演化、HyperOS 版本路线图。组件规范见 §7.12。
 
 ---
 
@@ -696,11 +678,11 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
   background: var(--white); border: 1px solid var(--rule);
   border-top: 3px solid var(--rule);
 }
-.panel.blue { border-top-color: var(--accent); }
-.panel.dark { background: var(--primary); color: #fff; border: none; border-top: 3px solid rgba(255,255,255,.2); }
+.panel.orange { border-top-color: var(--accent); }
+.panel.dark { background: var(--primary); color: #fff; border: none; border-top: 3px solid rgba(255,103,0,.4); }
 ```
 
-内部结构：`.cap` eyebrow → 标题（18–22 px 900）→ 行（`.panel-row`：surface 底色、8 px 12 px 内边距）→ 可选 callout。
+内部结构：`.cap` eyebrow → 标题（18–22 px 700）→ 行（`.panel-row`：surface 底色、8 px 12 px 内边距）→ 可选 callout。
 
 ### 7.2 Showcase Card (Tier 2 — "block card")
 
@@ -708,10 +690,10 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 **设计处理：**
 - 背景：`var(--white)`，配 `1px solid var(--rule)` 边框
-- **顶部 accent 线**：`3px solid var(--accent)`（默认）。可按上下文换成 `--primary`、`--green`、`--red`。是一条细而优雅的线 — 不是填充的 header 块。
+- **顶部 accent 线**：`3px solid var(--accent)`（默认橙）。可按上下文换成 `--primary`、`--green`。是一条细而优雅的线 — 不是填充的 header 块。
 - **没有强制 label 条。** 标题在卡片正文里，作为内容的一部分。
-- 标题：20 px 字重 900 `--ink`
-- 内容：15–16 px 字重 600 `--mid`，慷慨的 12 px+ 间距
+- 标题：20 px 字重 700 `--ink`
+- 内容：15–16 px 字重 500 `--mid`，慷慨的 12 px+ 间距
 - 可选 SVG 图标：32–36 px，inline 放在标题旁或上方。
 - **Hover**：微微上浮（`translateY(-2px)`）+ 阴影
 
@@ -725,9 +707,9 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
   transition: transform .22s ease, box-shadow .22s ease;
 }
 .show-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.08); }
-.show-card .show-title { font-size: 20px; font-weight: 900; color: var(--ink); line-height: 1.15; }
-.show-card .show-desc { font-size: 15px; font-weight: 600; color: var(--mid); line-height: 1.5; }
-.show-card.accent-navy { border-top-color: var(--primary); }
+.show-card .show-title { font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1.15; }
+.show-card .show-desc { font-size: 15px; font-weight: 500; color: var(--mid); line-height: 1.5; }
+.show-card.accent-carbon { border-top-color: var(--primary); }
 .show-card.accent-green { border-top-color: var(--green); }
 .show-card.compact { padding: 16px 18px; gap: 8px; }
 .show-card.compact .show-title { font-size: 18px; }
@@ -749,71 +731,71 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 ```
 
 **前导指示符** — 灵活：
-- **Ghost 数字**（默认）：`20px 900, --accent, opacity .4` — 用于顺序列表（`01`、`02`、`03`）
+- **Ghost 数字**（默认）：`20px 700, --accent, opacity .4` — 用于顺序列表（`01`、`02`、`03`）
 - **图标圆**：小圆（24 px）+ 符号（`!`、`✓`、`→`）— 用于发现项、告警。配语义背景色。
 - **字母 / 标签**：单字母或短标签，同样的 ghost 样式 — 用于分类条目。
 
 ### 7.4 Stat Card (Tier 4 — "number card")
 
-紧凑指标展示。`stat-num`（36 px 900 `--primary`）+ `stat-label`（12 px 800 全大写 `--mid`）。
+紧凑指标展示。`stat-num`（48 px 700 `--ink`）+ `stat-label`（12 px 700 全大写 `--mid`）。Xiaomi 的数字风格是大、克制、单色 —— 不要给 stat-num 染橙色（保留橙色给 eyebrow 的小三角）。
 
 ### 7.5 Callout / Note
 
 **轻量**（内嵌备注）：
 ```css
-.snote { border-left: 3px solid var(--primary); padding: 10px 18px; background: var(--tint); font-size: 14px; font-weight: 700; }
+.snote { border-left: 3px solid var(--accent); padding: 10px 18px; background: var(--tint); font-size: 14px; font-weight: 600; }
 ```
 
 **深色**（结论 / 建议条）：
-用于 slide 末尾 takeaway 的全宽 navy 块。文字：13–16 px 700–800，`rgba(255,255,255,.85)`。关键词加粗用 `color: #fff`。不要 border-left — 实心 navy 填充本身就是强调。
+用于 slide 末尾 takeaway 的全宽 carbon 块（`var(--primary)`）。文字：13–16 px 600–700，`rgba(255,255,255,.85)`。关键词加粗用 `color: #fff`。不要 border-left — 实心 carbon 填充本身就是强调。
 
 ### 7.6 Marks, Badges & Chips
 
 **状态标记**：
 ```css
-.mark::before { display: inline-block; width: 18px; height: 18px; border-radius: 50%; text-align: center; line-height: 18px; font-size: 11px; font-weight: 900; margin-right: 8px; }
+.mark::before { display: inline-block; width: 18px; height: 18px; border-radius: 50%; text-align: center; line-height: 18px; font-size: 11px; font-weight: 700; margin-right: 8px; }
 .mark.yes::before { content: '✓'; background: var(--green); color: #fff; }
 .mark.no::before  { content: '−'; background: var(--red); color: #fff; }
 ```
 
-**徽章** — 小型标签胶囊（`.bg-g`、`.bg-r`、`.bg-b`）用于行内状态。12–13 px、字重 900、全大写。
+**徽章** — 小型标签胶囊（`.bg-g`、`.bg-r`、`.bg-o`）用于行内状态。12–13 px、字重 700、全大写。`.bg-o` 是 Xiaomi 橙背景胶囊，但**整张 slide 最多用一个橙徽章**。
 
-**技术 chip** — 紧凑的行内标签，用于技术 / 特性名。13 px 700，`min-height: 26px`。
+**技术 chip** — 紧凑的行内标签，用于技术 / 特性名（"Snapdragon 8 Gen 5"、"Leica Summilux"）。13 px 600，`min-height: 26px`。
 
 ### 7.7 Table (`.dt`)
 
 ```css
-.dt { width: 100%; border-collapse: collapse; font-size: 14px; font-weight: 600; }
-.dt th { background: var(--primary); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; text-align: left; padding: 10px 14px; }
+.dt { width: 100%; border-collapse: collapse; font-size: 14px; font-weight: 500; }
+.dt th { background: var(--primary); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-align: left; padding: 10px 14px; }
 .dt td { padding: 10px 14px; color: var(--ink); border-bottom: 1px solid var(--rule); }
 .dt tr.hi td { background: var(--tint); }
-.dt .pos { color: var(--green); font-weight: 800; }
-.dt .neg { color: var(--red); font-weight: 800; }
-.dt .neu { color: var(--mid); font-weight: 600; }
+.dt .pos { color: var(--green); font-weight: 700; }
+.dt .neg { color: var(--red); font-weight: 700; }
+.dt .neu { color: var(--mid); font-weight: 500; }
 ```
 
 **规则：**
-- Navy 表头行是唯一的色块。所有数据单元格：白底、`--ink` 文字。
+- Carbon 表头行（`var(--primary)`）是唯一的色块。所有数据单元格：白底、`--ink` 文字。
 - **`<table>` 单元格里不要彩色徽章** — 用字重 / 颜色强调。
-- 可选一行 `--tint` 高亮，仅给最重要的那一行。
+- 可选一行 `--tint` 高亮，仅给最重要的那一行（"highlight Xiaomi" 行）。
 - "整洁网格"测试：眯眼看表格。看到一堆彩色方块拼贴，就是设计失败了。
 
 ### 7.8 Charts
 
 | Type | Primary colour | Secondary | Neutral | Notes |
 |---|---|---|---|---|
-| Bar (H / V) | `--accent` | `--primary` | `--rule` | Animated grow on entrance |
+| Bar (H / V) | `--accent` | `--mid` | `--rule` | Animated grow on entrance |
 | Progress / gauge | `--accent` fill | — | `--rule` track | 8px height, 4px radius |
 | Pie / donut | `--primary` | `--accent` | `--rule` | Max 3 segments |
-| Timeline | `--primary` dots | — | `--rule` dots | Key nodes: `--tint` ring |
+| Timeline | `--accent` dots | — | `--rule` line | Key nodes: `--tint` ring |
 
-每张图最多 2 种颜色（+ `--rule` 中性色）。入场动效：bar 增长、计数器累加。
+每张图最多 2 种颜色（+ `--rule` 中性色）。入场动效：bar 增长、计数器累加。Xiaomi chart 永远不用 `--green/--red/--teal` 作为图表色 —— 那些保留给语义状态。
 
 ### 7.9 Tabs
 
 ```css
 .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 '{{PRIMARY_FONT}}'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
+.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 700 12px/1 'PingFang SC', 'MiSans Latin', sans-serif; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
 .tb:hover { border-color: var(--accent); color: var(--accent); }
 .tb.on { background: var(--primary); border-color: var(--primary); color: #fff; }
 .tc { display: none; } .tc.on { display: block; }
@@ -825,7 +807,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 用 monospace-weight span 的数字标签 `01` `02` `03`、`--accent` 色，而不是 bullet 或装饰 emoji。
 
 ### 7.11 Decision questions
-前缀用 `Q.1` / `Q.2` 的 span，`--accent` 色、字重 800、字距 0.12 em。
+前缀用 `Q.1` / `Q.2` 的 span，`--accent` 色、字重 700、字距 0.12 em。
 
 ### 7.12 Timeline
 
@@ -848,13 +830,14 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 .tl-row { display: flex; position: relative; z-index: 1; }
 .tl-node { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 4px; }
 .tl-date-top {
-  font-size: 22px; font-weight: 900; letter-spacing: -.01em; color: var(--accent);
+  font-size: 22px; font-weight: 700; letter-spacing: -.01em; color: var(--accent);
   min-height: 48px; margin-bottom: 16px;
   display: flex; align-items: flex-end; justify-content: center;
 }
 .tl-dot2 { width: 18px; height: 18px; border-radius: 50%; background: var(--rule); margin-bottom: 12px; flex-shrink: 0; transition: transform .3s ease; }
-.tl-name { font-size: 18px; font-weight: 900; color: var(--ink); line-height: 1.2; margin-bottom: 4px; }
-.tl-detail { font-size: 14px; font-weight: 600; color: var(--mid); line-height: 1.3; }
+.tl-dot2.active { background: var(--accent); transform: scale(1.2); }
+.tl-name { font-size: 18px; font-weight: 700; color: var(--ink); line-height: 1.2; margin-bottom: 4px; }
+.tl-detail { font-size: 14px; font-weight: 500; color: var(--mid); line-height: 1.3; }
 ```
 
 ### 组件选择指引
@@ -878,18 +861,18 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 
 ### 原则
 
-{{IMAGERY_PHILOSOPHY_NOTE}}
+Xiaomi 的视觉语言**严重依赖产品摄影**。设计 deck 时，不要用插图、emoji、stock 渐变占位 —— 找真实的 Xiaomi 产品照、UI 截图、或 CSS 自绘几何图形。从 mi.com / Xiaomi Newsroom / Mi Community 抓官方素材，永远不要 AI 生成假产品图。
 
 ### 何时加入图像
 
-- **产品 UI 截图**：当讨论某具体工具时，展示它的真实界面。
+- **产品 UI 截图**：当讨论 HyperOS / 米家 App / Mi Home 的某具体功能时，展示它的真实界面。
 - **数据可视化**：当某个数字或趋势是核心时，建一张图（Type H）。
-- **环境照片**：当某场景需要视觉锚点时，搜并放一张相关图。
+- **环境照片**：Leica 联名摄影、SU7 实景、米家场景照 —— 当某场景需要视觉锚点时。
 - **图示**：当某概念具有结构（层级、流程、对比）时，用 CSS/SVG 画出来，而不是用文字描述。
 
 ### 如何获取图像
 
-1. **主动搜索**：用 web search 找相关产品截图、图示、环境照片。优先选官方素材。
+1. **从 mi.com 抓**：用 web search 找产品 hero（如 https://i02.appmifile.com/... 域名下的官方素材）。优先选 Xiaomi 官方资源。
 2. **CSS 绘制替代品**：柱状图、进度条、时间线图 — 数据简单时优于外部图片。
 3. **绝不用**：装饰性 stock photo、抽象渐变、AI 生成的占位艺术、与 slide 主旨无关的图片。
 
@@ -897,7 +880,7 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 
 - `border-radius: 4px`。浅色背景上可选 `1px solid var(--rule)` 边框。
 - 深色背景上的图：不要边框。
-- 说明文字：图下方使用 `.cap` 样式。
+- 说明文字：图下方使用 `.cap` 样式（`.cap { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; color: var(--mid); }`）。
 - 绝不在繁忙图像上直接放文字而不加 scrim（最少 `rgba(0,0,0,.5)`）。
 
 ---
@@ -909,11 +892,13 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 ```css
 #nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 99; }
 .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.25); cursor: pointer; transition: all .22s ease; }
-.dot.on { width: 20px; border-radius: 3px; background: rgba(255,255,255,.85); }
+.dot.on { width: 20px; border-radius: 3px; background: var(--accent); }
 ```
 
+> 注意：active dot 用 `--accent`（橙），不用半透明白 —— 这是 Xiaomi 把橙色作为唯一签名色的一致性表达。
+
 ### Slide 计数器 — 右下角
-`SLIDE N / TOTAL` — 12 px、字重 700、35% 白。
+`SLIDE N / TOTAL` — 12 px、字重 600、35% 白。
 
 ### 控件
 键盘：`← → Space Home End`。触屏：48 px 滑动阈值。
@@ -1029,9 +1014,9 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 
 每张 slide 装进 720 px。太密：减小间距 → 正文降到 14 px → 拆 slide。绝不剪裁或滚动。
 
-**"蓝块"陷阱**：右下角的深色 callout = 视觉失衡。改成全宽底部、用 `.snote` 替代、或把深色卡放在顶部。
+**"橙块"陷阱**：右下角的橙色 callout = 视觉失衡。改成全宽底部、用 `.snote` 替代、或把橙色 callout 放在顶部。
 
-**"蓝叠 navy"陷阱**：在深色 slide（`--primary` bg）上，永远不要用 `--accent` 当文字或 accent — 会产生刺眼、廉价感的对比。用白色（`#fff`）或半透明白（`rgba(255,255,255,.85)`）做强调。深色背景上的低调 CTA：`rgba(255,255,255,.08)` bg 填充 + 白字。
+**"橙叠 carbon"陷阱**：在深色 slide（`--primary` bg）上，永远不要把橙色 `--accent` 当大块文字背景或大块 fill —— 会产生刺眼、廉价感的对比。在深色背景上，橙色只用作小尺寸 mark / eyebrow / 单行 hairline accent。大块强调用白色（`#fff`）或半透明白（`rgba(255,255,255,.85)`）。
 
 **"深色堆叠"陷阱**：当一个深色元素直接放在另一个深色元素下方时，它们在视觉上合并。深色元素之间至少留 12 px `--surface` 或 `--tint` 间距。
 
@@ -1043,11 +1028,11 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 |---|---|
 | 左水平内边距 | 96 px |
 | 右水平内边距 | 80 px |
-| 上下内边距 | 32 px |
+| 上下内边距 | 24 / 40 px (Xiaomi 默认非对称) |
 | 页头高度 | 54 px |
 | 卡片间距 | 20 px |
-| 卡片内边距 | 32 px |
-| 圆角 | {{BORDER_RADIUS}} |
+| 卡片内边距 | 22 px (Tier 2) / 32 px (Tier 1) |
+| 圆角 | 4 px (cards / images) / pill (buttons) |
 | 分隔线粗细 | 1 px |
 | Accent 边线 | 3 px |
 
@@ -1059,28 +1044,28 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 
 ### 品牌与 Token
 - [ ] 每张 slide 都有 logo（封面右上、内容页 `.shd` 右端）
-- [ ] **Logo 在封面肉眼可见** —— 打开 deck，看 slide 1 右上角。"内嵌成功但不可见"是最常见的失败模式（见 §4 fill 级联陷阱）。`has_real_vector_path: true` 单独并不能保证视觉上看得见。
-- [ ] Logo `<symbol>` 块内部不含任何 `fill` 属性（含 `<g fill="none">` wrapper）—— 只允许 `fill="currentColor"`（仅 A 档；B / C 档用 `<image href>`，不适用此规则）
-- [ ] **封面 logo 周围没有非预期的白色 halo** —— 如果用了 `.logo-chip`，`padding: 0`，除非设计**显式**要求一个可见的白色卡片边框（见 §4 Padding 语义）。正向 padding 是 opt-in，不是默认。
+- [ ] **Logo 在封面肉眼可见** —— 打开 deck，看 slide 1 右上角。"内嵌成功但不可见"是最常见的失败模式（见 §4）。`has_real_vector_path: true` 单独并不能保证视觉上看得见。
+- [ ] Logo 使用 `<image href="data:image/svg+xml;base64,...">` 形式（B 档），CSS `.logo` 上**没有** `fill:` 属性
+- [ ] **封面 logo 周围没有非预期的白色 halo** —— Xiaomi 默认不加 chip。
 - [ ] **每张 slide 内容都包在 `.sc` 容器内** —— 包括 bespoke 满屏 Type J / Type A。不能用平级 shell 如 `.fpwrap` / `.poster-wrap`（这种自定义 shell 会**静默绕过** `fit_contract_intact`）
 - [ ] 颜色：只用系统 token — 不用临时 hex
 - [ ] 所有 bespoke 元素都仅基于系统 token 构造（见 §1 约束 vs 自由）
 - [ ] 不用 emoji (👍🎉 等) — 排版符号 (✓ − ! ×) 可用
-- [ ] {{PRIMARY_FONT}} {{WEIGHT_RANGE}}{{ITALIC_NOTE_SHORT}} 已加载；不用 serif / display 字体
-- [ ] 封面副标：仅用 {{PRIMARY_FONT}} 300 斜体（如果 300 italic 不可用，用品牌等价值）
+- [ ] MiSans Latin 300-700 已加载（通过 Xiaomi CDN `@import`）；CJK 链含 PingFang SC / Microsoft YaHei；不用 serif / display 字体
+- [ ] 封面副标：仅用 MiSans Latin 300（MiSans 没有斜体；仅靠字重区分层级）
 
 ### 字体与可读性
 - [ ] 没有低于 12 px 的文字 — 特别注意徽章 / 标签列
 - [ ] Slide 标题 ≥ 50 px（仅在密集多行例外时降到 38 px）
 - [ ] 非表格 slide 的正文 ≥ 16 px（仅在数据密集表格上用 14 px）
 - [ ] 副标 ≥ 20 px
-- [ ] 中文与对应英文字号 / 字重一致（混排时）
+- [ ] 中文与对应英文字号 / 字重一致（混排时）；中文标题用 700，正文用 500
 
 ### 幻灯片结构
 - [ ] 每张内容页都有 `.shd` 页头条 + slide 编号 + logo
 - [ ] 封面没有装饰线 — 不要 hairline、不要 accent line、不要渐变边框
 - [ ] 每张 slide 都在 720 px 内 — 没有内容剪裁或溢出
-- [ ] 没有"蓝块"陷阱 — 深色 callout 不孤立在双栏布局的右下角
+- [ ] 没有"橙块"陷阱 — 橙色 callout 不孤立在双栏布局的右下角
 - [ ] 只扫标题也能讲通整个故事
 
 ### 适配契约 (§5.1) — 布局安全门
@@ -1099,7 +1084,7 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 - [ ] 交互元素有可见的 hover / focus 状态
 
 ### 视觉与图像
-- [ ] 图像服务于理解 — 不用装饰性 stock photo
+- [ ] 图像服务于理解 — 不用装饰性 stock photo（Xiaomi 用真实产品摄影）
 - [ ] 图上文字有 scrim（≥ 50% 不透明度深色蒙层）
 - [ ] 图说用 `.cap` 样式
 
