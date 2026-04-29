@@ -98,8 +98,23 @@ Use this only as a tilt. Every brand still ships all eight required slide types.
 
 **The brand DS is your tunable. The deck is just the verification of it.** When a runtime check fails, the fix lives in a specific section of *your brand's* `<brand>-PPT-Design-System.md`. Update the DS, regenerate the deck from the updated DS, re-run the check.
 
+> ⚠️ **Phase B forbids deck-only fixes — and `phase_b_workflow` enforces it.**
+>
+> Editing the deck.html directly to make a check pass heals one slide and
+> leaves the spec wrong. The next deck built from this DS will have the
+> same bug; every other brand sharing the affected DS pattern will too.
+>
+> Starting now this is checked structurally. `hard_checks.py` includes a
+> `phase_b_workflow` check that hashes the deck and the DS each run. On a
+> re-run in the same `out_dir`, if the deck changed but the DS didn't,
+> the check FAILS with `deck_modified_without_ds_update`. Every fix you
+> find in the table below modifies the DS section first; the deck change
+> is downstream from regenerating the deck out of the updated DS. There
+> is no shortcut.
+
 | Failing check / observation | Section of *your* DS to fix | What to verify is present |
 |---|---|---|
+| `phase_b_workflow` fails — `deck_modified_without_ds_update` | The DS section the previous check failure pointed at — see this same table | The deck SHA changed since the last run; the DS SHA didn't. You patched the deck instead of the spec. Revert the deck edit (or accept it as the basis), then make the same fix in the DS section that owns the original failing rule, then re-generate the deck from the updated DS. The provenance baseline updates each run, so once you do the legitimate cycle (DS edit → regenerate deck → re-run) the gate clears. |
 | `slide_dimensions` (offset ≠ 1280×720) | DS §5 Scaffold + the scale-to-fit `<script>` block | The deck must keep the canvas at fixed `width: 1280px; height: 720px;` and use a CSS-transform `scaleDeck()` runtime to fill the viewport. Never resize the canvas to viewport units. |
 | `fit_contract_intact` (≠ exactly one `flex:1 1 0` absorber per `.sc`, or absorber missing `min-height: 0` / `overflow: hidden`) | DS §5.1 Single-Slide Fit Contract | Each content slide's `.sc` has exactly one absorber; absorber carries `min-height: 0` AND `overflow: hidden`; non-absorber children are `flex: 0 0 auto`. |
 | `fit_contract_intact` reports `absorbers: 0` on a slide that *visually* looks fine | DS §1 Hard constraints + §6 Type J full-bleed variant | The slide is bypassing `.sc` with a custom shell (`.fpwrap`, `.poster-wrap`, etc.). Wrap the bespoke composition in `.sw + .sc` instead — give one of the inner bands `flex: 1 1 0; min-height: 0; overflow: hidden`. The `.sc` is the ONLY container `fit_contract_intact` measures; without it, every check silently passes regardless of the layout's actual safety. |
