@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>deckify — 朋友圈图</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<!--
+  CJK font strategy for this poster:
+  Posters are screenshot once and shipped as PNG, so we render on macOS
+  using its native STFangsong (华文仿宋) — Apple's built-in fangsong
+  cuts that visually approximate FZFangSong well enough for editorial
+  use, no licensing concern (system font, ships with macOS).
+  Non-mac viewers fall through to Songti / their OS serifs; that's only
+  relevant if someone opens the HTML directly, which is rare.
+-->
+
+<style>
+  :root {
+    --bg-graphite:   #0d1117;
+    --paper:         #f5efe8;
+    --paper-dim:     rgba(245, 239, 232, 0.62);
+    --paper-dimmer:  rgba(245, 239, 232, 0.38);
+    --accent:        #00b8d4;
+    --rule:          rgba(245, 239, 232, 0.20);
+    /* Single serif throughout — Cormorant Garamond for Latin glyphs paired
+       with LiSong Pro (李宋, Apple's native Chinese book serif) for CJK
+       glyphs. LiSong has a calligraphic backbone that pairs cleanly with
+       Cormorant's old-style Latin curves — visually unified, editorial
+       in mood. Posters are rendered on macOS and shipped as PNG, so the
+       baked artwork uses exactly this font. Non-mac fallbacks land on
+       reasonable Songti variants. */
+    --serif:         'Cormorant Garamond',
+                     'LiSong Pro', 'LiSong-Pro',
+                     'Source Han Serif SC', 'Noto Serif SC',
+                     'Songti SC', 'STSong',
+                     'Hiragino Mincho ProN', 'SimSun', serif;
+    /* URL / code-like utility text — JetBrains Mono. The one acceptable
+       break from the serif: a URL has metric meaning (it's a literal
+       address), and monospace makes that legible without competing. */
+    --mono:          'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg-graphite);
+    color: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    /* default scrollable; the screenshot tool lives at exactly canvas
+       viewport size so it sees no overflow, and a human looking at this
+       file in Chrome on a smaller monitor can just scroll around. */
+    min-height: 100vh;
+  }
+  body {
+    /* center the canvas horizontally; vertically it just sits at top. */
+    display: flex;
+    justify-content: center;
+    padding: 24px;             /* breathing room when previewing */
+  }
+
+  .wrap {
+    position: relative;
+    flex-shrink: 0;
+    display: flex; flex-direction: column;
+    background:
+      radial-gradient(ellipse at 30% 18%, rgba(0, 184, 212, 0.06), transparent 55%),
+      radial-gradient(ellipse at 80% 88%, rgba(0, 184, 212, 0.04), transparent 60%),
+      var(--bg-graphite);
+    overflow: hidden;          /* canvas itself doesn't scroll, but body does */
+  }
+
+  /* === FORMAT: vertical 1080×1440 === */
+  body.vertical .wrap {
+    width: 1080px; height: 1440px;
+    padding: 80px 88px 72px;
+  }
+
+  /* === FORMAT: square 1080×1080 === */
+  body.square .wrap {
+    width: 1080px; height: 1080px;
+    padding: 72px 88px 64px;
+  }
+
+  /* === FORMAT: horizontal 1920×1080 ===
+     Hero占左、spine占右。spine 宽度大幅扩，让 "what you get" 三行内容
+     可以保持在同一行不换行（那才显得整齐）。padding-left 同步收紧。 */
+  body.horizontal .wrap {
+    width: 1920px; height: 1080px;
+    padding: 88px 80px 72px 96px;
+    display: grid;
+    grid-template-columns: 1fr 720px;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 80px;
+    row-gap: 0;
+  }
+
+  /* === FORMAT: banner 1280×640 (GitHub social preview / repo banner) ===
+     Banner is the most space-constrained format: 1280 wide, 640 tall.
+     spine column needs enough width to keep "what you get" items single-line
+     (the EN copy "A reusable Design System for your brand" is 39 chars,
+     about 460 px at 22 px serif), so we go 460 px and shrink hero padding
+     accordingly. Right padding stays generous so the rightmost text never
+     bumps the edge. */
+  body.banner .wrap {
+    width: 1280px; height: 640px;
+    padding: 48px 64px 40px 64px;
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    grid-template-rows: auto 1fr auto;
+    column-gap: 48px;
+    row-gap: 0;
+  }
+  body.banner .top-row    { grid-column: 1 / span 2; }
+  body.banner .bottom-row { grid-column: 1 / span 2; }
+  body.banner .hero       { grid-column: 1; align-self: center; }
+  body.banner .spine      {
+    display: block;
+    grid-column: 2; align-self: center;
+    padding-left: 32px;
+    border-left: 1px solid var(--rule);
+  }
+  body.banner .brand-mark   { font-size: 38px; }
+  body.banner .eyebrow      { font-size: 16px; }
+  body.banner .accent-rule  { width: 48px; margin-bottom: 24px; }
+  body.banner .headline     { font-size: 76px; line-height: 1.0; }
+  body.banner .sub          { font-size: 18px; margin-top: 28px; }
+  body.banner .bottom-meta  { font-size: 14px; }
+  body.banner .bottom-tagline { font-size: 18px; }
+  body.banner .bottom-row   { padding-top: 18px; }
+  body.banner .spine .stamp { font-size: 22px; margin-bottom: 14px; }
+  body.banner .spine li     { font-size: 18px; padding: 10px 0; }
+  body.banner .spine li .num { font-size: 20px; margin-right: 10px; }
+  /* English banner needs an even smaller headline — "writes itself."
+     at 76 px rolls into the spine column. */
+  body.banner[lang="en"] .headline { font-size: 64px; }
+
+  /* === TOP ROW === */
+  .top-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  body.horizontal .top-row { grid-column: 1 / span 2; }
+
+  .brand-mark {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--paper);
+    letter-spacing: -0.01em;
+  }
+  body.vertical .brand-mark   { font-size: 56px; }
+  body.square .brand-mark     { font-size: 52px; }
+  body.horizontal .brand-mark { font-size: 60px; }
+  .brand-mark::after {
+    content: '.';
+    color: var(--accent);
+    margin-left: -2px;
+  }
+
+  /* Eyebrow: same serif as everywhere else. No italic (CJK serif fonts
+     don't have real italic — browsers fake it by skewing the glyph,
+     which always looks ugly). No small-caps (zh chars don't have
+     uppercase). Just a slightly heavier weight + open tracking — that's
+     the editorial treatment that actually works for mixed CJK/Latin. */
+  .eyebrow {
+    font-family: var(--serif);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--paper);             /* full weight, not dimmed — eyebrow is a label, not a footnote */
+  }
+  /* English eyebrow needs tighter tracking — Latin glyphs already have
+     their own letter spacing baked into the metrics, so 0.18em looks
+     blown-out compared with the same tracking applied to CJK chars
+     (where it gives the editorial 字距 effect). */
+  body[lang="en"] .eyebrow { letter-spacing: 0.04em; }
+  body.vertical .eyebrow   { font-size: 26px; }
+  body.square .eyebrow     { font-size: 24px; }
+  body.horizontal .eyebrow { font-size: 26px; }
+  body.banner .eyebrow     { font-size: 18px; }
+  .eyebrow .accent-dot {
+    color: var(--accent);
+    margin-right: 12px;
+  }
+
+  /* === HERO === */
+  .hero {
+    flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  body.horizontal .hero { grid-column: 1; align-self: center; }
+
+  .accent-rule {
+    width: 80px; height: 2px;
+    background: var(--accent);
+    margin-bottom: 56px;
+  }
+
+  .headline {
+    font-family: var(--serif);
+    font-weight: 500;
+    color: var(--paper);
+    letter-spacing: -0.025em;
+    line-height: 1.04;
+    /* CJK headlines: use explicit <br> to control breaks; nowrap keeps
+       phrases together. Latin headlines: short enough to live as one
+       phrase without wrap; if anything has to break, English can break
+       at word boundaries naturally. */
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+  /* CJK = nowrap because we already inserted explicit <br> in markup */
+  body[lang="zh-CN"] .headline { white-space: nowrap; }
+  /* English headline has natural spaces + a single line break in markup */
+  body[lang="en"]    .headline { white-space: nowrap; }
+
+  body.vertical .headline   { font-size: 132px; }
+  body.square .headline     { font-size: 124px; }
+  body.horizontal .headline { font-size: 144px; }
+  /* English wordmark sentences run a touch longer per line — pull
+     headline a notch smaller so they fit the same canvas */
+  body.vertical[lang="en"] .headline   { font-size: 116px; }
+  body.square[lang="en"]   .headline   { font-size: 108px; }
+  body.horizontal[lang="en"] .headline { font-size: 128px; }
+  body.banner[lang="en"]   .headline   { font-size: 80px; }
+
+  .headline .em {
+    color: var(--accent);
+    font-weight: 500;            /* 中文不用 italic — 直接用颜色做强调 */
+  }
+  .headline .line2 {
+    display: block;
+    margin-top: 0.04em;
+    font-weight: 400;
+  }
+
+  /* === SUB === */
+  .sub {
+    margin-top: 64px;
+    font-family: var(--serif);
+    color: var(--paper-dim);
+    font-weight: 400;
+    line-height: 1.55;
+    white-space: nowrap;       /* sub 必须一行通版，不允许换行 */
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+  body.vertical .sub   { font-size: 36px; margin-top: 72px; }
+  body.square .sub     { font-size: 34px; margin-top: 56px; }
+  body.horizontal .sub { font-size: 38px; margin-top: 56px; }
+  /* English sub fits more characters per em — drop a notch */
+  body.vertical[lang="en"] .sub   { font-size: 30px; }
+  body.square[lang="en"] .sub     { font-size: 28px; }
+  body.horizontal[lang="en"] .sub { font-size: 32px; }
+  body.banner[lang="en"] .sub     { font-size: 22px; }
+
+  .sub .strong {
+    color: var(--paper);
+    font-weight: 500;
+  }
+  .sub-rule {
+    display: inline-block;
+    width: 36px; height: 2px;
+    background: var(--paper-dimmer);
+    vertical-align: middle;
+    margin: 0 16px 6px 0;
+  }
+
+  /* === BOTTOM ROW === */
+  .bottom-row {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-shrink: 0;
+    padding-top: 40px;
+    border-top: 1px solid var(--rule);
+    gap: 24px;
+  }
+  body.horizontal .bottom-row { grid-column: 1 / span 2; }
+
+  /* URL: monospace gives the address its proper visual weight — it's a
+     literal address you'd type, not body copy, and mono signals that. */
+  .bottom-meta {
+    font-family: var(--mono);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--paper-dim);
+    text-transform: lowercase;
+  }
+  body.vertical .bottom-meta   { font-size: 22px; }
+  body.square .bottom-meta     { font-size: 20px; }
+  body.horizontal .bottom-meta { font-size: 24px; }
+  body.banner .bottom-meta     { font-size: 18px; }
+
+  .bottom-meta .slash { color: var(--accent); margin: 0 4px; }
+
+  .bottom-tagline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--paper-dim);
+    letter-spacing: 0.02em;
+  }
+  body.vertical .bottom-tagline   { font-size: 32px; }
+  body.square .bottom-tagline     { font-size: 30px; }
+  body.horizontal .bottom-tagline { font-size: 36px; }
+
+  /* === HORIZONTAL SPINE — what you get === */
+  .spine {
+    display: none;
+    font-family: var(--serif);
+    color: var(--paper);
+    line-height: 1.55;
+  }
+  body.horizontal .spine {
+    display: block;
+    grid-column: 2; align-self: center;
+    padding-left: 48px;
+    border-left: 1px solid var(--rule);
+  }
+  .spine .stamp {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent);
+    font-size: 38px;                  /* "what you get" 标题放大 */
+    letter-spacing: 0.04em;
+    margin-bottom: 32px;
+  }
+  .spine ul { list-style: none; }
+  .spine li {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 32px;                  /* 列表条目 28→32 */
+    font-weight: 400;
+    color: var(--paper);
+    /* 横版必须保持 single-line — 不允许"对版"被换到第二行 */
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+  .spine li:last-child { border-bottom: none; }
+  .spine li .num {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--accent);
+    font-size: 36px;
+    margin-right: 14px;
+    vertical-align: -2px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top-row">
+      <span class="brand-mark">deckify</span>
+      <div class="eyebrow" data-zh="AI 时代的 deck" data-en="a deck for the AI era">
+        <span class="accent-dot">●</span><span class="eyebrow-text"></span>
+      </div>
+    </header>
+
+    <main class="hero">
+      <div class="accent-rule"></div>
+      <h1 class="headline" data-lang-block></h1>
+      <p class="sub" data-lang-block></p>
+    </main>
+
+    <aside class="spine">
+      <div class="stamp">what you get</div>
+      <ul data-lang-block></ul>
+    </aside>
+
+    <footer class="bottom-row">
+      <div class="bottom-meta">
+        github.com<span class="slash">/</span>seacen<span class="slash">/</span>deckify
+      </div>
+      <div class="bottom-tagline" data-zh="a deck for the AI era." data-en="brand in. deck out.">
+      </div>
+    </footer>
+  </div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const fmt  = params.get('format') || 'vertical';
+  const lang = (params.get('lang') === 'en') ? 'en' : 'zh-CN';
+  document.body.classList.add(fmt);
+  document.body.setAttribute('lang', lang);
+
+  // Bilingual content blocks. Edit copy here, layout stays untouched.
+  const COPY = {
+    'zh-CN': {
+      headline: 'PPT&nbsp;翻篇了，<br><span class="line2">AI&nbsp;<span class="em">接管</span>。</span>',
+      sub: '<span class="sub-rule"></span>学一次你的品牌，<span class="strong">从此每份 deck 都对版</span>。',
+      spineList: [
+        '一份贴合品牌的 Design System',
+        '一份示范 deck，浏览器直接打开',
+        '之后每份 deck，AI 都按品牌出',
+      ],
+      tagline: 'a deck for the AI era.',
+    },
+    'en': {
+      // Combo A — "the next deck writes itself" + "train once, every deck after that is just a prompt"
+      headline: 'The next deck<br><span class="line2"><span class="em">writes</span> itself.</span>',
+      sub: '<span class="sub-rule"></span>Train deckify on your brand once. <span class="strong">Every deck after that is just a prompt.</span>',
+      spineList: [
+        'A reusable Design System for your brand',
+        'A 9-slide demo deck, ready to open',
+        'Every deck after that — written by AI',
+      ],
+      tagline: 'brand in. deck out.',
+    },
+  };
+
+  const copy = COPY[lang];
+  document.querySelector('.headline').innerHTML = copy.headline;
+  document.querySelector('.sub').innerHTML = copy.sub;
+  document.querySelector('.spine ul').innerHTML = copy.spineList
+    .map((item, i) => `<li><span class="num">${['i.','ii.','iii.'][i]}</span> ${item}</li>`)
+    .join('');
+  document.querySelector('.eyebrow .eyebrow-text').textContent =
+    document.querySelector('.eyebrow').getAttribute(`data-${lang === 'en' ? 'en' : 'zh'}`);
+  document.querySelector('.bottom-tagline').textContent =
+    document.querySelector('.bottom-tagline').getAttribute(`data-${lang === 'en' ? 'en' : 'zh'}`);
+</script>
+</body>
+</html>

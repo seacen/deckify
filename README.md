@@ -1,10 +1,12 @@
 <div align="center">
 
+![deckify — the next deck writes itself](assets/social/deckify-en-banner-1280x640.png)
+
 # deckify
 
-### PPT just turned the page. AI takes the canvas from here — in HTML, where stories run further.
+### The next deck writes itself.
 
-> deckify turns any brand's website into a reusable Design System — every deck from here on is AI's job, not yours.
+> Train deckify on your brand once. Every deck after that is just a prompt.
 
 [**English**](README.md) · [中文](README.zh.md)
 
@@ -120,6 +122,14 @@ Eight reference brands, every one passing both machine checks and visual review.
 | Cover | Content |
 |:---:|:---:|
 | ![L'Oréal cover](assets/showcase/loreal-cover.png) | ![L'Oréal content](assets/showcase/loreal-content.png) |
+
+### Xiaomi (中文)
+*Tech-confident, restrained orange accent, dense product-page rhythm.*
+[Open the deck →](decks/xiaomi/) · [DS markdown](decks/xiaomi/xiaomi-PPT-Design-System.md)
+
+| Cover | Content |
+|:---:|:---:|
+| ![Xiaomi cover](assets/showcase/xiaomi-cover.png) | ![Xiaomi content](assets/showcase/xiaomi-content.png) |
 
 ---
 

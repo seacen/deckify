@@ -1,0 +1,22 @@
+{
+  "interaction_mode": "ask-user-question",
+  "host": "claude-code",
+  "language": "中文",
+  "logo_choice": {
+    "id": "c34120b0",
+    "kind": "inline-svg",
+    "rationale": "User did not contest synthesizer pick — c34120b0 is the unambiguous canonical orange-squircle Mi mark in nav."
+  },
+  "palette_anchor": {
+    "primary_hex": "#FF6700",
+    "rationale": "Single dominant chord — not ambiguous; user did not contest."
+  },
+  "typography_decision": {
+    "loading_strategy": "xiaomi-cdn-webfont",
+    "url": "https://i02.appmifile.com/i18n/fonts/MiSansLatin/index.css",
+    "fallback_chain": "-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+    "rationale": "User chose Xiaomi-hosted webfont. CSS file declares the full @font-face stack at weights 300/400/500/600/700; we @import it once at the top of the deck."
+  },
+  "slide_emphasis": ["Type A — full-bleed cinematic hero", "Type F — image+spec-numbers split", "Type H — data table / spec chart", "Type J — big pull-quote / value statement"],
+  "scope_of_deck": "Brand verification deck — proves the DS produces decks faithful to Xiaomi global's engineered-cinematic visual register; usable by another agent for product launches, internal reviews, ESG decks."
+}

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>deckify · 中文字体挑选</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #0d1117;
+    color: #f5efe8;
+    font-family: 'Cormorant Garamond', serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    padding: 56px 80px;
+    min-height: 100vh;
+  }
+  h1 {
+    font-weight: 500;
+    font-size: 36px;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .lead {
+    color: rgba(245, 239, 232, 0.55);
+    font-size: 18px;
+    margin-bottom: 48px;
+    max-width: 640px;
+    line-height: 1.55;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    align-items: baseline;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(245, 239, 232, 0.10);
+  }
+  .row:last-child { border-bottom: none; }
+  .label {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 14px;
+    color: rgba(245, 239, 232, 0.55);
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  .label .name {
+    display: block;
+    color: #f5efe8;
+    font-size: 17px;
+    margin-bottom: 4px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    letter-spacing: 0;
+  }
+  .sample {
+    font-size: 88px;
+    font-weight: 500;
+    color: #f5efe8;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .sample .em { color: #00b8d4; }
+  .sample .small {
+    display: block;
+    font-size: 28px;
+    color: rgba(245, 239, 232, 0.62);
+    margin-top: 12px;
+    letter-spacing: 0;
+  }
+
+  /* one rule per font, in a clear "Cormorant for Latin + this CJK font" pair */
+  .f-songti        { font-family: 'Cormorant Garamond', 'Songti SC', serif; }
+  .f-stsong        { font-family: 'Cormorant Garamond', 'STSong', serif; }
+  .f-simsong       { font-family: 'Cormorant Garamond', 'SimSong', serif; }
+  .f-lisong        { font-family: 'Cormorant Garamond', 'LiSong Pro', serif; }
+  .f-stfangsong    { font-family: 'Cormorant Garamond', 'STFangsong', serif; }
+  .f-fzqkbysong    { font-family: 'Cormorant Garamond', 'FZQingKeBenYueSongS-R-GB', serif; }
+  .f-kaitisc       { font-family: 'Cormorant Garamond', 'Kaiti SC', serif; }
+  .f-stkaiti       { font-family: 'Cormorant Garamond', 'STKaiti', serif; }
+  .f-hiragino      { font-family: 'Cormorant Garamond', 'Hiragino Mincho ProN', serif; }
+  .f-toppan        { font-family: 'Cormorant Garamond', 'Toppan Bunkyu Mincho', serif; }
+  .f-yumincho      { font-family: 'Cormorant Garamond', 'YuMincho', serif; }
+  .f-songtitc      { font-family: 'Cormorant Garamond', 'Songti TC', serif; }
+</style>
+</head>
+<body>
+
+<h1>中文衬线字体 · 挑选</h1>
+<p class="lead">每行同一句话用同一台 macOS 上自带的字体渲染。Latin 部分都用 Cormorant Garamond；变量是中文字体。挑你觉得最对调性的那行，告诉我编号即可。</p>
+
+<div class="row">
+  <div class="label">
+    <span class="name">1. Songti SC</span>
+    苹果宋体（macOS 默认）<br>
+    粗细分明，最常见
+  </div>
+  <div class="sample f-songti">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">2. STSong</span>
+    华文宋体（老款，更瘦长）
+  </div>
+  <div class="sample f-stsong">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">3. SimSong</span>
+    简宋（紧凑现代）
+  </div>
+  <div class="sample f-simsong">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">4. LiSong Pro</span>
+    李宋（Apple 自家书法宋）
+  </div>
+  <div class="sample f-lisong">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">5. STFangsong</span>
+    华文仿宋（之前那版，你说单薄）
+  </div>
+  <div class="sample f-stfangsong">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">6. FZ 清刻本悦宋</span>
+    方正清刻本悦宋（macOS 自带，<br>
+    仿明清古籍刻本调性）
+  </div>
+  <div class="sample f-fzqkbysong">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">7. Kaiti SC</span>
+    苹果楷体（毛笔感，更书法）
+  </div>
+  <div class="sample f-kaitisc">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">8. STKaiti</span>
+    华文楷体
+  </div>
+  <div class="sample f-stkaiti">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">9. Hiragino Mincho ProN</span>
+    日文明朝（中文 fallback 时<br>
+    仍优雅，适合编辑感）
+  </div>
+  <div class="sample f-hiragino">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">10. Toppan Bunkyu Mincho</span>
+    凸版文久明朝（书籍正文<br>
+    专用，宋体里最工整）
+  </div>
+  <div class="sample f-toppan">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">11. YuMincho</span>
+    游明朝（日系编辑设计常用）
+  </div>
+  <div class="sample f-yumincho">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="label">
+    <span class="name">12. Songti TC</span>
+    繁体宋（笔画更柔，编辑感）
+  </div>
+  <div class="sample f-songtitc">
+    PPT 翻篇了，AI <span class="em">接管</span>。
+    <span class="small">学一次你的品牌，从此每份 deck 都对版。</span>
+  </div>
+</div>
+
+</body>
+</html>
