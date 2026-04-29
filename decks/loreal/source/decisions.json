@@ -1,0 +1,27 @@
+{
+  "interaction_mode": "ask-user-question",
+  "host": "claude-code",
+  "language": "English",
+  "logo_choice": {
+    "decided_by": "synthesizer",
+    "id": "f26c5564",
+    "rationale": "Single header inline-SVG with 9 paths and the canonical 137:36 wordmark aspect ratio — no ambiguity, no Round 1 needed."
+  },
+  "palette_anchor": {
+    "decided_by": "synthesizer",
+    "primary_hex": "#000000",
+    "secondary_hex": "#CDC4BA",
+    "rationale": "Black is the dominant chord (331 occurrences vs anything else) and stone-beige is the signature warm neutral the L'Oréal corporate site uses to lift B/W into luxury beauty — no Round 2 needed."
+  },
+  "font_fallback": {
+    "decided_by": "user",
+    "display": "'Cormorant Garamond', 'Times New Roman', Times, serif",
+    "body": "Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    "rationale": "User picked Cormorant Garamond + Inter as open-source proxies for Halesworth + HelveticaNowDisplay."
+  },
+  "slide_emphasis": {
+    "decided_by": "user",
+    "primary_types": ["Type J pullquote", "Type F image hero", "Type B two-column"],
+    "rationale": "User selected the three slide types that most directly mirror L'Oréal's editorial register: oversized italic pullquote, full-bleed art-directed photography, and parallel narrative columns for mission/heritage."
+  }
+}

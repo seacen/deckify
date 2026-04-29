@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>L'Oréal — A Deep Dive Into Beauty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  /* Core role tokens */
+  --primary:  #000000;
+  --accent:   #CDC4BA;
+  /* Neutrals */
+  --surface:  #FFFFFF;
+  --white:    #FFFFFF;
+  --ink:      #1A1A1A;
+  --mid:      #6D6D6D;
+  --rule:     #D8D8D8;
+  --tint:     #F4F4F4;
+  /* Semantic */
+  --green:    #468254;
+  --green-bg: #E5EFE7;
+  --red:      #B23A48;
+  --red-bg:   #F4E4E5;
+  --warn:     #B57E2F;
+  --warn-bg:  #F5EBD9;
+  --teal:     #2E3644;
+  --teal-bg:  #E5E8EE;
+  /* L'Oréal palette */
+  --stone:      #CDC4BA;
+  --stone-soft: #E8E2DA;
+  --link-blue:  #3860BE;
+  --deep-navy:  #2E3644;
+  --fog:        #F4F4F4;
+  /* Editorial-still warm chord (used in CSS-drawn image areas) */
+  --skin-light: #C7AE96;
+  --skin-mid:   #8B6F58;
+  --skin-deep:  #4F3D2D;
+  /* Type */
+  --font-body:    'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: 'Cormorant Garamond', 'Times New Roman', Times, serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--ink);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  hyphens: manual;
+  overflow: hidden;
+}
+
+#wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--ink); }
+#deck { position: relative; width: 1280px; height: 720px; overflow: hidden; transform-origin: center center; will-change: transform; background: var(--surface); }
+
+.slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .38s ease; overflow: hidden; }
+.slide.active { opacity: 1; pointer-events: auto; }
+@keyframes enter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.slide.active .sc { animation: enter .42s cubic-bezier(.4,0,.2,1) both; }
+
+/* Logo */
+.logo { height: 18px; width: auto; flex-shrink: 0; fill: currentColor; display: block; }
+.logo.W { color: #fff; }
+.logo.L { color: var(--primary); }
+.logo.lg { height: 24px; }
+
+/* Cover (Type A) — light-paper editorial register */
+.cov { background: var(--surface); width: 100%; height: 100%; display: flex; flex-direction: column; padding: 56px 96px 56px 96px; position: relative; }
+.cov-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.cov-meta-row { font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--mid); }
+.cov-mid { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; justify-content: center; overflow: hidden; max-width: 920px; }
+.cov-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .28em; text-transform: uppercase; color: var(--ink); margin-bottom: 28px; }
+.cov-title { font-family: var(--font-display); font-size: 96px; font-weight: 400; font-style: italic; line-height: 0.96; letter-spacing: -.02em; color: var(--ink); }
+.cov-title em { font-family: var(--font-display); font-style: italic; color: var(--accent); }
+.cov-sub { margin-top: 28px; font-family: var(--font-body); font-size: 22px; font-weight: 300; font-style: italic; color: var(--mid); letter-spacing: .005em; line-height: 1.4; max-width: 720px; }
+.cov-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.cov-byline { font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--ink); }
+.cov-rule { width: 64px; height: 1px; background: var(--accent); margin-bottom: 10px; }
+
+/* Content shell */
+.sw { background: var(--surface); border-left: 3px solid var(--accent); display: flex; flex-direction: column; height: 100%; width: 100%; }
+.sw .sc { flex: 1; padding: 32px 80px 36px 96px; display: flex; flex-direction: column; overflow: hidden; gap: 0; }
+
+.shd { display: flex; align-items: center; justify-content: space-between; padding: 0 80px 0 96px; flex: 0 0 54px; border-bottom: 1px solid var(--rule); background: var(--surface); }
+.shd-left { display: flex; align-items: center; gap: 18px; }
+.shd-num { font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--ink); }
+.shd-cap { font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--mid); }
+
+/* Slide title */
+.stitle { font-family: var(--font-body); font-size: 50px; font-weight: 900; line-height: 1.06; letter-spacing: -.025em; color: var(--ink); }
+.stitle.serif { font-family: var(--font-display); font-style: italic; font-weight: 400; letter-spacing: -.01em; }
+.stitle .accent { color: var(--accent); font-style: italic; font-family: var(--font-display); font-weight: 400; }
+.ssub { font-size: 20px; font-weight: 600; color: var(--mid); margin-top: 10px; line-height: 1.4; max-width: 880px; }
+.eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .28em; text-transform: uppercase; color: var(--ink); }
+
+/* Eyebrow rule */
+.eb-rule { display: inline-block; width: 36px; height: 1px; background: var(--accent); vertical-align: middle; margin-right: 14px; }
+
+/* Section gap helper */
+.gap-24 { height: 24px; flex: 0 0 24px; }
+.gap-32 { height: 32px; flex: 0 0 32px; }
+
+/* ── Slide 2 — Full-width narrative + inline pull-quote (Type C) ── */
+.s2-grid { flex: 1 1 0; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: start; padding-top: 18px; }
+.s2-prose p { font-size: 16px; line-height: 1.7; color: var(--ink); font-weight: 400; }
+.s2-prose p + p { margin-top: 14px; }
+.s2-pq { border-left: 3px solid var(--accent); padding: 8px 0 8px 24px; }
+.s2-pq-line { font-family: var(--font-display); font-style: italic; font-size: 36px; font-weight: 400; line-height: 1.18; color: var(--ink); letter-spacing: -.005em; }
+.s2-pq-line em { color: var(--accent); font-style: italic; }
+.s2-pq-attr { margin-top: 18px; font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--mid); }
+
+/* ── Slide 3 — Two-column comparison (Type B) ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; flex: 1 1 0; min-height: 0; overflow: hidden; padding-top: 16px; }
+.col { display: flex; flex-direction: column; gap: 16px; overflow: hidden; }
+.col-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); }
+.col-title { font-family: var(--font-display); font-style: italic; font-size: 30px; font-weight: 400; line-height: 1.15; color: var(--ink); letter-spacing: -.005em; }
+.col-rule { width: 48px; height: 1px; background: var(--ink); margin: 4px 0 8px; }
+.col-list { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+.li-row { display: flex; gap: 14px; align-items: flex-start; padding: 12px 14px; background: var(--white); border-left: 3px solid var(--accent); }
+.li-row .num { font-size: 18px; font-weight: 900; color: var(--accent); opacity: .7; min-width: 26px; line-height: 1.1; }
+.li-row .txt { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.45; }
+.li-row .txt b { font-weight: 800; }
+
+/* Marks (semantic) */
+.mark::before { display: inline-block; width: 16px; height: 16px; border-radius: 50%; text-align: center; line-height: 16px; font-size: 10px; font-weight: 900; margin-right: 8px; vertical-align: 1px; }
+.mark.yes::before { content: '✓'; background: var(--green); color: #fff; }
+.mark.no::before  { content: '−'; background: var(--red); color: #fff; }
+
+/* ── Slide 4 — Data table (Type E) ── */
+.s4-tw { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding-top: 14px; }
+.dt { width: 100%; border-collapse: collapse; font-size: 14px; font-weight: 600; }
+.dt th { background: var(--primary); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; text-align: left; padding: 12px 16px; }
+.dt td { padding: 12px 16px; color: var(--ink); border-bottom: 1px solid var(--rule); vertical-align: middle; }
+.dt tr.hi td { background: var(--tint); font-weight: 700; }
+.dt .pos { color: var(--green); font-weight: 800; }
+.dt .neg { color: var(--red); font-weight: 800; }
+.dt .neu { color: var(--mid); font-weight: 600; }
+.dt .num-c { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
+.dt .lab-c { color: var(--mid); font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.s4-foot { margin-top: 14px; font-size: 12px; color: var(--mid); font-weight: 600; }
+.s4-foot b { color: var(--ink); font-weight: 800; }
+
+/* ── Slide 5 — Chart / Type H ── */
+.s5-grid { flex: 1 1 0; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: stretch; padding-top: 14px; }
+.s5-chart { display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.bar-row { display: grid; grid-template-columns: 130px 1fr 60px; align-items: center; gap: 14px; }
+.bar-label { font-size: 13px; font-weight: 800; letter-spacing: .04em; color: var(--ink); }
+.bar-track { position: relative; height: 22px; background: var(--tint); }
+.bar-fill { position: absolute; top: 0; bottom: 0; left: 0; background: var(--accent); transform-origin: left center; animation: bar-grow 900ms cubic-bezier(.4,0,.2,1) both; }
+.bar-fill.dark { background: var(--primary); }
+@keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.slide.active .bar-fill { animation-play-state: running; }
+.bar-num { font-size: 13px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; }
+.bar-axis { display: grid; grid-template-columns: 130px 1fr 60px; align-items: center; gap: 14px; padding-top: 8px; border-top: 1px solid var(--rule); margin-top: 4px; }
+.bar-axis .tick { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--mid); }
+.s5-side { display: flex; flex-direction: column; justify-content: space-between; gap: 14px; padding-left: 32px; border-left: 1px solid var(--rule); overflow: hidden; }
+.s5-insight { font-family: var(--font-display); font-style: italic; font-size: 28px; font-weight: 400; line-height: 1.22; color: var(--ink); }
+.s5-insight em { color: var(--accent); font-style: italic; }
+.s5-meta { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--mid); }
+
+/* ── Slide 6 — Flip cards (Type D) ── */
+.flip-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1 1 0; min-height: 0; padding-top: 14px; overflow: hidden; }
+.fc { perspective: 1200px; cursor: pointer; min-height: 0; overflow: hidden; }
+.fc-inner { position: relative; width: 100%; height: 100%; transition: transform .65s cubic-bezier(.4,0,.2,1); transform-style: preserve-3d; }
+.fc:hover .fc-inner, .fc.on .fc-inner { transform: rotateY(180deg); }
+.ff { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; padding: 28px 30px; display: flex; flex-direction: column; }
+.ff-front { background: var(--primary); color: #fff; justify-content: space-between; }
+.ff-back { background: var(--deep-navy); color: #fff; transform: rotateY(180deg); }
+.ff-front .ghost { font-family: var(--font-display); font-style: italic; font-size: 88px; font-weight: 400; color: rgba(255,255,255,.10); line-height: 1; align-self: flex-end; }
+.ff-front .cnm { font-size: 28px; font-weight: 900; line-height: 1.06; letter-spacing: -.01em; color: #fff; }
+.ff-front .cbd { margin-top: 10px; font-size: 17px; font-weight: 600; line-height: 1.45; color: rgba(255,255,255,.7); }
+.ff-front .ht { margin-top: auto; font-size: 12px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); padding-top: 16px; }
+.ff-back .bkl { font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); }
+.ff-back .bkt { margin-top: 10px; font-family: var(--font-display); font-style: italic; font-size: 24px; font-weight: 400; line-height: 1.2; color: #fff; }
+.ff-back .vs { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+.ff-back .vs .item { padding: 10px 0; border-top: 1px solid rgba(255,255,255,.18); }
+.ff-back .vs .vt { font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.ff-back .vs .vb { margin-top: 4px; font-size: 14px; font-weight: 600; line-height: 1.4; color: rgba(255,255,255,.85); }
+.ff-back .ccl { margin-top: auto; font-size: 12px; font-weight: 700; letter-spacing: .04em; color: rgba(255,255,255,.6); padding-top: 14px; border-top: 1px solid rgba(255,255,255,.18); }
+.flip-hint { margin-top: 12px; font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--mid); flex: 0 0 auto; text-align: center; }
+
+/* ── Slide 7 — Timeline (Type K) ── */
+.tl-wrap { position: relative; padding: 0 12px; flex: 0 0 auto; margin-top: 28px; }
+.tl-line { position: absolute; top: 73px; left: 36px; right: 36px; height: 1px; background: var(--rule); }
+.tl-row { display: flex; position: relative; z-index: 1; }
+.tl-node { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0 6px; }
+.tl-date-top {
+  font-family: var(--font-display); font-style: italic;
+  font-size: 28px; font-weight: 500; letter-spacing: -.01em; color: var(--ink);
+  min-height: 48px; margin-bottom: 16px;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.tl-dot2 { width: 14px; height: 14px; border-radius: 50%; background: var(--primary); margin-bottom: 14px; flex-shrink: 0; border: 3px solid var(--surface); box-shadow: 0 0 0 1px var(--rule); }
+.tl-dot2.accent { background: var(--accent); box-shadow: 0 0 0 1px var(--ink); }
+.tl-name { font-size: 15px; font-weight: 900; color: var(--ink); line-height: 1.2; margin-bottom: 6px; max-width: 180px; }
+.tl-detail { font-size: 12px; font-weight: 600; color: var(--mid); line-height: 1.4; max-width: 180px; }
+.tl-foot { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; align-items: flex-end; padding-top: 18px; }
+.tl-foot-cap { width: 100%; padding: 14px 18px; background: var(--tint); border-left: 3px solid var(--primary); font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+
+/* ── Slide 8 — Pull-quote / Type J full-bleed ── */
+.s8 .sw { background: var(--primary); border-left: none; }
+.s8 .sw .sc { padding: 48px 96px 56px 96px; gap: 0; color: #fff; }
+.s8-top { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.s8-eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .28em; text-transform: uppercase; color: var(--accent); }
+.s8-mid { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+.s8-line { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 84px; line-height: 1.04; color: #fff; letter-spacing: -.015em; max-width: 1080px; }
+.s8-line em { color: var(--accent); font-style: italic; }
+.s8-attr { margin-top: 36px; font-size: 12px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+.s8-attr b { color: #fff; font-weight: 800; }
+
+/* ── Slide 9 — Image hero (Type F) bespoke composition ── */
+.s9 .sw .sc { padding: 0; gap: 0; }
+.s9-grid { flex: 1 1 0; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1.4fr 1fr; gap: 0; }
+.s9-img-area { position: relative; overflow: hidden; background: var(--deep-navy); }
+.s9-img-area::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(205,196,186,.25) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(46,54,68,.6) 0%, transparent 60%),
+    linear-gradient(135deg, var(--deep-navy) 0%, var(--ink) 100%);
+}
+.s9-img-area::after {
+  content: "";
+  position: absolute; left: 50%; top: 50%;
+  width: 320px; height: 420px;
+  transform: translate(-50%, -50%);
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(0,0,0,.4) 100%),
+    linear-gradient(135deg, var(--skin-light) 0%, var(--skin-mid) 50%, var(--skin-deep) 100%);
+  border-radius: 48% 52% 60% 40% / 30% 35% 65% 70%;
+  box-shadow: 0 30px 80px rgba(0,0,0,.4);
+}
+.s9-cap { position: absolute; left: 32px; bottom: 40px; right: 32px; z-index: 2; color: #fff; }
+.s9-cap-eb { font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase; color: var(--accent); }
+.s9-cap-line { margin-top: 8px; font-size: 14px; font-weight: 600; color: rgba(255,255,255,.85); line-height: 1.4; }
+.s9-text { padding: 56px 64px 48px 64px; display: flex; flex-direction: column; gap: 18px; overflow: hidden; background: var(--surface); }
+.s9-eb { font-size: 12px; font-weight: 800; letter-spacing: .28em; text-transform: uppercase; color: var(--ink); }
+.s9-title { font-family: var(--font-display); font-style: italic; font-size: 44px; font-weight: 400; line-height: 1.08; color: var(--ink); letter-spacing: -.01em; }
+.s9-title em { color: var(--accent); font-style: italic; }
+.s9-rule { width: 48px; height: 1px; background: var(--accent); }
+.s9-body { font-size: 15px; line-height: 1.6; color: var(--ink); font-weight: 400; }
+.s9-body + .s9-body { margin-top: 8px; }
+.s9-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.s9-stat-num { font-size: 32px; font-weight: 900; color: var(--ink); letter-spacing: -.02em; line-height: 1; }
+.s9-stat-lab { margin-top: 6px; font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--mid); line-height: 1.3; }
+.s9 .shd { border-bottom: none; background: transparent; position: absolute; top: 0; left: 0; right: 0; z-index: 3; padding: 22px 32px 0 32px; }
+.s9 .shd-num, .s9 .shd-cap { color: #fff; }
+
+/* Navigation */
+#nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 99; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.25); cursor: pointer; transition: all .22s ease; border: none; padding: 0; }
+.dot.on { width: 20px; border-radius: 3px; background: rgba(255,255,255,.85); }
+#ctr { position: fixed; bottom: 20px; right: 24px; font-size: 12px; font-weight: 700; letter-spacing: .12em; color: rgba(255,255,255,.4); z-index: 99; text-transform: uppercase; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  body { overflow-y: auto; background: var(--ink); }
+  #wrap { position: static; display: block; }
+  #deck { width: 100%; height: auto; position: static; transform: none !important; background: transparent; }
+  .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; }
+  .cov, .sw { min-height: 100dvh; height: auto; }
+  .cov { padding: 32px 20px; }
+  .cov-title { font-size: 48px; }
+  .cov-sub { font-size: 17px; }
+  .stitle { font-size: 32px; }
+  .ssub { font-size: 16px; }
+  .shd { padding: 0 20px; }
+  .sw .sc { padding: 24px 20px; }
+  .s9 .sw .sc { padding: 0; }
+  .s9-text { padding: 24px 20px; }
+  /* Multi-col → single-col — explicit flex-column so eval heuristic detects it */
+  .g2, .s2-grid, .s5-grid, .flip-row, .s9-grid { display: flex !important; flex-direction: column !important; grid-template-columns: 1fr !important; gap: 24px; }
+  .tl-row { flex-direction: column; gap: 18px; }
+  .tl-line { display: none; }
+  .tl-node { padding: 12px; border-left: 3px solid var(--accent); align-items: flex-start; text-align: left; }
+  .tl-date-top { min-height: auto; margin-bottom: 6px; align-items: flex-start; justify-content: flex-start; }
+  .tl-dot2 { display: none; }
+  .tl-name, .tl-detail { max-width: none; }
+  /* Inline-flex catch-all */
+  .sc div[style*="display:flex"] { flex-direction: column !important; }
+  .sc div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+  /* Flip cards: kill 3D, swap front/back */
+  .fc { perspective: none !important; min-height: auto !important; }
+  .fc .fc-inner { transform-style: flat !important; transition: none !important; height: auto !important; transform: none !important; }
+  .fc:hover .fc-inner, .fc.on .fc-inner { transform: none !important; }
+  .fc .ff { position: relative !important; backface-visibility: visible !important; transform: none !important; padding: 24px; }
+  .fc .ff-back { display: none; transform: none !important; }
+  .fc.on .ff-front { display: none; }
+  .fc.on .ff-back { display: flex; transform: none !important; }
+  .ff-front .ghost { font-size: 56px; }
+  .s8 .sw .sc { padding: 32px 20px; }
+  .s8-line { font-size: 48px; }
+  .s9-img-area { min-height: 320px; }
+  .s9-img-area::after { width: 220px; height: 280px; }
+  #nav, #ctr { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Logo symbol — defined once -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 137 36" fill="currentColor">
+    <title>L'Oréal Groupe</title>
+    <g clip-path="url(#clip0)">
+      <path d="M100.545 34.7024V32.7235H103.601V31.5326H100.545V29.6927H104.321V28.5014H99.2406V35.8927H104.321V34.7018L100.545 34.7024ZM89.7172 29.7161C89.8919 29.7058 90.0669 29.732 90.2313 29.7931C90.3957 29.8542 90.5462 29.9489 90.6734 30.0714C90.8007 30.1938 90.902 30.3415 90.9713 30.5054C91.0406 30.6692 91.0764 30.8457 91.0764 31.0241C91.0764 31.2026 91.0406 31.3791 90.9713 31.5429C90.902 31.7068 90.8007 31.8545 90.6734 31.9769C90.5462 32.0994 90.3957 32.1941 90.2313 32.2552C90.0669 32.3163 89.8919 32.3425 89.7172 32.3322H87.7664V29.7161H89.7172ZM86.4626 35.8947H87.7664V33.5339H89.7067C91.3341 33.5339 92.3875 32.5448 92.3875 31.0026C92.3875 29.4925 91.3236 28.5034 89.7067 28.5034H86.4619L86.4626 35.8947ZM73.0376 28.5034V33.034C73.0376 34.8525 74.3312 36.0013 76.167 36.0013C78.0028 36.0013 79.2965 34.8525 79.2965 33.0447V28.5034H78.0031V33.0447C78.0031 34.0445 77.3148 34.7676 76.1677 34.7676C75.0412 34.7676 74.3424 34.0445 74.3424 33.034V28.5021L73.0376 28.5034ZM62.5024 34.7676C61.8515 34.7414 61.2359 34.4593 60.7844 33.9805C60.333 33.5017 60.0809 32.8634 60.0809 32.1992C60.0809 31.5351 60.333 30.8967 60.7844 30.4179C61.2359 29.9391 61.8515 29.6571 62.5024 29.6309C63.8689 29.6309 64.9118 30.6838 64.9118 32.2039C64.9283 32.5359 64.8781 32.8679 64.7642 33.1795C64.6504 33.491 64.4752 33.7755 64.2496 34.0155C64.024 34.2556 63.7526 34.446 63.4522 34.5752C63.1517 34.7044 62.8285 34.7697 62.5024 34.7669V34.7676ZM62.5024 28.3965C61.7657 28.3996 61.0465 28.6251 60.4353 29.0445C59.8242 29.4639 59.3486 30.0585 59.0686 30.7532C58.7885 31.4479 58.7165 32.2116 58.8618 32.9479C59.007 33.6843 59.3628 34.3603 59.8844 34.8907C60.4061 35.421 61.0701 35.782 61.7927 35.9281C62.5154 36.0741 63.2642 35.9987 63.9449 35.7113C64.6255 35.4238 65.2074 34.9373 65.6171 34.3131C66.0268 33.6889 66.246 32.955 66.2471 32.2039C66.2581 31.6999 66.1688 31.1989 65.9844 30.7312C65.8 30.2635 65.5244 29.8388 65.1743 29.4828C64.8242 29.1268 64.4069 28.847 63.9476 28.6603C63.4884 28.4736 62.9967 28.3838 62.5024 28.3965ZM49.432 29.7161C50.3081 29.7161 50.788 30.2477 50.788 30.9191C50.788 31.6208 50.3186 32.1528 49.432 32.1528H47.69V29.7161H49.432ZM46.3862 35.8947H47.69V33.3638H49.1816L51.0279 35.8947H52.5717L50.474 33.0764C50.9519 32.9521 51.3739 32.665 51.6698 32.2628C51.9658 31.8605 52.118 31.3672 52.1013 30.8646C52.1013 29.4277 51.0479 28.5034 49.4206 28.5034H46.3852L46.3862 35.8947ZM39.3869 31.8848H36.2679V32.9802H38.1657V34.4478C37.673 34.681 37.1337 34.7939 36.5908 34.7776C35.0992 34.7776 33.9933 33.8203 33.9933 32.1932C33.9832 31.8557 34.0406 31.5195 34.1621 31.2053C34.2835 30.8911 34.4664 30.6054 34.6996 30.3656C34.9329 30.1258 35.2116 29.937 35.5187 29.8105C35.8259 29.6841 36.1551 29.6227 36.4862 29.6302C36.8612 29.6186 37.2345 29.6842 37.584 29.8231C37.9335 29.962 38.252 30.1713 38.5203 30.4385L39.2925 29.4494C38.5256 28.7419 37.52 28.3646 36.4862 28.3965C34.3168 28.3965 32.6685 30.0024 32.6685 32.1932C32.6685 34.5009 34.2958 36.0007 36.5908 36.0007C37.5824 36.0109 38.555 35.7223 39.3862 35.1709L39.3869 31.8848Z"/>
+      <path d="M74.5328 23.5709H92.2115V21.3704H77.5623V14.3242H88.5655V12.0971H77.5623V5.60695H92.2102V3.41217H74.5328V23.5709Z"/>
+      <path d="M83.7195 0.153748L81.3269 2.89388L88.8408 0.153748H83.7195Z"/>
+      <path d="M119.128 3.41278V23.5701H137V21.3697H121.89V3.41278H119.128Z"/>
+      <path d="M103.667 3.41278L93.6141 23.5711H97.012L99.5839 18.3535H111.642L114.236 23.5711H117.6L107.537 3.41278H103.667ZM100.856 15.8272L105.593 6.19869L110.387 15.8272H100.856Z"/>
+      <path d="M64.939 15.1426C69.4689 13.9105 69.9085 10.4727 69.8862 9.24462C69.6161 5.64402 67.2359 3.41315 62.96 3.41315H50.4976V23.5705H53.3386V15.1132H61.4513L67.4191 23.5675H71.0009C71.0009 23.5675 66.7072 17.877 64.939 15.1396V15.1426ZM62.5716 12.7296H53.3386V5.79907H62.8941C65.092 5.79907 66.3306 6.84567 66.7761 8.17564C66.9088 8.66415 66.9434 9.17496 66.8779 9.67744C66.8123 10.1799 66.6479 10.6637 66.3946 11.0999C65.5958 12.4472 64.0793 12.7326 62.5716 12.7326"/>
+      <path d="M33.3292 22.7688C27.7809 22.7688 23.2103 18.2242 23.2103 12.7483C23.2103 7.27906 27.5649 2.51658 33.5442 2.51658C34.869 2.50541 36.1829 2.76184 37.41 3.27105C38.6371 3.78026 39.7531 4.53217 40.6937 5.48341C41.6343 6.43464 42.3808 7.56636 42.8902 8.81326C43.3996 10.0602 43.6617 11.3976 43.6615 12.7483C43.6615 18.2236 38.8762 22.7688 33.3292 22.7688ZM33.4253 0C25.4066 0 19.9403 5.76464 19.9403 12.7413C19.9403 20.0865 25.9789 25.2724 33.4253 25.2724C40.8716 25.2724 46.9034 20.1614 46.9034 12.7413C46.9034 5.76464 41.3705 0 33.4253 0Z"/>
+      <path d="M12.7863 10.5438H14.8355L18.5565 3.41315H15.5625L12.7863 10.5438Z"/>
+      <path d="M0 3.41278V23.5701H17.8704V21.3697H2.76465V3.41278H0Z"/>
+    </g>
+    <defs><clipPath id="clip0"><rect width="137" height="36"/></clipPath></defs>
+  </symbol>
+</svg>
+
+<div id="wrap"><div id="deck">
+
+  <!-- ─────────── Slide 1 — Cover (Type A) ─────────── -->
+  <section class="slide active" id="s1">
+    <div class="cov">
+      <div class="cov-top">
+        <div class="cov-meta-row">L'Oréal Groupe — Corporate Communications</div>
+        <svg class="logo L lg" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="cov-mid">
+        <div class="cov-eyebrow"><span class="eb-rule"></span>The Adventure of Beauty</div>
+        <h1 class="cov-title">A Deep Dive<br/>Into <em>Beauty</em></h1>
+        <p class="cov-sub">For over a century, we've been committed to meeting the varied desires of women and men around the globe with integrity, top quality, and care.</p>
+      </div>
+      <div class="cov-bottom">
+        <div>
+          <div class="cov-rule"></div>
+          <div class="cov-byline">An Editorial Briefing — Spring 2025</div>
+        </div>
+        <div class="cov-meta-row">Slide 1 / 9</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 2 — Full-width narrative + pullquote (Type C) ─────────── -->
+  <section class="slide" id="s2">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-left">
+          <span class="shd-num">02 / 09</span>
+          <span class="shd-cap">Our Purpose</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow"><span class="eb-rule"></span>Beauty for All</div>
+        <div class="gap-24"></div>
+        <h2 class="stitle">Creating the beauty<br/>that <span class="accent">moves the world</span>.</h2>
+        <div class="s2-grid">
+          <div class="s2-prose">
+            <p>Beauty needs vary infinitely depending on the culture, the gender, and the generation. Our purpose is to make beauty accessible to everyone — providing the right product, in the right place, at the right moment.</p>
+            <p>Across 37 international brands, four divisions, and 150 countries, our scientists, makeup artists, hair colourists, and product engineers work toward a single ambition: that the beauty experience be authentic, inclusive, sustainable, and grounded in rigorous science.</p>
+            <p>This is what we mean when we say <b>"Because beauty drives the world."</b> Not as advertising — as a working proposition that shapes how the Groupe invests, hires, formulates, and packages.</p>
+          </div>
+          <aside class="s2-pq">
+            <p class="s2-pq-line">"We strive to make beauty <em>accessible to all</em> — and to do it in a way that respects both <em>people</em> and the <em>planet</em>."</p>
+            <div class="s2-pq-attr">— L'Oréal Groupe — Our Purpose</div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 3 — Two-column comparison (Type B) ─────────── -->
+  <section class="slide" id="s3">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-left">
+          <span class="shd-num">03 / 09</span>
+          <span class="shd-cap">Commitments</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow"><span class="eb-rule"></span>L'Oréal for the Future</div>
+        <div class="gap-24"></div>
+        <h2 class="stitle">Two horizons.<br/><span class="accent">One commitment.</span></h2>
+        <div class="g2">
+          <div class="col">
+            <div class="col-eyebrow">For the Planet</div>
+            <h3 class="col-title">Steward the climate transition; safeguard nature; drive circularity.</h3>
+            <div class="col-rule"></div>
+            <div class="col-list">
+              <div class="li-row"><span class="num">01</span><div class="txt"><span class="mark yes"></span><b>Climate.</b> Reducing absolute Scope 1+2+3 emissions, on a 1.5 °C trajectory, with operations powered by renewable energy at industrial sites.</div></div>
+              <div class="li-row"><span class="num">02</span><div class="txt"><span class="mark yes"></span><b>Nature.</b> Sustainable sourcing of biobased ingredients; protecting and restoring ecosystems linked to our value chain.</div></div>
+              <div class="li-row"><span class="num">03</span><div class="txt"><span class="mark yes"></span><b>Circularity.</b> Refill, recycled and bio-based plastics; eco-designed packaging across every brand.</div></div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="col-eyebrow">For the People</div>
+            <h3 class="col-title">Caring for employees; supporting communities; respecting human rights.</h3>
+            <div class="col-rule"></div>
+            <div class="col-list">
+              <div class="li-row"><span class="num">01</span><div class="txt"><span class="mark yes"></span><b>Employees.</b> Health and well-being benchmarks across every site; living-wage commitment for every direct employee.</div></div>
+              <div class="li-row"><span class="num">02</span><div class="txt"><span class="mark yes"></span><b>Communities.</b> The L'Oréal for Youth programme; partnerships with vulnerable women in 60+ countries.</div></div>
+              <div class="li-row"><span class="num">03</span><div class="txt"><span class="mark yes"></span><b>Human rights.</b> Strategic-supplier audits; published policies on diversity, equity and inclusion.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 4 — Data table (Type E) ─────────── -->
+  <section class="slide" id="s4">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-left">
+          <span class="shd-num">04 / 09</span>
+          <span class="shd-cap">Brand Portfolio</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow"><span class="eb-rule"></span>Four Divisions, 37 International Brands</div>
+        <div class="gap-24"></div>
+        <h2 class="stitle">A complementary <span class="accent">portfolio</span>.</h2>
+        <div class="s4-tw">
+          <table class="dt">
+            <thead>
+              <tr>
+                <th style="width:30%">Division</th>
+                <th style="width:42%">Flagship Brands</th>
+                <th style="width:14%" class="num-c">Profile</th>
+                <th style="width:14%" class="num-c">Distribution</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Consumer Products Division</b></td>
+                <td class="neu">L'Oréal Paris · Garnier · Maybelline NY · NYX · Mixa</td>
+                <td class="num-c"><span class="lab-c">Mass</span></td>
+                <td class="num-c"><span class="lab-c">Retail</span></td>
+              </tr>
+              <tr>
+                <td><b>L'Oréal Luxe</b></td>
+                <td class="neu">Lancôme · Yves Saint Laurent · Kiehl's · Aesop · Atelier Cologne</td>
+                <td class="num-c"><span class="lab-c">Premium</span></td>
+                <td class="num-c"><span class="lab-c">Selective</span></td>
+              </tr>
+              <tr class="hi">
+                <td><b>Professional Products</b></td>
+                <td class="neu">L'Oréal Professionnel · Kérastase · Redken · Matrix</td>
+                <td class="num-c"><span class="lab-c">Salon</span></td>
+                <td class="num-c"><span class="lab-c">Specialty</span></td>
+              </tr>
+              <tr>
+                <td><b>Active Cosmetics</b></td>
+                <td class="neu">La Roche-Posay · Vichy · CeraVe · Skinbetter Science · SkinCeuticals</td>
+                <td class="num-c"><span class="lab-c">Derma</span></td>
+                <td class="num-c"><span class="lab-c">Pharmacy</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="s4-foot">
+            <b>Highlighted row</b> — Professional Products is the original division (1909) and remains the only one with direct hairdresser-channel distribution.
+            <span style="color:var(--mid)"> Source: L'Oréal Groupe — Our Global Brands Portfolio.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 5 — Chart / Type H ─────────── -->
+  <section class="slide" id="s5">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-left">
+          <span class="shd-num">05 / 09</span>
+          <span class="shd-cap">Where Beauty Lives</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow"><span class="eb-rule"></span>Geographic Distribution — Indicative</div>
+        <div class="gap-24"></div>
+        <h2 class="stitle">Beauty is <span class="accent">global</span>, lived locally.</h2>
+        <div class="s5-grid">
+          <div class="s5-chart">
+            <div class="bar-row">
+              <div class="bar-label">North America</div>
+              <div class="bar-track"><div class="bar-fill" style="width:62%"></div></div>
+              <div class="bar-num">26 mkts</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Europe</div>
+              <div class="bar-track"><div class="bar-fill dark" style="width:100%"></div></div>
+              <div class="bar-num">42 mkts</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Asia Pacific</div>
+              <div class="bar-track"><div class="bar-fill" style="width:86%"></div></div>
+              <div class="bar-num">36 mkts</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">Latin America</div>
+              <div class="bar-track"><div class="bar-fill" style="width:48%"></div></div>
+              <div class="bar-num">20 mkts</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">SAPMENA — SSA</div>
+              <div class="bar-track"><div class="bar-fill" style="width:62%"></div></div>
+              <div class="bar-num">26 mkts</div>
+            </div>
+            <div class="bar-axis">
+              <div></div>
+              <div class="tick">0 markets &nbsp; · &nbsp; 50 markets</div>
+              <div></div>
+            </div>
+          </div>
+          <aside class="s5-side">
+            <div>
+              <div class="s5-meta">Insight</div>
+              <p class="s5-insight" style="margin-top:14px">Europe remains the <em>headquarters chord</em> — 42 markets, every brand. Asia Pacific is the <em>fastest-rising</em> regional bloc.</p>
+            </div>
+            <div>
+              <div class="s5-meta">Read</div>
+              <p style="margin-top:8px;font-size:13px;font-weight:600;color:var(--mid);line-height:1.55">L'Oréal operates in 150 countries through five regional zones. Bar widths reflect zone scale; specific market counts are illustrative of public corporate disclosure.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 6 — Flip cards (Type D) ─────────── -->
+  <section class="slide" id="s6">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-left">
+          <span class="shd-num">06 / 09</span>
+          <span class="shd-cap">Myths &amp; Reality</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow"><span class="eb-rule"></span>Click to flip</div>
+        <div class="gap-24"></div>
+        <h2 class="stitle">Two assumptions, <span class="accent">re-examined</span>.</h2>
+        <div class="flip-row">
+          <div class="fc" onclick="this.classList.toggle('on')">
+            <div class="fc-inner">
+              <div class="ff ff-front">
+                <div class="ghost">I</div>
+                <div>
+                  <div class="cnm">"Luxury beauty<br/>is for the few."</div>
+                  <div class="cbd">A common framing — beauty as a private indulgence, the preserve of a narrow demographic.</div>
+                </div>
+                <div class="ht">▶ Click to reveal the reality</div>
+              </div>
+              <div class="ff ff-back">
+                <div class="bkl">The Reality</div>
+                <div class="bkt">Beauty is a daily right, not a rare reward.</div>
+                <div class="vs">
+                  <div class="item"><div class="vt">Reach</div><div class="vb">Operating in 150 countries through 37 brands across mass, luxury, derma, and salon channels.</div></div>
+                  <div class="item"><div class="vt">Inclusion</div><div class="vb">Diversity in shade ranges, skin types, hair textures and gendered formulations is a product brief, not a marketing afterthought.</div></div>
+                </div>
+                <div class="ccl">For the People — L'Oréal commitment</div>
+              </div>
+            </div>
+          </div>
+          <div class="fc" onclick="this.classList.toggle('on')">
+            <div class="fc-inner">
+              <div class="ff ff-front">
+                <div class="ghost">II</div>
+                <div>
+                  <div class="cnm">"Beauty and<br/>sustainability are<br/>at odds."</div>
+                  <div class="cbd">An older critique — that the beauty industry is structurally extractive and packaging-heavy.</div>
+                </div>
+                <div class="ht">▶ Click to reveal the reality</div>
+              </div>
+              <div class="ff ff-back">
+                <div class="bkl">The Reality</div>
+                <div class="bkt">Eco-design is now the default formulation brief.</div>
+                <div class="vs">
+                  <div class="item"><div class="vt">Climate</div><div class="vb">Industrial sites operating on renewable energy; absolute emissions reductions on a 1.5 °C trajectory.</div></div>
+                  <div class="item"><div class="vt">Circularity</div><div class="vb">Refill formats, recycled plastics and biobased polymers across every brand division — measured, audited, public.</div></div>
+                </div>
+                <div class="ccl">For the Planet — L'Oréal commitment</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flip-hint">Hover or tap each card to flip</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 7 — Timeline (Type K) ─────────── -->
+  <section class="slide" id="s7">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-left">
+          <span class="shd-num">07 / 09</span>
+          <span class="shd-cap">Heritage</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="eyebrow"><span class="eb-rule"></span>The Adventure of Beauty</div>
+        <div class="gap-24"></div>
+        <h2 class="stitle">A century, <span class="accent">in milestones</span>.</h2>
+        <div class="tl-wrap">
+          <div class="tl-line"></div>
+          <div class="tl-row">
+            <div class="tl-node">
+              <div class="tl-date-top">1909</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">Société française de teintures inoffensives</div>
+              <div class="tl-detail">Eugène Schueller, a young chemist, files the patent that becomes L'Oréal.</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top">1934</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">Dop, the first soap-free shampoo</div>
+              <div class="tl-detail">A democratisation product — beauty leaves the salon and enters the home.</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top">1957</div>
+              <div class="tl-dot2 accent"></div>
+              <div class="tl-name">François Dalle takes the helm</div>
+              <div class="tl-detail">The expansion era begins. International acquisitions reshape the Groupe.</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top">1973</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">"Because I'm worth it"</div>
+              <div class="tl-detail">L'Oréal Paris launches the line that becomes the most recognised tagline in beauty.</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top">2013</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">Sharing Beauty With All</div>
+              <div class="tl-detail">First sustainability programme; baseline year for the L'Oréal for the Future commitments.</div>
+            </div>
+            <div class="tl-node">
+              <div class="tl-date-top">2024</div>
+              <div class="tl-dot2 accent"></div>
+              <div class="tl-name">L'Oréal for the Future</div>
+              <div class="tl-detail">Climate, nature, circularity and people goals — measured, audited, published.</div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-foot">
+          <div class="tl-foot-cap">
+            From a single hair-dye patent in a Paris apartment to a Groupe operating in 150 countries — <b>each milestone is a continuation, not a pivot</b>. The throughline is the brief: <b>safe, accessible, scientifically rigorous beauty</b>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 8 — Pull-quote (Type J full-bleed) ─────────── -->
+  <section class="slide s8" id="s8">
+    <div class="sw">
+      <div class="sc">
+        <div class="s8-top">
+          <div class="s8-eyebrow"><span class="eb-rule" style="background:var(--accent)"></span>The Throughline</div>
+          <svg class="logo W lg" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+        </div>
+        <div class="s8-mid">
+          <p class="s8-line">"Because beauty <em>drives the world</em>, our purpose is to make it <em>accessible</em> — for all, with care for the planet, with respect for people."</p>
+          <div class="s8-attr">— <b>L'Oréal Groupe</b> &nbsp;·&nbsp; Our Purpose</div>
+        </div>
+        <div class="s8-top">
+          <div class="s8-eyebrow" style="color:rgba(255,255,255,.4)">Slide 08 / 09</div>
+          <div class="s8-eyebrow" style="color:rgba(255,255,255,.4)">A Deep Dive Into Beauty</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Slide 9 — Image hero (Type F) bespoke ─────────── -->
+  <section class="slide s9" id="s9">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-left">
+          <span class="shd-num">09 / 09</span>
+          <span class="shd-cap">Looking Forward</span>
+        </div>
+        <svg class="logo W" viewBox="0 0 137 36" aria-label="L'Oréal"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="s9-grid">
+          <figure class="s9-img-area">
+            <figcaption class="s9-cap">
+              <div class="s9-cap-eb">Editorial Still — L'Oréal Archives</div>
+              <div class="s9-cap-line">A composition in stone, ink and skin tones — the L'Oréal corporate visual register.</div>
+            </figcaption>
+          </figure>
+          <div class="s9-text">
+            <div class="s9-eb"><span class="eb-rule"></span>Looking Forward</div>
+            <h2 class="s9-title">The next chapter is already <em>being written</em>.</h2>
+            <div class="s9-rule"></div>
+            <p class="s9-body">From the first soap-free shampoo of 1934 to the eco-designed refill formats of today, every era has answered the same brief in a new vocabulary. The constant is the question — <b>can beauty be both more accessible and more responsible?</b></p>
+            <p class="s9-body">The answer, for the next decade, lies in science: green chemistry, dermatological precision, AI-assisted personalisation, and packaging engineered for circularity from the first sketch.</p>
+            <div class="s9-stats">
+              <div>
+                <div class="s9-stat-num">1909</div>
+                <div class="s9-stat-lab">First Patent — Paris</div>
+              </div>
+              <div>
+                <div class="s9-stat-num">150</div>
+                <div class="s9-stat-lab">Countries Today</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div></div>
+
+<nav id="nav" aria-label="Slide navigation">
+  <button class="dot on" data-i="1" aria-label="Slide 1"></button>
+  <button class="dot" data-i="2" aria-label="Slide 2"></button>
+  <button class="dot" data-i="3" aria-label="Slide 3"></button>
+  <button class="dot" data-i="4" aria-label="Slide 4"></button>
+  <button class="dot" data-i="5" aria-label="Slide 5"></button>
+  <button class="dot" data-i="6" aria-label="Slide 6"></button>
+  <button class="dot" data-i="7" aria-label="Slide 7"></button>
+  <button class="dot" data-i="8" aria-label="Slide 8"></button>
+  <button class="dot" data-i="9" aria-label="Slide 9"></button>
+</nav>
+<div id="ctr">Slide 1 / 9</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('.dot'));
+  var ctr = document.getElementById('ctr');
+  var idx = 0;
+
+  function go(i) {
+    if (i < 0 || i >= slides.length) return;
+    slides[idx].classList.remove('active');
+    dots[idx] && dots[idx].classList.remove('on');
+    idx = i;
+    slides[idx].classList.add('active');
+    dots[idx] && dots[idx].classList.add('on');
+    ctr && (ctr.textContent = 'Slide ' + (idx + 1) + ' / ' + slides.length);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(idx + 1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); go(0); }
+    else if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+  });
+
+  dots.forEach(function (d) {
+    d.addEventListener('click', function () { go(parseInt(d.dataset.i, 10) - 1); });
+  });
+
+  // Touch swipe
+  var tx = null;
+  document.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; });
+  document.addEventListener('touchend', function (e) {
+    if (tx == null) return;
+    var dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 48) go(idx + (dx < 0 ? 1 : -1));
+    tx = null;
+  });
+
+  // Scale-to-fit (engineering DNA)
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      deck.style.transform = 'none';
+      return;
+    }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+</script>
+
+</body>
+</html>
