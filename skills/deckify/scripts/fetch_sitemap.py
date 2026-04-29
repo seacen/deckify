@@ -74,7 +74,7 @@ JS_JSONLD = r"""(() => {
 
 def run_ab(args: list[str], capture: bool = True, check: bool = False) -> subprocess.CompletedProcess:
     """Invoke agent-browser with explicit args (no shell)."""
-    return subprocess.run(agent_browser_cmd(*args), capture_output=capture, text=True, check=check, timeout=60)
+    return subprocess.run(agent_browser_cmd(*args), capture_output=capture, text=True, check=check, timeout=180)
 
 
 def parse_ab_eval(stdout: str) -> str:

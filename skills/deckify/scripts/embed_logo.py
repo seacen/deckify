@@ -289,7 +289,58 @@ def materialize_url(url: str, base_url: str | None, assets_dir: Path) -> dict:
     return {"ok": ok, "format": ext, "path": str(out), "evidence": ev, "url": url}
 
 
-def build_embed(result: dict) -> tuple[str, str]:
+def classify_svg(svg: str) -> str:
+    """Decide whether an SVG logo is single-colour ('mono') or multi-colour ('multi').
+
+    The two paths produce very different `<symbol>` content:
+      - mono: strip every inner fill so currentColor cascades from <symbol>.
+              `.logo.W` and `.logo.L` can flip white/dark via CSS color.
+      - multi: keep the SVG verbatim; do not write fill="currentColor" on
+              <symbol>. Cover slides must place the logo where its native
+              colours read cleanly (often a white plate on dark covers).
+
+    Multi-colour signals (any one is enough to classify as 'multi'):
+      - Contains <linearGradient> or <radialGradient>
+      - Has 2+ distinct hex / named fills among inner elements
+        (a single fill colour means the logo is monochromatic in spirit;
+         the strip pass will reduce it to currentColor and flip cleanly)
+      - Has fill="url(#…)" anywhere (pattern/gradient reference)
+
+    The fast, brittle heuristic below is good enough for production logos
+    we've seen across the panel (Tiffany / Mars / Unilever / Stripe / Apple
+    / Coca-Cola / P&G / L'Oréal / Starbucks / Netflix / etc.). If a future
+    brand falls between the cracks, a manual override field on
+    brand.json (chosen_logo.colour_handling: 'mono'|'multi') would be the
+    next escape hatch — not implemented yet because no real brand needs it.
+    """
+    s = svg.lower()
+    if "<lineargradient" in s or "<radialgradient" in s:
+        return "multi"
+    if 'fill="url(' in s:
+        return "multi"
+    # Collect every inner fill that is a real colour spec (skip 'none', 'currentColor').
+    fills = set()
+    for m in re.finditer(r'\sfill="([^"]+)"', svg, flags=re.IGNORECASE):
+        v = m.group(1).strip().lower()
+        if v in ("none", "currentcolor", "transparent", "inherit"):
+            continue
+        fills.add(v)
+    # Inline style="fill:..." counts too.
+    for m in re.finditer(r'fill\s*:\s*([^;"\s]+)', svg, flags=re.IGNORECASE):
+        v = m.group(1).strip().lower()
+        if v in ("none", "currentcolor", "transparent", "inherit"):
+            continue
+        fills.add(v)
+    return "multi" if len(fills) >= 2 else "mono"
+
+
+def build_embed(result: dict) -> tuple[str, str, str]:
+    """Returns (embed_html, dataurl, colour_handling).
+
+    `colour_handling` is one of: 'mono' | 'multi' | 'raster'. It tells
+    downstream code (hard_checks.py logo_renders, DS template guidance
+    around .logo.W / .logo.L) which rendering contract to enforce.
+    """
     p = Path(result["path"])
     fmt = result["format"]
     if fmt == "svg":
@@ -300,34 +351,52 @@ def build_embed(result: dict) -> tuple[str, str]:
         else:
             d = svg_dims(svg)
             viewbox = f"0 0 {d[0]:g} {d[1]:g}" if d else "0 0 100 100"
-        # strip outer <svg ...>...</svg>
+
+        kind = classify_svg(svg)
+
+        # strip outer <svg ...>...</svg> in either case
         inner = re.sub(r'^\s*<svg[^>]*>', '', svg, count=1, flags=re.IGNORECASE | re.DOTALL)
         inner = re.sub(r'</svg>\s*$', '', inner, count=1, flags=re.IGNORECASE)
-        # strip <style>...</style> blocks (they pin fill colors and defeat currentColor)
-        inner = re.sub(r'<style[^>]*>.*?</style>', '', inner, flags=re.IGNORECASE | re.DOTALL)
-        # strip <metadata>, <defs> with linearGradient/radialGradient that pin colors
+        # <metadata> is junk in both cases
         inner = re.sub(r'<metadata[^>]*>.*?</metadata>', '', inner, flags=re.IGNORECASE | re.DOTALL)
-        # Remove hardcoded inner fills so currentColor cascades from <symbol fill="currentColor">.
-        # IMPORTANT: this includes fill="none". A wrapper <g fill="none"> is the most common
-        # cause of an "embedded but invisible" wordmark — e.g. exporters wrap the real glyph
-        # paths inside <g fill="none" fill-rule="evenodd">. The intent is "let inner paths
-        # set their own fill", but inside our <symbol fill="currentColor"> the parent fill
-        # cascade IS the colour, and fill="none" silently zeros it out across the whole logo.
-        # If the source SVG truly was stroke-only (line icon), each path will already carry
-        # an explicit `stroke=` attribute that is unaffected by this strip; the resulting
-        # logo will still render correctly.
-        inner = re.sub(r'\sfill="(?!currentColor\b)[^"]+"', '', inner, flags=re.IGNORECASE)
-        # also strip inline style="fill:..."
-        inner = re.sub(r'\sstyle="[^"]*fill:[^;"]*[;"]?[^"]*"', '', inner, flags=re.IGNORECASE)
-        embed = (
-            '<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">\n'
-            f'  <symbol id="brand-wm" viewBox="{viewbox}" fill="currentColor">\n'
-            f'{inner}\n'
-            '  </symbol>\n'
-            '</svg>'
-        )
+
+        if kind == "mono":
+            # Single-colour wordmark / silhouette path. Strip every inner
+            # fill so the <symbol fill="currentColor"> cascade colours the
+            # whole shape; .logo.W / .logo.L can then flip white/dark via
+            # CSS `color:`. fill="none" wrappers are the #1 cause of
+            # "embedded but invisible" — see Mars regression — so they are
+            # included in the strip. Stroke-only line icons carry explicit
+            # `stroke=` attributes that this regex leaves untouched.
+            inner = re.sub(r'<style[^>]*>.*?</style>', '', inner, flags=re.IGNORECASE | re.DOTALL)
+            inner = re.sub(r'\sfill="(?!currentColor\b)[^"]+"', '', inner, flags=re.IGNORECASE)
+            inner = re.sub(r'\sstyle="[^"]*fill:[^;"]*[;"]?[^"]*"', '', inner, flags=re.IGNORECASE)
+            embed = (
+                '<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">\n'
+                f'  <symbol id="brand-wm" viewBox="{viewbox}" fill="currentColor">\n'
+                f'{inner}\n'
+                '  </symbol>\n'
+                '</svg>'
+            )
+        else:
+            # Multi-colour or gradient SVG (P&G radial badge, Starbucks
+            # green-on-white, Netflix N, etc). Keep the SVG verbatim — do
+            # NOT touch fills, do NOT add fill="currentColor" on the
+            # <symbol>. The logo always renders in its native colours;
+            # `.logo.W` / `.logo.L` flipping is a no-op (raster-like
+            # behaviour). Brand DS §1 multi-color caveat acknowledges
+            # that cover slides for these brands need a backplate / light
+            # background to ensure contrast.
+            embed = (
+                '<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">\n'
+                f'  <symbol id="brand-wm" viewBox="{viewbox}">\n'
+                f'{inner}\n'
+                '  </symbol>\n'
+                '</svg>'
+            )
+
         b64 = base64.b64encode(svg.encode("utf-8")).decode("ascii")
-        return embed, f"data:image/svg+xml;base64,{b64}"
+        return embed, f"data:image/svg+xml;base64,{b64}", kind
     body = p.read_bytes()
     mime = {"png": "image/png", "jpg": "image/jpeg", "webp": "image/webp",
             "gif": "image/gif", "ico": "image/x-icon"}.get(fmt, "image/png")
@@ -342,7 +411,7 @@ def build_embed(result: dict) -> tuple[str, str]:
         '  </symbol>\n'
         '</svg>'
     )
-    return embed, dataurl
+    return embed, dataurl, "raster"
 
 
 def main(workspace: str) -> int:
@@ -405,20 +474,29 @@ def main(workspace: str) -> int:
         print(f"ERROR: unknown candidate kind: {cand['kind']}", file=sys.stderr)
         return 2
 
-    (assets_dir / "logo.report.json").write_text(
-        json.dumps({"chosen": cand, "result": result}, indent=2, ensure_ascii=False)
-    )
-
     if not result.get("ok"):
+        (assets_dir / "logo.report.json").write_text(
+            json.dumps({"chosen": cand, "result": result}, indent=2, ensure_ascii=False)
+        )
         print(f"FAIL quality gate: {json.dumps(result, ensure_ascii=False)}", file=sys.stderr)
         print("→ agent should pick another candidate id and rerun.", file=sys.stderr)
         return 1
 
-    embed, dataurl = build_embed(result)
+    embed, dataurl, colour_handling = build_embed(result)
     (assets_dir / "logo.embed.html").write_text(embed, encoding="utf-8")
     (assets_dir / "logo.dataurl").write_text(dataurl, encoding="utf-8")
+    # Report gets colour_handling so hard_checks.py knows which logo_renders
+    # contract to apply (mono = strict no-inner-fill; multi = visual-only;
+    # raster = native-bytes). The brand DS template reads this too — Type A
+    # cover guidance for multi-color brands recommends a white backplate.
+    (assets_dir / "logo.report.json").write_text(
+        json.dumps(
+            {"chosen": cand, "result": result, "colour_handling": colour_handling},
+            indent=2, ensure_ascii=False,
+        )
+    )
 
-    print(f"  format: {result['format']}  path: {result['path']}")
+    print(f"  format: {result['format']}  colour_handling: {colour_handling}  path: {result['path']}")
     print(f"  embed:  {assets_dir / 'logo.embed.html'}")
     print(f"  dataurl bytes: {len(dataurl)}")
     return 0
