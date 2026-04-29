@@ -1,208 +1,152 @@
-# P&G-PPT-Design-System
+# Procter & Gamble-PPT-Design-System
 
-> 为 P&G 制作的所有 deck 共用的视觉语言。请严格遵循，让每一份新 deck 都一眼被识别为同一家族。
+> The visual language for all decks produced for Procter & Gamble. Follow it precisely so every new deck is immediately recognisable as part of the same family.
 
 ---
 
-<!--
-  TEMPLATE NOTES (delete this comment block in the generated output):
+## 1. Design Philosophy
 
-  Sections marked <!-- BRAND-VARIABLE --> must be filled with brand-specific content.
-  Sections marked <!-- ENGINEERING-DNA --> must be copied verbatim. They came from
-  real, painful bugs in production decks. Do NOT "simplify" or "trim" them — every
-  line earns its place.
+**Decks for Procter & Gamble carry the weight of an 188-year-old consumer-products company that lives in two billion homes a day. The visual register is corporate gravitas paired with scientific optimism — it speaks plainly, declares values without slogans, and earns trust through restraint rather than spectacle. Covers are deep P&G Blue with one large clear typographic statement; content slides are crisp white surfaces ruled by 1 px hairlines and a single accent stripe; data is foregrounded as data (not "infographics"); imagery is real consumers, real products, real archives — never decorative stock. The deck should feel closer to the 2025 Annual Report and the Citizenship Report than to a SaaS pitch.**
 
-  Placeholder syntax: TOKEN. Replace each from $WS/decisions.json.
--->
+**Two modes:**
+- **Desktop (≥ 769 px)**: 1280 × 720 px canvas, scale-to-fit (§5 runtime), keyboard / click navigation.
+- **Mobile (≤ 768 px)**: all slides stack vertically as a scrollable page; single-column layouts.
 
-## 1. 设计理念
+### Design taste <!-- ENGINEERING-DNA: design-taste -->
 
-<!-- BRAND-VARIABLE: 1-2 paragraphs capturing the brand's mood + a "Constraints vs Freedom" block -->
+**Commit to a clear aesthetic point of view.** This DS is a brand instrument, not a generic SaaS template. Every deck made from it should be unmistakably *this* brand on first glance — not "another tasteful business presentation." Bold maximalism and refined minimalism both succeed; the failure mode is timidity.
 
-**保留 P&G 1837 年起就在用的视觉气质：饱和的 Pantone 286 深蓝画布、白色 Montserrat 大标题、标题以 **句号** 收尾的标志性印刷修辞、纪实摄影的真实人物镜头。每一张 slide 都应该让人秒认是 P&G —— 不是某家「现代简洁」的科技公司，而是一家把日常用品做了 187 年、被 Fortune 评为最具创新力公司的全球 CPG 巨头。美学坐标：corporate scientific optimism；参考 IBM 企业沟通、Unilever 年报、Johnson & Johnson editorial。**
+**Anti-AI-slop rules** (apply on every slide, every component, every variant):
 
-> 可参考的 mood 段落示例（挑一个最贴近的、混合或改写后再用）：
-> - **奢侈品 / 编辑 / 字体主导**："借鉴奢侈品牌传播语言：慷慨的留白、高对比的字体、克制的颜色。每个元素都凭功能存在。不要装饰性渐变、不要 stock icon、不要 emoji。"
-> - **工程感 / 网格驱动**："像开发者文档站点一样组织：紧凑网格、monospace 强调、可复制的 code block、大量克制的灰度配一个强 accent。"
-> - **大胆色彩 / 消费向**："高能量、高饱和度、英雄字体、大块插画形状。留白是为了让颜色更亮，不是为了降低噪音。"
-> - **极简单色**："还原性强、近单色调色板、accent 仅用于强调，字体承担所有视觉重量。"
+- **No generic font defaults.** Montserrat is the named brand typeface in §3 and must be used. If a fallback is needed it should be the most characterful option available, not Arial/system-ui as the "design choice".
+- **No cliché palettes.** Pure-white background + one purple/blue accent + slate-grey type = AI-slop signature. P&G's palette has a clear dominant chord (`--primary` P&G Blue) and supporting accents — use them with that hierarchy. Do not flatten everything to "white + grey + one accent".
+- **No even-weighted accent grids.** A 6-colour decorative rainbow looks like a Storybook page, not a brand. P&G's section-coded accents (cyan / orange / green) carry semantic load (annual report / innovation / sustainability) — use them where they earn their meaning, not as a colour palette swatch grid.
+- **No off-the-shelf SaaS dashboard chrome.** P&G's actual surfaces are radius `0px` everywhere except the link-pill CTA at radius `50px`. No drop-shadows. Don't soften every component into a tidy 8px-radius card grid — match the brand's sharp default.
+- **No vague mood language in copy.** "Modern, clean, bold" describes everything and therefore nothing. Slide titles and section copy should be specific and concrete — mirror the recon's voice ("Innovation is what we do best", "Making every day more than ordinary").
+- **One orchestrated entrance, not scattered micro-interactions.** A staggered slide-content reveal on activation is the only motion most slides need; do not bolt hover wiggles onto every card.
 
-**两种模式：**
-- **桌面端 (≥ 769 px)**：1280 × 720 px 画布，运行时 scale-to-fit (§5)，键盘/点击导航。
-- **移动端 (≤ 768 px)**：所有 slide 垂直堆叠成一张可滚动的长页；单栏布局。
+### Constraints vs Freedom <!-- ENGINEERING-DNA framing; bullet contents are BRAND-VARIABLE -->
 
-### 设计品味 <!-- ENGINEERING-DNA: design-taste -->
+This Design System defines **hard constraints** (what you must never break) and **reusable components** (what you can reach for). It does NOT define recipes — every slide should be composed for its specific content, not assembled from a template.
 
-**承诺一个清晰的审美立场。** 本 DS 是品牌工具，不是 SaaS 通用模板。基于它做的每一份 deck 第一眼就该让人认出这是 *该品牌* — 不是"又一份得体的商务演示"。极致繁复与极致简约都能成立；失败模式是中庸。
-
-**反 AI 套路规则**（每张 slide、每个组件、每个变体都适用）：
-
-- **不用通用字体默认值。** 品牌字体在 §3 已指定，必须使用。需要 fallback 时也应选最有辨识度的，不能把 Arial / system-ui 当做"设计选择"。
-- **不用陈词滥调的配色。** 纯白底 + 一个紫/蓝色 accent + 板岩灰字 = AI 套路签名。§2 调色板有主导和弦与辅助 accent — 按层级使用，不要扁平化成"白+灰+一种 accent"。
-- **不用等权重的多色装饰网格。** 6 个等权 accent 看起来像 Storybook 配色矩阵，不像品牌。一个主导和弦 + 2–3 个语义 accent（含明确含义）才是正确形态。
-- **不用现成 SaaS 仪表盘 chrome。** 每个组件都 8 px 圆角 + 柔和 drop-shadow + 整齐间距，会把所有品牌做成一个样。按 §2 匹配品牌实际的圆角 / 阴影 / 密度。
-- **不用空洞的氛围词。** "现代、简洁、大胆"什么都形容因此什么都不形容。Slide 标题和段落文案应该具体、具象。
-- **一个编排好的入场动效，而非分散的小动画。** 大部分 slide 只需要一次激活时的内容错时显现；不要给每张卡都加 hover 抖动。
-
-### 约束 vs 自由 <!-- ENGINEERING-DNA framing; bullet contents are BRAND-VARIABLE -->
-
-本 Design System 定义了 **硬约束**（永远不能破的）与 **可复用组件**（按需选用的）。它不定义现成配方 — 每张 slide 都应为它自己的内容构图，而不是从模板拼接。
-
-**硬约束（锁死）：**
+**Hard constraints (locked):**
 - Colour palette (§2 tokens only — no ad-hoc colours)
-- Montserrat typeface, no serif/display fonts （不混 Inter / Roboto / 系统字体；P&G 公开站点的实测渲染就是单 Montserrat 家族）
-- 12 px 可读性下限
-- 每一张 slide 都必须有 logo
-- **每张 slide 的内容必须包在一个 `.sc` 容器里**（即使是 bespoke 满屏的 Type J / Type A 也是）。`.sc` 是 `fit_contract_intact` 唯一扫描的位置 — bespoke 布局如果直接画在自定义 shell 里，会**静默绕过** absorber 检测、移动端 catch-all、602 px 预算这三道保险。没有 `.sc`，就没有契约。
-- **Logo `<symbol>` 内部不能含任何 `fill` 属性**（包括 wrapper `<g>` 上的 `fill="none"`）。任何内层 fill 都会盖过 `currentColor` 级联，使 wordmark 完全不可见 —— 而 byte 级检查（path d 长度、viewBox、visible_on_cover）会一切显示 PASS。`embed_logo.py` 在物化时已 strip 这些；`logo_renders` hard check 会拒绝任何漏网的。
-- 不用 emoji (👍🎉 等) — 排版符号 (✓ − ! ×) 和几何指示符允许
-- 不用装饰性 stock photography
+- Montserrat typeface, no serif/display fonts. Times-style serifs are explicitly out — they read "old P&G" before the 2010s rebrand and undermine the modern voice.
+- 12px readability floor
+- Logo on every slide
+- **Every slide content lives inside a `.sc` container** (even bespoke full-bleed Type J / Type A compositions). The `.sc` is what `fit_contract_intact` measures — bespoke layouts that draw straight into a custom shell silently bypass absorber detection, mobile catch-all, and the 602 px content budget. No `.sc`, no contract.
+- **Logo `<symbol>` is a tier-B multi-colour gradient** (the iconic blue moon-and-stars badge). `embed_logo.py` keeps inner gradient fills verbatim — that is required for tier B. The logo always renders in its native colours; do not attempt CSS `currentColor` flips. On dark covers, wrap the logo in a `.logo-chip` white backplate (see §4).
+- No emoji (👍🎉 etc.) — typographic symbols (✓ − ! ×) and geometric indicators are permitted
+- No decorative stock imagery
 - `.shd` header strip on content slides
-- `.sw` border-left accent
+- `.sw` border-left accent (3 px, `--accent` cyan)
 
-**可复用组件（按需选用，不强制）：**
-- §7 组件库提供卡片、表格、图表、标签、标记 — 适合时用，不适合时跳过用 bespoke 布局。
+**Reusable components (reach for, don't force):**
+- §7 Component Library provides cards, tables, charts, tabs, marks — use them when they fit. Skip them when a bespoke layout serves the content better.
 
-**Bespoke 元素（鼓励）：**
-- **在调色板内自由发挥。** 比如：用「类目色点」作为标题左侧的小圆点（橙=创新、蓝=品牌、绿=可持续），用「标题以句号收尾」作为印刷签名，用 Pantone 286 深蓝整版做章节封页 —— 这些都是 P&G 官网真实的视觉调性，可以在 token 体系内自由组合，但不要为了「现代」而把它们抹平。
-- 判定标准是：该元素是否只用了定义过的颜色 token、品牌字体、并尊重可读性下限？如果是，即便不匹配任何具名组件也算"在系统内"。
-- **不要自我限制在具名组件里。** 如果某 slide 需要 §7 不存在的东西，就从 token 出发自己造。最好的 slide 都是从系统 token 出发的 bespoke 构图。
+**Bespoke elements (encouraged):**
+- **Invent freely** within the colour palette. Build full-bleed P&G-Blue covers with overlapping cyan circle-segment graphics (the Annual Report 2025 hero is the precedent). Build editorial pull-quotes that span 5 lines of Montserrat 900 with one keyword tinted in `--accent`. Build sectional tab grids where each tab carries its own semantic accent (`--warn` for innovation, `--green` for sustainability, `--accent` for brand-portfolio).
+- The test is: does the element use only the defined colour tokens, the brand typeface, and respect the readability floor? If yes, it's in-system even if it doesn't match any named component.
+- **Do not self-restrict to the named components.** If a slide needs something that doesn't exist in §7, design it from the tokens. The best slides are bespoke compositions built from system tokens.
 
 ---
 
-## 2. 颜色令牌 <!-- BRAND-VARIABLE: hex values + brand-palette names; core role token names are invariant -->
+## 2. Colour Tokens <!-- BRAND-VARIABLE: hex values + brand-palette names; core role token names are invariant -->
 
-颜色 token 系统有三层：
+The token system has three layers:
 
-1. **核心角色 token** — 所有品牌之间名字不变。它们标识颜色 *扮演什么角色*，而不是 *它是什么颜色*。红色品牌的 `--primary` 是红色；蓝色品牌的 `--primary` 是蓝色。
-2. **语义 token** — 所有品牌之间名字不变；编码含义（正向 / 负向 / 警告 / 信息）而不是颜色身份。
-3. **品牌调色 token** — 品牌特有的名字 + hex。这些是品牌实际用到的额外 accent（如 Unilever 的 `--lilac` 和 `--water`、P&G 的 `--spark`、Stripe 的 `--lavender`）。命名按品牌实际叫法 — Phase 1 时从 `brand.json` 抓取。
+1. **Core role tokens** — invariant names across every brand. They identify *what role* the colour plays, not *what colour it is*. A red brand's `--primary` is red; a blue brand's `--primary` is blue.
+2. **Semantic tokens** — invariant names; encode meaning (positive / negative / warning / informational) rather than colour identity.
+3. **Brand palette tokens** — brand-specific names AND hex values. P&G's section-coded accents (cyan / orange / spark-green / fog / clay) carry semantic load and are exposed under their P&G names.
 
 ```css
 :root {
   /* ── Core role tokens (invariant names) ── */
-  --primary:  #003DA5;   /* Dominant brand chord — cover bg, primary mark colour */
-  --accent:   #E87722;   /* CTA / link / single saturated highlight */
+  --primary:  #003DA5;   /* P&G Blue — cover bg, primary mark colour */
+  --accent:   #00A3E0;   /* P&G Cyan — CTA / link / single saturated highlight */
   /* ── Neutrals ── */
   --surface:  #FFFFFF;   /* Paper / slide bg */
   --white:    #FFFFFF;
-  --ink:      #0B1220;   /* Body text on light surfaces */
-  --mid:      #5B6573;   /* Secondary text / muted labels */
-  --rule:     #E1E5EB;   /* Dividers / hairlines */
-  --tint:     #F2F7FF;   /* Subtle row / section bg */
+  --ink:      #0A1A2F;   /* Body text on light surfaces (navy-shifted near-black) */
+  --mid:      #4A5468;   /* Secondary text / muted labels */
+  --rule:     #DCE6F2;   /* Dividers / hairlines (cool blue-grey) */
+  --tint:     #F2F7FF;   /* Subtle row / section bg (pale P&G blue wash) */
   /* ── Semantic (invariant names; values may map to brand-palette colours) ── */
-  --green:    #97D700;   /* Positive */
-  --green-bg: #F0F7E0;
+  --green:    #97D700;   /* Positive / sustainability spark */
+  --green-bg: #ECF7CC;
   --red:      #C8102E;   /* Negative */
-  --red-bg:   #FBE9EC;
-  --warn:     #E87722;   /* Warning / caution */
-  --warn-bg:  #FCEFE3;
-  --teal:     #00A3E0;   /* Informational / neutral highlight */
-  --teal-bg:  #E0F4FB;
-  /* ── Brand palette (brand-specific names; expanded from brand.json accents+neutrals) ── */
-  /* P&G 专有令牌 */
-  --pg-cyan:        #00A3E0;   /* 浅蓝高光（年报、品牌卡） */
-  --pg-tint:        #F2F7FF;   /* 极浅蓝底纹，区分行/卡片 */
-  --pg-ink-soft:    #0F5780;   /* 二级深蓝文案，封面副标 */
-  --pg-warm:        #E87722;   /* 创新章橙色类目点 */
-  --pg-green:       #97D700;   /* 可持续章绿色类目点 */
+  --red-bg:   #FCE3E7;
+  --warn:     #E87722;   /* Warning / Innovation accent */
+  --warn-bg:  #FCEBDD;
+  --teal:     #0F5780;   /* Informational / deep ocean */
+  --teal-bg:  #DCE9F2;
+  /* ── P&G brand palette (brand-specific names; expanded from brand.json accents) ── */
+  --pg-deep:  #1A2867;   /* Layered deep-navy for cover stacking */
+  --pg-fog:   #92C7DC;   /* Pale sky / river blue (sustainability palette) */
+  --pg-clay:  #6D665C;   /* Earth-tone neutral (sustainability palette) */
+  --pg-spark: #97D700;   /* Sustainability spark (alias of --green for narrative copy) */
 }
 ```
 
-**规则：** <!-- ENGINEERING-DNA -->
-- **Token 名是角色抽象，不是颜色名。** `--primary` 是品牌的主导和弦，不论那是 navy / red / yellow / black。Slide CSS 读 `var(--primary)` 就能拿到当前 brand DS 对应的正确颜色。
-- **每张 slide 只有 *一个* 主导 accent 颜色。** 用 `--accent` 做 slide 的标志性高亮（CTA、callout 边线、chart 主条）。品牌调色 token（如 `var(--lilac)`）是按需取用的装饰，不是并行 accent — 一张 slide 最多用一个装饰性品牌色。
-- **语义颜色仅在含义彼此独立、相对时才同时出现** — 例如一张对比 slide 的 ✓ (`--green`) / ✗ (`--red`)。否则只取一种。
-- **`--tint` 用于行底色，不用于卡片填充。**
-- **永远不用纯黑。** `--primary` 是品牌真实的深色；如果品牌没有深色，用 `--ink` 作为本会用到黑的位置。
-- **永远不在 slide CSS 里写临时 hex。** 每个颜色都必须来自 token（核心 / 语义 / 品牌调色）。`token_only_colors` hard check 会强制执行。
+**Rules:** <!-- ENGINEERING-DNA -->
+- **Token names are role abstractions, not colour names.** `--primary` is the brand's dominant chord regardless of whether that chord is navy / red / yellow / black. Slide CSS reads `var(--primary)` and gets the right colour for whichever brand DS it's loaded against.
+- **One *dominant* accent colour per slide.** Use `--accent` for the slide's signature highlight (CTA, callout border, chart fill). Brand-palette tokens (e.g. `var(--pg-fog)`) are reach-for-when-needed decoration, not parallel accents — at most one decorative brand-palette colour per slide.
+- **Semantic colours coexist when they carry distinct, opposing meaning** — e.g., a comparison slide with ✓ (`--green`) / ✗ (`--red`) marks. Otherwise pick one.
+- **`--tint` is for rows, not card fills.**
+- **Never pure black.** `--primary` is the brand's actual dark; if the brand has nothing dark, use `--ink` for what would otherwise have been black. P&G's `--ink` is `#0A1A2F` — a navy-shifted near-black that harmonises with the P&G Blue chord and avoids the AI-slop pure-`#000` flatness.
+- **Never ad-hoc hex literals in slide CSS.** Every colour must come from a token (core / semantic / brand palette). The `token_only_colors` hard check enforces this.
 
 ---
 
-## 3. 字体 <!-- BRAND-VARIABLE: font family + fallback; the scale below is mostly invariant -->
+## 3. Typography <!-- BRAND-VARIABLE: font family + fallback; the scale below is mostly invariant -->
 
-**Montserrat** — 唯一字体。字重 300 / 400 / 600 / 800（300 提供 italic 用于封面副标）。`system-ui` 作为 极小尺寸下的兜底；webfont 加载失败时整体降级。
+**Montserrat** — sole typeface. Weights 300 / 400 / 600 / 700 / 900 + 300 italic for cover subtitles. `system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif` fallback for offline/embedded contexts.
 
-> P&G 的字体哲学是「单字族 + 重字重 + 全大写小幅 + 句号收尾」。Montserrat 的几何骨架配合 800 字重，刻出的是企业气质；不要为了花哨混入 serif 或 display。**章节大标题强制以句号结束（'Innovation.'、'Brands.'、'Sustainability.'）—— 这是 P&G 排印的视觉签名。**
+> P&G's website uses Montserrat as the universal UI face — every header, h1 (96 px / 700), h2 (40 px / 700), nav, footer, and button on `pg.com` is Montserrat. The serif "Times" the recon picked up on bare `<body>` elements is the browser's UA default, not a real choice — never use it. Cover hero type runs 75–96 px / weight 700 in the Annual Report. The deck imitates that range.
 
-### CJK 字体回退链 <!-- ENGINEERING-DNA: cjk-fallback -->
+### Type scale <!-- ENGINEERING-DNA — sizes are invariant; the scale is what makes decks readable -->
 
-中文 deck 不能直接用拉丁字体当 body font。Century Gothic / Helvetica Neue / SF Pro / Stripe Sans / Georgia 等都不含 CJK 字形，浏览器对 CJK 字符自动回退到系统默认（macOS 上是 STHeiti 细体，Windows 是微软雅黑 Light），**视觉上立刻显得廉价**。
-
-**最低要求**：font-family 链里**必须至少出现一个 CJK 字体名**（PingFang SC / Hiragino Sans GB / Microsoft YaHei / Source Han Sans 等），否则 CJK 字符 100% 落到 OS 默认。`cjk_font_quality` hard check 会强制执行这一条。
-
-**两种合理的字体顺序**（按 deck 的语言比例选）：
-
-1. **CJK-first**（推荐用于中文密度高的 deck）：CJK 字体放最前，拉丁 brand 字体兜底。中英混排时 PingFang 的拉丁补丁会渲染英文，整体风格最统一，中文不会因为字重不匹配显得瘦弱。
-2. **Latin-first**（适用于 brand 拉丁字面强、deck 大量英文术语的场景，如 Stripe API 文档风格）：拉丁 brand 字体放前，CJK 字体跟在后面。CJK 字符会走 CJK 字体，但拉丁部分保留 brand 表达。`cjk_font_quality` 在这种情况下会带 `warning`（不阻断），由 vision judge 决定视觉是否可接受。
-
-```css
-/* 中文 deck 推荐字体链 — CJK 优先，拉丁兜底 */
-font-family:
-  /* macOS / iOS 中文（最高优先级 — 对中英都比 brand-latin 干净） */
-  'PingFang SC', '苹方-简',
-  /* macOS 较旧 / 阅读体严肃面 */
-  'Hiragino Sans GB', '冬青黑体简体中文',
-  /* Windows 中文 */
-  'Microsoft YaHei', '微软雅黑',
-  /* Linux / Android / 通用 */
-  'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC',
-  /* Brand 拉丁字体 — 仅作 brand-mark / display 修饰 */
-  '[BRAND-LATIN]',
-  /* 系统通用 */
-  system-ui, -apple-system, sans-serif;
-```
-
-**Sans-serif brand**（Unilever / Stripe / Apple / P&G）→ 配 PingFang SC / Microsoft YaHei / Source Han Sans 这类 sans CJK 字体。
-**Serif brand**（Coca-Cola Georgia / 编辑感品牌）→ 配 `'Songti SC', '宋体-简', 'Source Han Serif SC', 'Noto Serif SC'`，否则 Georgia + 黑体的混搭会跳戏。
-
-**字重提升（CJK-first 时尤其重要）**：PingFang SC 的 Regular（400）较细 — 大字标题用 700（Semibold/Bold），正文用 500（Medium）以上，避免"中文显瘦"的廉价感。
-
-**禁止**：font-family 链里完全没有 CJK 字体。`cjk_font_quality` hard check 会立刻 FAIL。
-
-### 字号阶梯 <!-- ENGINEERING-DNA — sizes are invariant; the scale is what makes decks readable -->
-
-| 用途 | 字号 | 字重 | 字距 | 备注 |
+| Role | Size | Weight | Letter-spacing | Notes |
 |---|---|---|---|---|
-| 封面大标 | 82 px | 900 | −0.03 em | 行高 0.98 |
-| 封面副标 | 22 px | 300 斜体 | +0.01 em | |
-| 内页标题 | 50 px | 900 | −0.025 em | 行高 1.06 |
-| 内页副标 | 20 px | 600 | +0.01 em | `--mid` |
-| Eyebrow / 徽章 | 11–12 px | 800 | +0.18–0.24 em | 全大写 |
-| 卡片标题 | 28 px | 900 | −0.01 em | |
-| 正文 / 列表 | 16 px | 600 | 默认 | 行高 1.5–1.6 |
-| 表格 / 数据 | 13–14 px | 700–800 | +0.1 em | 全大写 |
-| 说明 / 元信息 | 12–13 px | 700–800 | +0.14 em | 绝不低于 12 px |
+| Cover headline | 82 px | 900 | −0.03 em | Line-height 0.98 |
+| Cover subtitle | 22 px | 300 italic | +0.01 em | |
+| Slide title | 50 px | 900 | −0.025 em | Line-height 1.06 |
+| Slide subtitle | 20 px | 600 | +0.01 em | `--mid` |
+| Eyebrow / badge | 11–12 px | 800 | +0.18–0.24 em | ALL CAPS |
+| Card headline | 28 px | 900 | −0.01 em | |
+| Body / list | 16 px | 600 | default | Line-height 1.5–1.6 |
+| Table / data | 13–14 px | 700–800 | +0.1 em | ALL CAPS |
+| Caption / meta | 12–13 px | 700–800 | +0.14 em | Never below 12 px |
 
-### 可读性 <!-- ENGINEERING-DNA -->
+### Readability <!-- ENGINEERING-DNA -->
 
-1. **最大化**：默认用合适的最大字号。半空 slide 配 14 px 正文 = 设计失败。
+1. **Maximise**: Default to the largest size that fits. Half-empty slide with 14px body = design failure.
 2. **Floor**: Nothing below 12px <!-- ENGINEERING-DNA: typography-floor -->. If content doesn't fit at min sizes, change layout — never shrink font.
 
-| 用途 | 最低 | **强制默认** |
+| Role | Minimum | **Enforced default** |
 |---|---|---|
-| 内页标题 | 38 px | **50 px** — 仅在密内容多行时降到下限 |
-| 卡片标题 | 22 px | **28 px** |
-| 主正文 / 列表 | 14 px | **16 px** — slide 级段落、主要内容 |
-| 组件次级文字 | 13 px | **13–14 px** — 卡片内描述、列表条目细节、组件标题下的辅助文字 |
-| 副标 | 16 px | **20 px** |
-| 徽章 / 标签 | 12 px | **13 px** |
+| Slide title | 38 px | **50 px** — only shrink for multi-line on dense slides |
+| Card headline | 22 px | **28 px** |
+| Primary body / list | 14 px | **16 px** — slide-level paragraphs, main content |
+| Component secondary | 13 px | **13–14 px** — descriptions inside cards, list item details, supporting text under a title within a component |
+| Subtitle | 16 px | **20 px** |
+| Badges / labels | 12 px | **13 px** |
 
-**强制规则**：slide 主内容区域的标题低于 50 px、主正文低于 16 px 都是 bug。组件内部的次级文字（卡片描述、列表细节）可用 13–14 px，以维持组件内部标题与描述之间的视觉层级。
+**Enforcement**: Title below 50px or primary body below 16px on a slide's main content area is a bug. Component-internal secondary text (card descriptions, list details) may use 13–14px to maintain visual hierarchy between title and description within the component.
 
-### 3.1 字体安全 <!-- ENGINEERING-DNA: typography-safety -->
+### 3.1 Typography Safety <!-- ENGINEERING-DNA: typography-safety -->
 
-Slide "好看"是可工程量化的。下面的规则是硬规则；`text_layout_safe` 自动检查执行其中大部分。
+Slide "looks good" is engineering-quantifiable. The rules below are hard rules; the `text_layout_safe` auto-check enforces most of them.
 
-1. **永远不要贴底**：内容页最底的可见文字元素到 slide 底边距离必须 ≥ 18 px（目标 24–48 px）。`.sw` / `.sc` 的 `padding-bottom` 当做防线；不要把内容推到边缘。
-2. **永远不能截断**：任何 `overflow:hidden` 的文字容器必须满足 `scrollHeight ≤ clientHeight`。如果内容可能溢出，用 `text-overflow: ellipsis` 或 `-webkit-line-clamp` 显式声明最大行数 — 永远不要"赌"它正好放得下。
-3. **永远不要任意换行**：H1/H2/H3 单标题 ≤ 3 行；正文段落 ≤ 5 行。中日韩标题避免在词语中间换行 — 用 `word-break: keep-all; line-break: strict;` 配合更短文案，不要让自动换行接管。
-4. **全局布局法则**（基础）：
-   - 全局禁用 `hyphens: auto`（混合 CJK 环境会产生破碎连字符）。
-   - 正文 `line-height` ≥ 1.4，标题 ≥ 1.15 — 不能更紧。
-   - 卡片 / 段落之间至少 12 px 间距（与 §5 的 12 px 下限一致）；两个文字块永远不能相触。
-   - 一个 `.sc` 内层级最多 3 层（标题 → 副标 / 图 → 列表 / 卡片）。需要更多就拆 slide。
-5. **构建时自检**（写完 HTML 后运行）：
+1. **Never glued to the bottom edge**: the lowest visible text element on a content slide must be ≥ 18px from the slide's bottom (target 24–48px). Keep `padding-bottom` on `.sw` / `.sc` as a guardrail; do not push content to the edge.
+2. **Never truncated**: any text container with `overflow:hidden` must have `scrollHeight ≤ clientHeight`. If content might overflow, use `text-overflow: ellipsis` or `-webkit-line-clamp` and explicitly declare the allowed max line count — never "bet" that it just fits.
+3. **Never broken across lines arbitrarily**: H1/H2/H3 single titles ≤ 3 lines; body paragraphs ≤ 5 lines. For CJK titles, avoid mid-phrase wraps — use `word-break: keep-all; line-break: strict;` paired with shorter copy, do not let auto-wrap take over.
+4. **Global layout law** (the basics):
+   - Disable `hyphens: auto` globally (it produces broken hyphens in mixed-CJK environments).
+   - `line-height` ≥ 1.4 for body, ≥ 1.15 for headings — never tighter.
+   - Minimum 12px spacing between cards / paragraphs (matches the §5 12px floor); two text blocks must never touch.
+   - At most 3 levels of hierarchy inside one `.sc` (title → subtitle/figure → list/cards). If you need more, split the slide.
+5. **Build-time self-check** (run after writing HTML):
    ```js
    document.querySelectorAll('.slide').forEach((s, i) => {
      const slideBottom = s.getBoundingClientRect().bottom;
@@ -218,182 +162,158 @@ Slide "好看"是可工程量化的。下面的规则是硬规则；`text_layout
      if (gap < 18) console.warn(`slide ${i+1}: text only ${gap.toFixed(1)}px from bottom (need ≥ 18)`);
    });
    ```
-6. **检查失败时的修复优先级**：
-   - 首先，**改文案**（删字、缩短句子、用名词短语）。
-   - 然后，**改布局**（去掉一项、拆分 slide、把列表改成双栏网格）。
-   - **永远不要** 通过把字号缩到 12 px 以下或允许截断来"塞下"。
+6. **Repair priority when a check fails**:
+   - First, **edit the copy** (cut words, shorten sentences, use noun phrases).
+   - Then, **change the layout** (drop an item, split the slide, turn a list into a 2-column grid).
+   - **Never** "fit it in" by shrinking type below 12px or allowing truncation.
 
 ---
 
-## 4. P&G Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
+## 4. Procter & Gamble Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
 
-### P&G 的 logo 选择：为什么是 PNG 而不是 SVG
+### Definition (once per HTML file)
 
-P&G 的官方 logo（`P_G_Logo_RGB.svg`）是 **径向渐变的圆形徽章** —— 深蓝→浅蓝渐变背景 + 白色 P&G 字形 + 高光遮罩。它在视觉上是 P&G 187 年品牌资产的核心，**不能** 被简化成单色 wordmark。
+The logo must be a real brand identity asset, **fully inlined** into the HTML (no external network dependency). `embed_logo.py` automatically chooses one of three colour-handling tiers based on what the source SVG actually contains. P&G's logo is **tier B (multi-colour gradient)** — the iconic blue moon-and-stars circular badge with the white "P&G" wordmark. The tier is recorded in `pg/source/assets/logo.report.json` as `colour_handling: "multi"`.
 
-但工程上，这个 logo **不能走 Form A（SVG `<symbol>` + `currentColor`）** 路径：
+#### Tier A — `mono` (single-colour wordmark or silhouette) — NOT P&G
 
-- DS 的 `logo_renders` hard check 要求 `<symbol>` 内层只用 `fill="currentColor"`，目的是支持白底/深蓝底两种翻转色（`.logo.W` / `.logo.L`）。
-- 但 `<radialGradient stop-color="..."/>` 和 `<path fill="url(#SVGID_1_)"/>` 的颜色是 **硬编码进 gradient stops 的**，CSS 的 `currentColor` 级联无法覆盖它们。
-- 强行 strip 内层 fill 会让圆环和字形塌成同一色 —— 得到一团纯色 blob，不再是 P&G。
-
-所以对于 P&G（以及任何 gradient 徽章型 logo —— 比如 Starbucks 双色咖啡女神、Mastercard 红黄圆环），**Form B（PNG base64 内嵌）才是正确路径**。Form B 用 `<image href="data:image/png;base64,...">` 包进同一个 `<symbol>`，渲染时把彩色徽章作为完整位图盖在 chip 上。
-
-### 定义（每份 HTML 一次）
-
-**A. SVG 矢量路径**（**P&G 不用此路径** —— 仅在你的 brand wordmark 是单色矢量字形时才用）：
+Used when the source SVG is a single-colour wordmark (Tiffany "TIFFANY&CO.", Unilever wordmark, Apple silhouette, Stripe wordmark, etc). Inner fills are stripped so the `<symbol fill="currentColor">` cascade colours the whole shape; `.logo.W` / `.logo.L` flip white-on-dark / brand-dark-on-light by setting CSS `color:`.
 
 ```html
 <svg style="display:none" aria-hidden="true">
   <symbol id="brand-wm" viewBox="0 0 720 720" fill="currentColor">
-    <radialGradient id="SVGID_1_" cx="156.09" cy="143.71" r="661.27" gradientTransform="translate(-6 -6) scale(1.0167)" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#00a1df"/>
-    <stop offset=".13" stop-color="#0092d7"/>
-    <stop offset=".37" stop-color="#006cc1"/>
-    <stop offset=".62" stop-color="#003da6"/>
-    <stop offset=".73" stop-color="#043799"/>
-    <stop offset=".93" stop-color="#102777"/>
-    <stop offset="1" stop-color="#152169"/>
-  </radialGradient>
-  <circle cx="360" cy="360" r="360"/>
-  <radialGradient id="SVGID_2_" cx="107.95" cy="60.5" r="1096.43" gradientTransform="translate(-6 -6) scale(1.0167)" gradientUnits="userSpaceOnUse">
-    <stop offset=".02" stop-color="#fff"/>
-    <stop offset=".03" stop-color="#fbfeff"/>
-    <stop offset=".09" stop-color="#bae7f9"/>
-    <stop offset=".14" stop-color="#87d5f4"/>
-    <stop offset=".19" stop-color="#63c9f1"/>
-    <stop offset=".23" stop-color="#4cc1ef"/>
-    <stop offset=".26" stop-color="#44beee"/>
-    <stop offset=".28" stop-color="#37b8eb"/>
-    <stop offset=".35" stop-color="#19ace5"/>
-    <stop offset=".41" stop-color="#07a4e0"/>
-    <stop offset=".45" stop-color="#00a1df"/>
-    <stop offset=".79" stop-color="#0045ab"/>
-    <stop offset=".82" stop-color="#003da6"/>
-    <stop offset=".96" stop-color="#0059b6"/>
-  </radialGradient>
-  <path d="M95.6 359.9C95.6 195 199.7 54.4 345.8.3 153.6 7.8 0 165.9 0 360c0 194.3 153.9 352.6 346.4 359.7C200.1 665.7 95.6 525 95.6 359.9z"/>
-  <defs>
-    <filter id="Adobe_OpacityMaskFilter" width="346.4" height="719.4" x="0" y=".3" filterUnits="userSpaceOnUse">
-      <feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0"/>
-    </filter>
-  </defs>
-  <mask id="SVGID_3_" width="346.4" height="719.4" x="0" y=".3" maskUnits="userSpaceOnUse">
-    <g filter="url(#Adobe_OpacityMaskFilter)">
-      <radialGradient id="SVGID_4_" cx="302.95" cy="349.21" r="381.37" fx="2.18" fy="354.33" gradientTransform="matrix(.03136 -1.0162 1.0341 .03192 -68.63 645.74)" gradientUnits="userSpaceOnUse">
-        <stop offset=".1" stop-color="#fff"/>
-        <stop offset=".35" stop-color="#fdfdfd"/>
-        <stop offset=".45" stop-color="#f6f6f6"/>
-        <stop offset=".51" stop-color="#eaeaea"/>
-        <stop offset=".57" stop-color="#d9d9d9"/>
-        <stop offset=".62" stop-color="#c3c3c3"/>
-        <stop offset=".66" stop-color="#a7a7a7"/>
-        <stop offset=".7" stop-color="#868686"/>
-        <stop offset=".73" stop-color="#606060"/>
-        <stop offset=".77" stop-color="#353535"/>
-        <stop offset=".8" stop-color="#060606"/>
-        <stop offset=".8"/>
-      </radialGradient>
-      <path d="M95.6 359.9C95.6 195 199.7 54.4 345.8.3 153.6 7.8 0 165.9 0 360c0 194.3 153.9 352.6 346.4 359.7C200.1 665.7 95.6 525 95.6 359.9z"/>
-    </g>
-  </mask>
-  <radialGradient id="SVGID_5_" cx="281.36" cy="290.9" r="445.49" gradientTransform="translate(-6 -6) scale(1.0167)" gradientUnits="userSpaceOnUse">
-    <stop offset=".32" stop-color="#44beee" stop-opacity="0"/>
-    <stop offset=".48" stop-color="#2b99d9" stop-opacity=".27"/>
-    <stop offset=".67" stop-color="#1476c6" stop-opacity=".58"/>
-    <stop offset=".82" stop-color="#0561ba" stop-opacity=".84"/>
-    <stop offset=".92" stop-color="#0059b6"/>
-  </radialGradient>
-  <path d="M95.6 359.9C95.6 195 199.7 54.4 345.8.3 153.6 7.8 0 165.9 0 360c0 194.3 153.9 352.6 346.4 359.7C200.1 665.7 95.6 525 95.6 359.9z" mask="url(#SVGID_3_)"/>
-  <g>
-    <path d="M353.9 325.7c23.9-58.9-20.8-74.9-49.9-74.9h-96.4c8 5.5 6.7 12.8 5.1 17.3l-56.2 179.5c-2.2 7.1-10.6 14.6-15.1 15.7h78c-4.3-.8-10.4-6.9-8.2-15.2l20.4-64.9c.1 0 93.9 12.7 122.3-57.5zm-75.8-58.4c10.2 0 38.5 1.4 20.2 54.9-19.1 56.2-61.5 44.6-61.5 44.6l31.2-99.5h10.1z"/>
-    <path d="M416.3 463.4h52.5c-16.8-5.4-41.6-21.3-51.5-32.6 8-8.7 17.9-19.7 19.7-42h-27.2s5.2 3 5.2 9.4c0 5.9-2.4 14.1-7 19.8-8-11.8-16.5-25.3-19.5-45.1 10.7-5.3 25.7-11.1 37.6-21.5 11.3-9.9 13.9-19.3 14.1-25.4v-.8c0-6.4-2.5-12.4-7.1-16.9-7.9-7.8-20.3-11-33.4-8.6-10.5 2-19.4 7.6-23.9 11.7-15.8 14.9-17.8 39.4-17.8 50.5 0 2.7.1 4.7.2 5.9-.9.4-2.5 1-2.5 1-11.6 4.3-42.5 12.5-53.5 37.9-1.4 3.2-3.4 10.2-3.4 18.3 0 7 1.5 14.8 6 21.9 7.8 12.2 21 19.9 42.2 19.5 23-.4 45.7-16.1 49.7-19 3.9 3.7 14.2 13.4 19.6 16zm0-142c-2.7 17.1-24.9 34.4-30.3 36.7-1-9.6-.5-24.8 7.5-37.2 5.3-8.2 12.4-11.8 18.1-9.8 4.6 1.6 5.1 5.8 4.7 10.3zm-30.8 114.4c-3.1 1.9-15.3 8.1-26.7 9.2-10.6 1-28.2-3.1-28.1-24.3 0-18.1 19.7-31.4 30.4-36 4.3 17.5 14 37.3 24.4 51.1z"/>
-    <path d="M575.8 267.5c31.2-7.5 56.9 16.9 59.2 18.6l8.9-28.3c-12.3-3.7-101.8-34-165.1 38.2-38.9 44.4-48.4 135.4.9 159.8 52.8 26.1 111.1-4 115.4-6.1l24.1-76.8c2.6-9.3 8.5-15.3 18.9-19.2h-83.8c12.2 5.1 11.3 14.3 10.4 18.1l-24.1 76.8c-3.2.6-70.6 17.4-32.9-100.5 8.3-25.3 31-71.7 68.1-80.6z"/>
-  </g>  <!-- 内层 <path>/<g> 不能携带任何 fill 属性，currentColor 才能级联进来。
-                                 详见下方 "fill 级联陷阱"。 -->
+    <!-- inner <path>/<g> carry NO fill attribute at all -->
   </symbol>
 </svg>
 ```
 
-> ⚠️ **fill 级联陷阱** <!-- ENGINEERING-DNA: logo-inner-fill -->
-> 很多品牌站点的 SVG 导出器会把真实字形 path 包在一个默认组里：
-> `<g fill="none" fill-rule="evenodd"><g><path d="..."/></g></g>`。原样粘贴进我们的
-> `<symbol fill="currentColor">` 会让内层 `fill="none"` **赢过** 父级 currentColor 级联 ——
-> wordmark 渲染出来 **100% 不可见**，而 byte 级检查（path d 长度、viewBox、
-> `visible_on_cover` 通过 getBoundingClientRect）全都会显示 PASS。
-> **在 embed 前必须 strip 所有内层 `fill` 属性，包括 `fill="none"`。**
-> `embed_logo.py` 会自动 strip；如果你手工粘贴 logo，必须手工 strip。
-> `logo_renders` hard check 会拒绝任何不是 `fill="currentColor"` 的内层 fill。
+> ⚠️ **fill-cascade pitfall** <!-- ENGINEERING-DNA: logo-inner-fill -->
+> Many SVG exporters wrap real glyph paths inside a defaulting group:
+> `<g fill="none" fill-rule="evenodd"><g><path d="..."/></g></g>`. Pasted into our
+> `<symbol fill="currentColor">`, the inner `fill="none"` **wins** over the parent
+> currentColor cascade — the wordmark renders 100% invisible while every byte-level
+> check (path-d length, viewBox, even `visible_on_cover` via getBoundingClientRect)
+> still says PASS. **In tier A every inner `fill` (including `fill="none"`) MUST
+> be stripped.** `embed_logo.py` does this automatically; the `logo_renders` hard
+> check enforces it (mono-mode only) by rejecting any inner `fill` that isn't
+> `fill="currentColor"`. If you hand-paste a logo, strip manually.
 
-**B. PNG/JPG/WebP base64 内嵌**（位图 fallback） — 仅有位图 logo 时（最小 64×64），base64 编码后通过 `<image href>` 包进同一个 `<symbol>`：
+#### Tier B — `multi` (multi-colour or gradient SVG) — **THIS IS P&G**
+
+Used when the source SVG contains `<linearGradient>`, `<radialGradient>`, `fill="url(#…)"`, or two-or-more distinct fill colours. P&G's badge has five radial gradient stops cascading from `#00a1df` cyan through `#003da6` to `#152169` deep navy, plus white-fill `<path>` elements for the "P&G" wordmark on top.
+
+```html
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 720 720">  <!-- NO fill="currentColor" on the symbol -->
+    <!-- inner <radialGradient>/<defs>/<mask>/<path> kept verbatim with their native fills -->
+  </symbol>
+</svg>
+```
+
+The logo always renders in its native colours. **`.logo.W` / `.logo.L` flipping is a no-op** in this tier — gradient stops do not accept the `currentColor` cascade. Cover slides for tier-B brands need a layout that ensures contrast natively (see "Multi-colour cover handling" below).
+
+> The `logo_renders` hard check inspects `<symbol>` for `fill="currentColor"`; if it's absent and `<image>` is also absent, the check infers tier B and **skips** the `hasInnerFill` rule. Inner fills are expected and required.
+
+#### Tier C — `raster` (PNG/JPG/WebP fallback) — NOT P&G
+
+Used only when no SVG source is available and a raster logo passes the quality gate (minimum 64×64). The bytes are base64-embedded inside an `<image href>`:
 
 ```html
 <svg style="display:none" xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="0 0 720 720">
-    <image href="data:image/png;base64,<!-- N/A — P&G uses SVG vector form A above; raster fallback unused -->" width="720" height="720"/>
+  <symbol id="brand-wm" viewBox="0 0 W H">
+    <image href="data:image/png;base64,…" width="W" height="H"/>
   </symbol>
 </svg>
 ```
 
-> ⚠️ **禁止用文字 placeholder 伪装 logo**：用品牌名 `<text>` 假冒 logo（如 `<text>P&G</text>`、字母圆盘）属于构建失败。`logo_renders` hard check 会拒绝只含 `<text>` 的 `<symbol>` 块。如果没有任何来源能产出真实 logo，**停下来向用户索要原始文件** — 永远不要编造 placeholder。
+Like tier B, `.logo.W` / `.logo.L` flipping is a no-op (raster pixels don't respond to CSS `color:`). Same cover-handling caveat applies. Resolution-bound — prefer tiers A/B whenever an SVG source can be found, even if the raster gate also passes.
 
-来源解析顺序（`embed_logo.py` 实际尝试的顺序）：
-1. 页面 `<header>` 中的 inline SVG（过滤掉 viewBox < 60 px 的实用图标）
-2. 品牌的 Wikipedia infobox logo 文件
-3. apple-touch-icon（通常 ≥ 180 px PNG）
-4. favicon（SVG 或 PNG）
+> ⚠️ **Typographic placeholders are forbidden**: faking a logo with `<text>` of the brand name (e.g. `<text>P&G</text>`, a generic disc-with-letter) is a build failure. The `logo_renders` hard check rejects `<symbol>` blocks that contain only `<text>`. If no source produces a real logo, **stop and ask the user** for an original file — never invent a placeholder.
+
+#### Multi-colour cover handling (tiers B and C only) <!-- ENGINEERING-DNA: logo-multicolor-cover -->
+
+Tier-A logos flip cleanly on any background via `.logo.W` / `.logo.L`. Tiers B and C don't — the logo renders in its native colours regardless. Two possible design responses; **for P&G the first one is the standing default**.
+
+1. **Place the bare badge directly on the cover** — the P&G monogram already carries a strong internal cyan-to-deep-navy radial gradient with a white "P&G" wordmark on top, so on a `--primary` (`#003DA5`) cover the cyan outer rim and white wordmark provide all the contrast the eye needs. The shape reads as a circle floating on the dark blue field. **This is the standing P&G pattern; do not wrap in a backplate by default.**
+2. **Use a backplate as a last resort** — only if the cover composition specifically calls for additional emphasis around the badge. If you do, wrap the `.logo` in a `.logo-chip` with `background: var(--white); border-radius: 50%; padding: 0;`. **`padding: 0` is mandatory**: any positive padding leaks a visible white ring around the SVG's transparent corners, since the SVG circle (radius 360 in a 720×720 viewBox) does not fill the four corners of its viewBox. The chip's `border-radius: 50%` then clips the corners cleanly so the chip is a perfect circle the same size as the badge — visually invisible. This pattern was used in early P&G runs but is **not** the standing default.
+
+```css
+/* Standing P&G pattern — bare badge on the cover, no backplate */
+.cov-top .logo, .j-head .logo { height: 60px; width: 60px; }
+
+/* Optional backplate (rarely needed) — padding MUST be 0 */
+.logo-chip      { display: inline-flex; padding: 0; background: var(--white); border-radius: 50%; line-height: 0; }
+.logo-chip .logo { display: block; height: 60px; width: 60px; }
+```
+
+The pre-ship checklist (§13) enforces "logo visibly renders on cover" regardless of tier — but does NOT enforce `.W` / `.L` flip on tiers B/C.
+
+Source resolution order (the actual order `embed_logo.py` tries):
+1. Inline SVG inside the page's `<header>` (filtered to drop utility icons with viewBox < 60px)
+2. Wikipedia infobox logo file for the brand
+3. apple-touch-icon (typically ≥ 180px PNG)
+4. favicon (SVG or PNG)
 5. og:image / twitter:image
-6. 常见路径猜测（/logo.svg、/assets/logo.svg ……）
+6. Common path guesses (/logo.svg, /assets/logo.svg, …)
 
-### 用法
+### Usage
 
 ```html
-<!-- 白色（深色 slide 上） -->
-<svg class="logo W" viewBox="0 0 720 720" aria-label="P&G">
-  <use href="#brand-wm"/>
-</svg>
+<!-- On dark P&G-Blue covers: wrap in chip backplate (preferred) -->
+<span class="logo-chip">
+  <svg class="logo" viewBox="0 0 720 720" aria-label="Procter & Gamble">
+    <use href="#brand-wm"/>
+  </svg>
+</span>
 
-<!-- 品牌深色（浅色 slide 上） -->
-<svg class="logo L" viewBox="0 0 720 720" aria-label="P&G">
+<!-- On light surfaces (content slides): logo runs on its native white-circle background of the cover photo, OR direct on white surfaces -->
+<svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble">
   <use href="#brand-wm"/>
 </svg>
 ```
 
 ```css
-/* fill: currentColor 必须放在 .logo 上 — 不要放在 .logo path 上。
-   CSS 选择器无法穿透 SVG <use> 的 shadow DOM。
-   外层 <svg> 上的继承 fill 才能正确级联进去。 */
-.logo   { height: 44px; width: auto; flex-shrink: 0; fill: currentColor; }
-.logo.W { color: #fff; }
-.logo.L { color: var(--primary); }
+/* TIER-B (P&G) — DO NOT set fill on .logo via CSS. <!-- ENGINEERING-DNA: tier-b-no-css-fill -->
+   Reason: CSS `fill` has higher specificity than the inner <path>'s
+   `fill="url(#SVGID_…)"` *presentation attribute*. Setting `fill: currentColor`
+   on the outer <svg> propagates through the <use> shadow DOM and OVERRIDES
+   every inner path's gradient or `fill="#fff"` glyph fill — the entire badge
+   collapses to currentColor, which on a white .logo-chip context is white,
+   making the logo 100% invisible. The `logo_renders` hard check does NOT
+   catch this (it only measures pathDLen / bounding rect, not actual render
+   colours). Visual review on the cover is the only catch. */
+.logo   { height: 36px; width: auto; flex-shrink: 0; display: block; }
+/* .W / .L are kept as no-op classes for parity with tier-A brand DS markup,
+   so the same `<svg class="logo W">` markup works across brands. We do NOT
+   set CSS `color:` on them in tier B — it would re-introduce the same
+   currentColor cascade bug if any future tweak adds `fill` back to `.logo`. */
+.logo.W, .logo.L { /* intentionally empty — see comment above */ }
 ```
 
-### 摆放规则 <!-- ENGINEERING-DNA -->
-- **每张 slide** 都必须有 logo — 封面与所有内容页。
-- **封面**：`.cov-top` flex 行的右上角。
-- **内容页**：`.shd` 页头条的右端（左 = 标题 eyebrow / slide 编号，右 = logo）。
-- Logo 周围最小留白 = logo 高度（44px）四周都留。
-- 不要拉伸、不要在 `W`/`L` 之外重新着色、不要把 logo 叠在带图案的区域上。
+### Placement rules <!-- ENGINEERING-DNA -->
+- **Every slide** must carry the logo — cover and all content slides.
+- **Cover**: top-right corner of the `.cov-top` flex row, wrapped in `.logo-chip` if cover bg is `--primary`.
+- **Content slides**: right end of the `.shd` header strip (left = title eyebrow / slide number, right = logo). On white `--surface` content slides, no chip needed.
+- Minimum clear space around the logo = logo height (36px) on all sides.
+- Never stretch, recolour outside `W`/`L`, or overlay the logo on a patterned area.
 
-> **P&G logo 的特殊性**：官方 P_G_Logo_RGB.svg 是带 radialGradient 的圆形徽章 （深蓝 → 浅蓝径向渐变 + 白色 P&G 字形），所以 `currentColor` 翻转不会影响渐变 stop-color。
-> - 在 **白色 / 浅蓝底** 上：直接用 `<svg class="logo L">` —— 圆徽章本身就是品牌标志的天然形态，最佳显示场景。
-> - 在 **深蓝 / 深色底** 上：用 `.logo.W` 类配合 `filter: drop-shadow(0 0 1px rgba(255,255,255,.6))` 给徽章一圈极细白描边，防止徽章外圈深蓝与背景融合；或在封面专用 `.cov-mark` 类里把徽章包在 36px 白色圆形 chip 内（白底徽章）。
+P&G specific: the logo's central white "P&G" wordmark is the recognisable brand mark and must remain legible at all sizes. Below 24 px the wordmark becomes illegible — never render the logo smaller than 24 px on screen.
 
 ---
 
-## 5. 幻灯片架构 <!-- ENGINEERING-DNA — the entire section, invariant -->
+## 5. Slide Architecture <!-- ENGINEERING-DNA — the entire section, invariant -->
 
-### 脚手架
+### Scaffold
 ```
 #wrap — fixed fullscreen, flex-centre, background: var(--ink)
   #deck — 1280 × 720, position:relative, overflow:hidden (hard contract)
     .slide × N — absolute inset, opacity show/hide, overflow:hidden (hard contract)
 ```
 
-`#wrap` 与 `body` 的 background **必须用 `var(--ink)`**，不能写死 `#000` / `#1A1A1A` / `#1F1F22` — 这些会被 `token_only_colors` hard check 抓到。每个 brand 的 `--ink` 已经是各自真实的深色基调（Coca-Cola 纯黑、Unilever warm graphite、Apple near-black），letterbox 跟随它就是对的。
+`#wrap` and `body` background **must use `var(--ink)`**, not hardcoded `#000` / `#1A1A1A` / `#1F1F22` — those get caught by `token_only_colors`. Each brand's `--ink` already encodes its real dark register (Coca-Cola pure black, Unilever warm graphite, Apple near-black). P&G's `--ink` is `#0A1A2F` — a navy-shifted near-black that harmonises with the P&G Blue chord, so the letterbox never feels like a generic black void.
 
-### 全屏适配 — 运行时缩放 <!-- ENGINEERING-DNA: scale-to-fit -->
+### Fullscreen fit — scale-to-fit at runtime <!-- ENGINEERING-DNA: scale-to-fit -->
 
 The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any viewport without black borders, scale at runtime via CSS transform — never resize the canvas itself. This keeps every measurement, every fit-contract calculation, every `offsetWidth` value invariant; the auto-eval and the visual reality both stay coherent.
 
@@ -430,21 +350,21 @@ The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any view
 
 **Anti-pattern**: shipping a deck without `scaleDeck()` lets `#wrap`'s flex-centre place a 1280×720 deck inside a 1920×1080 viewport with 320 px / 180 px of dark border — the deck looks unfinished even when content is correct. Every brand DS must wire scale-to-fit into the verification deck.
 
-### 显示状态
+### Visibility
 ```css
 .slide          { opacity: 0; pointer-events: none; transition: opacity .38s ease; overflow: hidden; }
 .slide.active   { opacity: 1; pointer-events: auto; }
 .slide.active .sc { animation: enter .42s cubic-bezier(.4,0,.2,1) both; }
 ```
 
-### 内容页 (`.sw`)
+### Content slide (`.sw`)
 ```css
 .sw { background: var(--surface); border-left: 3px solid var(--accent); display: flex; flex-direction: column; height: 100%; }
 /* Default: symmetric padding. Override with asymmetric bottom pad for visible breathing room. */
 .sw .sc { flex: 1; padding: 32px 80px 32px 96px; display: flex; flex-direction: column; overflow: hidden; }
 ```
 
-### 页头条 (`.shd`) — 每张内容页都有
+### Header strip (`.shd`) — every content slide
 ```css
 .shd { display: flex; align-items: center; justify-content: space-between; padding: 0 80px 0 96px; flex: 0 0 54px; border-bottom: 1px solid var(--rule); }
 .shd-num { font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
@@ -452,13 +372,13 @@ The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any view
 
 ---
 
-### 5.1 单页适配契约（来之不易，不可妥协） <!-- ENGINEERING-DNA: fit-contract -->
+### 5.1 Single-Slide Fit Contract (hard-won, non-negotiable) <!-- ENGINEERING-DNA: fit-contract -->
 
-**避免所有"内容溢出 deck"bug 的那一条规则：** 内容页是 *固定大小的盒子*，不是滚动文档。每张 slide 都必须放进 720 px 之内并保留可见的底部呼吸空间。装不下就减内容 — 永远不要发布会剪裁或溢出的 slide。
+**The one rule that prevents every "content overflowing the deck" bug:** a content slide is a *fixed-size box*, not a scrolling document. Every slide must fit inside 720 px with visible bottom breathing room. If it doesn't, you reduce content — never ship a slide that clips or leaks.
 
-#### 三层 overflow 安全网 <!-- ENGINEERING-DNA: three-layer-overflow -->
+#### The three-layer overflow safety net <!-- ENGINEERING-DNA: three-layer-overflow -->
 
-每张堆叠的内容页都必须在三个层级都带 `overflow: hidden`。多层防护：任何一层漏掉的，另一层都接得住。
+Every stacked content slide MUST carry `overflow: hidden` at THREE levels. This is belt-and-braces: one layer catches whatever the others miss.
 
 ```css
 .slide   { overflow: hidden; }   /* Layer 1 — absolute stop at deck edge */
@@ -467,11 +387,11 @@ The deck is a **fixed-size 1280×720 canvas** at the DOM level. To fill any view
 .card    { overflow: hidden; }   /* Layer 4 — any card with bounded height */
 ```
 
-没有这些，一个超大的 bullet 会向外级联把 deck 推过 720 px。有了它们，最差情况只是剪裁 — 丑，但永远不会让布局崩坏。
+Without these, a single oversized bullet cascades outward and pushes the deck past 720 px. With them, the worst case is clipping — ugly, but never a layout break.
 
-#### 内容高度预算（记住这个算式）
+#### Content-height budget (memorise this math)
 
-对于一张默认 54 px 页头条 + 对称 32 px 上下内边距的标准内容页：
+For a standard content slide with default 54 px header strip and symmetric 32 px V-padding:
 
 ```
 Deck height         720 px
@@ -482,18 +402,18 @@ Deck height         720 px
 = content area     602 px   ← all section heights + gaps must fit in here
 ```
 
-如果用非对称 padding（上 24 / 下 40）创造可见的底部呼吸空间：
+If you use asymmetric padding (24 top / 40 bottom) to create visible bottom breathing room:
 
 ```
 Deck 720 − 54 − 24 − 40 = 602 px content area
 Visible bottom margin from deck edge = 40 px (from padding) + any flex spacer
 ```
 
-**写 HTML 前，先把计划的段高 + 间距加起来。** 总和超过 602 px 就删内容。不要把字号缩到 12 px 下限以下。不要赌浏览器"会自己处理"。数字不会撒谎。
+**Before writing HTML, sum your planned section heights + gaps.** If the total exceeds 602 px, cut content. Do not shrink fonts below the 12 px floor. Do not bet on the browser "figuring it out." The numbers don't lie.
 
-#### "单 flex:1 absorber" 规则
+#### The "single flex:1 absorber" rule
 
-`.sc` 内 N 个区段的垂直堆叠中，**必须恰好有一个** 区段吸收剩余空间。其余都是自然高度。
+A vertical stack of N sections inside `.sc` must have **exactly one** section that absorbs leftover space. All others are natural-sized.
 
 ```html
 <div class="sc">
@@ -508,7 +428,7 @@ Visible bottom margin from deck edge = 40 px (from padding) + any flex spacer
 
 The absorber MUST carry `min-height: 0` (so it can shrink below its content's natural size) AND `overflow: hidden` (so its children clip instead of pushing it taller). Both are required — missing either breaks the contract.
 
-#### 非对称下内边距 — 看得见的呼吸空间
+#### Asymmetric bottom padding — visible breathing room
 
 Default `.sc` padding is symmetric `32 80 32 96`. For weekly-status / progress-report slides where the audience reads top-down and the bottom edge carries visual weight, prefer:
 
@@ -518,7 +438,7 @@ Default `.sc` padding is symmetric `32 80 32 96`. For weekly-status / progress-r
 
 The extra bottom padding creates deliberate visible breathing — roughly half a section-gap worth — between the last content block and the deck edge. This reads as "composed" rather than "crammed."
 
-#### 编写前清单（写 HTML 之前做）
+#### Pre-build checklist (do this BEFORE writing HTML)
 
 1. **List your sections** and assign each a role: `absorber` (exactly one) or `natural`.
 2. **Estimate natural heights** using the type scale. A card with head (30) + label (14) + 5 single-line 13 px bullets (~125) + V-padding (34) = ~203 px.
@@ -526,123 +446,123 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 4. **Write the copy short enough that single-line bullets don't wrap**. In a half-width column at 13 px CJK, budget ~28 characters per bullet before wrapping.
 5. **Render at 1280×720 and eye the bottom edge.** Not at 1920×1080 (the `transform: scale()` masks overflow by rescaling). The native canvas is the source of truth.
 
-#### 导致 overflow 的反模式
+#### Anti-patterns that cause overflow
 
-- **N 个自然高度区段且没有 absorber**：总和超过 602 px，内容溢出 deck。漏了"一个 absorber"规则。
-- **Absorber 缺 `min-height: 0`**：flex 拒绝把它压到内容自然高度以下，本规则就废了。
-- **Absorber 缺 `overflow: hidden`**：超大子元素穿透 flex:1，把父容器挤破。
-- **`.slide`/`.sc` 漏 `overflow: hidden`**：算式稍有偏差，内容就漏出 deck 渗到 body。安全网失效。
+- **N natural-height sections with no absorber**: total exceeds 602 px, content leaks past the deck. Missing the "one absorber" rule.
+- **Absorber without `min-height: 0`**: flex refuses to shrink it below content's natural size, defeats the whole point.
+- **Absorber without `overflow: hidden`**: oversized children push through the flex:1 and break the parent.
+- **Omitting `overflow: hidden` on `.slide`/`.sc`**: if any math is slightly off, content bleeds outside the deck onto the body. Safety net missing.
 - **Packing 2 section labels + 5+ bullets into one card that gets ~240 px of flex:1 space**: natural content ~260 px, clipping guaranteed. Merge into one section, or cut bullets.
-- **相信 1920×1080 渲染**：`transform: scale()` 等比例缩小所有内容 — 一份 730 px 的 deck 在 scaled 视图下看起来还行，但它 *已经坏了*。永远在原生 1280×720 验证。
+- **Trusting the 1920×1080 render**: the `transform: scale()` shrinks everything uniformly — a 730 px deck still *looks* fine at scale, but it *is* broken. Always verify at native 1280×720.
 
 ---
 
-## 6. 幻灯片类型 <!-- BRAND-VARIABLE: emphasis order varies; the type definitions are mostly invariant -->
+## 6. Slide Types <!-- BRAND-VARIABLE: emphasis order varies; the type definitions are mostly invariant -->
 
-> **Emphasis for P&G**: 用户选定特别突出 **Cover（深蓝大标题 + 句号）/ Data table & Chart（年报式硬数据）/ Pullquote（领导话语）** 三类。这三种 slide 是 P&G 视觉语言的核心载体，应当在 deck 中分配最大画面权重；其它类型仍要覆盖（DS 必须支持完整 slide 工具箱），但卡片密度可以更克制。
-> Foreground these types when designing decks: Type A 封面、Type G 数据表 & Type H 图表、Type J 大段 pullquote.
-> Use sparingly: Type E 多卡网格（>6 卡）、Type I 时间轴（仅当真有时间维度才用）.
+> **Emphasis for Procter & Gamble**: the brand voice is corporate gravitas + scientific optimism — declarative, civic, plain-spoken. Foreground these types when designing decks: **Type A cover** (deep P&G-Blue with one giant declarative headline), **Type J pull-quote** (single statement of intent or value), **Type E data table** (annual-report financials, brand-portfolio matrix), **Type H chart** (consumer trend / category share / sustainability metric), **Type F two-column image+copy** (brand portfolio cells, factory archive imagery, real consumers).
+> Use sparingly: **Type G interactive demo** (out of register for an annual-report voice).
 
-### Type A — 封面
-- 背景：`var(--primary)（深 P&G 蓝整版）`
-- 结构：Logo 右上角 → Eyebrow → 巨型标题 → 斜体副标 → Meta 行
-- **不允许任何装饰线** — 不要 hairline、不要 accent line、不要渐变边框。背景就是表面。
+### Type A — Cover
+- Background: `var(--primary)` (P&G Blue) — the iconic Annual-Report-style cover. White type, white-chip-wrapped logo top-right, optional cyan circle-segment graphic at right edge as decorative volume.
+- Structure: Logo (in `.logo-chip`) top-right → Eyebrow → Giant headline → Italic subtitle → Meta row
+- **No decorative lines of any kind** — no hairlines, no accent lines, no gradient borders. The background is the surface.
 
-### Type B — 双栏内容
-对比、特性列表、指标。`grid-template-columns: 1fr 1fr; gap: 20px`。移动端会折叠为单栏。
+### Type B — Two-column content
+Comparisons, feature lists, metrics. `grid-template-columns: 1fr 1fr; gap: 20px`. Collapses on mobile.
 
-### Type C — 全宽叙事
-单栏、大字号、配 pull-quote。用于上下文、摘要、推荐建议页。
+### Type C — Full-width narrative
+Single column, large type, pull-quotes. For context, summary, recommendation slides.
 
-### Type D — 翻面卡片
-两张卡片并排。正面 = `--primary`，背面 = `var(--pg-ink-soft)`（比 `--accent` 柔和）。**Hover + 点击翻面** — JS `onclick` 切换 `.on` class（移动端必需）。正面有 ghost 罗马数字。背面留白宽（32 px padding，≤ 4 个内容元素）。
+### Type D — Flip cards
+Two cards side-by-side. Front = `var(--primary)`, back = `var(--accent)` (cyan, softer than primary). **Hover + click flip** — JS `onclick` toggles `.on` class (required for mobile). Ghost Roman numerals on front. Spacious back (32px padding, ≤ 4 content elements).
 
-**字体 — 必须大而有力：**
+**Typography — must be large and commanding:**
 
-| 元素 | Class | 字号 | 字重 |
+| Element | Class | Size | Weight |
 |---|---|---|---|
-| 正面标题 | `.cnm` | **28px** | 900 |
-| 正面正文 | `.cbd` | **17px** | 600 |
-| 正面提示 | `.ht` | 13px | 800 |
-| 背面标签 | `.bkl` | 13px | 800 |
-| 背面标题 | `.bkt` | **22px** | 900 |
-| 对比标签 | `.vs .vt` | 13px | 900 |
-| 对比正文 | `.vs .vb` | **16px** | 700 |
-| 结论 | `.ccl` | **15px** | 600 |
+| Front title | `.cnm` | **28px** | 900 |
+| Front body | `.cbd` | **17px** | 600 |
+| Front hint | `.ht` | 13px | 800 |
+| Back label | `.bkl` | 13px | 800 |
+| Back title | `.bkt` | **22px** | 900 |
+| Compare tag | `.vs .vt` | 13px | 900 |
+| Compare body | `.vs .vb` | **16px** | 700 |
+| Conclusion | `.ccl` | **15px** | 600 |
 
-**不要用 inline style 覆盖** 把 flip card 文字缩到这些字号以下。装不下就减项数 — 不要减字号。
+**Do not use inline style overrides** to shrink flip card text below these sizes. If content doesn't fit, reduce the number of items — never the font size.
 
-### Type E — 数据/对比页
-以表格或结构化数据网格为主体的 slide。用于特性对比、TCO 分析、规格矩阵。表格组件规范（§7.7）定义元素级设计；本类型定义何时用、以及如何在它周围布局。
+### Type E — Data / comparison slide
+Slide dominated by a table or structured data grid. Used for feature comparisons, TCO analysis, specification matrices. The table component spec (§7.7) defines the element-level design; this type defines when to use it and how to lay out the slide around it.
 
-**原则：** 表格是主角 — 标题 + 表格 + 底部可选一行 callout。不要有侧栏抢戏。如果表格有 6 列以上，让它占满整宽。
+**Principles:** The table is the star — title + table + optional one-line callout below. No side panels competing for attention. If the table has 6+ columns, let it span full width.
 
 **Row-count rule** <!-- ENGINEERING-DNA: type-e-row-count -->
-- 5 行是标准 14 px 行内边距（单元格 `padding: 14px 18px`）下的舒适行数。
-- 6 行以上要么 (a) 把单元格内边距收紧到 `padding: 10px 16px`，要么 (b) 把数据拆到两张 slide。不要让 absorber 剪裁 — `text_layout_safe` hard check 会捕获。
-- 如果表格既要 6 行以上 AND absorber 里又要侧栏 callout，那就拆开 — 不要硬塞。
+- 5 rows is the comfortable count at standard 14 px row-padding (cell `padding: 14px 18px`).
+- 6+ rows require either (a) tightening cell padding to `padding: 10px 16px` or (b) splitting the data across two slides. Do not let the absorber clip — the `text_layout_safe` hard check catches it.
+- If the table needs 6+ rows AND a side callout in the absorber, split. Don't pack.
 
-### Type F — 图像页
-一张或多张图占据 slide 主体，文字锚定在安静区域。用于展示真实产品 UI、真实截图、或将抽象概念具象化的环境照片。
+### Type F — Image slide
+One or more images dominate the slide, with text anchored to a calm area. For P&G this is the **brand portfolio + archival imagery** pattern: a category-coded grid of brand product cells, a Cincinnati-1880s factory archival shot, a real consumer in a real kitchen.
 
-**原则：**
-- 图像必须服务于理解 — 不要装饰性 stock photo。优先：产品 UI 截图、真实数据可视化、能说明具体观点的环境照片。
-- 构建 deck 时，**主动 web 搜相关图片**（产品 logo、UI 截图、现实案例）来支撑叙事。
-- 图像处理：`border-radius: 4px`，可选 `1px solid var(--rule)` 边框。深色背景不需要边框。
-- 布局：图像占 slide 区域 50–70%。文字放在旁边或叠在带 tint 的区域上。绝不在繁忙图片上直接放文字而不加 scrim。
-- 图下说明：`.cap` 样式（13 px、字重 800、全大写、`--mid`）。
+**Principles:**
+- Images must serve comprehension — no decorative stock. Prefer: real product packaging, real archive photography, real consumer shots from the recon corpus.
+- When building a deck, **actively web search for relevant images** (product logos, UI screenshots, real-world examples) that support the narrative.
+- Image treatment: `border-radius: 0` (matches sharp default); optional `1px solid var(--rule)` border. On dark backgrounds, no border needed.
+- Layout: image fills 50–70% of slide area. Text sits beside or overlaid on a tinted region. Never place text over a busy image without a scrim.
+- Caption below image: `.cap` style (13px, 800 weight, ALL CAPS, `--mid`).
 
-### Type G — 交互演示
-嵌在 slide 内的自包含、点击推进的微体验。目的：让观众 *看到* 概念在工作，而不只是读它。
+### Type G — Interactive demo
+A self-contained, click-to-advance micro-experience embedded in a slide. Purpose: help the audience *see* a concept working, not just read about it. **Use sparingly for P&G** — operational annual-report voice rarely needs live demonstration.
 
-**何时用：** 场景演练、前后对比、多步流程可视化。
+**When to use:** Scenario walkthroughs, before/after comparisons, multi-step process visualizations.
 
-**结构：** 一块"屏幕"区域（深色 bg `--primary` 或 `#1a1a2e`，4 px 圆角）+ 点击推进的逐步内容。控件：前后按钮或带编号的步骤。内容通过 CSS transition 出现。
+**Structure:** A "screen" area (dark bg `--primary` or `--ink`, 0px radius to stay sharp) with step-by-step content that advances on click. Controls: forward/back buttons or numbered steps. Content appears via CSS transitions.
 
-**设计规则：**
-- 必须像精致的产品 demo，不是 prototype。整洁字体、克制动效。
-- 只用 CSS `@keyframes` — 不用 JS 动效库。每个 demo 的 CSS 不超过 50 行。
-- 每一步只承载一个清晰想法。每个 demo 最多 5 步。
-- 移动端：滚动时自动推进，或点击目标 ≥ 44 px。
+**Design rules:**
+- Must feel like a polished product demo, not a prototype. Clean typography, restrained animation.
+- CSS `@keyframes` only — no JS animation libraries. Keep under 50 lines of CSS per demo.
+- Each step should be one clear idea. Max 5 steps per demo.
+- Mobile: auto-advance on scroll or tap targets ≥ 44px.
 
-### Type H — 图表/数据洞察
-由一个或多个数据可视化主导的 slide。用于定量论证、趋势分析、性能对比。图表组件规范（§7.8）定义元素级设计；本类型定义 slide 级原则。
+### Type H — Chart / data insight slide
+Slide led by one or more data visualizations. Used for quantitative arguments (sales growth, brand share, sustainability indicator), trend analysis, performance comparisons. The chart component spec (§7.8) defines element-level design; this type defines slide-level principles.
 
-**原则：**
-- 每张 slide 一个主图。次要小图可接受 — 但必须直接支撑主图。
-- 标题陈述洞察，不是图表类型。好："P&G 在三项维度都领先"。坏："柱状图对比"。
-- 图表占 slide 区域 50–70%。剩余空间：标题 + 一段解读或一个 callout。
-- 入场动效以增强叙事冲击力。
+**Principles:**
+- One primary chart per slide. A secondary small chart is acceptable if it directly supports the primary.
+- Title states the insight, not the chart type. Good: "P&G's brand portfolio spans every aisle of the home". Bad: "Bar Chart Comparison".
+- Chart fills 50–70% of slide area. Remaining space: title + one paragraph of interpretation or a callout.
+- Animate on entrance for narrative impact.
 
-### Type I — 标签页
-多个内容视图通过标签切换。当内容有自然分类时，能在一张 slide 上容纳更多信息。Tab 组件规范见 §7.9。
+### Type I — Tabs slide
+Multiple content views switchable via tabs. Fits more information in one slide when content has natural categories (Beauty / Grooming / Healthcare / Home Care / Family Care). Tab component spec in §7.9.
 
-**原则：** 最多 4 个标签。每个 tab panel 都是自包含的"slide-中-slide" — 可以用 §7 任何组件。不要把标签当成 slide 内容塞太满的拐杖；如果 2 个标签各自都显稀疏，就合并成一个视图。
+**Principles:** Max 4 tabs. Each tab panel is a self-contained slide-within-a-slide — it can use any component from §7. Avoid tabs as a crutch for overstuffed slides; if 2 tabs would each be sparse, merge into one view instead.
 
-### Type J — 引言/抽词
-一句强烈的话锚定叙事时刻。用于关键 takeaway、受众重置、可记忆的金句。
+### Type J — Quote / pullquote
+A single striking statement that anchors a narrative moment. Used for key takeaways, audience reframes, leadership quotes (the "we are the people behind the brands you trust" tone).
 
-**结构（标准版）：** 大号引用文字（28–36 px、字重 700、`--ink`）居中或左对齐。可选下方署名（14 px、`--mid`）。左边 accent 边线（`3px solid --accent`）或无。
+**Structure (standard):** Large quote text (28–36px, weight 700, `--ink`) centered or left-aligned. Optional attribution below (14px, `--mid`). Left border accent (`3px solid var(--accent)`) or none.
 
-**结构（满屏 bespoke 变体）：** 部分品牌偏爱整张满屏 `--primary` + 多行海报型大字（如 Mars Five Principles 页：6 行 Inter Black 900 竖排，部分词用 `--accent` 或某个品牌色染色）。这种 slide：
+**Structure (full-bleed bespoke variant):** P&G covers / divider slides lean into full-bleed `--primary` slides with multi-line poster type. When you do this:
 
-1. **构图依然必须包在 `.sw + .sc` 里。** 用 `.sw`（覆写 `background: var(--primary)`）+ 一个 `.sc` 装自定义布局。**不要**自创平级 shell class（`.fpwrap`、`.poster-wrap` 等）—— bespoke shell 会**静默绕过** `fit_contract_intact`（没有 `.sc` = absorber 数 0 = `bad_slides: [{absorbers: 0}]`）。
-2. **`.sc` 内必须恰好一个 absorber**，带 `flex: 1 1 0; min-height: 0; overflow: hidden` —— 通常是装大字的中间带。顶部 header 带和底部署名带都 `flex: 0 0 auto`。
-3. **按行数反推字号上限。** absorber 的 `clientH` ≈ `(720 − 54 header − 32 top − 32 bottom) − 顶部带 − 底部带`。例如 5 行排版下顶部带约 120 px、底部带约 30 px，absorber ≈ 420 px —— 每行字号 ≤ `floor((420 − 4×gap) / 5) ≈ 78 px`。**84 px × 5 行会溢出约 40 px。** 字号来自预算，不是反过来。
-4. **满屏 Type J 不用 `.shd` 页头条。** Logo + slide-eyebrow 直接写在 `.sc` 顶部一行。
+1. **The composition still goes inside `.sw + .sc`.** Use `.sw` (with `background: var(--primary)` overriding the default) and a single `.sc` containing your bespoke layout. Do **not** invent a sibling shell class (`.fpwrap`, `.poster-wrap`, etc.) — bespoke shells silently bypass `fit_contract_intact` (no `.sc` = no absorber count = `bad_slides: [{absorbers: 0}]`).
+2. **Exactly one absorber** inside the `.sc` carries `flex: 1 1 0; min-height: 0; overflow: hidden` — usually the middle band that holds the big type. The header band and footer attribution are `flex: 0 0 auto`.
+3. **Cap line size by row count.** `clientH` of the absorber is `(720 − 54 header − 32 top − 32 bottom) − header_band − footer_band`. For a 5-line stack with header band ~120 px and footer band ~30 px, the absorber is ~420 px — cap each line at ≈ `floor((420 − 4×gap) / 5) ≈ 78 px`. **At 84 px × 5 lines you overflow by ~40 px.** Pick the line size from the budget; never the other way around.
+4. **No header strip (`.shd`) on full-bleed Type J.** Put logo + slide-eyebrow inline at the top of `.sc` instead.
+5. **Decorative geometry must be vertically bounded by the slide.** <!-- ENGINEERING-DNA: deco-vertical-bounds --> `text_layout_safe` reads `scrollHeight` on every overflow-clipped DIV; an absolutely positioned `.deco` element with `top` or `bottom` outside the `[0, 720]` band inflates the parent's `scrollHeight` past 720 even when `overflow: hidden` clips it visually, and the check fails. Horizontal off-bleed (`left: -120px` / `right: -160px`) is safe because the check measures vertical only. Vertical off-bleed (`bottom: -220px` / `top: -180px`) is **not safe** — keep all decorative shapes' vertical extent inside the slide bounds. The cleanest pattern is a circle anchored at `top: 50%; transform: translateY(-50%)` with horizontal off-bleed, so the deco extends sideways but never above 0 or below 720.
 
-### Type K — 时间线/路线图
-横向或纵向的里程碑序列。用于项目计划、演化叙事、阶段描述。组件规范见 §7.12。
+### Type K — Timeline / roadmap
+Horizontal or vertical sequence of milestones. P&G has 188 years of brand history — a horizontal Type K traces the founding, the iconic-product-launch decades (Ivory 1879, Crest 1955, Pampers 1961), the rebrand, the present. Component spec in §7.12.
 
 ---
 
-## 7. 组件库 <!-- ENGINEERING-DNA — every component preserved verbatim -->
+## 7. Component Library <!-- ENGINEERING-DNA — every component preserved verbatim -->
 
-可在 **任何** slide 类型上使用的可复用元素。一张 slide 可以组合多个组件，也可以一个都不用 — 直接用颜色 token + 字号阶梯做 bespoke 布局。组件库是工具箱，不是约束。如果 slide 内容需要这里没列的东西，就从系统 token（§2 颜色、§3 字体、§12 间距）出发自己造。
+Reusable elements available on **any** slide type. A slide may combine multiple components, or use none — building bespoke layouts from colour tokens and type scale instead. The library is a toolkit, not a constraint. If a slide's content calls for something not listed here, invent it from the system tokens (§2 colours, §3 type, §12 spacing).
 
 ### 7.1 Panel Card (Tier 1 — "big card")
 
-满高对比面板。当 2–3 个选项需要深度、结构化对比时使用。
+Full-height comparison panels. Used when 2–3 options need deep, structured comparison.
 
 ```css
 .panel {
@@ -655,20 +575,20 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 .panel.dark { background: var(--primary); color: #fff; border: none; border-top: 3px solid rgba(255,255,255,.2); }
 ```
 
-内部结构：`.cap` eyebrow → 标题（18–22 px 900）→ 行（`.panel-row`：surface 底色、8 px 12 px 内边距）→ 可选 callout。
+Internal: `.cap` eyebrow → title (18–22px 900) → rows (`.panel-row`: surface bg, 8px 12px padding) → optional callout.
 
 ### 7.2 Showcase Card (Tier 2 — "block card")
 
-整洁、优雅的内容分组块。白底、细色 top accent、内容优先。**不要厚重的彩色 header 条** — 卡片应像优质文具，而不是仪表盘小部件。
+Clean, elegant blocks for grouping content. White background, thin coloured top accent, content-first. **No heavy coloured header strips** — the card should feel like premium stationery, not a dashboard widget.
 
-**设计处理：**
-- 背景：`var(--white)`，配 `1px solid var(--rule)` 边框
-- **顶部 accent 线**：`3px solid var(--accent)`（默认）。可按上下文换成 `--primary`、`--green`、`--red`。是一条细而优雅的线 — 不是填充的 header 块。
-- **没有强制 label 条。** 标题在卡片正文里，作为内容的一部分。
-- 标题：20 px 字重 900 `--ink`
-- 内容：15–16 px 字重 600 `--mid`，慷慨的 12 px+ 间距
-- 可选 SVG 图标：32–36 px，inline 放在标题旁或上方。
-- **Hover**：微微上浮（`translateY(-2px)`）+ 阴影
+**Design treatment:**
+- Background: `var(--white)` with `1px solid var(--rule)` border
+- **Top accent line**: `3px solid var(--accent)` (default). Can be `--primary`, `--green`, or `--red` per context. This is a thin, elegant line — not a filled header block.
+- **No mandatory label strip.** The title lives inside the card body as part of the content.
+- Title: 20px weight 900 `--ink`
+- Content: 15–16px weight 600 `--mid`, generous 12px+ gaps
+- Optional SVG icon: 32–36px, inline next to the title or above it.
+- **Hover**: subtle lift (`translateY(-2px)`) + shadow
 
 ```css
 .show-card {
@@ -688,11 +608,11 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 .show-card.compact .show-title { font-size: 18px; }
 ```
 
-**反模式**：在 6 张以上卡片网格里每张都用填充色 header 条 — 视觉单调。改用细 top accent 线。
+**Anti-pattern**: Heavy filled colour strips across every card when shown 6+ in a grid — visual monotony. Use the thin top accent line instead.
 
 ### 7.3 Item Card (Tier 3 — "list card")
 
-用于结构化列表的小型横向卡片。左 accent 边线 + 前导指示符 + 内容。
+Small horizontal cards for structured lists. Left accent border + leading indicator + content.
 
 ```css
 .bitem {
@@ -703,37 +623,37 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 }
 ```
 
-**前导指示符** — 灵活：
-- **Ghost 数字**（默认）：`20px 900, --accent, opacity .4` — 用于顺序列表（`01`、`02`、`03`）
-- **图标圆**：小圆（24 px）+ 符号（`!`、`✓`、`→`）— 用于发现项、告警。配语义背景色。
-- **字母 / 标签**：单字母或短标签，同样的 ghost 样式 — 用于分类条目。
+**Leading indicator** — flexible:
+- **Ghost number** (default): `20px 900, --accent, opacity .4` — for sequential lists (`01`, `02`, `03`)
+- **Icon circle**: small circle (24px) with symbol (`!`, `✓`, `→`) — for findings, alerts. Use semantic bg.
+- **Letter / label**: single letter or short label in same ghost style — for categorized items.
 
 ### 7.4 Stat Card (Tier 4 — "number card")
 
-紧凑指标展示。`stat-num`（36 px 900 `--primary`）+ `stat-label`（12 px 800 全大写 `--mid`）。
+Compact metric display. `stat-num` (36px 900 `--primary`) + `stat-label` (12px 800 ALL CAPS `--mid`). For P&G: $84B revenue, ~$11B R&D-and-marketing, 65 countries with operations, etc.
 
 ### 7.5 Callout / Note
 
-**轻量**（内嵌备注）：
+**Light** (inline note):
 ```css
 .snote { border-left: 3px solid var(--primary); padding: 10px 18px; background: var(--tint); font-size: 14px; font-weight: 700; }
 ```
 
-**深色**（结论 / 建议条）：
-用于 slide 末尾 takeaway 的全宽 navy 块。文字：13–16 px 700–800，`rgba(255,255,255,.85)`。关键词加粗用 `color: #fff`。不要 border-left — 实心 navy 填充本身就是强调。
+**Dark** (conclusion / recommendation bar):
+Full-width navy block for slide-ending takeaways. Text: 13–16px 700–800, `rgba(255,255,255,.85)`. Bold key phrases with `color: #fff`. No border-left — the solid navy fill IS the emphasis.
 
 ### 7.6 Marks, Badges & Chips
 
-**状态标记**：
+**Status marks**:
 ```css
 .mark::before { display: inline-block; width: 18px; height: 18px; border-radius: 50%; text-align: center; line-height: 18px; font-size: 11px; font-weight: 900; margin-right: 8px; }
 .mark.yes::before { content: '✓'; background: var(--green); color: #fff; }
 .mark.no::before  { content: '−'; background: var(--red); color: #fff; }
 ```
 
-**徽章** — 小型标签胶囊（`.bg-g`、`.bg-r`、`.bg-b`）用于行内状态。12–13 px、字重 900、全大写。
+**Badges** — small label pills (`.bg-g`, `.bg-r`, `.bg-b`) for inline status. 12–13px, 900 weight, ALL CAPS.
 
-**技术 chip** — 紧凑的行内标签，用于技术 / 特性名。13 px 700，`min-height: 26px`。
+**Tech chips** — compact inline labels for technology/feature names. 13px 700, `min-height: 26px`.
 
 ### 7.7 Table (`.dt`)
 
@@ -747,11 +667,11 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 .dt .neu { color: var(--mid); font-weight: 600; }
 ```
 
-**规则：**
-- Navy 表头行是唯一的色块。所有数据单元格：白底、`--ink` 文字。
-- **`<table>` 单元格里不要彩色徽章** — 用字重 / 颜色强调。
-- 可选一行 `--tint` 高亮，仅给最重要的那一行。
-- "整洁网格"测试：眯眼看表格。看到一堆彩色方块拼贴，就是设计失败了。
+**Rules:**
+- P&G-Blue header row is the only colour block. All data cells: white bg, `--ink` text.
+- **No coloured badges in `<table>` cells** — use text weight/colour for emphasis instead.
+- One optional `--tint` highlight row for the single most important row.
+- The "clean grid" test: squint at the table. If you see a patchwork of coloured boxes, the design has failed.
 
 ### 7.8 Charts
 
@@ -762,34 +682,34 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 | Pie / donut | `--primary` | `--accent` | `--rule` | Max 3 segments |
 | Timeline | `--primary` dots | — | `--rule` dots | Key nodes: `--tint` ring |
 
-每张图最多 2 种颜色（+ `--rule` 中性色）。入场动效：bar 增长、计数器累加。
+Max 2 colours per chart (+ `--rule` neutral). Animate on entrance: bars grow, counters count up.
 
 ### 7.9 Tabs
 
 ```css
 .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 'Montserrat'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
+.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 'Montserrat', sans-serif; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
 .tb:hover { border-color: var(--accent); color: var(--accent); }
 .tb.on { background: var(--primary); border-color: var(--primary); color: #fff; }
 .tc { display: none; } .tc.on { display: block; }
 ```
 
-最多 4 个标签。
+Max 4 tabs.
 
 ### 7.10 Sequential steps / barriers
-用 monospace-weight span 的数字标签 `01` `02` `03`、`--accent` 色，而不是 bullet 或装饰 emoji。
+Use numeric labels `01` `02` `03` in monospace-weight span, `--accent` colour, rather than bullet points or decorative emoji.
 
 ### 7.11 Decision questions
-前缀用 `Q.1` / `Q.2` 的 span，`--accent` 色、字重 800、字距 0.12 em。
+Prefix with `Q.1` / `Q.2` spans in `--accent`, weight 800, letter-spacing 0.12 em.
 
 ### 7.12 Timeline
 
-横向里程碑序列，配连接线。
+Horizontal sequence of milestones with connecting line.
 
-**关键布局规则 — dot 永远位于线上、线穿过 dot 中心：**
-`.tl-line` 用固定 `top` 值，由 dot 中心以上的总空间算出。日期块用 `min-height` 装文字 + `margin-bottom` 给呼吸空间。
+**Critical layout rule — dot always sits on the line, line passes through dot center:**
+The `.tl-line` uses a fixed `top` value calculated from total space above the dot's center. Date block uses `min-height` for text + `margin-bottom` for breathing room.
 
-**重要：日期到 dot 的间距用 `margin-bottom`，不要用 `padding-bottom`。** 在 `box-sizing: border-box` 下，padding 在 `min-height` 之内 — 它会压缩内容区，而不是增加空间。`margin` 在盒子外面。
+**Important: use `margin-bottom`, NOT `padding-bottom` for date-to-dot spacing.** With `box-sizing: border-box`, padding is INSIDE `min-height` — it shrinks the content area instead of adding space. `margin` is OUTSIDE the box.
 
 ```
 Date height:    min-height = 48px
@@ -812,54 +732,54 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 .tl-detail { font-size: 14px; font-weight: 600; color: var(--mid); line-height: 1.3; }
 ```
 
-### 组件选择指引
+### Component selection guide
 
-| 内容 | 组件 | 布局 |
+| Content | Component | Layout |
 |---|---|---|
-| 2–3 个深度对比 | Panel | side-by-side flex |
-| 2–3 个带 label 概念块（高端） | Showcase Card | side-by-side flex 或 3 栏 grid |
-| 3–4 个带 label 概念块（紧凑） | Showcase Card `.compact` | 3 栏或 2×2 grid |
-| 顺序步骤、特性列表 | Item Card | 堆叠列 |
-| 带状态图标的发现项 | Item Card（图标变体） | 堆叠列 |
-| 关键指标 | Stat Card | 3–4 列一行 |
-| 交互式对比 | Flip Card (Type D) | 2 张并排 |
-| 单条 takeaway | Callout / Note（轻量） | 全宽 |
-| Slide 结论 / 建议 | Callout / Note（深色） | 全宽 |
-| 项目里程碑 | Timeline | 横向 flex |
+| 2–3 deep comparisons | Panel | side-by-side flex |
+| 2–3 labeled concept blocks (premium) | Showcase Card | side-by-side flex or 3-col grid |
+| 3–4 labeled concept blocks (compact) | Showcase Card `.compact` | 3-col or 2×2 grid |
+| Sequential steps, feature lists | Item Card | stacked column |
+| Findings with status icons | Item Card (icon variant) | stacked column |
+| Key metrics | Stat Card | row of 3–4 |
+| Interactive comparison | Flip Card (Type D) | 2 side-by-side |
+| Single takeaway | Callout / Note (light) | full width |
+| Slide conclusion / recommendation | Callout / Note (dark) | full width |
+| Project milestones | Timeline | horizontal flex |
 
 ---
 
-## 8. 图像与视觉佐证 <!-- BRAND-VARIABLE intro; rules are ENGINEERING-DNA -->
+## 8. Imagery & Visual Evidence <!-- BRAND-VARIABLE intro; rules are ENGINEERING-DNA -->
 
-### 原则
+### Principle
 
-**P&G 摄影法则**：纪实风格（科学家、员工、家庭、自然），不要插画、不要抽象渐变、不要 stock 摄影。色温偏冷或自然光；浅景深；构图给标题留呼吸位（hero 大字会压在画面下三分之一）。可以引用 P&G 公开素材（Brands / Innovation / Sustainability 页面的 hero 图）作为参考。
+P&G's recon is full of real evidence — real consumers in real kitchens (Citizenship Report hero), real river-from-above (Sustainability hero), real factory archive shots from 1880s Cincinnati and 1960 Crest manufacturing, real product packaging in the Annual Report grid. **Use this material; never substitute decorative stock photos, rendered AI imagery, or abstract gradients.** The imagery is what distinguishes a P&G deck from a generic blue-corporate slide.
 
-### 何时加入图像
+### When to include images
 
-- **产品 UI 截图**：当讨论某具体工具时，展示它的真实界面。
-- **数据可视化**：当某个数字或趋势是核心时，建一张图（Type H）。
-- **环境照片**：当某场景需要视觉锚点时，搜并放一张相关图。
-- **图示**：当某概念具有结构（层级、流程、对比）时，用 CSS/SVG 画出来，而不是用文字描述。
+- **Product UI screenshots**: When discussing a specific tool, show its real interface.
+- **Data visualizations**: When a number or trend is central, build a chart (Type H).
+- **Contextual photography**: When a scenario benefits from visual grounding, search for and include a relevant image.
+- **Diagrams**: When a concept has structure (layers, flows, comparisons), draw it with CSS/SVG rather than describing it in words.
 
-### 如何获取图像
+### How to source images
 
-1. **主动搜索**：用 web search 找相关产品截图、图示、环境照片。优先选官方素材。
-2. **CSS 绘制替代品**：柱状图、进度条、时间线图 — 数据简单时优于外部图片。
-3. **绝不用**：装饰性 stock photo、抽象渐变、AI 生成的占位艺术、与 slide 主旨无关的图片。
+1. **Search actively**: Use web search to find relevant product screenshots, diagrams, contextual photos. Prefer official assets.
+2. **CSS-drawn alternatives**: Bar charts, progress bars, timeline diagrams — preferable to external images when data is simple.
+3. **Never use**: Decorative stock photos, abstract gradients, AI-generated placeholder art, images that don't directly support the slide's point.
 
-### 图像处理
+### Image treatment
 
-- `border-radius: 4px`。浅色背景上可选 `1px solid var(--rule)` 边框。
-- 深色背景上的图：不要边框。
-- 说明文字：图下方使用 `.cap` 样式。
-- 绝不在繁忙图像上直接放文字而不加 scrim（最少 `rgba(0,0,0,.5)`）。
+- `border-radius: 0` (matches sharp default). Optional `1px solid var(--rule)` border on light backgrounds.
+- Images on dark backgrounds: no border.
+- Caption: `.cap` style below the image.
+- Never place text over a busy image without a scrim (`rgba(0,0,0,.5)` minimum).
 
 ---
 
-## 9. 导航 <!-- ENGINEERING-DNA -->
+## 9. Navigation <!-- ENGINEERING-DNA -->
 
-### 圆点导航 — 底部居中，横向
+### Dot nav — bottom-centre, horizontal
 
 ```css
 #nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 99; }
@@ -867,15 +787,15 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 .dot.on { width: 20px; border-radius: 3px; background: rgba(255,255,255,.85); }
 ```
 
-### Slide 计数器 — 右下角
-`SLIDE N / TOTAL` — 12 px、字重 700、35% 白。
+### Slide counter — bottom-right
+`SLIDE N / TOTAL` — 12px, weight 700, 35% white.
 
-### 控件
-键盘：`← → Space Home End`。触屏：48 px 滑动阈值。
+### Controls
+Keyboard: `← → Space Home End`. Touch: 48px swipe threshold.
 
 ---
 
-## 10. 移动端 <!-- ENGINEERING-DNA — every line invariant; this section saved real decks -->
+## 10. Mobile <!-- ENGINEERING-DNA — every line invariant; this section saved real decks -->
 
 ```css
 @media (max-width: 768px) {
@@ -893,13 +813,13 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 }
 ```
 
-所有交互元素 ≥ 44×44 px 点击区域。移动端绝不用 `vh` 作为字号/内边距。
+All interactive elements ≥ 44×44px tap area. Never use `vh` for font/padding on mobile.
 
-### inline-flex 陷阱（关键） <!-- ENGINEERING-DNA: inline-flex-trap -->
+### The inline-flex trap (critical) <!-- ENGINEERING-DNA: inline-flex-trap -->
 
-**移动端布局失败的最根本原因**：多列布局用 inline `style="display:flex"` 而非 CSS class（`.g2`, `.g3`）。移动端 media query 把 `.g2,.g3` 折叠成单列，但 inline `style="display:flex"` 对 class-based media query 免疫 — 在移动端依然横向，卡片小到无法阅读。
+**Root cause of most mobile layout failures**: Multi-column layouts written with inline `style="display:flex"` instead of CSS classes (`.g2`, `.g3`). The mobile media query collapses `.g2,.g3` to single-column, but inline `style="display:flex"` is immune to class-based media queries — it keeps the horizontal layout on mobile, making cards tiny and unreadable.
 
-**预防规则**：`.sc` 内每个多列布局的 flex/grid 方向都必须用 CSS class（`.g2`, `.g3`, `.fr`）。如果 inline `style="display:flex"` 不可避免（如 bespoke 一次性布局），移动端 CSS 必须包含 **catch-all 覆盖规则**：
+**Prevention rule**: Every multi-column layout inside `.sc` must use a CSS class (`.g2`, `.g3`, `.fr`) for its flex/grid direction. If inline `style="display:flex"` is unavoidable (e.g., bespoke one-off layouts), the mobile CSS must include a **catch-all override**:
 
 ```css
 @media (max-width: 768px) {
@@ -911,25 +831,25 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 }
 ```
 
-**首选方式**：用 `.g2` / `.g3` class 而不是 inline flex。inline flex 应是例外，上面的 catch-all CSS 是安全网。
+**Preferred approach**: Use `.g2` / `.g3` classes instead of inline flex. Inline flex should be the exception, and the catch-all CSS above is the safety net.
 
-**Checklist 补充**：发布前把浏览器拉到 375 px 宽，确认每一张 slide 都垂直堆叠。任何在移动端仍并排显示的 slide 都是 bug。
+**Checklist addition**: Before shipping, resize the browser to 375px width and verify every slide stacks vertically. Any slide that still shows side-by-side content on mobile is a bug.
 
-### 移动端 flip card 修复 <!-- ENGINEERING-DNA: flip-card-mobile -->
+### Mobile flip card fix <!-- ENGINEERING-DNA: flip-card-mobile -->
 
-CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` handler 来切换 `.on` class。这是 **唯一** 可靠的跨平台翻面机制。
+CSS `:hover` does not work on touch devices. Flip cards **must** have a JS `onclick` handler that toggles a `.on` class. This is the **only** reliable cross-platform flip mechanism.
 
-**每张 flip card 必需的 JS：**
+**Required JS on every flip card:**
 ```html
 <div class="fc" onclick="this.classList.toggle('on')">
 ```
 
-**必需的 CSS — 桌面与移动端：**
+**Required CSS — both desktop and mobile:**
 ```css
-/* 桌面：hover + .on 都触发翻面 */
+/* Desktop: hover + .on both trigger flip */
 .fc:hover .fc-inner, .fc.on .fc-inner { transform: rotateY(180deg); }
 
-/* 移动端：禁用所有 3D transform，改用 show/hide */
+/* Mobile: kill ALL 3D transforms, use show/hide instead */
 @media (max-width: 768px) {
   .fc { perspective: none !important; min-height: auto !important; }
   .fc .fc-inner { transform-style: flat !important; transition: none !important; height: auto !important; transform: none !important; }
@@ -943,130 +863,131 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 
 ---
 
-## 11. 动画 <!-- ENGINEERING-DNA -->
+## 11. Animation <!-- ENGINEERING-DNA -->
 
-### 核心过渡
+### Core transitions
 
-| 元素 | 动效 | 时长 | 缓动 |
+| Element | Animation | Duration | Easing |
 |---|---|---|---|
-| Slide 切换 | opacity | 380 ms | ease |
-| 内容入场 | translateY(14px) → 0 + 淡入 | 420 ms | cubic-bezier(.4,0,.2,1) |
+| Slide transition | opacity | 380 ms | ease |
+| Content entrance | translateY(14px) → 0 + fade | 420 ms | cubic-bezier(.4,0,.2,1) |
 | Flip card | rotateY 180° | 650 ms | cubic-bezier(.4,0,.2,1) |
-| 圆点导航 | 宽度展开 | 220 ms | ease |
+| Dot nav | width expand | 220 ms | ease |
 
-### 叙事动效
+### Storytelling animations
 
-| 元素 | 规格 | 何时用 |
+| Element | Spec | When to use |
 |---|---|---|
-| 错时入场 | 项之间 80 ms 延迟，每项 350 ms | 列表、网格 |
-| 计数器滚动 | 0 → 目标值，1200 ms | 统计 |
-| 柱状图增长 | 宽度 0 → 目标值，600 ms + 100 ms 错时 | 对比 |
-| 缩放进入 | scale(.85) → 1，400 ms | Callout 卡 |
+| Staggered entrance | 80ms delay between items, 350ms each | Lists, grids |
+| Counter roll-up | 0 → target, 1200ms | Statistics |
+| Bar chart grow | width 0 → target, 600ms + 100ms stagger | Comparisons |
+| Scale-in | scale(.85) → 1, 400ms | Callout cards |
 
-### 原则
+### Principles
 
-- 每个动效都服务于理解。纯装饰的删掉。
-- 入场播放一次。不循环（flip card 的 hover 除外）。
-- 每张 slide 的 **入场动效** 总时长 ≤ 2 秒。交互演示和 flip card 不适用。
+- Every animation serves comprehension. Remove if purely ornamental.
+- Play once on entrance. No loops (except flip cards on hover).
+- Total **entrance animation** time per slide ≤ 2 seconds. Does not apply to interactive demos or flip cards.
 
-### 叙事优先设计
+### Storytelling-first design
 
-1. **Flip card 用于揭示**：问题/解决、前/后、误区/真相。
-2. **具体优于抽象**：具体场景胜过泛泛描述。
-3. **视觉证据**：图表 > 文字、截图 > 描述、图示 > bullet 列表。
-4. **截图测试**：如果没人愿意把这张 slide 截图保存，它就缺一个视觉钩子。
+1. **Flip cards for reveals**: problem/solution, before/after, myth/reality.
+2. **Concrete over abstract**: specific scenarios beat generic descriptions.
+3. **Visual evidence**: Charts > text. Screenshots > descriptions. Diagrams > bullet lists.
+4. **The screenshot test**: If no one would photograph this slide, it needs a visual hook.
 
 ---
 
-## 12. 布局规则 <!-- ENGINEERING-DNA -->
+## 12. Layout Rules <!-- ENGINEERING-DNA -->
 
-### Overflow 预防
+### Overflow prevention
 
-每张 slide 装进 720 px。太密：减小间距 → 正文降到 14 px → 拆 slide。绝不剪裁或滚动。
+Every slide fits 720px. If too dense: reduce gaps → reduce body to 14px → split slide. Never clip or scroll.
 
-**"蓝块"陷阱**：右下角的深色 callout = 视觉失衡。改成全宽底部、用 `.snote` 替代、或把深色卡放在顶部。
+**The "blue block" trap**: Dark callout at bottom-right = visual imbalance. Move to full-width bottom, use `.snote` instead, or place dark cards at top.
 
-**"蓝叠 navy"陷阱**：在深色 slide（`--primary` bg）上，永远不要用 `--accent` 当文字或 accent — 会产生刺眼、廉价感的对比。用白色（`#fff`）或半透明白（`rgba(255,255,255,.85)`）做强调。深色背景上的低调 CTA：`rgba(255,255,255,.08)` bg 填充 + 白字。
+**The "blue-on-navy" trap**: On dark slides (`--primary` bg), never use `--accent` for text or accent — it creates jarring, cheap-looking contrast. Use white (`#fff`) or semi-transparent white (`rgba(255,255,255,.85)`) for emphasis. For subtle CTAs on dark backgrounds, use `rgba(255,255,255,.08)` bg fill + white text.
 
-**"深色堆叠"陷阱**：当一个深色元素直接放在另一个深色元素下方时，它们在视觉上合并。深色元素之间至少留 12 px `--surface` 或 `--tint` 间距。
+**The "dark stack" trap**: When a dark element sits directly below another dark element, they visually merge. Always separate dark elements with at least 12px of `--surface` or `--tint` gap.
 
-**Header-内容去重**：`.shd-n` 条已经承载了 slide 的章节标签。不要在内容区里再重复同样的文字作为单独的 eyebrow/标题。
+**Header-content dedup**: The `.shd-n` bar already carries the slide's section label. Do not repeat the same text as a separate eyebrow/title inside the content area.
 
-### 间距
+### Spacing
 
-| Token | 值 |
+| Token | Value |
 |---|---|
-| 左水平内边距 | 96 px |
-| 右水平内边距 | 80 px |
-| 上下内边距 | 32 px |
-| 页头高度 | 54 px |
-| 卡片间距 | 20 px |
-| 卡片内边距 | 32 px |
-| 圆角 | 6px（卡片）/ 0（按钮内 chip）/ 50%（数据徽章） |
-| 分隔线粗细 | 1 px |
-| Accent 边线 | 3 px |
+| H-padding left | 96 px |
+| H-padding right | 80 px |
+| V-padding | 32 px |
+| Header height | 54 px |
+| Card gap | 20 px |
+| Card inner padding | 32 px |
+| Border radius | 0 px (sharp default) / 50 px (link-pill CTA only) |
+| Rule thickness | 1 px |
+| Accent border | 3 px |
 
 ---
 
-## 13. 上线前检查清单 <!-- ENGINEERING-DNA: pre-ship-checklist -->
+## 13. Checklist <!-- ENGINEERING-DNA: pre-ship-checklist -->
 
-分享 deck 之前，逐项核对。
+Before sharing a deck, verify every item.
 
-### 品牌与 Token
-- [ ] 每张 slide 都有 logo（封面右上、内容页 `.shd` 右端）
-- [ ] **Logo 在封面肉眼可见** —— 打开 deck，看 slide 1 右上角。"内嵌成功但不可见"是最常见的失败模式（见 §4 fill 级联陷阱）。`has_real_vector_path: true` 单独并不能保证视觉上看得见。
-- [ ] Logo `<symbol>` 块内部不含任何 `fill` 属性（含 `<g fill="none">` wrapper）—— 只允许 `fill="currentColor"`
-- [ ] **每张 slide 内容都包在 `.sc` 容器内** —— 包括 bespoke 满屏 Type J / Type A。不能用平级 shell 如 `.fpwrap` / `.poster-wrap`（这种自定义 shell 会**静默绕过** `fit_contract_intact`）
-- [ ] 颜色：只用系统 token — 不用临时 hex
-- [ ] 所有 bespoke 元素都仅基于系统 token 构造（见 §1 约束 vs 自由）
-- [ ] 不用 emoji (👍🎉 等) — 排版符号 (✓ − ! ×) 可用
-- [ ] Montserrat 300 / 400 / 600 / 800（含 300 italic） 已加载；不用 serif / display 字体
-- [ ] 封面副标：仅用 Montserrat 300 斜体（如果 300 italic 不可用，用品牌等价值）
+### Brand & tokens
+- [ ] Logo on every slide (cover top-right, content `.shd` right end)
+- [ ] **Logo visibly renders on cover** — open the deck, eyeball the top-right of slide 1. A wordmark that is "embedded" but invisible is the most common failure mode (see §4 fill-cascade pitfall). `has_real_vector_path: true` alone does NOT guarantee visibility.
+- [ ] Logo `<symbol>` block contains its native gradients verbatim (tier B); no inner fills stripped — only `embed_logo.py` decides this
+- [ ] On dark `--primary` covers, the logo is wrapped in `.logo-chip` white backplate (tier-B P&G default)
+- [ ] **Every slide content lives inside a `.sc` container** — including bespoke full-bleed Type J / Type A. No sibling shells like `.fpwrap` / `.poster-wrap` (they bypass `fit_contract_intact` silently)
+- [ ] Colours: only system tokens — no ad-hoc hex values
+- [ ] All bespoke elements built from system tokens only (§1 Constraints vs Freedom)
+- [ ] No emoji (👍🎉 etc.) — typographic symbols (✓ − ! ×) are fine
+- [ ] Montserrat 300/400/600/700/900 + 300 italic loaded; no serif or display fonts
+- [ ] Cover subtitle: Montserrat 300 italic only
 
-### 字体与可读性
-- [ ] 没有低于 12 px 的文字 — 特别注意徽章 / 标签列
-- [ ] Slide 标题 ≥ 50 px（仅在密集多行例外时降到 38 px）
-- [ ] 非表格 slide 的正文 ≥ 16 px（仅在数据密集表格上用 14 px）
-- [ ] 副标 ≥ 20 px
-- [ ] 中文与对应英文字号 / 字重一致（混排时）
+### Typography & readability
+- [ ] No text below 12px — check badge/label columns especially
+- [ ] Slide titles ≥ 50px (38px only on dense multi-line exceptions)
+- [ ] Body text ≥ 16px on non-table slides (14px only on data-dense tables)
+- [ ] Subtitles ≥ 20px
+- [ ] Chinese text same size/weight as English equivalents (if mixed)
 
-### 幻灯片结构
-- [ ] 每张内容页都有 `.shd` 页头条 + slide 编号 + logo
-- [ ] 封面没有装饰线 — 不要 hairline、不要 accent line、不要渐变边框
-- [ ] 每张 slide 都在 720 px 内 — 没有内容剪裁或溢出
-- [ ] 没有"蓝块"陷阱 — 深色 callout 不孤立在双栏布局的右下角
-- [ ] 只扫标题也能讲通整个故事
+### Slide structure
+- [ ] Every content slide has `.shd` header strip with slide number + logo
+- [ ] Cover has no decorative lines — no hairlines, no accent lines, no gradient borders
+- [ ] Every slide fits within 720px — no content clipped or overflowing
+- [ ] No "blue block" trap — dark callouts not isolated at bottom-right of 2-col layouts
+- [ ] Scanning headlines only gives a coherent story
 
-### 适配契约 (§5.1) — 布局安全门
-- [ ] `.slide` 和 `.sw .sc` 都带 `overflow: hidden`（三层安全网）
-- [ ] 每个 flex:1 absorber 也带 `overflow: hidden` AND `min-height: 0`
-- [ ] `.sc` 里的垂直堆叠只有 **一个** `flex: 1 1 0` absorber；其余行都是 `flex: 0 0 auto`
-- [ ] 自然段高 + 间距之和 ≤ 602 px（标准内容区）
-- [ ] 最后一段内容到 deck 底边的可见间距 ≥ 20 px
-- [ ] 在原生 **1280 × 720** 下验证 — 缩放后看不到溢出
-- [ ] 没有任何一张卡在半栏 absorber 槽里塞了 2 个段标签 + 5+ 条 bullet — 合并或删减
+### Fit contract (§5.1) — the layout-safety gate
+- [ ] `.slide` AND `.sw .sc` both carry `overflow: hidden` (three-layer safety net)
+- [ ] Every flex:1 absorber ALSO carries `overflow: hidden` AND `min-height: 0`
+- [ ] Vertical stack inside `.sc` has exactly **one** `flex: 1 1 0` absorber; all other rows are `flex: 0 0 auto`
+- [ ] Sum of natural-section heights + gaps ≤ 602 px (standard content area)
+- [ ] Visible bottom gap from last content to deck edge ≥ 20 px
+- [ ] Verified at native **1280 × 720** render, not scaled — overflow is invisible at scaled sizes
+- [ ] No single card packs 2 section labels + 5+ bullets into a half-column absorber slot — merge or cut
 
-### 组件与交互
-- [ ] Flip card 在桌面 hover-only、移动端 click-to-toggle（JS `onclick` 切换 `.on`）
-- [ ] 表格：单元格里不要彩色徽章 — 仅用文字颜色（`.pos` / `.neg` / `.neu`）
-- [ ] 卡片层级与内容密度匹配（不要只有 bitem 的稀疏 slide）
-- [ ] 交互元素有可见的 hover / focus 状态
+### Components & interaction
+- [ ] Flip cards are hover-only on desktop, click-to-toggle on mobile (JS `onclick` toggles `.on`)
+- [ ] Tables: no coloured badges in cells — text colour only (`.pos` / `.neg` / `.neu`)
+- [ ] Card tier matches content density (no bitem-only sparse slides)
+- [ ] Interactive elements have visible hover/focus states
 
-### 视觉与图像
-- [ ] 图像服务于理解 — 不用装饰性 stock photo
-- [ ] 图上文字有 scrim（≥ 50% 不透明度深色蒙层）
-- [ ] 图说用 `.cap` 样式
+### Visual & imagery
+- [ ] Images serve comprehension — no decorative stock photos
+- [ ] Text over images has a scrim (≥ 50% opacity dark overlay)
+- [ ] Image captions use `.cap` style
 
-### 动画
-- [ ] 入场动效在 slide 激活时播放
-- [ ] 每张 slide 的入场动效总时长 ≤ 2 秒（交互演示与 flip card 不适用）
-- [ ] 入场动效不循环
+### Animation
+- [ ] Entrance animation plays on slide activation
+- [ ] Entrance animation total time per slide ≤ 2s (does not apply to interactive demos or flip cards)
+- [ ] No entrance animation loops
 
-### 响应式（移动端对齐 — 不可妥协）
-- [ ] 所有多栏布局在 ≤ 768 px 时折叠为单栏 — **包括 inline `style="display:flex"` 布局**（在 375 px 宽下验证）
-- [ ] inline `display:flex` 必须配移动端 CSS 的 catch-all（见 §10「inline-flex 陷阱」）
-- [ ] 触屏滑动可用（48 px 阈值）
-- [ ] 移动端滚动模式下圆点导航隐藏
-- [ ] 移动端点击目标 ≥ 44×44 px
-- [ ] Flip card 在移动端通过点击工作（不只是 hover）— 每个 `.fc` 都带 `onclick="this.classList.toggle('on')"`
-- [ ] 完工前在 **375 px 宽** 下测试浏览器
+### Responsive (mobile parity — non-negotiable)
+- [ ] All multi-col layouts collapse to 1-col at ≤ 768px — **including inline `style="display:flex"` layouts** (verify at 375px width)
+- [ ] No inline `display:flex` without a matching catch-all in mobile CSS (see §10 "inline-flex trap")
+- [ ] Touch swipe works (48px threshold)
+- [ ] Dot nav hidden in mobile scroll mode
+- [ ] Tap targets ≥ 44×44px on mobile
+- [ ] Flip cards work via tap (not just hover) on mobile — every `.fc` has `onclick="this.classList.toggle('on')"`
+- [ ] Browser tested at **375px width** before declaring done
