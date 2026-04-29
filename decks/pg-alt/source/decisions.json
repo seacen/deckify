@@ -1,0 +1,21 @@
+{
+  "interaction_mode": "ask-user-question",
+  "host": "claude-code",
+  "language": "English",
+  "logo_decision": {
+    "chosen_id": "74d017a9",
+    "auto_committed": true,
+    "reason": "Single best candidate by clear margin: SVG of P_G_Logo_RGB in <header>, alt='Go to Procter & Gamble homepage', 6 paths real wordmark with the iconic blue P&G sphere monogram. No ambiguity to resolve."
+  },
+  "palette_decision": {
+    "primary_hex": "#003DA5",
+    "auto_committed": true,
+    "reason": "color_frequency #1 with 90 occurrences across 7/8 pages — vs #2 = 42 (only 1 page). Dominant chord is uncontested."
+  },
+  "typography_decision": {
+    "family": "Montserrat",
+    "auto_committed": true,
+    "reason": "computed_heading + freq #1 (count 67). Open-source Google Font, no licensing concern. No need to ask for fallback."
+  },
+  "slide_emphasis": ["H_charts", "C_two_column_modular_cards", "J_hero_numbers_pullquote"]
+}

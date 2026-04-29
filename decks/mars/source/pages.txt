@@ -1,0 +1,12 @@
+# Mars subpages picked for brand recon
+# About + brand philosophy (voice, color, values)
+https://www.mars.com/about
+https://www.mars.com/about/the-five-principles
+https://www.mars.com/about/history
+https://www.mars.com/about/leadership
+# Brand portfolio (color/mood spectrum: petcare + snacking + food)
+https://www.mars.com/our-brands
+# Sustainability — Mars's flagship narrative section, rich visual storytelling
+https://www.mars.com/sustainability-plan
+# News & Stories — editorial/typography in long form
+https://www.mars.com/news-and-stories

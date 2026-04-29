@@ -1,31 +1,12 @@
-# {{BRAND_NAME}}-PPT-Design-System
+# Mars-PPT-Design-System
 
-> 为 {{BRAND_NAME}} 制作的所有 deck 共用的视觉语言。请严格遵循，让每一份新 deck 都一眼被识别为同一家族。
+> 为 Mars, Incorporated 制作的所有 deck 共用的视觉语言。请严格遵循，让每一份新 deck 都一眼被识别为同一家族。
 
 ---
 
-<!--
-  TEMPLATE NOTES (delete this comment block in the generated output):
-
-  Sections marked <!-- BRAND-VARIABLE --> must be filled with brand-specific content.
-  Sections marked <!-- ENGINEERING-DNA --> must be copied verbatim. They came from
-  real, painful bugs in production decks. Do NOT "simplify" or "trim" them — every
-  line earns its place.
-
-  Placeholder syntax: {{TOKEN}}. Replace each from $WS/decisions.json.
--->
-
 ## 1. 设计理念
 
-<!-- BRAND-VARIABLE: 1-2 paragraphs capturing the brand's mood + a "Constraints vs Freedom" block -->
-
-**{{PHILOSOPHY_PARAGRAPH}}**
-
-> 可参考的 mood 段落示例（挑一个最贴近的、混合或改写后再用）：
-> - **奢侈品 / 编辑 / 字体主导**："借鉴奢侈品牌传播语言：慷慨的留白、高对比的字体、克制的颜色。每个元素都凭功能存在。不要装饰性渐变、不要 stock icon、不要 emoji。"
-> - **工程感 / 网格驱动**："像开发者文档站点一样组织：紧凑网格、monospace 强调、可复制的 code block、大量克制的灰度配一个强 accent。"
-> - **大胆色彩 / 消费向**："高能量、高饱和度、英雄字体、大块插画形状。留白是为了让颜色更亮，不是为了降低噪音。"
-> - **极简单色**："还原性强、近单色调色板、accent 仅用于强调，字体承担所有视觉重量。"
+**Mars 的视觉语言是把家族企业的乐观主义、工业级的生产规模、以及 Five Principles（Quality / Responsibility / Mutuality / Efficiency / Freedom）这套秩序感，翻译成几何上极度自信的色块拼贴。深玛氏蓝（Mars Blue #0000A0）是不可动摇的主导和弦；它旁边按业务部门并排展开高饱和原色：Petcare 的纯红、Food 的草绿、Wrigley 的金黄、糖果黄、可持续 fresh-green。零圆角、零阴影、零渐变 —— 表面就是颜色本身，像 1970 年代 IBM 的彩色印刷品或 Bauhaus 海报，不是 SaaS dashboard。这套 DS 的目标是：每一张 slide 第一眼就能被认出是 Mars 出品 —— 不是又一份得体的 corporate 演示。**
 
 **两种模式：**
 - **桌面端 (≥ 769 px)**：1280 × 720 px 画布，运行时 scale-to-fit (§5)，键盘/点击导航。
@@ -33,15 +14,15 @@
 
 ### 设计品味 <!-- ENGINEERING-DNA: design-taste -->
 
-**承诺一个清晰的审美立场。** 本 DS 是品牌工具，不是 SaaS 通用模板。基于它做的每一份 deck 第一眼就该让人认出这是 *该品牌* — 不是"又一份得体的商务演示"。极致繁复与极致简约都能成立；失败模式是中庸。
+**承诺一个清晰的审美立场。** 本 DS 是品牌工具，不是 SaaS 通用模板。基于它做的每一份 deck 第一眼就该让人认出这是 *Mars* — 不是"又一份得体的商务演示"。极致繁复与极致简约都能成立；失败模式是中庸。
 
 **反 AI 套路规则**（每张 slide、每个组件、每个变体都适用）：
 
-- **不用通用字体默认值。** 品牌字体在 §3 已指定，必须使用。需要 fallback 时也应选最有辨识度的，不能把 Arial / system-ui 当做"设计选择"。
-- **不用陈词滥调的配色。** 纯白底 + 一个紫/蓝色 accent + 板岩灰字 = AI 套路签名。§2 调色板有主导和弦与辅助 accent — 按层级使用，不要扁平化成"白+灰+一种 accent"。
-- **不用等权重的多色装饰网格。** 6 个等权 accent 看起来像 Storybook 配色矩阵，不像品牌。一个主导和弦 + 2–3 个语义 accent（含明确含义）才是正确形态。
-- **不用现成 SaaS 仪表盘 chrome。** 每个组件都 8 px 圆角 + 柔和 drop-shadow + 整齐间距，会把所有品牌做成一个样。按 §2 匹配品牌实际的圆角 / 阴影 / 密度。
-- **不用空洞的氛围词。** "现代、简洁、大胆"什么都形容因此什么都不形容。Slide 标题和段落文案应该具体、具象。
+- **不用通用字体默认值。** 品牌字体在 §3 已指定（Inter 作为 MarsCentra 的合法替身），必须使用并按字重梯度排布；不要把 Arial / system-ui 当做"设计选择"。
+- **不用陈词滥调的配色。** 纯白底 + 一个紫/蓝色 accent + 板岩灰字 = AI 套路签名。Mars 的语言是 mars-blue 主导和弦 + 多色业务部门口袋 — 按层级使用，不要扁平化成"白+灰+一种 accent"。
+- **不用等权重的多色装饰网格。** Mars 的多色调色板是按业务部门 *分类语义*（Petcare 红、Food 绿、Wrigley 金、Snacking 黄）排布的，不是装饰性矩阵。一张 slide 最多用一个装饰性品牌色；多色并列只在「业务部门 tile」这种语义场景下出现。
+- **不用现成 SaaS 仪表盘 chrome。** 每个组件都 8 px 圆角 + 柔和 drop-shadow + 整齐间距，会把 Mars 做成一个无名 SaaS。Mars 是 **零圆角、零阴影、平面几何**（§2 / §12）—— 偏离这一点就背离了品牌真实视觉。
+- **不用空洞的氛围词。** "现代、简洁、大胆"什么都形容因此什么都不形容。Slide 标题和段落文案应该具体、具象（"全球 100+ 国家、80,000 名 Associates"，不是"全球化、规模化"）。
 - **一个编排好的入场动效，而非分散的小动画。** 大部分 slide 只需要一次激活时的内容错时显现；不要给每张卡都加 hover 抖动。
 
 ### 约束 vs 自由 <!-- ENGINEERING-DNA framing; bullet contents are BRAND-VARIABLE -->
@@ -50,21 +31,23 @@
 
 **硬约束（锁死）：**
 - Colour palette (§2 tokens only — no ad-hoc colours)
-- {{PRIMARY_FONT}} typeface, no serif/display fonts {{FONT_RESTRICTION_NOTES}}
+- Inter typeface（作为 MarsCentra 的合法替身），no serif/display fonts；中文走 PingFang SC 优先回退链
 - 12 px 可读性下限
 - 每一张 slide 都必须有 logo
-- **每张 slide 的内容必须包在一个 `.sc` 容器里**（即使是 bespoke 满屏的 Type J / Type A 也是）。`.sc` 是 `fit_contract_intact` 唯一扫描的位置 — bespoke 布局如果直接画在自定义 shell 里，会**静默绕过** absorber 检测、移动端 catch-all、602 px 预算这三道保险。没有 `.sc`，就没有契约。
+- **每张 slide 的内容必须包在一个 `.sc` 容器里**（即使是 bespoke 满屏的 Type J / Type A 也是）。`.sc` 是 `fit_contract_intact` 唯一扫描的位置 — bespoke 布局如果直接画在自定义 shell 里（`.fpwrap` / `.poster-wrap` 之类），会**静默绕过** absorber 检测、移动端 catch-all、602 px 预算这三道保险。没有 `.sc`，就没有契约。
 - **Logo `<symbol>` 内部不能含任何 `fill` 属性**（包括 wrapper `<g>` 上的 `fill="none"`）。任何内层 fill 都会盖过 `currentColor` 级联，使 wordmark 完全不可见 —— 而 byte 级检查（path d 长度、viewBox、visible_on_cover）会一切显示 PASS。`embed_logo.py` 在物化时已 strip 这些；`logo_renders` hard check 会拒绝任何漏网的。
 - 不用 emoji (👍🎉 等) — 排版符号 (✓ − ! ×) 和几何指示符允许
 - 不用装饰性 stock photography
 - `.shd` header strip on content slides
 - `.sw` border-left accent
+- **零圆角（border-radius: 0）**：所有卡片、按钮、表格单元格 — Mars 实际站点上每个组件 radius 都是 0，不是 4 px、不是 8 px。
+- **零阴影**：盒子靠边线和颜色对比表达层级，不要 box-shadow（hover 状态下的轻微 lift 是唯一例外）。
 
 **可复用组件（按需选用，不强制）：**
 - §7 组件库提供卡片、表格、图表、标签、标记 — 适合时用，不适合时跳过用 bespoke 布局。
 
 **Bespoke 元素（鼓励）：**
-- **在调色板内自由发挥。** {{BESPOKE_EXAMPLES_PARAGRAPH}}
+- **在调色板内自由发挥。** Mars 的强项是把一整张 slide 涂成 mars-blue，叠满屏 Inter Black 900 的标语，标语中的关键词用 mars-green 或 snack-yellow 染色（参考 Five Principles 页：白色 *Quality* 旁边一行 mars-green 的 *Responsibility*，再一行白色 *Mutuality*，再一行 snack-yellow 的 *Efficiency*）。这种排版即海报的处理就是 Mars 最具识别度的 bespoke 模式。
 - 判定标准是：该元素是否只用了定义过的颜色 token、品牌字体、并尊重可读性下限？如果是，即便不匹配任何具名组件也算"在系统内"。
 - **不要自我限制在具名组件里。** 如果某 slide 需要 §7 不存在的东西，就从 token 出发自己造。最好的 slide 都是从系统 token 出发的 bespoke 构图。
 
@@ -76,82 +59,90 @@
 
 1. **核心角色 token** — 所有品牌之间名字不变。它们标识颜色 *扮演什么角色*，而不是 *它是什么颜色*。红色品牌的 `--primary` 是红色；蓝色品牌的 `--primary` 是蓝色。
 2. **语义 token** — 所有品牌之间名字不变；编码含义（正向 / 负向 / 警告 / 信息）而不是颜色身份。
-3. **品牌调色 token** — 品牌特有的名字 + hex。这些是品牌实际用到的额外 accent（如 Unilever 的 `--lilac` 和 `--water`、P&G 的 `--spark`、Stripe 的 `--lavender`）。命名按品牌实际叫法 — Phase 1 时从 `brand.json` 抓取。
+3. **品牌调色 token** — 品牌特有的名字 + hex。Mars 的命名照搬其内部 `--ssa-color-palette-*` 系统：`--mars-blue`、`--mars-green`、`--mars-edge`、`--petcare-red`、`--food-green`、`--wrigley-gold`、`--snack-yellow`、`--fresh-green`、`--spicy-red`。
 
 ```css
 :root {
   /* ── Core role tokens (invariant names) ── */
-  --primary:  {{NAVY_HEX}};   /* Dominant brand chord — cover bg, primary mark colour */
-  --accent:   {{BLUE_HEX}};   /* CTA / link / single saturated highlight */
+  --primary:  #0000A0;   /* Mars Blue — Dominant brand chord; cover bg, primary mark colour, footer */
+  --accent:   #00D7B9;   /* Mars Green — CTA / link / single saturated highlight on dark surfaces */
   /* ── Neutrals ── */
-  --surface:  {{SURFACE_HEX}};   /* Paper / slide bg */
+  --surface:  #FFFFFF;   /* Paper / slide bg */
   --white:    #FFFFFF;
-  --ink:      {{INK_HEX}};   /* Body text on light surfaces */
-  --mid:      {{MID_HEX}};   /* Secondary text / muted labels */
-  --rule:     {{RULE_HEX}};   /* Dividers / hairlines */
-  --tint:     {{TINT_HEX}};   /* Subtle row / section bg */
+  --ink:      #3C3C3C;   /* Body text on light surfaces (matches --ssa-color-palette-dark-grey) */
+  --mid:      #6B6B6B;   /* Secondary text / muted labels */
+  --rule:     #E1E1E1;   /* Dividers / hairlines */
+  --tint:     #F4F4F4;   /* Subtle row / section bg (matches --ssa-color-palette-background-gray) */
   /* ── Semantic (invariant names; values may map to brand-palette colours) ── */
-  --green:    {{GREEN_HEX}};   /* Positive */
-  --green-bg: {{GREEN_BG_HEX}};
-  --red:      {{RED_HEX}};   /* Negative */
-  --red-bg:   {{RED_BG_HEX}};
-  --warn:     {{WARN_HEX}};   /* Warning / caution */
-  --warn-bg:  {{WARN_BG_HEX}};
-  --teal:     {{TEAL_HEX}};   /* Informational / neutral highlight */
-  --teal-bg:  {{TEAL_BG_HEX}};
-  /* ── Brand palette (brand-specific names; expanded from brand.json accents+neutrals) ── */
-{{BRAND_PALETTE_TOKENS}}
+  --green:    #00D7B9;   /* Positive — maps to mars-green */
+  --green-bg: #E5FAF6;
+  --red:      #FF1414;   /* Negative — maps to petcare-red */
+  --red-bg:   #FFEBEB;
+  --warn:     #E6A000;   /* Warning / caution — maps to wrigley-gold */
+  --warn-bg:  #FFF6E0;
+  --teal:     #0099FF;   /* Informational / neutral highlight — maps to mars-edge */
+  --teal-bg:  #E0F2FF;
+  /* ── Brand palette (Mars-specific names; from --ssa-color-palette-*) ── */
+  --mars-blue:     #0000A0;   /* Primary chord; same as --primary */
+  --mars-green:    #00D7B9;   /* Cool mint accent on Mars Blue surfaces */
+  --mars-edge:     #0099FF;   /* Sky blue — science / innovation contexts */
+  --petcare-red:   #FF1414;   /* Petcare division (Pedigree / Whiskas / Royal Canin) */
+  --food-green:    #61A020;   /* Food & Nutrition (Ben's Original / Dolmio) */
+  --wrigley-gold:  #E6A000;   /* Mars Wrigley confectionery (Orbit / Extra) */
+  --snack-yellow:  #FFDC00;   /* M&M's / Snickers signature yellow */
+  --fresh-green:   #A6DB00;   /* Sustainability narratives */
+  --spicy-red:     #FF3C14;   /* Energy / urgency accent */
+  --light-gray:    #A3A3A3;   /* Disabled state / inactive icons */
 }
 ```
 
 **规则：** <!-- ENGINEERING-DNA -->
-- **Token 名是角色抽象，不是颜色名。** `--primary` 是品牌的主导和弦，不论那是 navy / red / yellow / black。Slide CSS 读 `var(--primary)` 就能拿到当前 brand DS 对应的正确颜色。
-- **每张 slide 只有 *一个* 主导 accent 颜色。** 用 `--accent` 做 slide 的标志性高亮（CTA、callout 边线、chart 主条）。品牌调色 token（如 `var(--lilac)`）是按需取用的装饰，不是并行 accent — 一张 slide 最多用一个装饰性品牌色。
+- **Token 名是角色抽象，不是颜色名。** `--primary` 是品牌的主导和弦，对 Mars 就是 mars-blue。Slide CSS 读 `var(--primary)` 就能拿到正确颜色，业务 slide 代码不需要知道 hex。
+- **每张 slide 只有 *一个* 主导 accent 颜色。** 用 `--accent` 做 slide 的标志性高亮（CTA、callout 边线、chart 主条）。品牌调色 token（如 `var(--snack-yellow)`、`var(--petcare-red)`）是按需取用的装饰，不是并行 accent — 一张 slide 最多用一个装饰性品牌色。**例外**：当 slide 主旨 *就是* "多业务部门并列"时（业务版图 tile slide），可以同时使用 4 个部门色 — 这是语义网格不是装饰。
 - **语义颜色仅在含义彼此独立、相对时才同时出现** — 例如一张对比 slide 的 ✓ (`--green`) / ✗ (`--red`)。否则只取一种。
 - **`--tint` 用于行底色，不用于卡片填充。**
-- **永远不用纯黑。** `--primary` 是品牌真实的深色；如果品牌没有深色，用 `--ink` 作为本会用到黑的位置。
-- **永远不在 slide CSS 里写临时 hex。** 每个颜色都必须来自 token（核心 / 语义 / 品牌调色）。`token_only_colors` hard check 会强制执行。
+- **永远不用纯黑。** `--primary` 是品牌真实的深色（mars-blue #0000A0）；要做"近黑"基调用 `--ink` (#3C3C3C)，那是 Mars body 文字的真实颜色。
+- **永远不在 slide CSS 里写临时 hex。** 每个颜色都必须来自 token。`token_only_colors` hard check 会强制执行。
 
 ---
 
 ## 3. 字体 <!-- BRAND-VARIABLE: font family + fallback; the scale below is mostly invariant -->
 
-**{{PRIMARY_FONT}}** — 唯一字体。字重 {{WEIGHT_RANGE}}{{ITALIC_NOTE}}。`{{FALLBACK_FONT}}` 作为 {{FALLBACK_USE_CASE}}。
+**Inter** — 唯一字体（作为 Mars 自有付费字 MarsCentra 的合法替身）。字重 400 / 500 / 600 / 700 / 800 / 900。`system-ui` 作为系统兜底。
 
-> {{TYPE_PHILOSOPHY_NOTE}}
+> Inter 为什么是合理替身：MarsCentra 是几何 grotesque、字重 400→900 全梯度、x-height 较高、字距偏紧 — Inter 在所有这些维度都最接近，且 Extrabold/Black 都厚重到能撑得住 Mars 标志性的"满屏粗体标语"。Helvetica 太瑞士、太冷；Roboto 太软；Arial 直接掉档次。Inter 是这个生态里最贴 MarsCentra 的免费选择。
 
 ### CJK 字体回退链 <!-- ENGINEERING-DNA: cjk-fallback -->
 
-中文 deck 不能直接用拉丁字体当 body font。Century Gothic / Helvetica Neue / SF Pro / Stripe Sans / Georgia 等都不含 CJK 字形，浏览器对 CJK 字符自动回退到系统默认（macOS 上是 STHeiti 细体，Windows 是微软雅黑 Light），**视觉上立刻显得廉价**。
+中文 deck 不能直接用拉丁字体当 body font。Inter / Helvetica Neue / SF Pro / Stripe Sans / Georgia 等都不含 CJK 字形，浏览器对 CJK 字符自动回退到系统默认（macOS 上是 STHeiti 细体，Windows 是微软雅黑 Light），**视觉上立刻显得廉价**。
 
 **最低要求**：font-family 链里**必须至少出现一个 CJK 字体名**（PingFang SC / Hiragino Sans GB / Microsoft YaHei / Source Han Sans 等），否则 CJK 字符 100% 落到 OS 默认。`cjk_font_quality` hard check 会强制执行这一条。
 
 **两种合理的字体顺序**（按 deck 的语言比例选）：
 
 1. **CJK-first**（推荐用于中文密度高的 deck）：CJK 字体放最前，拉丁 brand 字体兜底。中英混排时 PingFang 的拉丁补丁会渲染英文，整体风格最统一，中文不会因为字重不匹配显得瘦弱。
-2. **Latin-first**（适用于 brand 拉丁字面强、deck 大量英文术语的场景，如 Stripe API 文档风格）：拉丁 brand 字体放前，CJK 字体跟在后面。CJK 字符会走 CJK 字体，但拉丁部分保留 brand 表达。`cjk_font_quality` 在这种情况下会带 `warning`（不阻断），由 vision judge 决定视觉是否可接受。
+2. **Latin-first**（适用于 brand 拉丁字面强、deck 大量英文术语的场景）：拉丁 brand 字体放前，CJK 字体跟在后面。CJK 字符会走 CJK 字体，但拉丁部分保留 brand 表达。`cjk_font_quality` 在这种情况下会带 `warning`（不阻断），由 vision judge 决定视觉是否可接受。
 
 ```css
-/* 中文 deck 推荐字体链 — CJK 优先，拉丁兜底 */
+/* Mars 中文 deck 推荐字体链 — CJK 优先，Inter 兜底 */
 font-family:
-  /* macOS / iOS 中文（最高优先级 — 对中英都比 brand-latin 干净） */
+  /* macOS / iOS 中文（最高优先级） */
   'PingFang SC', '苹方-简',
-  /* macOS 较旧 / 阅读体严肃面 */
+  /* macOS 较旧 */
   'Hiragino Sans GB', '冬青黑体简体中文',
   /* Windows 中文 */
   'Microsoft YaHei', '微软雅黑',
   /* Linux / Android / 通用 */
   'Source Han Sans SC', 'Noto Sans SC', 'Noto Sans CJK SC',
-  /* Brand 拉丁字体 — 仅作 brand-mark / display 修饰 */
-  '[BRAND-LATIN]',
+  /* Brand 拉丁字体 (MarsCentra 替身) */
+  'Inter',
   /* 系统通用 */
   system-ui, -apple-system, sans-serif;
 ```
 
-**Sans-serif brand**（Unilever / Stripe / Apple / P&G）→ 配 PingFang SC / Microsoft YaHei / Source Han Sans 这类 sans CJK 字体。
-**Serif brand**（Coca-Cola Georgia / 编辑感品牌）→ 配 `'Songti SC', '宋体-简', 'Source Han Serif SC', 'Noto Serif SC'`，否则 Georgia + 黑体的混搭会跳戏。
+**Mars 是 sans-serif brand**（MarsCentra 几何 grotesque）→ 配 PingFang SC / Microsoft YaHei / Source Han Sans 这类 sans CJK 字体，绝不要用 Songti / 宋体（serif 与 Inter 配会跳戏）。
 
-**字重提升（CJK-first 时尤其重要）**：PingFang SC 的 Regular（400）较细 — 大字标题用 700（Semibold/Bold），正文用 500（Medium）以上，避免"中文显瘦"的廉价感。
+**字重提升（CJK-first 时尤其重要）**：PingFang SC 的 Regular（400）较细 — 大字标题用 700（Semibold/Bold），正文用 500（Medium）以上，避免"中文显瘦"的廉价感。Mars 的视觉自信很大程度依赖 Extrabold / Black 字重撑得住 — 中文回退链里务必把 weight 推高。
 
 **禁止**：font-family 链里完全没有 CJK 字体。`cjk_font_quality` hard check 会立刻 FAIL。
 
@@ -215,98 +206,41 @@ Slide "好看"是可工程量化的。下面的规则是硬规则；`text_layout
    ```
 6. **检查失败时的修复优先级**：
    - 首先，**改文案**（删字、缩短句子、用名词短语）。
-   - 然后，**改布局**（去掉一项、拆分 slide、把列表改成双栏网格）。
+   - 然后，**改布局**(去掉一项、拆分 slide、把列表改成双栏网格)。
    - **永远不要** 通过把字号缩到 12 px 以下或允许截断来"塞下"。
 
 ---
 
-## 4. {{BRAND_NAME}} Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
+## 4. Mars Logo <!-- BRAND-VARIABLE: SVG payload is brand-specific; surrounding pattern + multi-format support is ENGINEERING-DNA -->
 
 ### 定义（每份 HTML 一次）
 
-Logo 必须是真实的品牌身份资产，**完整内嵌**到 HTML 中（不依赖外部网络）。`embed_logo.py` 会根据源 SVG 的实际内容自动选三档之一。你拿到的档位会写在 `<brand>/source/assets/logo.report.json` 的 `colour_handling` 字段。
-
-#### A 档 — `mono`（单色 wordmark / silhouette）
-
-源 SVG 是单色 wordmark（Tiffany "TIFFANY&CO."、Unilever wordmark、Apple silhouette、Stripe wordmark 等）时使用。内层 fill 全部被 strip 掉，让 `<symbol fill="currentColor">` 的级联给整个形状染色；`.logo.W` / `.logo.L` 通过 CSS `color:` 翻白/翻品牌深色。
+Logo 必须是真实的品牌身份资产，**完整内嵌**到 HTML 中（不依赖外部网络）。Mars 的 wordmark 来自其官方站点 `themes/custom/mars_acss/assets/images/logo-main.svg`（138×40 viewBox，单 path d 长度 3723 字符），由 `embed_logo.py` 物化并通过 `<symbol>` 内嵌：
 
 ```html
-<svg style="display:none" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}" fill="currentColor">
-    {{LOGO_PATH_ELEMENTS}}  <!-- 内层 <path>/<g> 不能携带任何 fill 属性 -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 138 40" fill="currentColor">
+    <g fill="none" fill-rule="evenodd">
+      <g><g><g>
+        <path d="M125.73.148c.413.098.821.217 1.238.29 3.345.586 6.317 1.967 8.848 4.288.195.18.37.382.592.615-1.635 1.895-3.414 3.6-5.074 5.493-.13-.129-.23-.22-.32-.318-1.75-1.913-3.906-3.044-6.444-3.381-.886-.118-1.793-.108-2.672.13-1.318.358-2.333 1.094-2.725 2.488-.369 1.315.116 2.64 1.2 3.46.983.743 2.093 1.222 3.237 1.633 2.05.739 4.123 1.414 6.143 2.228 2.059.83 3.982 1.918 5.491 3.638 1.39 1.583 2.288 3.385 2.583 5.507.422 3.028-.34 5.755-1.951 8.27-.987 1.542-2.354 2.677-3.935 3.539-1.987 1.084-4.111 1.704-6.366 1.83-1.014.058-2.032.139-3.045.108-2.927-.09-5.761-.66-8.409-1.977-1.98-.985-3.698-2.339-5.14-4.045-.044-.053-.07-.123-.123-.22 1.69-1.799 3.38-3.595 5.126-5.452.22.24.414.445.6.657 1.11 1.27 2.409 2.275 3.938 2.968 1.046.473 2.131.747 3.272.896 1.106.145 2.174.043 3.234-.206 1.042-.245 1.95-.778 2.56-1.695 1.191-1.79.675-3.75-.96-4.923-.8-.574-1.719-1.013-2.635-1.382-1.48-.598-3.005-1.083-4.509-1.624-1.53-.55-3.034-1.163-4.418-2.039-2.443-1.547-4.194-3.64-4.83-6.553-.574-2.626-.18-5.134 1.062-7.507 1.531-2.926 3.882-4.86 6.937-5.935.891-.314 1.804-.547 2.746-.652.082-.009.158-.084.237-.129h4.512zM50.394 28.081c.198.035.29.065.38.065 2.298-.01 4.595-.021 6.892-.035.02 0 .043-.024.059-.042.014-.017.019-.041.056-.128l-3.591-8.974h-.143l-3.653 9.114zM55.274.148c.394.301.656.695.85 1.155 1.127 2.692 2.26 5.381 3.401 8.067 1.035 2.438 2.085 4.87 3.123 7.306 1.19 2.798 2.37 5.601 3.563 8.398.885 2.076 1.783 4.147 2.676 6.219 1.067 2.478 2.136 4.955 3.202 7.433.067.155.114.317.185.52H62.33c-.397-.977-.804-1.974-1.206-2.972-.128-.318-.254-.638-.364-.962-.118-.348-.321-.507-.705-.487-.604.03-1.212.009-1.818.009h-9.675c-.145 0-.291.01-.436-.003-.305-.025-.477.087-.596.4-.41 1.077-.853 2.141-1.286 3.21-.11.27-.228.536-.347.816h-8.36c.041-.195.05-.36.112-.503 1.606-3.742 3.223-7.479 4.827-11.222 1.97-4.599 3.933-9.202 5.895-13.805 1.192-2.797 2.377-5.596 3.563-8.396.555-1.31 1.11-2.62 1.653-3.934.21-.51.484-.957.96-1.249h.728zM0 .606c.699.108 1.196.43 1.634.876 1.832 1.87 3.668 3.737 5.503 5.604 3.138 3.194 6.277 6.388 9.416 9.58.134.137.28.262.448.42.181-.167.345-.305.495-.457 4.94-5.024 9.882-10.049 14.817-15.079.456-.464.954-.824 1.59-.928.037.032.057.046.074.064.016.016.04.035.042.055.012.097.024.195.024.293l.001 38.123c-.525.155-6.51.208-7.84.072V20.854c-.653.495-1.088 1.039-1.578 1.52-.524.513-1.032 1.044-1.547 1.567l-1.492 1.52-1.492 1.517c-.516.523-1.037 1.039-1.548 1.567-.492.509-.972 1.03-1.509 1.599L7.952 20.91c-.065.044-.085.052-.097.067-.015.018-.029.042-.032.065-.007.048-.01.098-.01.147-.005 5.974-.009 11.948-.015 17.921 0 .023-.016.044-.025.066-.502.132-6.678.173-7.773.047V.606zM84.738 7.617c-.119.972-.09 9.734.036 10.334 1.6-.038 3.221.123 4.822-.185 1.3-.25 2.4-.87 3.145-2.04.457-.719.66-1.506.754-2.353.132-1.19-.058-2.308-.638-3.333-.874-1.543-2.307-2.187-3.971-2.333-1.154-.1-2.318-.096-3.477-.131-.212-.007-.424.025-.671.04M75.71 39.198V.809c.172-.015.356-.046.54-.046 4.074-.003 8.15-.03 12.223.01 2.029.019 4.058.153 6.025.73 2.438.716 4.508 2.017 6.07 4.077 1.228 1.621 1.851 3.473 2.027 5.513.136 1.568-.02 3.087-.468 4.582-.677 2.254-2.032 4-3.902 5.357-.212.153-.425.304-.685.489.367.291.67.533.974.772 1.169.92 2.023 2.103 2.772 3.382.971 1.658 1.618 3.456 2.237 5.267.831 2.434 1.66 4.869 2.486 7.304.108.318.196.643.313 1.03h-9.268c-.145 0-.291-.004-.437 0-.228.008-.357-.096-.41-.325-.292-1.24-.568-2.484-.888-3.717-.649-2.491-1.29-4.99-2.493-7.283-.764-1.457-1.873-2.502-3.512-2.84-.495-.103-1.002-.18-1.506-.197-.92-.03-1.843-.01-2.764-.003-.092 0-.184.045-.24.06-.047.048-.066.063-.079.083-.013.02-.022.044-.03.067-.008.023-.016.046-.018.07-.004.05-.007.099-.007.148-.004 4.591-.008 9.182-.014 13.773 0 .022-.018.044-.027.065-.53.127-8.136.148-8.92.02"/>
+      </g></g></g>
+    </g>
   </symbol>
 </svg>
 ```
 
+> ⚠️ **禁止用文字 placeholder 伪装 logo**：用 `<text>MARS</text>` 假冒 wordmark 属于构建失败。`logo_renders` hard check 会拒绝只含 `<text>` 的 `<symbol>` 块。这个 logo 是从 mars.com 官方站点直接物化的真实矢量。
+
 > ⚠️ **fill 级联陷阱** <!-- ENGINEERING-DNA: logo-inner-fill -->
-> 很多 SVG 导出器会把真实字形 path 包在一个默认组里：
+> mars.com 的 logo SVG 导出器把真实字形 path 包在一个默认组里：
 > `<g fill="none" fill-rule="evenodd"><g><path d="..."/></g></g>`。原样粘贴进我们的
 > `<symbol fill="currentColor">` 会让内层 `fill="none"` **赢过** 父级 currentColor 级联 ——
 > wordmark 渲染出来 **100% 不可见**，而 byte 级检查（path d 长度、viewBox、
-> `visible_on_cover` 通过 getBoundingClientRect）全都会显示 PASS。
-> **A 档下所有内层 `fill`（包括 `fill="none"`）必须被 strip。**
-> `embed_logo.py` 会自动 strip；`logo_renders` hard check（仅在 mono 档）拒绝任何
-> 不是 `fill="currentColor"` 的内层 fill。手工粘贴时必须手工 strip。
-
-#### B 档 — `multi`（多色 / gradient SVG）
-
-源 SVG 含 `<linearGradient>`、`<radialGradient>`、`fill="url(#…)"` 或两个及以上不同 fill 颜色时使用 —— 典型如圆形徽章（P&G）、具象 mark（Starbucks 绿白美人鱼、Netflix N）、三色字形、tint-on-tint logo。
-
-```html
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="{{LOGO_VIEWBOX}}">
-    <!-- 整张 SVG 以 base64 编码包成 data:image/svg+xml，浏览器把它当作 image
-         整体绘制 —— 仍是矢量、保留全部原色 —— 内层 <path>/<gradient> 不进
-         <use> 的 shadow DOM。 -->
-    <image href="data:image/svg+xml;base64,{{LOGO_SVG_B64}}"
-           width="{{LOGO_W}}" height="{{LOGO_H}}"/>
-  </symbol>
-</svg>
-```
-
-Logo 始终以原色渲染。**B 档下 `.logo.W` / `.logo.L` 翻色失效** —— 包在 `<image>` 里的 SVG 不响应 CSS `color:`。B 档品牌的封面需要用版式手段保证对比度（见下方"多色 cover 处理"）。
-
-> ⚠️ **shadow DOM fill 级联陷阱** <!-- ENGINEERING-DNA: tier-b-no-css-fill -->
-> 早期 deckify 把 B 档 SVG 内容（`<radialGradient>`、`<path fill="url(#GRAD)">`）直接 inline 进 `<symbol>`。`<use>` 实例化 symbol 时，内容进入 shadow DOM。**外层 `.logo` SVG 上的 CSS `fill`（即便没显式设，SVG 默认 `fill: black` 也算）会级联进 shadow tree，覆盖每一个内层 `<path fill="url(#…)">` —— 因为 CSS specificity 高于 presentation attribute。** 徽章会被压成单色，在同色 backplate 上完全不可见 —— 这是 P&G 第一次跑被打中的静默失效模式，所有 byte 级检查依然 PASS。
->
-> 修复就是上面那个 `<image href>` envelope：浏览器把 SVG 当作整体 image 渲染，没有 shadow-DOM 的 fill 跨界。**B 档（和 C 档）的 `.logo` 上永远不要通过 CSS 设 `fill:`** —— 详见下方 §4 "用法" CSS 块。`logo_visible_pixels` hard check 是兜底：截 cover 截图、裁出 logo 区域，如果 ≥ 95 % 像素和 cover 背景同色就 FAIL。
-
-> `logo_renders` hard check 从 `<image>` 元素的 `data:image/svg+xml` href 推断为 B 档，**跳过** `hasInnerFill` 规则。内层 fill 现在已经不在 DOM 中（封装在 image 字节里），它看不见。
-
-#### C 档 — `raster`（PNG/JPG/WebP fallback）
-
-仅在没有 SVG 源、且位图 logo 通过质量门（最小 64×64）时使用。原始字节 base64 内嵌进 `<image href>`：
-
-```html
-<svg style="display:none" xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
-  <symbol id="brand-wm" viewBox="0 0 {{LOGO_W}} {{LOGO_H}}">
-    <image href="data:image/png;base64,{{LOGO_BASE64}}" width="{{LOGO_W}}" height="{{LOGO_H}}"/>
-  </symbol>
-</svg>
-```
-
-和 B 档一样，`.logo.W` / `.logo.L` 翻色失效（位图像素不响应 CSS `color:`）。同样需要遵守"多色 cover 处理"。受分辨率所限 —— 只要能找到 SVG 源就优先 A/B 档，即使位图门也通过。
-
-> ⚠️ **禁止用文字 placeholder 伪装 logo**：用品牌名 `<text>` 假冒 logo（如 `<text>P&G</text>`、字母圆盘）属于构建失败。`logo_renders` hard check 会拒绝只含 `<text>` 的 `<symbol>` 块。如果没有任何来源能产出真实 logo，**停下来向用户索要原始文件** —— 永远不要编造 placeholder。
-
-#### 多色 cover 处理（仅 B / C 档）<!-- ENGINEERING-DNA: logo-multicolor-cover -->
-
-A 档 logo 通过 `.logo.W` / `.logo.L` 在任何背景上都能干净翻色。B / C 档不行 —— logo 无论如何都以原色渲染。三条版式应对，按优先级：
-
-1. **不加 chip —— 裸 logo 直接放上 cover。** 默认。多数多色品牌徽章自身就有强烈的内部对比（P&G 的 cyan→深蓝渐变 + 白色字标；Starbucks 的绿白美人鱼；BMW 的蓝白四分圆）。在同色系封面（P&G 用 `--primary`、Starbucks 用深绿等）上，logo 自身的内部对比就够 —— 视觉读取的是徽章外缘相对 cover 背景的反差，不需要其他帮忙。先这样试；只有当裸 logo 对比度真的不够时，才升级到 chip。
-
-2. **chip 加 `padding: 0` —— 不可见的对比度层。** 仅当 logo 外缘色调和 cover 背景太接近、且方案 1 失败时使用。把 `.logo` 包进 `.logo-chip`，**`padding: 0`**，`border-radius` 匹配 logo 轮廓（圆形徽章用 `50%`、矩形字标用 `4px`）。chip 尺寸 = logo 尺寸，因此没有可见的"边框" —— 它的唯一职责是在 logo 边缘与 cover 之间夹一层不同色。零白晕。
-
-3. **chip 加 `padding > 0` —— opt-in 的卡片 / 贴纸效果。** 仅当设计**有意**让 logo 看起来像贴在 cover 上的一张卡片或贴纸时（比如品牌习惯把 logo 盖在杂乱的 hero 照片上）。padding 是让 chip 的白底以"边框"形式可见的东西。**这会产生有意为之的可见白色边框。如果你不想看到白色，就不要用这个。** 仅在"logo 作为可见卡片"是预期视觉效果时使用。
-
-> ⚠️ **Padding 的真实语义** <!-- ENGINEERING-DNA: chip-padding-semantics -->
-> `.logo-chip` 上的 `padding` **不是** "可以按口味调的呼吸空间"。它就是让 chip 看起来像一张卡片的*可见白色边框*。`padding: 0` 表示"chip 不可见，仅提供颜色对比"；`padding: 8px` 表示"8 px 的白色边框是设计的一部分"。要主动选。Skill 对 B / C 档 cover slide 的默认是**完全不加 chip**；如果加了 chip，默认 **`padding: 0`**；正向 padding 是 opt-in 的卡片化设计决定。
-
-> 圆形 logo 配 `padding: 8px` + `border-radius: 50%` 出现的那圈白环，不是 bug —— 它就是 padding 在做 padding 该做的事，必然可见。修法是 `padding: 0`，不是换个 `border-radius`。
-
-发布前 checklist（§13）强制要求"封面 logo 可见"无论档位 —— 但**不要求 B / C 档实现 `.W` / `.L` 翻色**。
+> `visible_on_cover` 通过 getBoundingClientRect）全都会显示 PASS。**这就是 Mars 端到端测试中暴露的真实事故**：
+> 上面这一段嵌入的 SVG 在最初一版里就因为 `<g fill="none">` wrapper 没被 strip，9 张 slide 全部 logo 不可见。
+> **在 embed 前必须 strip 所有内层 `fill` 属性，包括 `fill="none"`。**
+> `embed_logo.py` 现在自动 strip；`logo_renders` hard check 现在会拒绝任何不是 `fill="currentColor"` 的内层 fill。
+> 如果手工粘贴 logo，肉眼检查 `<symbol>` 块内任何 `fill="..."` 都必须删掉。
 
 来源解析顺序（`embed_logo.py` 实际尝试的顺序）：
 1. 页面 `<header>` 中的 inline SVG（过滤掉 viewBox < 60 px 的实用图标）
@@ -320,51 +254,33 @@ A 档 logo 通过 `.logo.W` / `.logo.L` 在任何背景上都能干净翻色。B
 
 ```html
 <!-- 白色（深色 slide 上） -->
-<svg class="logo W" viewBox="{{LOGO_VIEWBOX}}" aria-label="{{BRAND_NAME}}">
+<svg class="logo W" viewBox="0 0 138 40" aria-label="Mars">
   <use href="#brand-wm"/>
 </svg>
 
 <!-- 品牌深色（浅色 slide 上） -->
-<svg class="logo L" viewBox="{{LOGO_VIEWBOX}}" aria-label="{{BRAND_NAME}}">
+<svg class="logo L" viewBox="0 0 138 40" aria-label="Mars">
   <use href="#brand-wm"/>
 </svg>
 ```
 
 ```css
-/* 按档位选 CSS — 根据你的 colour_handling 用对应那段： */
-
-/* A 档（mono）：
-   fill: currentColor 必须放在 .logo 上 — 不要放在 .logo path 上。
-   CSS 选择器无法穿透 SVG <use> 的 shadow DOM，但外层 <svg> 上的继承 fill
-   能正确级联进 symbol 的 shadow tree。 */
-.logo   { height: {{LOGO_HEIGHT}}; width: auto; flex-shrink: 0; fill: currentColor; }
+/* fill: currentColor 必须放在 .logo 上 — 不要放在 .logo path 上。
+   CSS 选择器无法穿透 SVG <use> 的 shadow DOM。
+   外层 <svg> 上的继承 fill 才能正确级联进去。 */
+.logo   { height: 24px; width: auto; flex-shrink: 0; fill: currentColor; }
 .logo.W { color: #fff; }
 .logo.L { color: var(--primary); }
-
-/* B 档（multi）和 C 档（raster）— 不要在 CSS 设 fill。<!-- ENGINEERING-DNA: tier-b-no-css-fill -->
-   徽章是通过 <symbol> 内的 <image href="data:..."> 渲染的；任何 .logo 上的
-   CSS fill 都会通过 <use> shadow DOM 级联破坏渲染（即便 byte 检查仍 PASS）。
-   保留 .W / .L 作为空类，让相同的 `<svg class="logo W">` 标记可以在不同
-   品牌之间复用，不需要下游模板做条件分支。 */
-.logo               { height: {{LOGO_HEIGHT}}; width: auto; flex-shrink: 0; display: block; }
-.logo.W, .logo.L    { /* 故意留空 — 见上方注释 */ }
-
-/* B / C 档可选 .logo-chip 背板 — 见 §4 "多色 cover 处理"。
-   默认是不加 chip。如果加，padding 必须为 0，除非你**有意**想要可见的
-   白色卡片边框（这正是 padding > 0 的语义）。border-radius 匹配 logo 轮廓：
-   圆形徽章 50%，矩形字标 4px，方形块 mark 0。 */
-.logo-chip { display: inline-flex; padding: 0; background: var(--white); border-radius: 50%; line-height: 0; }
-.logo-chip .logo { display: block; }
 ```
 
 ### 摆放规则 <!-- ENGINEERING-DNA -->
 - **每张 slide** 都必须有 logo — 封面与所有内容页。
 - **封面**：`.cov-top` flex 行的右上角。
 - **内容页**：`.shd` 页头条的右端（左 = 标题 eyebrow / slide 编号，右 = logo）。
-- Logo 周围最小留白 = logo 高度（{{LOGO_HEIGHT}}）四周都留。
+- Logo 周围最小留白 = logo 高度（24 px）四周都留。
 - 不要拉伸、不要在 `W`/`L` 之外重新着色、不要把 logo 叠在带图案的区域上。
 
-{{LOGO_BRAND_RESTRICTIONS_NOTE}}
+**Mars 商标使用注意**：Mars wordmark 是注册商标。本 DS 限定于内部 + B2B 演示用途；任何对外发布、商业推广或品牌联名须经 Mars Brand 团队授权。Pedigree、Whiskas、M&M's、Snickers、Royal Canin、Orbit 等子品牌的 logo **不在本 DS 范围内** — 演示中提到这些子品牌，用文字（Inter 800）即可，不要内嵌它们的 wordmark。
 
 ---
 
@@ -377,7 +293,7 @@ A 档 logo 通过 `.logo.W` / `.logo.L` 在任何背景上都能干净翻色。B
     .slide × N — absolute inset, opacity show/hide, overflow:hidden (hard contract)
 ```
 
-`#wrap` 与 `body` 的 background **必须用 `var(--ink)`**，不能写死 `#000` / `#1A1A1A` / `#1F1F22` — 这些会被 `token_only_colors` hard check 抓到。每个 brand 的 `--ink` 已经是各自真实的深色基调（Coca-Cola 纯黑、Unilever warm graphite、Apple near-black），letterbox 跟随它就是对的。
+`#wrap` 与 `body` 的 background **必须用 `var(--ink)`**，不能写死 `#000` / `#1A1A1A` / `#1F1F22` — 这些会被 `token_only_colors` hard check 抓到。每个 brand 的 `--ink` 已经是各自真实的深色基调（Mars 的 #3C3C3C 是其官方 dark-grey），letterbox 跟随它就是对的。
 
 ### 全屏适配 — 运行时缩放 <!-- ENGINEERING-DNA: scale-to-fit -->
 
@@ -525,23 +441,26 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 ## 6. 幻灯片类型 <!-- BRAND-VARIABLE: emphasis order varies; the type definitions are mostly invariant -->
 
-> **Emphasis for {{BRAND_NAME}}**: {{SLIDE_TYPE_EMPHASIS_NOTE}}
-> Foreground these types when designing decks: {{EMPHASIZED_TYPES_LIST}}.
-> Use sparingly: {{DEEMPHASIZED_TYPES_LIST}}.
+> **Emphasis for Mars**：Mars 的视觉口吻最贴合 4 种 slide type — **重点强调它们**：
+> 1. **Type J — 引言/抽词**（满屏 mars-blue 底 + Inter Black 900 巨字标语，关键词用 mars-green / snack-yellow 染色，对应 Five Principles 页）
+> 2. **业务部门多色 tile**（使用 Type B 双栏或 §7.2 Showcase Card 网格，每块用一个业务部门色：petcare-red / food-green / wrigley-gold / snack-yellow — 这是 Mars 唯一允许"多色并列"的语义场景）
+> 3. **Type F — 图像页**（大图叠 mars-blue 半透明块 + 白字，对应 About Mars 页那种 "巨大 MARS 字母实景照 + 半透明蓝块覆盖" 的氛围）
+> 4. **Type H — 数据图**（柱状/进度条用 mars-blue + mars-green，sustainability KPI 这种叙事）
+> Use sparingly: 复杂交互演示 (Type G) — Mars 的 deck 通常是宣讲企业故事，不是演示软件。
 
 ### Type A — 封面
-- 背景：`{{COVER_BACKGROUND}}`
-- 结构：Logo 右上角 → Eyebrow → 巨型标题 → 斜体副标 → Meta 行
-- **不允许任何装饰线** — 不要 hairline、不要 accent line、不要渐变边框。背景就是表面。
+- 背景：满屏 `var(--primary)` (mars-blue #0000A0)
+- 结构：Logo 右上角（白色变体 `.logo.W`）→ Eyebrow → 巨型标题（Inter Black 900, 82 px, 白色）→ 斜体副标 → Meta 行
+- **不允许任何装饰线** — 不要 hairline、不要 accent line、不要渐变边框。背景就是表面。Mars 的封面必须像一张 1970 年代企业年报封面：纯色块 + 大字 wordmark，没有"现代 corporate"的小细节。
 
 ### Type B — 双栏内容
-对比、特性列表、指标。`grid-template-columns: 1fr 1fr; gap: 20px`。移动端会折叠为单栏。
+对比、特性列表、指标。`grid-template-columns: 1fr 1fr; gap: 20px`。移动端会折叠为单栏。在 Mars 中，双栏特别适合"业务部门并排"叙事 — 左 Petcare 右 Snacking 这类。
 
 ### Type C — 全宽叙事
-单栏、大字号、配 pull-quote。用于上下文、摘要、推荐建议页。
+单栏、大字号、配 pull-quote。用于上下文、摘要、推荐建议页。Mars 的 Five Principles 页就是该类型的极致案例：左侧"Five Principles"标题 + 副标，右侧巨大的 5 行单词列表。
 
 ### Type D — 翻面卡片
-两张卡片并排。正面 = `--primary`，背面 = `{{FLIP_BACK_COLOR}}`（比 `--accent` 柔和）。**Hover + 点击翻面** — JS `onclick` 切换 `.on` class（移动端必需）。正面有 ghost 罗马数字。背面留白宽（32 px padding，≤ 4 个内容元素）。
+两张卡片并排。正面 = `--primary` (mars-blue)，背面 = mars-green (`--accent`，比纯白柔和但仍鲜亮)。**Hover + 点击翻面** — JS `onclick` 切换 `.on` class（移动端必需）。正面有 ghost 罗马数字。背面留白宽（32 px padding，≤ 4 个内容元素）。
 
 **字体 — 必须大而有力：**
 
@@ -569,21 +488,22 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 - 如果表格既要 6 行以上 AND absorber 里又要侧栏 callout，那就拆开 — 不要硬塞。
 
 ### Type F — 图像页
-一张或多张图占据 slide 主体，文字锚定在安静区域。用于展示真实产品 UI、真实截图、或将抽象概念具象化的环境照片。
+一张或多张图占据 slide 主体，文字锚定在安静区域。Mars 站点最招牌的视觉就是这一类（About Mars 页那张三维 MARS 字母实景）。用于展示工厂、产品、Associates、宠物 / 家庭场景照、可持续主题图。
 
 **原则：**
-- 图像必须服务于理解 — 不要装饰性 stock photo。优先：产品 UI 截图、真实数据可视化、能说明具体观点的环境照片。
+- 图像必须服务于理解 — 不要装饰性 stock photo。优先：Mars 真实产品（M&M's、Snickers、Pedigree 等的产品照）、工厂 / Associates 工作场景、可持续项目实地图。
 - 构建 deck 时，**主动 web 搜相关图片**（产品 logo、UI 截图、现实案例）来支撑叙事。
-- 图像处理：`border-radius: 4px`，可选 `1px solid var(--rule)` 边框。深色背景不需要边框。
-- 布局：图像占 slide 区域 50–70%。文字放在旁边或叠在带 tint 的区域上。绝不在繁忙图片上直接放文字而不加 scrim。
+- 图像处理：`border-radius: 0`（Mars 是零圆角品牌，包括图像边缘），可选 `1px solid var(--rule)` 边框。深色背景不需要边框。
+- 布局：图像占 slide 区域 50–70%。文字放在旁边或叠在带 mars-blue 半透明块（`rgba(0,0,160,.85)`）的区域上。绝不在繁忙图片上直接放文字而不加 scrim。
 - 图下说明：`.cap` 样式（13 px、字重 800、全大写、`--mid`）。
+- **Mars 招牌处理**：大图覆盖 + mars-blue 半透明色块（70%~85% 不透明度）+ 白色 Inter 900 标语叠加。这是 mars.com 上最具识别度的图像 + 文字组合。
 
 ### Type G — 交互演示
-嵌在 slide 内的自包含、点击推进的微体验。目的：让观众 *看到* 概念在工作，而不只是读它。
+嵌在 slide 内的自包含、点击推进的微体验。目的：让观众 *看到* 概念在工作，而不只是读它。对 Mars 用得少 — 只在演示供应链可视化、可持续 KPI 走势这类才用。
 
 **何时用：** 场景演练、前后对比、多步流程可视化。
 
-**结构：** 一块"屏幕"区域（深色 bg `--primary` 或 `#1a1a2e`，4 px 圆角）+ 点击推进的逐步内容。控件：前后按钮或带编号的步骤。内容通过 CSS transition 出现。
+**结构：** 一块"屏幕"区域（深色 bg `--primary` 或 `#3C3C3C`，0 px 圆角）+ 点击推进的逐步内容。控件：前后按钮或带编号的步骤。内容通过 CSS transition 出现。
 
 **设计规则：**
 - 必须像精致的产品 demo，不是 prototype。整洁字体、克制动效。
@@ -592,13 +512,14 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 - 移动端：滚动时自动推进，或点击目标 ≥ 44 px。
 
 ### Type H — 图表/数据洞察
-由一个或多个数据可视化主导的 slide。用于定量论证、趋势分析、性能对比。图表组件规范（§7.8）定义元素级设计；本类型定义 slide 级原则。
+由一个或多个数据可视化主导的 slide。用于定量论证、趋势分析、性能对比 — Mars sustainability KPIs（碳减排、再生能源 %、农户增收）这类核心叙事。图表组件规范（§7.8）定义元素级设计；本类型定义 slide 级原则。
 
 **原则：**
 - 每张 slide 一个主图。次要小图可接受 — 但必须直接支撑主图。
-- 标题陈述洞察，不是图表类型。好："{{BRAND_NAME}} 在三项维度都领先"。坏："柱状图对比"。
+- 标题陈述洞察，不是图表类型。好："Mars 在三大可持续维度都跑赢承诺曲线"。坏："柱状图对比"。
 - 图表占 slide 区域 50–70%。剩余空间：标题 + 一段解读或一个 callout。
 - 入场动效以增强叙事冲击力。
+- **Mars 配色规则**：主条 `--primary` (mars-blue) + 次条 `--accent` (mars-green)，不要使用业务部门色作为图表条 — 那会把"语义颜色"和"分类颜色"混淆。
 
 ### Type I — 标签页
 多个内容视图通过标签切换。当内容有自然分类时，能在一张 slide 上容纳更多信息。Tab 组件规范见 §7.9。
@@ -606,19 +527,19 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 **原则：** 最多 4 个标签。每个 tab panel 都是自包含的"slide-中-slide" — 可以用 §7 任何组件。不要把标签当成 slide 内容塞太满的拐杖；如果 2 个标签各自都显稀疏，就合并成一个视图。
 
 ### Type J — 引言/抽词
-一句强烈的话锚定叙事时刻。用于关键 takeaway、受众重置、可记忆的金句。
+**Mars 的招牌 slide type。** 一句强烈的话锚定叙事时刻。用于关键 takeaway、受众重置、可记忆的金句。
 
 **结构（标准版）：** 大号引用文字（28–36 px、字重 700、`--ink`）居中或左对齐。可选下方署名（14 px、`--mid`）。左边 accent 边线（`3px solid --accent`）或无。
 
-**结构（满屏 bespoke 变体）：** 部分品牌偏爱整张满屏 `--primary` + 多行海报型大字（如 Mars Five Principles 页：6 行 Inter Black 900 竖排，部分词用 `--accent` 或某个品牌色染色）。这种 slide：
+**结构（Mars 招牌满屏版）：** 整张 slide 满屏 `var(--primary)` (mars-blue)，5–6 行 Inter Black 900 大字垂直排列，关键词用 `--accent` (mars-green) 或 `--snack-yellow` 染色突出。这是 Five Principles 页的精确再现，是 Mars 最具识别度的 deck visual。**做这种 slide 时四条铁律：**
 
-1. **构图依然必须包在 `.sw + .sc` 里。** 用 `.sw`（覆写 `background: var(--primary)`）+ 一个 `.sc` 装自定义布局。**不要**自创平级 shell class（`.fpwrap`、`.poster-wrap` 等）—— bespoke shell 会**静默绕过** `fit_contract_intact`（没有 `.sc` = absorber 数 0 = `bad_slides: [{absorbers: 0}]`）。
-2. **`.sc` 内必须恰好一个 absorber**，带 `flex: 1 1 0; min-height: 0; overflow: hidden` —— 通常是装大字的中间带。顶部 header 带和底部署名带都 `flex: 0 0 auto`。
-3. **按行数反推字号上限。** absorber 的 `clientH` ≈ `(720 − 54 header − 32 top − 32 bottom) − 顶部带 − 底部带`。例如 5 行排版下顶部带约 120 px、底部带约 30 px，absorber ≈ 420 px —— 每行字号 ≤ `floor((420 − 4×gap) / 5) ≈ 78 px`。**84 px × 5 行会溢出约 40 px。** 字号来自预算，不是反过来。
-4. **满屏 Type J 不用 `.shd` 页头条。** Logo + slide-eyebrow 直接写在 `.sc` 顶部一行。
+1. **构图必须包在 `.sw + .sc` 里。** 用 `.sw`（覆写 `background: var(--primary); border-left: none`）+ 一个 `.sc` 装大字。**禁止**自创平级 shell class（`.fpwrap`、`.poster-wrap` 之类）—— Mars 端到端测试里 slide 2 的第一版就用了 `.fpwrap`，结果 `fit_contract_intact` 报告 `bad_slides: [{absorbers: 0}]`，因为 `.sc` 之外没有契约可言。
+2. **`.sc` 内必须恰好一个 absorber**，带 `flex: 1 1 0; min-height: 0; overflow: hidden` —— 通常是装大字的中间带。顶部 header 带（含 logo + eyebrow）和底部署名带都是 `flex: 0 0 auto`。
+3. **按 absorber 高度反推字号上限。** absorber 的 `clientH` ≈ `(720 − 54 header − 32 top − 32 bottom) − 顶部带 − 底部带`。Mars Five Principles 页 5 行排版时，顶部带约 120 px、底部带约 30 px → absorber ≈ 420 px → 每行字号 ≤ `floor((420 − 4×4 gap) / 5) ≈ 80 px`。**第一版用 84 px × 5 行 → 实测 419 px 容器装 459 px 内容，`text_layout_safe` FAIL。** 这就是为什么字号必须从预算反推，不是反过来。当前推荐：`fp-line` 字号 ≤ 72 px、行高 1.05、行间 gap 4 px。
+4. **满屏 Type J 不用 `.shd` 页头条。** Logo + slide-eyebrow 直接写在 `.sc` 顶部一行，让画面气势完整。
 
 ### Type K — 时间线/路线图
-横向或纵向的里程碑序列。用于项目计划、演化叙事、阶段描述。组件规范见 §7.12。
+横向或纵向的里程碑序列。用于项目计划、演化叙事、阶段描述（Mars 1911 创立 → 1923 Milky Way → 1968 第一家 Pedigree → 2017 Sustainable in a Generation → ...）。组件规范见 §7.12。
 
 ---
 
@@ -649,12 +570,12 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 **设计处理：**
 - 背景：`var(--white)`，配 `1px solid var(--rule)` 边框
-- **顶部 accent 线**：`3px solid var(--accent)`（默认）。可按上下文换成 `--primary`、`--green`、`--red`。是一条细而优雅的线 — 不是填充的 header 块。
+- **顶部 accent 线**：`3px solid var(--accent)`（默认）。可按上下文换成 `--primary`、`--green`、`--red`、或某个业务部门色（`--petcare-red`、`--food-green` 等）。是一条细而优雅的线 — 不是填充的 header 块。
 - **没有强制 label 条。** 标题在卡片正文里，作为内容的一部分。
 - 标题：20 px 字重 900 `--ink`
 - 内容：15–16 px 字重 600 `--mid`，慷慨的 12 px+ 间距
 - 可选 SVG 图标：32–36 px，inline 放在标题旁或上方。
-- **Hover**：微微上浮（`translateY(-2px)`）+ 阴影
+- **Hover**：微微上浮（`translateY(-2px)`）+ 阴影（这是全 DS 中唯一允许 box-shadow 的位置 — hover 状态的 lift）。
 
 ```css
 .show-card {
@@ -670,11 +591,16 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 .show-card .show-desc { font-size: 15px; font-weight: 600; color: var(--mid); line-height: 1.5; }
 .show-card.accent-navy { border-top-color: var(--primary); }
 .show-card.accent-green { border-top-color: var(--green); }
+.show-card.accent-petcare { border-top-color: var(--petcare-red); }
+.show-card.accent-food { border-top-color: var(--food-green); }
+.show-card.accent-wrigley { border-top-color: var(--wrigley-gold); }
+.show-card.accent-snack { border-top-color: var(--snack-yellow); }
 .show-card.compact { padding: 16px 18px; gap: 8px; }
 .show-card.compact .show-title { font-size: 18px; }
 ```
 
 **反模式**：在 6 张以上卡片网格里每张都用填充色 header 条 — 视觉单调。改用细 top accent 线。
+**Mars 专用模式**：4 张并排展示业务部门时（Petcare / Snacking / Food / 他），允许每张卡用对应业务部门色作 top accent — 这是语义网格，不是装饰。
 
 ### 7.3 Item Card (Tier 3 — "list card")
 
@@ -696,7 +622,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 ### 7.4 Stat Card (Tier 4 — "number card")
 
-紧凑指标展示。`stat-num`（36 px 900 `--primary`）+ `stat-label`（12 px 800 全大写 `--mid`）。
+紧凑指标展示。`stat-num`（36 px 900 `--primary`）+ `stat-label`（12 px 800 全大写 `--mid`）。Mars 这类常用：100+ 国家、80,000 Associates、$50B+ 年营收、Sustainable in a Generation 计划进度等。
 
 ### 7.5 Callout / Note
 
@@ -706,7 +632,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 ```
 
 **深色**（结论 / 建议条）：
-用于 slide 末尾 takeaway 的全宽 navy 块。文字：13–16 px 700–800，`rgba(255,255,255,.85)`。关键词加粗用 `color: #fff`。不要 border-left — 实心 navy 填充本身就是强调。
+用于 slide 末尾 takeaway 的全宽 mars-blue 块。文字：13–16 px 700–800，`rgba(255,255,255,.85)`。关键词加粗用 `color: #fff`。不要 border-left — 实心 mars-blue 填充本身就是强调。
 
 ### 7.6 Marks, Badges & Chips
 
@@ -716,6 +642,8 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 .mark.yes::before { content: '✓'; background: var(--green); color: #fff; }
 .mark.no::before  { content: '−'; background: var(--red); color: #fff; }
 ```
+
+> **例外说明**：上面的 `.mark::before` 圆形指示符是全 DS 中唯一允许 `border-radius: 50%` 的元素 — 因为它是一个图标语义符号，不是容器。所有矩形容器仍然 0 圆角。
 
 **徽章** — 小型标签胶囊（`.bg-g`、`.bg-r`、`.bg-b`）用于行内状态。12–13 px、字重 900、全大写。
 
@@ -734,7 +662,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 ```
 
 **规则：**
-- Navy 表头行是唯一的色块。所有数据单元格：白底、`--ink` 文字。
+- mars-blue 表头行是唯一的色块。所有数据单元格：白底、`--ink` 文字。
 - **`<table>` 单元格里不要彩色徽章** — 用字重 / 颜色强调。
 - 可选一行 `--tint` 高亮，仅给最重要的那一行。
 - "整洁网格"测试：眯眼看表格。看到一堆彩色方块拼贴，就是设计失败了。
@@ -743,8 +671,8 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 | Type | Primary colour | Secondary | Neutral | Notes |
 |---|---|---|---|---|
-| Bar (H / V) | `--accent` | `--primary` | `--rule` | Animated grow on entrance |
-| Progress / gauge | `--accent` fill | — | `--rule` track | 8px height, 4px radius |
+| Bar (H / V) | `--accent` (mars-green) | `--primary` (mars-blue) | `--rule` | Animated grow on entrance |
+| Progress / gauge | `--accent` fill | — | `--rule` track | 8px height, 0px radius (Mars 是零圆角；进度条直角矩形) |
 | Pie / donut | `--primary` | `--accent` | `--rule` | Max 3 segments |
 | Timeline | `--primary` dots | — | `--rule` dots | Key nodes: `--tint` ring |
 
@@ -754,7 +682,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 ```css
 .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 '{{PRIMARY_FONT}}'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
+.tb { padding: 7px 16px; border: 1px solid var(--rule); background: transparent; font: 800 12px/1 'Inter'; letter-spacing: .06em; color: var(--mid); cursor: pointer; }
 .tb:hover { border-color: var(--accent); color: var(--accent); }
 .tb.on { background: var(--primary); border-color: var(--primary); color: #fff; }
 .tc { display: none; } .tc.on { display: block; }
@@ -770,7 +698,7 @@ The extra bottom padding creates deliberate visible breathing — roughly half a
 
 ### 7.12 Timeline
 
-横向里程碑序列，配连接线。
+横向里程碑序列，配连接线。Mars 的应用：1911 创立 → 1923 Milky Way → 1968 Pedigree → 1986 五项原则首次成文 → 2017 Sustainable in a Generation → 当前。
 
 **关键布局规则 — dot 永远位于线上、线穿过 dot 中心：**
 `.tl-line` 用固定 `top` 值，由 dot 中心以上的总空间算出。日期块用 `min-height` 装文字 + `margin-bottom` 给呼吸空间。
@@ -798,6 +726,8 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 .tl-detail { font-size: 14px; font-weight: 600; color: var(--mid); line-height: 1.3; }
 ```
 
+> **例外说明**：`.tl-dot2` 是图标语义元素（圆点），允许 `border-radius: 50%`。其他容器仍然 0 圆角。
+
 ### 组件选择指引
 
 | 内容 | 组件 | 布局 |
@@ -812,6 +742,7 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 | 单条 takeaway | Callout / Note（轻量） | 全宽 |
 | Slide 结论 / 建议 | Callout / Note（深色） | 全宽 |
 | 项目里程碑 | Timeline | 横向 flex |
+| 业务部门并列 | Showcase Card 多色 accent variant | 2×2 或 4 栏 |
 
 ---
 
@@ -819,27 +750,27 @@ Total above dot: 64px → dot center: 73px → line top: 73px
 
 ### 原则
 
-{{IMAGERY_PHILOSOPHY_NOTE}}
+Mars 是一个产品 + 工厂 + 农场 + Associates + 宠物 + 家庭场景都极其具体的品牌。它的图像永远应该是 *真实可见的实体世界* —— 巧克力、宠物、收割可可豆的农场、装配线、Associates 的工作场景 —— 不是抽象渐变 / 线条插画 / 通用 stock。一张 slide 上的图像必须能回答："这是 Mars 在 [国家/工厂/项目] 真实拍到的什么？" 不能就跳过它。
 
 ### 何时加入图像
 
-- **产品 UI 截图**：当讨论某具体工具时，展示它的真实界面。
+- **产品 UI 截图**：当讨论某具体工具时，展示它的真实界面（例如：MyMars 平台、Pet Insight 仪表板、可持续性追踪 app）。
 - **数据可视化**：当某个数字或趋势是核心时，建一张图（Type H）。
-- **环境照片**：当某场景需要视觉锚点时，搜并放一张相关图。
+- **环境照片**：当某场景需要视觉锚点时，搜并放一张相关图（巧克力工厂、可可农、宠物医院、M&M's 商店）。
 - **图示**：当某概念具有结构（层级、流程、对比）时，用 CSS/SVG 画出来，而不是用文字描述。
 
 ### 如何获取图像
 
-1. **主动搜索**：用 web search 找相关产品截图、图示、环境照片。优先选官方素材。
+1. **主动搜索**：用 web search 找相关产品截图、图示、环境照片。优先选官方素材（mars.com newsroom、Mars Sustainability Report PDF、子品牌官网）。
 2. **CSS 绘制替代品**：柱状图、进度条、时间线图 — 数据简单时优于外部图片。
 3. **绝不用**：装饰性 stock photo、抽象渐变、AI 生成的占位艺术、与 slide 主旨无关的图片。
 
 ### 图像处理
 
-- `border-radius: 4px`。浅色背景上可选 `1px solid var(--rule)` 边框。
+- `border-radius: 0px`（Mars 是零圆角品牌，包括图像边缘）。浅色背景上可选 `1px solid var(--rule)` 边框。
 - 深色背景上的图：不要边框。
 - 说明文字：图下方使用 `.cap` 样式。
-- 绝不在繁忙图像上直接放文字而不加 scrim（最少 `rgba(0,0,0,.5)`）。
+- 绝不在繁忙图像上直接放文字而不加 scrim — Mars 招牌 scrim 是 `rgba(0,0,160,.85)`（85% 不透明 mars-blue），而不是黑色蒙层。这样 scrim 本身也是品牌色。
 
 ---
 
@@ -958,7 +889,7 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 ### 叙事优先设计
 
 1. **Flip card 用于揭示**：问题/解决、前/后、误区/真相。
-2. **具体优于抽象**：具体场景胜过泛泛描述。
+2. **具体优于抽象**：具体场景胜过泛泛描述（"全球 80,000 名 Associates" 优于 "全球员工"）。
 3. **视觉证据**：图表 > 文字、截图 > 描述、图示 > bullet 列表。
 4. **截图测试**：如果没人愿意把这张 slide 截图保存，它就缺一个视觉钩子。
 
@@ -973,6 +904,7 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 **"蓝块"陷阱**：右下角的深色 callout = 视觉失衡。改成全宽底部、用 `.snote` 替代、或把深色卡放在顶部。
 
 **"蓝叠 navy"陷阱**：在深色 slide（`--primary` bg）上，永远不要用 `--accent` 当文字或 accent — 会产生刺眼、廉价感的对比。用白色（`#fff`）或半透明白（`rgba(255,255,255,.85)`）做强调。深色背景上的低调 CTA：`rgba(255,255,255,.08)` bg 填充 + 白字。
+**Mars 例外**：Type J 满屏 mars-blue 标语 slide 中，`--accent` (mars-green) 和 `--snack-yellow` 作为关键词染色是 *允许且鼓励的*。区别在于：那是单词级别的高对比 *诗意排版*，不是组件级别的 chrome —— 整个 Five Principles 页就是这种处理。识别要点：如果 mars-green 是覆盖几个字而不是覆盖整个按钮 / 卡片，OK。
 
 **"深色堆叠"陷阱**：当一个深色元素直接放在另一个深色元素下方时，它们在视觉上合并。深色元素之间至少留 12 px `--surface` 或 `--tint` 间距。
 
@@ -988,7 +920,7 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 | 页头高度 | 54 px |
 | 卡片间距 | 20 px |
 | 卡片内边距 | 32 px |
-| 圆角 | {{BORDER_RADIUS}} |
+| 圆角 | 0 px (Mars 是零圆角品牌) |
 | 分隔线粗细 | 1 px |
 | Accent 边线 | 3 px |
 
@@ -1000,15 +932,16 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 
 ### 品牌与 Token
 - [ ] 每张 slide 都有 logo（封面右上、内容页 `.shd` 右端）
-- [ ] **Logo 在封面肉眼可见** —— 打开 deck，看 slide 1 右上角。"内嵌成功但不可见"是最常见的失败模式（见 §4 fill 级联陷阱）。`has_real_vector_path: true` 单独并不能保证视觉上看得见。
-- [ ] Logo `<symbol>` 块内部不含任何 `fill` 属性（含 `<g fill="none">` wrapper）—— 只允许 `fill="currentColor"`（仅 A 档；B / C 档用 `<image href>`，不适用此规则）
-- [ ] **封面 logo 周围没有非预期的白色 halo** —— 如果用了 `.logo-chip`，`padding: 0`，除非设计**显式**要求一个可见的白色卡片边框（见 §4 Padding 语义）。正向 padding 是 opt-in，不是默认。
-- [ ] **每张 slide 内容都包在 `.sc` 容器内** —— 包括 bespoke 满屏 Type J / Type A。不能用平级 shell 如 `.fpwrap` / `.poster-wrap`（这种自定义 shell 会**静默绕过** `fit_contract_intact`）
+- [ ] **Logo 在封面肉眼可见** —— 打开 deck 看 slide 1 右上角。"内嵌成功但不可见"是 Mars 端到端测试里第一版踩到的真实坑（见 §4 fill 级联陷阱）。`has_real_vector_path: true` 单独不能保证视觉上看得见。
+- [ ] Logo `<symbol>` 块内部不含任何 `fill` 属性（含 `<g fill="none">` wrapper）—— 只允许 `fill="currentColor"`
+- [ ] **每张 slide 内容都包在 `.sc` 容器内** —— 包括 bespoke 满屏 Type J / Type A。不能用平级 shell 如 `.fpwrap` / `.poster-wrap`（Mars 测试里这种自定义 shell **静默绕过** `fit_contract_intact`）
 - [ ] 颜色：只用系统 token — 不用临时 hex
 - [ ] 所有 bespoke 元素都仅基于系统 token 构造（见 §1 约束 vs 自由）
 - [ ] 不用 emoji (👍🎉 等) — 排版符号 (✓ − ! ×) 可用
-- [ ] {{PRIMARY_FONT}} {{WEIGHT_RANGE}}{{ITALIC_NOTE_SHORT}} 已加载；不用 serif / display 字体
-- [ ] 封面副标：仅用 {{PRIMARY_FONT}} 300 斜体（如果 300 italic 不可用，用品牌等价值）
+- [ ] Inter 字重 400/500/600/700/800/900 已加载；不用 serif / display 字体
+- [ ] 封面副标：仅用 Inter 300 斜体（如果 300 italic 不可用，用 400 italic 替代）
+- [ ] 所有矩形容器 `border-radius: 0`（Mars 是零圆角品牌）
+- [ ] 所有容器 `box-shadow: none`（hover lift 是唯一例外）
 
 ### 字体与可读性
 - [ ] 没有低于 12 px 的文字 — 特别注意徽章 / 标签列
@@ -1016,6 +949,8 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 - [ ] 非表格 slide 的正文 ≥ 16 px（仅在数据密集表格上用 14 px）
 - [ ] 副标 ≥ 20 px
 - [ ] 中文与对应英文字号 / 字重一致（混排时）
+- [ ] CJK 字体回退链：PingFang SC / Hiragino Sans GB / Microsoft YaHei / Source Han Sans 至少一个出现在 font-family 链里
+- [ ] PingFang SC 字重已提升至 500/600（Regular 在 mars-blue 大色块上会显瘦）
 
 ### 幻灯片结构
 - [ ] 每张内容页都有 `.shd` 页头条 + slide 编号 + logo
@@ -1041,7 +976,7 @@ CSS `:hover` 在触屏设备上不生效。Flip 卡 **必须** 有 JS `onclick` 
 
 ### 视觉与图像
 - [ ] 图像服务于理解 — 不用装饰性 stock photo
-- [ ] 图上文字有 scrim（≥ 50% 不透明度深色蒙层）
+- [ ] 图上文字有 scrim（≥ 50% 不透明度，且为 mars-blue 而非黑色）
 - [ ] 图说用 `.cap` 样式
 
 ### 动画

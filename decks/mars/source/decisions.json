@@ -1,0 +1,15 @@
+{
+  "interaction_mode": "ask-user-question",
+  "host": "claude-code",
+  "language": "中文",
+  "font_fallback": "Inter + system-ui",
+  "slide_emphasis": [
+    "Big pull-quote / 满屏 Extrabold 标语",
+    "彩色业务部门网格 (multi-color tile)",
+    "Image-led narrative (大图 + 玛氏蓝色块)",
+    "Real-numbers chart / 数据图"
+  ],
+  "logo_choice_unambiguous": true,
+  "palette_choice_unambiguous": true,
+  "notes": "Mars has fully documented internal token system (--ssa-color-palette-*) so palette + logo were unambiguous. Font and slide emphasis decided by user; language defaulted to user's CLAUDE.md preference but explicitly confirmed."
+}

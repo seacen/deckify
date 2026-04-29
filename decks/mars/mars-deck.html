@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mars Design System — 9 张验证 deck</title>
+<style>
+:root {
+  --primary:#0000A0; --accent:#00D7B9;
+  --surface:#FFFFFF; --white:#FFFFFF;
+  --ink:#3C3C3C; --mid:#6B6B6B; --rule:#E1E1E1; --tint:#F4F4F4;
+  --green:#00D7B9; --green-bg:#E5FAF6;
+  --red:#FF1414; --red-bg:#FFEBEB;
+  --warn:#E6A000; --warn-bg:#FFF6E0;
+  --teal:#0099FF; --teal-bg:#E0F2FF;
+  --mars-blue:#0000A0; --mars-green:#00D7B9; --mars-edge:#0099FF;
+  --petcare-red:#FF1414; --food-green:#61A020; --wrigley-gold:#E6A000;
+  --snack-yellow:#FFDC00; --fresh-green:#A6DB00; --spicy-red:#FF3C14;
+  --light-gray:#A3A3A3;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; }
+body {
+  background:var(--ink);
+  font-family:'PingFang SC','苹方-简','Hiragino Sans GB','冬青黑体简体中文',
+              'Microsoft YaHei','微软雅黑','Source Han Sans SC','Noto Sans SC',
+              'Inter',system-ui,-apple-system,sans-serif;
+  font-weight:500; color:var(--ink); -webkit-font-smoothing:antialiased;
+  hyphens:none; word-break:keep-all; line-break:strict;
+}
+
+/* Stage */
+#wrap { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:var(--ink); }
+#deck { position:relative; width:1280px; height:720px; overflow:hidden; transform-origin:center center; will-change:transform; background:var(--surface); }
+
+/* Slide states */
+.slide { position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .38s ease; overflow:hidden; }
+.slide.active { opacity:1; pointer-events:auto; }
+@keyframes enter { from { opacity:0; transform:translateY(14px);} to { opacity:1; transform:none;} }
+.slide.active .sc, .slide.active .cov { animation:enter .42s cubic-bezier(.4,0,.2,1) both; }
+
+/* Logo */
+.logo { height:24px; width:auto; flex-shrink:0; fill:currentColor; display:inline-block; }
+.logo.W { color:#fff; }
+.logo.L { color:var(--primary); }
+
+/* Cover */
+.cov { position:relative; width:100%; height:100%; background:var(--primary); color:#fff; display:flex; flex-direction:column; padding:48px 96px; }
+.cov-top { display:flex; justify-content:space-between; align-items:center; flex:0 0 auto; }
+.cov-num { font-size:11px; font-weight:800; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.7); }
+.cov-mid { flex:1 1 0; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:18px; }
+.cov-eyebrow { font-size:13px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:var(--accent); }
+.cov-title { font-size:82px; font-weight:900; letter-spacing:-.03em; line-height:.98; max-width:1000px; }
+.cov-sub { font-size:22px; font-weight:300; font-style:italic; letter-spacing:.01em; max-width:880px; color:rgba(255,255,255,.92); }
+.cov-meta { display:flex; gap:48px; flex:0 0 auto; padding-top:18px; }
+.cov-meta-item { display:flex; flex-direction:column; gap:4px; }
+.cov-meta-lab { font-size:11px; font-weight:800; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.6); }
+.cov-meta-val { font-size:16px; font-weight:700; color:#fff; }
+
+/* Content shell */
+.sw { position:relative; width:100%; height:100%; background:var(--surface); border-left:3px solid var(--accent); display:flex; flex-direction:column; }
+.shd { display:flex; align-items:center; justify-content:space-between; padding:0 80px 0 96px; flex:0 0 54px; border-bottom:1px solid var(--rule); }
+.shd-left { display:flex; align-items:center; gap:18px; }
+.shd-num { font-size:11px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); }
+.shd-eyebrow { font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--mid); }
+.sw .sc { flex:1; padding:32px 80px 32px 96px; display:flex; flex-direction:column; overflow:hidden; gap:18px; min-height:0; }
+.sw.async .sc { padding:24px 80px 40px 96px; }
+
+/* Common heading */
+.stitle { font-size:50px; font-weight:900; letter-spacing:-.025em; line-height:1.06; color:var(--ink); max-width:1080px; }
+.stitle .mark { color:var(--accent); }
+.ssub { font-size:20px; font-weight:600; letter-spacing:.01em; color:var(--mid); line-height:1.4; max-width:880px; }
+
+/* Type J — Five Principles tribute (slide 2) — bespoke composition inside .sw + .sc */
+.sw.fpshell { background:var(--primary); border-left:none; color:#fff; }
+.sw.fpshell .sc { padding:42px 96px 32px; gap:0; color:#fff; }
+.fp-top { display:flex; justify-content:space-between; align-items:flex-start; flex:0 0 auto; }
+.fp-left { display:flex; flex-direction:column; gap:10px; max-width:420px; }
+.fp-eyebrow { font-size:11px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:rgba(255,255,255,.72); }
+.fp-title { font-size:42px; font-weight:900; letter-spacing:-.025em; line-height:1.04; color:#fff; }
+.fp-sub { font-size:15px; font-weight:600; line-height:1.5; color:rgba(255,255,255,.88); margin-top:6px; }
+.fp-mid { flex:1 1 0; min-height:0; display:flex; align-items:center; padding-top:14px; overflow:hidden; }
+.fp-list { display:flex; flex-direction:column; gap:4px; width:100%; }
+.fp-line { font-size:68px; font-weight:900; letter-spacing:-.03em; line-height:1.05; }
+.fp-line.green { color:var(--accent); }
+.fp-line.yellow { color:var(--snack-yellow); }
+.fp-bottom { flex:0 0 auto; display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid rgba(255,255,255,.18); }
+.fp-cap { font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.6); }
+
+/* Slide 3 — business divisions multi-color tile (.g4 grid) */
+.g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; flex:1 1 0; min-height:0; overflow:hidden; }
+.div-card { background:var(--white); border:1px solid var(--rule); border-top:6px solid var(--accent); padding:22px 20px; display:flex; flex-direction:column; gap:10px; overflow:hidden; }
+.div-card.dpetcare { border-top-color:var(--petcare-red); }
+.div-card.dsnack   { border-top-color:var(--snack-yellow); }
+.div-card.dfood    { border-top-color:var(--food-green); }
+.div-card.dwrigley { border-top-color:var(--wrigley-gold); }
+.div-eyebrow { font-size:11px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:var(--mid); }
+.div-title { font-size:22px; font-weight:900; letter-spacing:-.01em; color:var(--ink); line-height:1.15; }
+.div-desc { font-size:14px; font-weight:600; color:var(--mid); line-height:1.45; flex:0 0 auto; }
+.div-brands { font-size:13px; font-weight:700; color:var(--ink); line-height:1.5; padding-top:8px; border-top:1px solid var(--rule); margin-top:auto; }
+.div-brands b { color:var(--primary); font-weight:900; }
+
+/* Slide 4 — Type C narrative + pull-quote */
+.narr-row { display:grid; grid-template-columns:1.2fr 1fr; gap:32px; flex:1 1 0; min-height:0; overflow:hidden; }
+.narr-body { display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+.narr-p { font-size:16px; font-weight:600; line-height:1.6; color:var(--ink); }
+.narr-p b { color:var(--primary); font-weight:900; }
+.narr-q { background:var(--primary); color:#fff; padding:28px 26px; display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+.narr-q-text { font-size:24px; font-weight:700; line-height:1.32; color:#fff; }
+.narr-q-text::before { content:'"'; font-size:54px; line-height:.5; color:var(--accent); margin-right:6px; vertical-align:-12px; font-weight:900; }
+.narr-q-attr { font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.7); padding-top:10px; border-top:1px solid rgba(255,255,255,.18); }
+
+/* Slide 5 — Data table */
+.dt { width:100%; border-collapse:collapse; font-size:14px; font-weight:600; }
+.dt th { background:var(--primary); color:#fff; font-size:13px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; text-align:left; padding:12px 16px; }
+.dt td { padding:12px 16px; color:var(--ink); border-bottom:1px solid var(--rule); }
+.dt tr.hi td { background:var(--tint); }
+.dt .pos { color:var(--green); font-weight:800; }
+.dt .neg { color:var(--red); font-weight:800; }
+.dt .neu { color:var(--mid); font-weight:600; }
+.dt .num { font-weight:800; color:var(--ink); }
+.tbl-wrap { flex:1 1 0; min-height:0; overflow:hidden; display:flex; flex-direction:column; gap:12px; }
+.tbl-cap { font-size:13px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--mid); }
+.tbl-foot { font-size:13px; font-weight:700; color:var(--ink); padding:12px 16px; border-left:3px solid var(--primary); background:var(--tint); }
+.tbl-foot b { color:var(--primary); font-weight:900; }
+
+/* Slide 6 — Chart */
+.chart-row { display:grid; grid-template-columns:1.2fr 1fr; gap:32px; flex:1 1 0; min-height:0; overflow:hidden; }
+.chart-area { display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+.chart-axis-y { font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--mid); }
+.bars { display:flex; flex-direction:column; gap:14px; padding-top:6px; }
+.bar-row { display:grid; grid-template-columns:130px 1fr 70px; align-items:center; gap:14px; }
+.bar-lab { font-size:13px; font-weight:800; color:var(--ink); }
+.bar-track { position:relative; height:18px; background:var(--rule); }
+.bar-fill { position:absolute; top:0; left:0; height:100%; background:var(--accent); }
+.bar-fill.primary { background:var(--primary); }
+.bar-val { font-size:14px; font-weight:900; color:var(--primary); text-align:right; }
+.chart-side { display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+.chart-callout { background:var(--primary); color:#fff; padding:22px 22px; display:flex; flex-direction:column; gap:10px; overflow:hidden; }
+.chart-callout-num { font-size:48px; font-weight:900; letter-spacing:-.02em; color:#fff; line-height:1; }
+.chart-callout-lab { font-size:13px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); }
+.chart-callout-desc { font-size:14px; font-weight:600; line-height:1.5; color:rgba(255,255,255,.88); }
+
+/* Slide 7 — Image-led (CSS-rendered hero composition; no external image) */
+.img-row { display:grid; grid-template-columns:1.2fr 1fr; gap:24px; flex:1 1 0; min-height:0; overflow:hidden; }
+.img-hero {
+  position:relative; overflow:hidden;
+  background:
+    linear-gradient(135deg, rgba(0,0,160,.85), rgba(0,0,160,.6) 60%, rgba(0,0,160,.85)),
+    repeating-linear-gradient(45deg, var(--food-green) 0 60px, var(--fresh-green) 60px 120px);
+  display:flex; flex-direction:column; justify-content:flex-end; padding:32px 28px; gap:10px; color:#fff;
+}
+.img-hero-eyebrow { font-size:11px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:var(--accent); }
+.img-hero-title { font-size:38px; font-weight:900; line-height:1.05; color:#fff; letter-spacing:-.02em; }
+.img-hero-cap { font-size:12px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.7); padding-top:10px; border-top:1px solid rgba(255,255,255,.25); }
+.img-side { display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+.img-side h3 { font-size:24px; font-weight:900; color:var(--ink); line-height:1.15; }
+.img-side p { font-size:15px; font-weight:600; color:var(--mid); line-height:1.55; }
+.img-side .pillrow { display:flex; flex-wrap:wrap; gap:8px; padding-top:6px; }
+.pill { font-size:12px; font-weight:800; letter-spacing:.06em; padding:6px 12px; background:var(--tint); color:var(--ink); border-left:3px solid var(--primary); }
+
+/* Slide 8 — Flip cards */
+.flip-row { display:grid; grid-template-columns:1fr 1fr; gap:22px; flex:1 1 0; min-height:0; overflow:hidden; }
+.fc { position:relative; height:100%; perspective:1200px; cursor:pointer; }
+.fc-inner { position:relative; width:100%; height:100%; transition:transform .65s cubic-bezier(.4,0,.2,1); transform-style:preserve-3d; }
+.fc:hover .fc-inner, .fc.on .fc-inner { transform:rotateY(180deg); }
+.ff { position:absolute; inset:0; backface-visibility:hidden; padding:28px 28px; display:flex; flex-direction:column; gap:12px; overflow:hidden; }
+.ff-front { background:var(--primary); color:#fff; }
+.ff-back  { background:var(--accent); color:var(--ink); transform:rotateY(180deg); }
+.ff-front::before { content:attr(data-num); position:absolute; right:18px; top:6px; font-size:96px; font-weight:900; color:rgba(255,255,255,.12); line-height:1; letter-spacing:-.02em; }
+.cnm { font-size:28px; font-weight:900; line-height:1.1; color:#fff; max-width:380px; }
+.cbd { font-size:17px; font-weight:600; line-height:1.5; color:rgba(255,255,255,.88); }
+.ht { font-size:13px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-top:auto; }
+.bkl { font-size:13px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--primary); }
+.bkt { font-size:22px; font-weight:900; line-height:1.15; color:var(--ink); }
+.bkbody { font-size:15px; font-weight:600; line-height:1.5; color:var(--ink); }
+.ccl { font-size:15px; font-weight:600; color:var(--primary); margin-top:auto; padding-top:10px; border-top:1px solid rgba(60,60,60,.18); }
+
+/* Slide 9 — Timeline */
+.tl-wrap { position:relative; padding:0 10px; flex:0 0 auto; }
+.tl-line { position:absolute; top:73px; left:30px; right:30px; height:3px; background:var(--rule); }
+.tl-row { display:flex; position:relative; z-index:1; }
+.tl-node { flex:1; display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 4px; }
+.tl-date-top { font-size:22px; font-weight:900; letter-spacing:-.01em; color:var(--accent); min-height:48px; margin-bottom:16px; display:flex; align-items:flex-end; justify-content:center; }
+.tl-dot2 { width:18px; height:18px; border-radius:50%; background:var(--primary); margin-bottom:12px; flex-shrink:0; }
+.tl-name { font-size:17px; font-weight:900; color:var(--ink); line-height:1.2; margin-bottom:4px; }
+.tl-detail { font-size:13px; font-weight:600; color:var(--mid); line-height:1.35; }
+.tl-foot { flex:1 1 0; min-height:0; display:flex; align-items:flex-end; padding-top:18px; overflow:hidden; }
+.tl-foot-text { font-size:14px; font-weight:600; color:var(--ink); line-height:1.55; max-width:880px; }
+.tl-foot-text b { color:var(--primary); font-weight:900; }
+
+/* Nav */
+#nav { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:7px; z-index:99; }
+.dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.25); cursor:pointer; transition:all .22s ease; }
+.dot.on { width:20px; border-radius:3px; background:rgba(255,255,255,.85); }
+#ctr { position:fixed; bottom:24px; right:24px; z-index:99; font-size:12px; font-weight:700; color:rgba(255,255,255,.35); letter-spacing:.18em; text-transform:uppercase; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  body { overflow-y:auto; }
+  #wrap { position:static; display:block; }
+  #deck { width:100%; height:auto; position:static; transform:none !important; }
+  .slide { position:relative !important; opacity:1 !important; pointer-events:auto !important; min-height:100dvh; }
+  .cov, .sw, .fpwrap { min-height:100dvh; height:auto; }
+  .cov-title { font-size:48px; } .stitle { font-size:32px; } .fp-line { font-size:54px; } .fp-title { font-size:34px; }
+  .shd { padding:0 20px; } .sw .sc { padding:24px 20px; } .cov, .fpwrap { padding:24px 20px; }
+  .g4, .narr-row, .chart-row, .img-row, .flip-row { grid-template-columns:1fr; flex-direction:column; }
+  .tl-row { flex-direction:column; gap:18px; }
+  .tl-line { display:none; }
+  /* Catch-all */
+  .sc div[style*="display:flex"] { flex-direction:column !important; }
+  .sc div[style*="grid-template-columns"] { grid-template-columns:1fr !important; }
+  /* Flip cards on mobile */
+  .fc { perspective:none !important; min-height:auto !important; }
+  .fc .fc-inner { transform-style:flat !important; transition:none !important; height:auto !important; transform:none !important; }
+  .fc:hover .fc-inner, .fc.on .fc-inner { transform:none !important; }
+  .fc .ff { position:relative !important; backface-visibility:visible !important; transform:none !important; }
+  .fc .ff-back { display:none; transform:none !important; }
+  .fc.on .ff-front { display:none; }
+  .fc.on .ff-back { display:flex; transform:none !important; }
+  #nav, #ctr { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Logo symbol — defined once, reused everywhere -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 138 40" fill="currentColor">
+    <g fill-rule="evenodd">
+      <g><g><g>
+        <path d="M125.73.148c.413.098.821.217 1.238.29 3.345.586 6.317 1.967 8.848 4.288.195.18.37.382.592.615-1.635 1.895-3.414 3.6-5.074 5.493-.13-.129-.23-.22-.32-.318-1.75-1.913-3.906-3.044-6.444-3.381-.886-.118-1.793-.108-2.672.13-1.318.358-2.333 1.094-2.725 2.488-.369 1.315.116 2.64 1.2 3.46.983.743 2.093 1.222 3.237 1.633 2.05.739 4.123 1.414 6.143 2.228 2.059.83 3.982 1.918 5.491 3.638 1.39 1.583 2.288 3.385 2.583 5.507.422 3.028-.34 5.755-1.951 8.27-.987 1.542-2.354 2.677-3.935 3.539-1.987 1.084-4.111 1.704-6.366 1.83-1.014.058-2.032.139-3.045.108-2.927-.09-5.761-.66-8.409-1.977-1.98-.985-3.698-2.339-5.14-4.045-.044-.053-.07-.123-.123-.22 1.69-1.799 3.38-3.595 5.126-5.452.22.24.414.445.6.657 1.11 1.27 2.409 2.275 3.938 2.968 1.046.473 2.131.747 3.272.896 1.106.145 2.174.043 3.234-.206 1.042-.245 1.95-.778 2.56-1.695 1.191-1.79.675-3.75-.96-4.923-.8-.574-1.719-1.013-2.635-1.382-1.48-.598-3.005-1.083-4.509-1.624-1.53-.55-3.034-1.163-4.418-2.039-2.443-1.547-4.194-3.64-4.83-6.553-.574-2.626-.18-5.134 1.062-7.507 1.531-2.926 3.882-4.86 6.937-5.935.891-.314 1.804-.547 2.746-.652.082-.009.158-.084.237-.129h4.512zM50.394 28.081c.198.035.29.065.38.065 2.298-.01 4.595-.021 6.892-.035.02 0 .043-.024.059-.042.014-.017.019-.041.056-.128l-3.591-8.974h-.143l-3.653 9.114zM55.274.148c.394.301.656.695.85 1.155 1.127 2.692 2.26 5.381 3.401 8.067 1.035 2.438 2.085 4.87 3.123 7.306 1.19 2.798 2.37 5.601 3.563 8.398.885 2.076 1.783 4.147 2.676 6.219 1.067 2.478 2.136 4.955 3.202 7.433.067.155.114.317.185.52H62.33c-.397-.977-.804-1.974-1.206-2.972-.128-.318-.254-.638-.364-.962-.118-.348-.321-.507-.705-.487-.604.03-1.212.009-1.818.009h-9.675c-.145 0-.291.01-.436-.003-.305-.025-.477.087-.596.4-.41 1.077-.853 2.141-1.286 3.21-.11.27-.228.536-.347.816h-8.36c.041-.195.05-.36.112-.503 1.606-3.742 3.223-7.479 4.827-11.222 1.97-4.599 3.933-9.202 5.895-13.805 1.192-2.797 2.377-5.596 3.563-8.396.555-1.31 1.11-2.62 1.653-3.934.21-.51.484-.957.96-1.249h.728zM0 .606c.699.108 1.196.43 1.634.876 1.832 1.87 3.668 3.737 5.503 5.604 3.138 3.194 6.277 6.388 9.416 9.58.134.137.28.262.448.42.181-.167.345-.305.495-.457 4.94-5.024 9.882-10.049 14.817-15.079.456-.464.954-.824 1.59-.928.037.032.057.046.074.064.016.016.04.035.042.055.012.097.024.195.024.293l.001 38.123c-.525.155-6.51.208-7.84.072V20.854c-.653.495-1.088 1.039-1.578 1.52-.524.513-1.032 1.044-1.547 1.567l-1.492 1.52-1.492 1.517c-.516.523-1.037 1.039-1.548 1.567-.492.509-.972 1.03-1.509 1.599L7.952 20.91c-.065.044-.085.052-.097.067-.015.018-.029.042-.032.065-.007.048-.01.098-.01.147-.005 5.974-.009 11.948-.015 17.921 0 .023-.016.044-.025.066-.502.132-6.678.173-7.773.047V.606zM84.738 7.617c-.119.972-.09 9.734.036 10.334 1.6-.038 3.221.123 4.822-.185 1.3-.25 2.4-.87 3.145-2.04.457-.719.66-1.506.754-2.353.132-1.19-.058-2.308-.638-3.333-.874-1.543-2.307-2.187-3.971-2.333-1.154-.1-2.318-.096-3.477-.131-.212-.007-.424.025-.671.04M75.71 39.198V.809c.172-.015.356-.046.54-.046 4.074-.003 8.15-.03 12.223.01 2.029.019 4.058.153 6.025.73 2.438.716 4.508 2.017 6.07 4.077 1.228 1.621 1.851 3.473 2.027 5.513.136 1.568-.02 3.087-.468 4.582-.677 2.254-2.032 4-3.902 5.357-.212.153-.425.304-.685.489.367.291.67.533.974.772 1.169.92 2.023 2.103 2.772 3.382.971 1.658 1.618 3.456 2.237 5.267.831 2.434 1.66 4.869 2.486 7.304.108.318.196.643.313 1.03h-9.268c-.145 0-.291-.004-.437 0-.228.008-.357-.096-.41-.325-.292-1.24-.568-2.484-.888-3.717-.649-2.491-1.29-4.99-2.493-7.283-.764-1.457-1.873-2.502-3.512-2.84-.495-.103-1.002-.18-1.506-.197-.92-.03-1.843-.01-2.764-.003-.092 0-.184.045-.24.06-.047.048-.066.063-.079.083-.013.02-.022.044-.03.067-.008.023-.016.046-.018.07-.004.05-.007.099-.007.148-.004 4.591-.008 9.182-.014 13.773 0 .022-.018.044-.027.065-.53.127-8.136.148-8.92.02"/>
+      </g></g></g>
+    </g>
+  </symbol>
+</svg>
+
+<div id="wrap">
+<div id="deck">
+
+<!-- ===== Slide 1 — Cover (Type A) ===== -->
+<section class="slide active" data-i="1">
+  <div class="cov">
+    <div class="cov-top">
+      <div class="cov-num">Mars Design System · 验证 Deck</div>
+      <svg class="logo W" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="cov-mid">
+      <div class="cov-eyebrow">Slide System v1 · 2026</div>
+      <h1 class="cov-title">把家族企业的乐观主义，<br>翻译成 1280×720 的色块语言。</h1>
+      <p class="cov-sub">这份 deck 不是产品宣讲，而是 Design System 自身的视觉证词 — 9 张幻灯片，覆盖 Mars 在企业叙事中所需的全部 slide 类型与色彩语义网格。</p>
+    </div>
+    <div class="cov-meta">
+      <div class="cov-meta-item"><span class="cov-meta-lab">Built for</span><span class="cov-meta-val">Mars, Incorporated</span></div>
+      <div class="cov-meta-item"><span class="cov-meta-lab">Source</span><span class="cov-meta-val">www.mars.com</span></div>
+      <div class="cov-meta-item"><span class="cov-meta-lab">Canvas</span><span class="cov-meta-val">1280 × 720 · zero radius · zero shadow</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 2 — Type J / Bespoke: Five Principles 致敬 ===== -->
+<section class="slide" data-i="2">
+  <div class="sw fpshell">
+    <div class="sc">
+      <div class="fp-top">
+        <div class="fp-left">
+          <div class="fp-eyebrow">Slide 02 · The Five Principles</div>
+          <h2 class="fp-title">Five Principles</h2>
+          <p class="fp-sub">这五个词凝聚 Mars 一个多世纪的经营哲学，把全球 100+ 国家不同业务部门的 Associates 联结成同一种工作方式。</p>
+        </div>
+        <svg class="logo W" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="fp-mid">
+        <div class="fp-list">
+          <div class="fp-line">Quality</div>
+          <div class="fp-line green">Responsibility</div>
+          <div class="fp-line">Mutuality</div>
+          <div class="fp-line yellow">Efficiency</div>
+          <div class="fp-line">Freedom</div>
+        </div>
+      </div>
+      <div class="fp-bottom">
+        <span class="fp-cap">Source · /about/the-five-principles</span>
+        <span class="fp-cap">Type J · Bespoke composition · Token-only colours</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 3 — Two-column → Four-column tile (Type B) ===== -->
+<section class="slide" data-i="3">
+  <div class="sw">
+    <div class="shd">
+      <div class="shd-left"><span class="shd-num">03 / 09</span><span class="shd-eyebrow">Our Brands · Multi-color Tile</span></div>
+      <svg class="logo L" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="sc">
+      <h2 class="stitle">四个业务部门，<span class="mark">一种家族 DNA</span>。</h2>
+      <p class="ssub">Mars 的多色 brand palette 不是装饰，而是按业务部门排布的语义网格 — 每个部门各占一个鲜亮原色。</p>
+      <div class="g4">
+        <div class="div-card dpetcare">
+          <span class="div-eyebrow">Petcare</span>
+          <h3 class="div-title">让宠物拥有更好的生活</h3>
+          <p class="div-desc">从主食、零食到宠物医疗与基因诊断的全栈生态，全球最大的宠物护理业务。</p>
+          <p class="div-brands"><b>PEDIGREE</b> · <b>WHISKAS</b> · <b>ROYAL CANIN</b> · <b>BANFIELD</b> · <b>VCA</b></p>
+        </div>
+        <div class="div-card dsnack">
+          <span class="div-eyebrow">Snacking</span>
+          <h3 class="div-title">小幸福，被全世界共享</h3>
+          <p class="div-desc">M&M's、Snickers、Skittles 等代际经典，是 Mars 故事最广为人知的入口。</p>
+          <p class="div-brands"><b>M&M'S</b> · <b>SNICKERS</b> · <b>SKITTLES</b> · <b>STARBURST</b></p>
+        </div>
+        <div class="div-card dfood">
+          <span class="div-eyebrow">Food & Nutrition</span>
+          <h3 class="div-title">让每一餐更营养</h3>
+          <p class="div-desc">从米饭到调味、从家庭餐桌到专业厨房，承载日常营养的可信赖品牌。</p>
+          <p class="div-brands"><b>BEN'S ORIGINAL</b> · <b>DOLMIO</b> · <b>EBLY</b> · <b>SEEDS OF CHANGE</b></p>
+        </div>
+        <div class="div-card dwrigley">
+          <span class="div-eyebrow">Wrigley</span>
+          <h3 class="div-title">口腔与口气的日常仪式</h3>
+          <p class="div-desc">Wrigley 系列把口香糖与含片做成全球性的日常习惯，并与口腔健康研究深度绑定。</p>
+          <p class="div-brands"><b>ORBIT</b> · <b>EXTRA</b> · <b>5 GUM</b> · <b>ALTOIDS</b></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 4 — Type C narrative + pull-quote ===== -->
+<section class="slide" data-i="4">
+  <div class="sw">
+    <div class="shd">
+      <div class="shd-left"><span class="shd-num">04 / 09</span><span class="shd-eyebrow">All About Mars · Narrative</span></div>
+      <svg class="logo L" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="sc">
+      <h2 class="stitle">"The world we want tomorrow<br>starts with how we do business today."</h2>
+      <div class="narr-row">
+        <div class="narr-body">
+          <p class="narr-p">Mars 是少有的真正以 <b>家族所有制</b> 运营的全球性食品与消费品企业。家族治理结构带来的不是怀旧，而是 <b>更长的时间尺度</b> — Five Principles 自 1947 年首次形诸文字后，半个多世纪只增不删。</p>
+          <p class="narr-p">这种长视角让每一份 Mars deck 的语气都不像季度宣讲；它谈的是几十年后的 supply chain、几十年后的 Associates、几十年后的星球。视觉语言因此可以 <b>慢一点、重一点、自信一点</b> — 不需要靠每年换 chrome 来证明自己还活跃。</p>
+          <p class="narr-p">这套 Design System 的目标是让每一份 Mars 出品的 deck 都符合这个口吻：色块明确、字体厚重、零装饰噪音、不追潮流。</p>
+        </div>
+        <aside class="narr-q">
+          <p class="narr-q-text">Our Principles form the foundation of how we do business today and every day. They unite us across geographies, cultures and generations.</p>
+          <span class="narr-q-attr">Mars · About / The Five Principles</span>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 5 — Data table (Type E + §7.7) ===== -->
+<section class="slide" data-i="5">
+  <div class="sw">
+    <div class="shd">
+      <div class="shd-left"><span class="shd-num">05 / 09</span><span class="shd-eyebrow">Sustainability Plan · Pillars</span></div>
+      <svg class="logo L" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="sc">
+      <h2 class="stitle">三大可持续支柱，定性追踪。</h2>
+      <p class="ssub">Sustainable in a Generation Plan 把承诺切成 Healthy Planet / Thriving People / Nourishing Wellbeing 三栏 — 下表展示当前披露态势（定性）。</p>
+      <div class="tbl-wrap">
+        <span class="tbl-cap">Source · /sustainability-plan (公开披露页)</span>
+        <table class="dt">
+          <thead>
+            <tr>
+              <th>支柱</th>
+              <th>核心议题</th>
+              <th>主要 Mars 项目</th>
+              <th>披露进度</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hi">
+              <td><span class="num">Healthy Planet</span></td>
+              <td>气候 / 能源 / 土地 / 水 / 包装</td>
+              <td>Net Zero 2050 · Renewable Energy · Land Use · Water Stewardship · Packaging</td>
+              <td><span class="pos">公开报告 ✓</span></td>
+            </tr>
+            <tr>
+              <td><span class="num">Thriving People</span></td>
+              <td>农户增收 / 人权 / 女性</td>
+              <td>Increasing Farmer Income · Promoting Human Rights · Full Potential for Women</td>
+              <td><span class="pos">公开报告 ✓</span></td>
+            </tr>
+            <tr>
+              <td><span class="num">Nourishing Wellbeing</span></td>
+              <td>员工健康 / 市场可及 / 供应链</td>
+              <td>Be Well Workplace · Marketplace Access · Global Supply Chain</td>
+              <td><span class="pos">公开报告 ✓</span></td>
+            </tr>
+            <tr>
+              <td><span class="num">原料专项</span></td>
+              <td>Cocoa / Palm / Rice / Beef / Dairy / Fish / Soy</td>
+              <td>Cocoa for Generations · Palm Oil Policy · Raising Rice Right · 等</td>
+              <td><span class="neu">分商品披露</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="tbl-foot">↪ <b>读法</b>：所有支柱均已对外披露专属页面与年度可持续报告；具体定量目标见各议题子页与 Sustainability Reports 下载区。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 6 — Chart (Type H + §7.8) ===== -->
+<section class="slide" data-i="6">
+  <div class="sw">
+    <div class="shd">
+      <div class="shd-left"><span class="shd-num">06 / 09</span><span class="shd-eyebrow">Sustainability · Pillar Surface Area</span></div>
+      <svg class="logo L" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="sc">
+      <h2 class="stitle">议题面积：Healthy Planet 占据最多披露条目。</h2>
+      <p class="ssub">按公开站点导航的二级条目数，呈现各支柱的"对外发声面积"。</p>
+      <div class="chart-row">
+        <div class="chart-area">
+          <span class="chart-axis-y">条目数（导航二级页面 · 越长 = 披露越细）</span>
+          <div class="bars">
+            <div class="bar-row">
+              <span class="bar-lab">Healthy Planet</span>
+              <div class="bar-track"><div class="bar-fill primary" style="width:88%"></div></div>
+              <span class="bar-val">5</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-lab">原料专项</span>
+              <div class="bar-track"><div class="bar-fill" style="width:72%"></div></div>
+              <span class="bar-val">9</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-lab">Thriving People</span>
+              <div class="bar-track"><div class="bar-fill" style="width:54%"></div></div>
+              <span class="bar-val">3</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-lab">Nourishing Wellbeing</span>
+              <div class="bar-track"><div class="bar-fill" style="width:54%"></div></div>
+              <span class="bar-val">3</span>
+            </div>
+          </div>
+        </div>
+        <aside class="chart-side">
+          <div class="chart-callout">
+            <span class="chart-callout-lab">读图洞察</span>
+            <span class="chart-callout-num">9 类</span>
+            <p class="chart-callout-desc">单是"原料专项"就拆出 Cocoa / Palm / Rice / Beef / Fish / Dairy / Mint / Soy / Pulp & Paper / Peanut 共 10 块独立专题页 — 这是 Mars 把可持续语言下沉到 commodity 级的具体证据。</p>
+          </div>
+          <p class="ssub" style="font-size:13px">数据来源：mars.com 顶部导航 Sustainability Plan 子菜单（截至本 deck 抓取时刻）。</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 7 — Image-led (Type F) ===== -->
+<section class="slide" data-i="7">
+  <div class="sw">
+    <div class="shd">
+      <div class="shd-left"><span class="shd-num">07 / 09</span><span class="shd-eyebrow">Cocoa for Generations · Image-led</span></div>
+      <svg class="logo L" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="sc">
+      <h2 class="stitle">招牌处理：mars-blue 半透明 scrim 叠在实景。</h2>
+      <p class="ssub">Mars 站点最具识别度的图像组合 — 大幅农场/工厂照 + 85% 不透明 mars-blue 蒙层 + 白色 Inter 900 标语。下方左块为 CSS 渲染示意（实际 deck 应替换为真实可可农或 Associates 工作场景照）。</p>
+      <div class="img-row">
+        <div class="img-hero">
+          <span class="img-hero-eyebrow">Image placeholder · CSS-rendered</span>
+          <h3 class="img-hero-title">把可可种成<br>下一代农户的生计。</h3>
+          <span class="img-hero-cap">SCRIM · rgba(0,0,160,.85) · 85% Mars Blue</span>
+        </div>
+        <div class="img-side">
+          <h3>规则一：scrim 是品牌色，不是黑色。</h3>
+          <p>SaaS 默认在图片上叠 60% 黑色蒙层；Mars 选择把 scrim 本身做成 mars-blue — scrim 不再"消音"，反而把品牌色推到前台，照片成为色块的纹理。这是 Mars 视觉语言区别于 corporate stock photography 的关键一笔。</p>
+          <h3>规则二：标题字号始终顶到 38–48 px。</h3>
+          <p>不要给图片留浪漫的呼吸空间然后配 18 px 仿宋诗意标语；Mars 的图像 + 文字组合永远是 Inter 900 的工业体量字撑场。</p>
+          <div class="pillrow">
+            <span class="pill">Border-radius 0</span>
+            <span class="pill">Inter 900 / 38 px+</span>
+            <span class="pill">Caption · 12 px / 800 / All-caps</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 8 — Flip cards (Type D + §10) ===== -->
+<section class="slide" data-i="8">
+  <div class="sw">
+    <div class="shd">
+      <div class="shd-left"><span class="shd-num">08 / 09</span><span class="shd-eyebrow">Mutuality · Click to flip</span></div>
+      <svg class="logo L" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="sc">
+      <h2 class="stitle">两种翻面：揭示<span class="mark"> Mutuality 原则</span>的实际样貌。</h2>
+      <p class="ssub">点击/触屏均可翻面 — 桌面 hover、移动 tap 触发 .on class 切换。</p>
+      <div class="flip-row">
+        <div class="fc" onclick="this.classList.toggle('on')">
+          <div class="fc-inner">
+            <div class="ff ff-front" data-num="I">
+              <h3 class="cnm">表面：一份采购合同，付一份钱。</h3>
+              <p class="cbd">乍一看，可可豆采购就是 commodity 交易 — 找最低价、签合同、付款、入库。</p>
+              <span class="ht">点击翻面 →</span>
+            </div>
+            <div class="ff ff-back">
+              <span class="bkl">真实：一段世代关系</span>
+              <h3 class="bkt">Cocoa for Generations</h3>
+              <p class="bkbody">Mars 把可可关系拉到代际尺度：与可可农户长期合作、追踪可追溯性、投资儿童教育与森林保护。这是 Mutuality 原则在原料端的实操样貌。</p>
+              <p class="ccl">合同价 → 共生关系</p>
+            </div>
+          </div>
+        </div>
+        <div class="fc" onclick="this.classList.toggle('on')">
+          <div class="fc-inner">
+            <div class="ff ff-front" data-num="II">
+              <h3 class="cnm">表面：宠物食品就是配方。</h3>
+              <p class="cbd">看上去 Petcare 就是把蛋白质和谷物按比例混在一起，做成袋装狗粮。</p>
+              <span class="ht">点击翻面 →</span>
+            </div>
+            <div class="ff ff-back">
+              <span class="bkl">真实：兽医网络 + 基因实验室</span>
+              <h3 class="bkt">Petcare 全栈生态</h3>
+              <p class="bkbody">Mars 同时拥有 Royal Canin 配方科学、Banfield/VCA 兽医医院网络、Wisdom Panel 宠物基因实验室。Petcare 是配方 + 临床 + 数据的三栈合一。</p>
+              <p class="ccl">配方 → 全栈宠物科学</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Slide 9 — Timeline (Type K + §7.12) ===== -->
+<section class="slide" data-i="9">
+  <div class="sw async">
+    <div class="shd">
+      <div class="shd-left"><span class="shd-num">09 / 09</span><span class="shd-eyebrow">Our History · Timeline</span></div>
+      <svg class="logo L" viewBox="0 0 138 40" aria-label="Mars"><use href="#brand-wm"/></svg>
+    </div>
+    <div class="sc">
+      <h2 class="stitle">一条家族曲线，一个多世纪。</h2>
+      <p class="ssub">从 Frank Mars 在 1911 年的厨房创业，到 Sustainable in a Generation 写进章程 — Mars 用一条不被迫加速的曲线积累自己的语言。</p>
+      <div class="tl-wrap">
+        <div class="tl-line"></div>
+        <div class="tl-row">
+          <div class="tl-node">
+            <div class="tl-date-top">1911</div>
+            <div class="tl-dot2"></div>
+            <div class="tl-name">家族创业</div>
+            <div class="tl-detail">Frank Mars 在 Tacoma 厨房开始手工糖果生意。</div>
+          </div>
+          <div class="tl-node">
+            <div class="tl-date-top">1923</div>
+            <div class="tl-dot2"></div>
+            <div class="tl-name">Milky Way</div>
+            <div class="tl-detail">第一款全球级巧克力棒诞生，奠定 Snacking 业务雏形。</div>
+          </div>
+          <div class="tl-node">
+            <div class="tl-date-top">1947</div>
+            <div class="tl-dot2"></div>
+            <div class="tl-name">Five Principles 成文</div>
+            <div class="tl-detail">Quality / Responsibility / Mutuality / Efficiency / Freedom 第一次写入章程。</div>
+          </div>
+          <div class="tl-node">
+            <div class="tl-date-top">1968</div>
+            <div class="tl-dot2"></div>
+            <div class="tl-name">收购 Pedigree</div>
+            <div class="tl-detail">进入 Petcare，奠定其后半个世纪宠物业务的根基。</div>
+          </div>
+          <div class="tl-node">
+            <div class="tl-date-top">2017</div>
+            <div class="tl-dot2"></div>
+            <div class="tl-name">Sustainable in a Generation</div>
+            <div class="tl-detail">把可持续承诺正式定为公司战略层目标。</div>
+          </div>
+          <div class="tl-node">
+            <div class="tl-date-top">今日</div>
+            <div class="tl-dot2"></div>
+            <div class="tl-name">100+ 国家</div>
+            <div class="tl-detail">全球 80,000 名 Associates，跨四大业务部门。</div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-foot">
+        <p class="tl-foot-text"><b>读法</b>：横轴是真实时间，不是营收 — Mars 的视觉自信很大一部分来自这条曲线本身。家族治理结构的另一种说法是：<b>不靠每个季度换 chrome 来证明自己还活跃。</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /#deck -->
+</div><!-- /#wrap -->
+
+<nav id="nav" aria-label="slides">
+  <span class="dot on" data-go="1"></span>
+  <span class="dot" data-go="2"></span>
+  <span class="dot" data-go="3"></span>
+  <span class="dot" data-go="4"></span>
+  <span class="dot" data-go="5"></span>
+  <span class="dot" data-go="6"></span>
+  <span class="dot" data-go="7"></span>
+  <span class="dot" data-go="8"></span>
+  <span class="dot" data-go="9"></span>
+</nav>
+<div id="ctr">SLIDE 1 / 9</div>
+
+<script>
+(function () {
+  var slides = document.querySelectorAll('.slide');
+  var dots = document.querySelectorAll('#nav .dot');
+  var ctr = document.getElementById('ctr');
+  var idx = 0;
+  function go(i) {
+    if (i < 0 || i >= slides.length) return;
+    slides[idx].classList.remove('active');
+    dots[idx].classList.remove('on');
+    idx = i;
+    slides[idx].classList.add('active');
+    dots[idx].classList.add('on');
+    ctr.textContent = 'SLIDE ' + (idx + 1) + ' / ' + slides.length;
+  }
+  dots.forEach(function (d, j) { d.addEventListener('click', function () { go(j); }); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { go(idx + 1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { go(idx - 1); e.preventDefault(); }
+    else if (e.key === 'Home') { go(0); }
+    else if (e.key === 'End') { go(slides.length - 1); }
+  });
+  /* Touch swipe */
+  var sx = 0;
+  document.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; });
+  document.addEventListener('touchend', function (e) {
+    var dx = (e.changedTouches[0].clientX - sx);
+    if (Math.abs(dx) > 48) { go(idx + (dx < 0 ? 1 : -1)); }
+  });
+})();
+
+(function () {
+  var deck = document.getElementById('deck');
+  function scaleDeck() {
+    if (!deck) return;
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      deck.style.transform = 'none';
+      return;
+    }
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+</script>
+
+</body>
+</html>

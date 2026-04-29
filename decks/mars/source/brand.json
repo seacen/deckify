@@ -1,0 +1,57 @@
+{
+  "host": "www.mars.com",
+  "brand_name": "Mars, Incorporated",
+  "base_url": "https://www.mars.com/",
+
+  "chosen_logo": {
+    "id": "414f9b4c",
+    "why": "Header <img alt='Mars logo'> at /themes/custom/mars_acss/assets/images/logo-main.svg, 138×40 — the canonical wordmark rendered on every page header. Confirmed visually in shot.png across about/, the-five-principles/, sustainability-plan/. Matches the SVG that JSON-LD Organization.logo also points to (id 3e6f38be / c9322a38)."
+  },
+
+  "alt_logo_ids": ["3e6f38be", "c9322a38", "7be267d5"],
+
+  "palette": {
+    "brand_primary":   { "hex": "#0000A0", "name": "mars-blue",        "evidence": ":root --ssa-color-palette-mars-blue rgb(0,0,160); footer bg, h2/h3 colour, link colour across all pages" },
+    "brand_secondary": { "hex": "#00D7B9", "name": "mars-green",       "evidence": ":root --ssa-color-palette-mars-green rgb(0,215,185); used as accent on Five Principles tile (see shot.png)" },
+    "ink":             { "hex": "#3C3C3C", "name": "ink-grey",         "evidence": ":root --ssa-color-palette-dark-grey rgb(60,60,60); body color across every page" },
+    "paper":           { "hex": "#FFFFFF", "name": "paper-white",      "evidence": ":root --ssa-color-palette-white rgb(255,255,255); body & header surface" },
+    "accents": [
+      { "hex": "#FF1414", "name": "petcare-red",   "evidence": "--ssa-color-palette-mars-petcare; Mars Petcare division (Pedigree, Whiskas, Royal Canin)" },
+      { "hex": "#61A020", "name": "food-green",    "evidence": "--ssa-color-palette-mars-food; Mars Food & Nutrition division (Ben's Original, Dolmio)" },
+      { "hex": "#E6A000", "name": "wrigley-gold",  "evidence": "--ssa-color-palette-mars-wrigley; Mars Wrigley confectionery (Orbit, Extra)" },
+      { "hex": "#FFDC00", "name": "snack-yellow",  "evidence": "--ssa-color-palette-mars-yellow; M&M's / Snickers signature yellow, also used on Five Principles tile" },
+      { "hex": "#A6DB00", "name": "fresh-green",   "evidence": "--ssa-color-palette-fresh-green; sustainability narratives" },
+      { "hex": "#0099FF", "name": "edge-blue",     "evidence": "--ssa-color-palette-mars-edge; secondary cool-blue accent for science/innovation contexts" }
+    ]
+  },
+
+  "typography": {
+    "display_font": { "family": "MarsCentra-Extrabold",  "evidence": "fonts.computed_heading + 33 hits in font_frequencies; preload links to MarsCentra-Extrabold.woff2; --ssa-font-stacks-marscentrano1-extrabold" },
+    "body_font":    { "family": "MarsCentra",            "evidence": "fonts.computed_primary + 57 hits; preload to MarsCentra-Book.woff2; --ssa-default-font-settings-font-family" },
+    "bold_font":    { "family": "MarsCentra-Bold",       "evidence": "10 hits; CTA copy in computed_palette; --ssa-font-stacks-marscentrano1-bold" }
+  },
+
+  "spacing_radius_shadow": {
+    "radius_style":  "sharp",
+    "shadow_style":  "flat",
+    "spacing_density": "comfortable",
+    "evidence": "Every computed_palette surface (h1/h2/h3/button/cta/footer/header/nav across about, about-history, our-brands, sustainability-plan, news-and-stories) has radius:0px and shadow:none. Header padY 48px and CTA padX 15px / padY 13px imply confident comfortable spacing, not tight."
+  },
+
+  "aesthetic": {
+    "mood": "confident multi-color modular optimism",
+    "style_keywords": ["saturated", "geometric", "weighty", "modular", "primary-color-forward", "hairline-free"],
+    "precedents": ["IBM 1970s color systems", "Pantone color cards", "Bauhaus primary-color geometry", "Swiss/Müller-Brockmann tile grids"],
+    "voice_register": "warm corporate confidence — family-owned but multinational; speaks plainly about purpose (Five Principles), reliably positive but not chirpy"
+  },
+
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/about/shot.png",
+    "recon/pages/about-the-five-principles/shot.png",
+    "recon/pages/sustainability-plan/shot.png",
+    "recon/pages/our-brands/shot.png"
+  ],
+
+  "notes": "Mars uses a fully documented internal design system (the 'ssa' token family) with a remarkable multi-color brand palette where each business segment (Petcare, Food, Wrigley, Snacking) carries its own signature hue, all anchored to mars-blue #0000A0. Unlike most corporate giants, Mars commits to bright primary colors with zero corner radius and zero shadow — the visual register is closer to Bauhaus posters or 1970s IBM brochures than to a modern SaaS site. Capture this with conviction."
+}

@@ -1,0 +1,49 @@
+{
+  "host": "us.pg.com",
+  "brand_name": "Procter & Gamble",
+  "base_url": "https://us.pg.com/",
+
+  "chosen_logo": {
+    "id": "74d017a9",
+    "why": "Canonical P&G wordmark — SVG version of P_G_Logo_RGB hosted on Contentful CDN, alt='Go to Procter & Gamble homepage', sitting in the <header> of annualreport2025. Vector mark of the iconic blue P&G monogram (cursive 'P&G' in a sphere with surrounding wordmark). Visually matches the circular monogram in every page header in shot.png. Vector form means clean currentColor flipping for white-on-dark covers."
+  },
+  "alt_logo_ids": ["e74ea6a8", "e2a6ac71", "d481e89a"],
+
+  "palette": {
+    "brand_primary":   { "hex": "#003DA5", "name": "P&G Blue",       "evidence": "color_frequency #1 brand-saturated chord — 90 occurrences across 7 of 8 fetched pages; the literal P&G corporate blue (Pantone 286 C territory)" },
+    "brand_secondary": { "hex": "#00A3E0", "name": "Sky Cyan",       "evidence": "color_frequency 6 occurrences (annualreport2025, brands); the bright cyan visible in the segmented circle motif on annual report hero" },
+    "ink":             { "hex": "#2E2E2E", "name": "Ink",            "evidence": "computed text colour on environmental-sustainability long-form copy; softer than pure black, used on light surfaces" },
+    "paper":           { "hex": "#F2F7FF", "name": "Paper Tint",     "evidence": "--hp-header-bg in inline style + color_frequency on innovation/newsroom/who-we-are; near-white with a subtle blue cast — keeps light surfaces in-family with the navy" },
+    "accents": [
+      { "hex": "#F6D706", "name": "Optimism Yellow", "evidence": "the yellow dot at end of 'Year.' on home hero; #F6D706 from newsroom page color_frequency — P&G's signature optimism accent" },
+      { "hex": "#E87722", "name": "Innovation Orange", "evidence": "innovation page hero accent — Tide-orange tub + headline accent; #E87722 from innovation color_frequency" },
+      { "hex": "#97D700", "name": "Sustainability Green", "evidence": "environmental-sustainability page accent (Gillette neon green + sustainability palette); maps to environmental / responsibility content" }
+    ]
+  },
+
+  "typography": {
+    "display_font": { "family": "Montserrat",         "evidence": "computed_heading on every page = Montserrat ExtraBold/Black; used at giant scale for hero titles (Named #1, Who we are., Innovation, 2025 Annual Report). The geometric optimistic sans is THE P&G display voice." },
+    "body_font":    { "family": "Montserrat",         "evidence": "fonts.frequencies #1 = Montserrat (count 67) — same family for body at lighter weights (400/500). Times shows up only as a rare fallback (count 7); not the design choice." }
+  },
+
+  "spacing_radius_shadow": {
+    "radius_style":  "softly-rounded (4-8px)",
+    "shadow_style":  "flat",
+    "spacing_density": "comfortable",
+    "evidence": "header rounded pill buttons (Search here, USA selector); CTAs have ~24px-radius pill but content cards keep 4-8px corners on annualreport2025; flat surfaces with crisp colour blocking — no SaaS soft-shadow layering anywhere"
+  },
+
+  "aesthetic": {
+    "mood": "optimistic corporate confidence",
+    "style_keywords": ["saturated", "geometric", "weighty", "modular", "consumer-facing"],
+    "precedents": ["IBM annual reports late-2010s", "modern Disney corporate decks", "Pampers/Tide consumer-product marketing — bright but disciplined"],
+    "voice_register": "aspirational"
+  },
+
+  "evidence_screenshots": [
+    "recon/home.png",
+    "recon/pages/who-we-are/shot.png",
+    "recon/pages/annualreport2025/shot.png",
+    "recon/pages/innovation/shot.png"
+  ]
+}

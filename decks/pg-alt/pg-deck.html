@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Procter & Gamble — Verification Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#003DA5; --accent:#00A3E0;
+  --surface:#FFFFFF; --white:#FFFFFF; --ink:#2E2E2E; --mid:#5C6478;
+  --rule:#E1E5EE; --tint:#F2F7FF;
+  --green:#4F8E1A; --green-bg:#EFF7E5; --red:#C13030; --red-bg:#FBEAEA;
+  --warn:#C7A902; --warn-bg:#FEF6CC; --teal:#0F5780; --teal-bg:#DCE9F2;
+  --pg-blue:#003DA5; --primary-deep:#0A2A66; --sky:#00A3E0; --paper-tint:#F2F7FF;
+  --spark:#F6D706; --innov-orange:#E87722; --eco-green:#97D700; --deep-sky:#0F5780;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;font-family:'Montserrat',system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--ink);-webkit-font-smoothing:antialiased;hyphens:none}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--ink)}
+#deck{width:1280px;height:720px;position:relative;overflow:hidden;background:var(--surface);transform-origin:center center;will-change:transform}
+.slide{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .38s ease;overflow:hidden}
+.slide.active{opacity:1;pointer-events:auto}
+.slide.active .sc{animation:enter .42s cubic-bezier(.4,0,.2,1) both}
+@keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* Logo */
+.logo{height:32px;width:auto;flex-shrink:0;display:block}
+.logo.W,.logo.L{}
+.logo-chip{display:inline-flex;padding:0;background:var(--white);border-radius:50%;line-height:0}
+.logo-chip .logo{display:block}
+
+/* Cover */
+.cov{height:100%;width:100%;background:var(--primary);color:#fff;display:flex;flex-direction:column;padding:40px 80px 56px 96px;position:relative}
+.cov-top{display:flex;align-items:center;justify-content:space-between;flex:0 0 auto}
+.cov-eyebrow{font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.cov-mid{flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:18px;padding-bottom:18px}
+.cov-title{font-size:82px;font-weight:900;line-height:.98;letter-spacing:-.03em;color:#fff;max-width:1020px}
+.cov-title .dot{color:var(--spark)}
+.cov-sub{font-size:22px;font-weight:300;font-style:italic;letter-spacing:.01em;color:rgba(255,255,255,.85);max-width:760px;line-height:1.4}
+.cov-meta{display:flex;gap:30px;flex:0 0 auto;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);padding-top:6px;border-top:1px solid rgba(255,255,255,.16);margin-top:10px}
+
+/* Content shell */
+.sw{background:var(--surface);border-left:3px solid var(--accent);display:flex;flex-direction:column;height:100%}
+.sw .sc{flex:1;padding:24px 80px 40px 96px;display:flex;flex-direction:column;overflow:hidden;gap:18px}
+.shd{display:flex;align-items:center;justify-content:space-between;padding:0 80px 0 96px;flex:0 0 54px;border-bottom:1px solid var(--rule)}
+.shd-l{display:flex;align-items:center;gap:14px}
+.shd-num{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.shd-sep{width:18px;height:1px;background:var(--rule)}
+.shd-cat{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--mid)}
+
+/* Title block */
+.stitle{font-size:50px;font-weight:900;line-height:1.06;letter-spacing:-.025em;color:var(--ink);max-width:980px}
+.ssub{font-size:20px;font-weight:600;letter-spacing:.01em;color:var(--mid);line-height:1.4;max-width:880px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+
+/* Layout helpers */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+.row-x{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.absorb{flex:1 1 0;min-height:0;overflow:hidden}  /* absorber properties without overriding display — pair with .g2/.g3/etc. */
+
+/* Panel cards */
+.panel{flex:1;padding:18px 22px;display:flex;flex-direction:column;gap:8px;background:var(--white);border:1px solid var(--rule);border-top:3px solid var(--rule)}
+.panel.blue{border-top-color:var(--accent)}
+.panel.dark{background:var(--primary);color:#fff;border:none;border-top:3px solid rgba(255,255,255,.2)}
+.panel .cap{font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.panel.dark .cap{color:rgba(255,255,255,.65)}
+.panel-title{font-size:22px;font-weight:900;line-height:1.15;letter-spacing:-.01em}
+.panel ul{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.panel li{font-size:14px;font-weight:600;line-height:1.45;color:var(--ink);padding-left:16px;position:relative}
+.panel.dark li{color:rgba(255,255,255,.88)}
+.panel li::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;background:var(--accent);border-radius:50%}
+.panel.dark li::before{background:var(--spark)}
+
+/* Stat row */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stat{padding:18px 20px;border-left:3px solid var(--accent);background:var(--tint)}
+.stat-num{font-size:36px;font-weight:900;color:var(--primary);line-height:1;letter-spacing:-.02em}
+.stat-label{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--mid);margin-top:8px}
+
+/* Table */
+.dt{width:100%;border-collapse:collapse;font-size:14px;font-weight:600}
+.dt th{background:var(--primary);color:#fff;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:12px 16px}
+.dt th.r{text-align:right}
+.dt td{padding:11px 16px;color:var(--ink);border-bottom:1px solid var(--rule)}
+.dt td.r{text-align:right;font-variant-numeric:tabular-nums}
+.dt tr.hi td{background:var(--tint)}
+.dt .pos{color:var(--green);font-weight:800}
+.dt .neg{color:var(--red);font-weight:800}
+.dt .neu{color:var(--mid);font-weight:600}
+
+/* Chart */
+.chart{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:14px;padding:22px 26px;background:var(--white);border:1px solid var(--rule);border-top:3px solid var(--accent)}
+.chart-rows{display:flex;flex-direction:column;gap:12px;flex:1;min-height:0;justify-content:center}
+.bar-row{display:grid;grid-template-columns:170px 1fr 56px;align-items:center;gap:14px}
+.bar-label{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.bar-track{height:18px;background:var(--rule);position:relative;border-radius:2px;overflow:hidden}
+.bar-fill{position:absolute;inset:0 auto 0 0;background:var(--accent);transform-origin:left center;animation:grow 600ms cubic-bezier(.4,0,.2,1) both}
+.bar-fill.pri{background:var(--primary)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.bar-val{font-size:14px;font-weight:900;color:var(--primary);letter-spacing:-.01em;text-align:right;font-variant-numeric:tabular-nums}
+
+/* Flip cards */
+.flip-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1 1 0;min-height:0;overflow:hidden}
+.fc{perspective:1200px;cursor:pointer}
+.fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.4,0,.2,1)}
+.fc:hover .fc-inner,.fc.on .fc-inner{transform:rotateY(180deg)}
+.ff{position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;padding:24px;background:var(--primary);color:#fff;overflow:hidden}
+.ff-back{transform:rotateY(180deg);background:var(--primary-deep)}
+/* .ff-num intentionally omitted — see DS §6 Type D ghost-numeral rule, default placement is "skip". */
+.cnm{font-size:28px;font-weight:900;line-height:1.15;letter-spacing:-.01em;color:#fff;margin-top:auto}
+.cbd{font-size:17px;font-weight:600;line-height:1.4;color:rgba(255,255,255,.85);margin-top:10px;max-width:88%}
+.ht{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--spark);margin-top:14px;display:flex;align-items:center;gap:8px}
+.bkl{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--spark)}
+.bkt{font-size:22px;font-weight:900;line-height:1.18;color:#fff;margin-top:12px}
+.bkb{font-size:15px;font-weight:600;line-height:1.5;color:rgba(255,255,255,.82);margin-top:14px}
+
+/* Timeline */
+.tl-wrap{position:relative;padding:0 10px;flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.tl-line{position:absolute;top:73px;left:30px;right:30px;height:3px;background:var(--rule)}
+.tl-line-fill{position:absolute;left:0;top:0;height:100%;width:62%;background:var(--accent)}
+.tl-row{display:flex;position:relative;z-index:1}
+.tl-node{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 4px}
+.tl-date-top{font-size:22px;font-weight:900;letter-spacing:-.01em;color:var(--accent);min-height:48px;margin-bottom:16px;display:flex;align-items:flex-end;justify-content:center}
+.tl-dot2{width:18px;height:18px;border-radius:50%;background:var(--rule);margin-bottom:12px;flex-shrink:0;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--rule)}
+.tl-node.done .tl-dot2{background:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.tl-node.now .tl-dot2{background:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.tl-name{font-size:18px;font-weight:900;color:var(--ink);line-height:1.2;margin-bottom:4px}
+.tl-detail{font-size:13px;font-weight:600;color:var(--mid);line-height:1.35;max-width:170px}
+
+/* Big pullquote (Type J) */
+.pq{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:0 12px}
+.pq-mark{font-size:11px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+.pq-text{font-size:62px;font-weight:900;line-height:1.04;letter-spacing:-.025em;color:var(--ink);max-width:1020px}
+.pq-text .hl{color:var(--accent)}
+.pq-text .dot{color:var(--spark)}
+.pq-attr{font-size:14px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);display:flex;gap:18px;align-items:center}
+.pq-attr::before{content:"";display:inline-block;width:36px;height:2px;background:var(--accent)}
+
+/* Narrative (Type C) */
+.narr-grid{display:grid;grid-template-columns:1fr 360px;gap:36px;flex:1 1 0;min-height:0;overflow:hidden}
+.narr-body{display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.narr-body p{font-size:18px;font-weight:600;line-height:1.55;color:var(--ink)}
+.narr-body p strong{color:var(--primary);font-weight:900}
+.narr-side{display:flex;flex-direction:column;gap:14px;border-left:3px solid var(--accent);padding:6px 0 6px 22px}
+.narr-side .pull{font-size:24px;font-weight:900;line-height:1.18;letter-spacing:-.01em;color:var(--ink)}
+.narr-side .pull-attr{font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--mid)}
+
+/* Bespoke quartered-circle slide */
+.qc-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;flex:1 1 0;min-height:0;overflow:hidden;align-items:stretch}
+.qc-left{display:flex;flex-direction:column;justify-content:center;gap:18px}
+.qc-eyebrow{font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.qc-head{font-size:46px;font-weight:900;line-height:1.04;letter-spacing:-.025em;color:var(--ink);max-width:520px}
+.qc-body{font-size:16px;font-weight:600;line-height:1.5;color:var(--mid);max-width:480px}
+.qc-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.qc-tag{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--rule);color:var(--ink);border-radius:24px}
+.qc-tag.hl{background:var(--primary);border-color:var(--primary);color:#fff}
+.qc-stage{position:relative;display:flex;align-items:center;justify-content:center;background:var(--paper-tint);overflow:hidden;border-radius:4px}
+.qc-svg{width:84%;height:84%;display:block}
+
+/* Snote */
+.snote{border-left:3px solid var(--primary);padding:12px 18px;background:var(--tint);font-size:14px;font-weight:700;color:var(--ink);line-height:1.45}
+.snote strong{color:var(--primary)}
+
+/* Caption / source */
+.cap{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--mid)}
+
+/* Nav + counter */
+#nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:99}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .22s ease}
+.dot.on{width:20px;border-radius:3px;background:rgba(255,255,255,.85)}
+#ctr{position:fixed;bottom:22px;right:24px;font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);z-index:99}
+
+/* Mobile */
+@media (max-width:768px){
+  body{overflow-y:auto}
+  #wrap{position:static;display:block}
+  #deck{width:100%;height:auto;position:static;transform:none!important}
+  .slide{position:relative!important;opacity:1!important;pointer-events:auto!important;min-height:100dvh}
+  .cov,.sw{min-height:100dvh;height:auto}
+  .cov-title{font-size:48px}
+  .stitle{font-size:32px}
+  .pq-text{font-size:38px}
+  .qc-head{font-size:32px}
+  .shd{padding:0 20px;flex:0 0 50px}
+  .sw .sc{padding:20px}
+  .cov{padding:24px 20px 36px 20px}
+  .g2,.g3,.flip-row,.tabs,.narr-grid,.qc-grid,.stat-row{grid-template-columns:1fr;flex-direction:column}
+  .stat-row,.bar-row{grid-template-columns:1fr}
+  .bar-row{gap:6px}
+  .tl-row{flex-direction:column;gap:18px}
+  .tl-line{display:none}
+  .tl-node{flex-direction:row;align-items:center;text-align:left;gap:14px}
+  .tl-date-top{margin-bottom:0;min-height:auto;font-size:18px;flex:0 0 90px;justify-content:flex-start}
+  /* Inline-flex catch-all */
+  .sc div[style*="display:flex"]{flex-direction:column!important}
+  .sc div[style*="grid-template-columns"]{grid-template-columns:1fr!important}
+  .panel{flex:none!important;width:100%!important}
+  /* Flip cards mobile */
+  .fc{perspective:none!important;min-height:auto!important}
+  .fc .fc-inner{transform-style:flat!important;transition:none!important;height:auto!important;transform:none!important}
+  .fc:hover .fc-inner,.fc.on .fc-inner{transform:none!important}
+  .fc .ff{position:relative!important;backface-visibility:visible!important;transform:none!important}
+  .fc .ff-back{display:none;transform:none!important}
+  .fc.on .ff-front{display:none}
+  .fc.on .ff-back{display:flex;transform:none!important}
+  #nav,#ctr{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Logo symbol — embedded once -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
+  <symbol id="brand-wm" viewBox="0 0 720 720">
+    <image href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGlkPSJMb2dvIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA3MjAgNzIwIiB2aWV3Qm94PSIwIDAgNzIwIDcyMCI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJTVkdJRF8xXyIgY3g9IjE1Ni4wOSIgY3k9IjE0My43MSIgcj0iNjYxLjI3IiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKC02IC02KSBzY2FsZSgxLjAxNjcpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMwMGExZGYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjEzIiBzdG9wLWNvbG9yPSIjMDA5MmQ3Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4zNyIgc3RvcC1jb2xvcj0iIzAwNmNjMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNjIiIHN0b3AtY29sb3I9IiMwMDNkYTYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjczIiBzdG9wLWNvbG9yPSIjMDQzNzk5Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii45MyIgc3RvcC1jb2xvcj0iIzEwMjc3NyIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMTUyMTY5Ii8+CiAgPC9yYWRpYWxHcmFkaWVudD4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIzNjAiIHI9IjM2MCIgZmlsbD0idXJsKCNTVkdJRF8xXykiLz4KICA8cmFkaWFsR3JhZGllbnQgaWQ9IlNWR0lEXzJfIiBjeD0iMTA3Ljk1IiBjeT0iNjAuNSIgcj0iMTA5Ni40MyIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSgtNiAtNikgc2NhbGUoMS4wMTY3KSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgPHN0b3Agb2Zmc2V0PSIuMDIiIHN0b3AtY29sb3I9IiNmZmYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjAzIiBzdG9wLWNvbG9yPSIjZmJmZWZmIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4wOSIgc3RvcC1jb2xvcj0iI2JhZTdmOSIvPgogICAgPHN0b3Agb2Zmc2V0PSIuMTQiIHN0b3AtY29sb3I9IiM4N2Q1ZjQiLz4KICAgIDxzdG9wIG9mZnNldD0iLjE5IiBzdG9wLWNvbG9yPSIjNjNjOWYxIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4yMyIgc3RvcC1jb2xvcj0iIzRjYzFlZiIvPgogICAgPHN0b3Agb2Zmc2V0PSIuMjYiIHN0b3AtY29sb3I9IiM0NGJlZWUiLz4KICAgIDxzdG9wIG9mZnNldD0iLjI4IiBzdG9wLWNvbG9yPSIjMzdiOGViIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii4zNSIgc3RvcC1jb2xvcj0iIzE5YWNlNSIvPgogICAgPHN0b3Agb2Zmc2V0PSIuNDEiIHN0b3AtY29sb3I9IiMwN2E0ZTAiLz4KICAgIDxzdG9wIG9mZnNldD0iLjQ1IiBzdG9wLWNvbG9yPSIjMDBhMWRmIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii43OSIgc3RvcC1jb2xvcj0iIzAwNDVhYiIvPgogICAgPHN0b3Agb2Zmc2V0PSIuODIiIHN0b3AtY29sb3I9IiMwMDNkYTYiLz4KICAgIDxzdG9wIG9mZnNldD0iLjk2IiBzdG9wLWNvbG9yPSIjMDA1OWI2Ii8+CiAgPC9yYWRpYWxHcmFkaWVudD4KICA8cGF0aCBmaWxsPSJ1cmwoI1NWR0lEXzJfKSIgZD0iTTk1LjYgMzU5LjlDOTUuNiAxOTUgMTk5LjcgNTQuNCAzNDUuOC4zIDE1My42IDcuOCAwIDE2NS45IDAgMzYwYzAgMTk0LjMgMTUzLjkgMzUyLjYgMzQ2LjQgMzU5LjdDMjAwLjEgNjY1LjcgOTUuNiA1MjUgOTUuNiAzNTkuOXoiLz4KICA8ZGVmcz4KICAgIDxmaWx0ZXIgaWQ9IkFkb2JlX09wYWNpdHlNYXNrRmlsdGVyIiB3aWR0aD0iMzQ2LjQiIGhlaWdodD0iNzE5LjQiIHg9IjAiIHk9Ii4zIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8ZmVDb2xvck1hdHJpeCB2YWx1ZXM9IjEgMCAwIDAgMCAwIDEgMCAwIDAgMCAwIDEgMCAwIDAgMCAwIDEgMCIvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxtYXNrIGlkPSJTVkdJRF8zXyIgd2lkdGg9IjM0Ni40IiBoZWlnaHQ9IjcxOS40IiB4PSIwIiB5PSIuMyIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICA8ZyBmaWx0ZXI9InVybCgjQWRvYmVfT3BhY2l0eU1hc2tGaWx0ZXIpIj4KICAgICAgPHJhZGlhbEdyYWRpZW50IGlkPSJTVkdJRF80XyIgY3g9IjMwMi45NSIgY3k9IjM0OS4yMSIgcj0iMzgxLjM3IiBmeD0iMi4xOCIgZnk9IjM1NC4zMyIgZ3JhZGllbnRUcmFuc2Zvcm09Im1hdHJpeCguMDMxMzYgLTEuMDE2MiAxLjAzNDEgLjAzMTkyIC02OC42MyA2NDUuNzQpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjM1IiBzdG9wLWNvbG9yPSIjZmRmZGZkIi8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuNDUiIHN0b3AtY29sb3I9IiNmNmY2ZjYiLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9Ii41MSIgc3RvcC1jb2xvcj0iI2VhZWFlYSIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjU3IiBzdG9wLWNvbG9yPSIjZDlkOWQ5Ii8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuNjIiIHN0b3AtY29sb3I9IiNjM2MzYzMiLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9Ii42NiIgc3RvcC1jb2xvcj0iI2E3YTdhNyIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjciIHN0b3AtY29sb3I9IiM4Njg2ODYiLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9Ii43MyIgc3RvcC1jb2xvcj0iIzYwNjA2MCIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjc3IiBzdG9wLWNvbG9yPSIjMzUzNTM1Ii8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PSIuOCIgc3RvcC1jb2xvcj0iIzA2MDYwNiIvPgogICAgICAgIDxzdG9wIG9mZnNldD0iLjgiLz4KICAgICAgPC9yYWRpYWxHcmFkaWVudD4KICAgICAgPHBhdGggZmlsbD0idXJsKCNTVkdJRF80XykiIGQ9Ik05NS42IDM1OS45Qzk1LjYgMTk1IDE5OS43IDU0LjQgMzQ1LjguMyAxNTMuNiA3LjggMCAxNjUuOSAwIDM2MGMwIDE5NC4zIDE1My45IDM1Mi42IDM0Ni40IDM1OS43QzIwMC4xIDY2NS43IDk1LjYgNTI1IDk1LjYgMzU5Ljl6Ii8+CiAgICA8L2c+CiAgPC9tYXNrPgogIDxyYWRpYWxHcmFkaWVudCBpZD0iU1ZHSURfNV8iIGN4PSIyODEuMzYiIGN5PSIyOTAuOSIgcj0iNDQ1LjQ5IiBncmFkaWVudFRyYW5zZm9ybT0idHJhbnNsYXRlKC02IC02KSBzY2FsZSgxLjAxNjcpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICA8c3RvcCBvZmZzZXQ9Ii4zMiIgc3RvcC1jb2xvcj0iIzQ0YmVlZSIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9Ii40OCIgc3RvcC1jb2xvcj0iIzJiOTlkOSIgc3RvcC1vcGFjaXR5PSIuMjciLz4KICAgIDxzdG9wIG9mZnNldD0iLjY3IiBzdG9wLWNvbG9yPSIjMTQ3NmM2IiBzdG9wLW9wYWNpdHk9Ii41OCIvPgogICAgPHN0b3Agb2Zmc2V0PSIuODIiIHN0b3AtY29sb3I9IiMwNTYxYmEiIHN0b3Atb3BhY2l0eT0iLjg0Ii8+CiAgICA8c3RvcCBvZmZzZXQ9Ii45MiIgc3RvcC1jb2xvcj0iIzAwNTliNiIvPgogIDwvcmFkaWFsR3JhZGllbnQ+CiAgPHBhdGggZmlsbD0idXJsKCNTVkdJRF81XykiIGQ9Ik05NS42IDM1OS45Qzk1LjYgMTk1IDE5OS43IDU0LjQgMzQ1LjguMyAxNTMuNiA3LjggMCAxNjUuOSAwIDM2MGMwIDE5NC4zIDE1My45IDM1Mi42IDM0Ni40IDM1OS43QzIwMC4xIDY2NS43IDk1LjYgNTI1IDk1LjYgMzU5Ljl6IiBtYXNrPSJ1cmwoI1NWR0lEXzNfKSIvPgogIDxnPgogICAgPHBhdGggZD0iTTM1My45IDMyNS43YzIzLjktNTguOS0yMC44LTc0LjktNDkuOS03NC45aC05Ni40YzggNS41IDYuNyAxMi44IDUuMSAxNy4zbC01Ni4yIDE3OS41Yy0yLjIgNy4xLTEwLjYgMTQuNi0xNS4xIDE1LjdoNzhjLTQuMy0uOC0xMC40LTYuOS04LjItMTUuMmwyMC40LTY0LjljLjEgMCA5My45IDEyLjcgMTIyLjMtNTcuNXptLTc1LjgtNTguNGMxMC4yIDAgMzguNSAxLjQgMjAuMiA1NC45LTE5LjEgNTYuMi02MS41IDQ0LjYtNjEuNSA0NC42bDMxLjItOTkuNWgxMC4xeiIgZmlsbD0iI2ZmZiIvPgogICAgPHBhdGggZD0iTTQxNi4zIDQ2My40aDUyLjVjLTE2LjgtNS40LTQxLjYtMjEuMy01MS41LTMyLjYgOC04LjcgMTcuOS0xOS43IDE5LjctNDJoLTI3LjJzNS4yIDMgNS4yIDkuNGMwIDUuOS0yLjQgMTQuMS03IDE5LjgtOC0xMS44LTE2LjUtMjUuMy0xOS41LTQ1LjEgMTAuNy01LjMgMjUuNy0xMS4xIDM3LjYtMjEuNSAxMS4zLTkuOSAxMy45LTE5LjMgMTQuMS0yNS40di0uOGMwLTYuNC0yLjUtMTIuNC03LjEtMTYuOS03LjktNy44LTIwLjMtMTEtMzMuNC04LjYtMTAuNSAyLTE5LjQgNy42LTIzLjkgMTEuNy0xNS44IDE0LjktMTcuOCAzOS40LTE3LjggNTAuNSAwIDIuNy4xIDQuNy4yIDUuOS0uOS40LTIuNSAxLTIuNSAxLTExLjYgNC4zLTQyLjUgMTIuNS01My41IDM3LjktMS40IDMuMi0zLjQgMTAuMi0zLjQgMTguMyAwIDcgMS41IDE0LjggNiAyMS45IDcuOCAxMi4yIDIxIDE5LjkgNDIuMiAxOS41IDIzLS40IDQ1LjctMTYuMSA0OS43LTE5IDMuOSAzLjcgMTQuMiAxMy40IDE5LjYgMTZ6bTAtMTQyYy0yLjcgMTcuMS0yNC45IDM0LjQtMzAuMyAzNi43LTEtOS42LS41LTI0LjggNy41LTM3LjIgNS4zLTguMiAxMi40LTExLjggMTguMS05LjggNC42IDEuNiA1LjEgNS44IDQuNyAxMC4zem0tMzAuOCAxMTQuNGMtMy4xIDEuOS0xNS4zIDguMS0yNi43IDkuMi0xMC42IDEtMjguMi0zLjEtMjguMS0yNC4zIDAtMTguMSAxOS43LTMxLjQgMzAuNC0zNiA0LjMgMTcuNSAxNCAzNy4zIDI0LjQgNTEuMXoiIGZpbGw9IiNmZmYiLz4KICAgIDxwYXRoIGQ9Ik01NzUuOCAyNjcuNWMzMS4yLTcuNSA1Ni45IDE2LjkgNTkuMiAxOC42bDguOS0yOC4zYy0xMi4zLTMuNy0xMDEuOC0zNC0xNjUuMSAzOC4yLTM4LjkgNDQuNC00OC40IDEzNS40LjkgMTU5LjggNTIuOCAyNi4xIDExMS4xLTQgMTE1LjQtNi4xbDI0LjEtNzYuOGMyLjYtOS4zIDguNS0xNS4zIDE4LjktMTkuMmgtODMuOGMxMi4yIDUuMSAxMS4zIDE0LjMgMTAuNCAxOC4xbC0yNC4xIDc2LjhjLTMuMi42LTcwLjYgMTcuNC0zMi45LTEwMC41IDguMy0yNS4zIDMxLTcxLjcgNjguMS04MC42eiIgZmlsbD0iI2ZmZiIvPgogIDwvZz4KPC9zdmc+" width="720" height="720"/>
+  </symbol>
+</svg>
+
+<div id="wrap">
+  <div id="deck">
+
+  <!-- ========================================================== -->
+  <!-- Slide 1 — Type A Cover -->
+  <!-- ========================================================== -->
+  <section class="slide active" data-slide="1">
+    <div class="cov">
+      <div class="cov-top">
+        <div class="cov-eyebrow">Procter &amp; Gamble &nbsp;·&nbsp; Verification Deck</div>
+        <svg class="logo W" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="cov-mid">
+        <div class="cov-eyebrow" style="color:var(--spark)">PPT Design System &nbsp;·&nbsp; 2026</div>
+        <h1 class="cov-title">Making every day<br>more than ordinary<span class="dot">.</span></h1>
+        <p class="cov-sub">Nine slides showing how the P&amp;G visual language renders across covers, narrative, comparison, data, charts, flip cards, timelines, pull-quotes — and a bespoke modular composition built only from system tokens.</p>
+      </div>
+      <div class="cov-meta">
+        <span>Source · us.pg.com</span>
+        <span>Brand · Procter &amp; Gamble</span>
+        <span>9 / 9 Slide Types</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 2 — Type J Big pullquote (EMPHASIZED) -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="2">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">02 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Anchor &nbsp;·&nbsp; Type J</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="pq">
+          <span class="pq-mark">Recognition &nbsp;·&nbsp; Fortune 2026</span>
+          <h2 class="pq-text">Named <span class="hl">#1 Most Innovative</span><br>in Household Products for<br>Third Consecutive Year<span class="dot">.</span></h2>
+          <div class="pq-attr">Source · us.pg.com home — Fortune America&rsquo;s Most Innovative Companies, Statista 2026</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 3 — Type C Full-width narrative + pullquote -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="3">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">03 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Who We Are &nbsp;·&nbsp; Type C</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <span class="eyebrow">Founded 1837 &nbsp;·&nbsp; Cincinnati, OH</span>
+        <h2 class="stitle">188 years of consumer trust,<br>rendered through saturated brand-blue confidence.</h2>
+        <div class="narr-grid">
+          <div class="narr-body">
+            <p>Our brands are trusted in millions of living rooms, kitchens, and bathrooms — passed down from generation to generation. We&rsquo;re committed to making lives better in small but meaningful ways, every day.</p>
+            <p><strong>The visual register</strong> is geometric sans at extra-bold weights, set against full-bleed P&amp;G blue. Optimistic and consumer-facing without becoming austere or generic.</p>
+          </div>
+          <aside class="narr-side">
+            <span class="cap">Pullquote &nbsp;·&nbsp; /who-we-are/</span>
+            <p class="pull">&ldquo;Finding small but meaningful ways to improve lives — now and for generations to come.&rdquo;</p>
+            <span class="pull-attr">P&amp;G &nbsp;·&nbsp; Who We Are</span>
+          </aside>
+        </div>
+        <div class="snote"><strong>Tone test:</strong> the body reads as the brand voice — optimistic, concrete, never austere. Drop a sentence; the remaining still hold.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 4 — Type B Two-column comparison (.g2) -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="4">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">04 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Strategy &nbsp;·&nbsp; Type B</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <span class="eyebrow">Constraints vs. Freedom</span>
+        <h2 class="stitle">A toolkit, not a menu.</h2>
+        <p class="ssub">The DS defines hard constraints (locked) and reusable components (reach-for) — but encourages bespoke compositions built from system tokens.</p>
+        <div class="g2 absorb">
+          <div class="panel">
+            <span class="cap">Constraints &nbsp;·&nbsp; locked</span>
+            <h3 class="panel-title">What you never break</h3>
+            <ul>
+              <li>§2 colour tokens only — no ad-hoc hex</li>
+              <li>Montserrat only — no serif fonts</li>
+              <li>12 px readability floor</li>
+              <li>Logo on every slide</li>
+            </ul>
+          </div>
+          <div class="panel dark">
+            <span class="cap">Bespoke &nbsp;·&nbsp; encouraged</span>
+            <h3 class="panel-title">What to invent freely</h3>
+            <ul>
+              <li>Quartered-circle Annual Report motifs</li>
+              <li>Product mosaics on `--primary` ground</li>
+              <li>Hero numerals with `--spark` endcap</li>
+              <li>Tokens + Montserrat + ≥ 12 px = in-system</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 5 — Type H Chart (EMPHASIZED — qualitative bars) -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="5">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">05 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Portfolio &nbsp;·&nbsp; Type H</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <span class="eyebrow">Brand portfolio &nbsp;·&nbsp; /brands/</span>
+        <h2 class="stitle">Every category lives under one optimistic blue.</h2>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-num">10</div><div class="stat-label">Brand Categories</div></div>
+          <div class="stat"><div class="stat-num">65+</div><div class="stat-label">Trusted Brands</div></div>
+          <div class="stat"><div class="stat-num">180</div><div class="stat-label">Markets Worldwide</div></div>
+          <div class="stat"><div class="stat-num">5B</div><div class="stat-label">Consumers Reached</div></div>
+        </div>
+        <div class="chart">
+          <div class="chart-rows">
+            <div class="bar-row"><div class="bar-label">Fabric Care</div><div class="bar-track"><div class="bar-fill pri" style="width:96%"></div></div><div class="bar-val">Tide / Downy</div></div>
+            <div class="bar-row"><div class="bar-label">Family Care</div><div class="bar-track"><div class="bar-fill pri" style="width:88%"></div></div><div class="bar-val">Bounty / Charmin</div></div>
+            <div class="bar-row"><div class="bar-label">Baby Care</div><div class="bar-track"><div class="bar-fill" style="width:82%"></div></div><div class="bar-val">Pampers / Luvs</div></div>
+            <div class="bar-row"><div class="bar-label">Feminine Care</div><div class="bar-track"><div class="bar-fill" style="width:74%"></div></div><div class="bar-val">Always / Tampax</div></div>
+            <div class="bar-row"><div class="bar-label">Grooming</div><div class="bar-track"><div class="bar-fill" style="width:66%"></div></div><div class="bar-val">Gillette</div></div>
+            <div class="bar-row"><div class="bar-label">Beauty &amp; Other</div><div class="bar-track"><div class="bar-fill" style="width:54%"></div></div><div class="bar-val">Olay / Comet</div></div>
+          </div>
+        </div>
+        <p class="cap">Bar length = qualitative household reach within category. Source · us.pg.com /brands/</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 6 — Type E Data table -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="6">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">06 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Recognition &nbsp;·&nbsp; Type E</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <span class="eyebrow">Awards &amp; Recognitions &nbsp;·&nbsp; /newsroom/</span>
+        <h2 class="stitle">Recognition tracks the corporate register.</h2>
+        <div class="row-x">
+          <table class="dt">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Recognition</th>
+                <th>Issuer</th>
+                <th class="r">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hi">
+                <td>2026</td>
+                <td>America&rsquo;s Most Innovative — Household Products (#1)</td>
+                <td>Fortune × Statista</td>
+                <td class="r"><span class="pos">▲ Held #1</span></td>
+              </tr>
+              <tr>
+                <td>2025</td>
+                <td>America&rsquo;s Most Innovative — Household Products (#1)</td>
+                <td>Fortune × Statista</td>
+                <td class="r"><span class="pos">▲ Held #1</span></td>
+              </tr>
+              <tr>
+                <td>2024</td>
+                <td>America&rsquo;s Most Innovative — Household Products (#1)</td>
+                <td>Fortune × Statista</td>
+                <td class="r"><span class="pos">▲ Reached #1</span></td>
+              </tr>
+              <tr>
+                <td>2024</td>
+                <td>Citizenship Report — environmental &amp; community impact</td>
+                <td>Procter &amp; Gamble</td>
+                <td class="r"><span class="neu">— Published</span></td>
+              </tr>
+              <tr>
+                <td>2025</td>
+                <td>Annual Report — Integrated Growth Strategy</td>
+                <td>Procter &amp; Gamble</td>
+                <td class="r"><span class="neu">— Published</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="cap">No coloured cell badges — text weight + semantic colour only. Source · /newsroom/, /annualreport2025/, /citizenship/</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 7 — Type D Flip cards -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="7">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">07 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Reveal &nbsp;·&nbsp; Type D</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <span class="eyebrow">Hover or tap to reveal &nbsp;·&nbsp; click toggles on mobile</span>
+        <h2 class="stitle">Two stops on the same blue ladder.</h2>
+        <div class="flip-row">
+          <div class="fc" onclick="this.classList.toggle('on')">
+            <div class="fc-inner">
+              <div class="ff ff-front">
+                <h3 class="cnm">Front: --primary</h3>
+                <p class="cbd">P&amp;G blue with the sphere monogram. Used on every cover and dark conclusion bar.</p>
+                <span class="ht">Reveal back &nbsp;→</span>
+              </div>
+              <div class="ff ff-back">
+                <span class="bkl">Back &nbsp;·&nbsp; --primary-deep</span>
+                <h4 class="bkt">Deep navy — the second stop.</h4>
+                <p class="bkb">A darker navy for flip-card backs. Back and front read as two stops on one ladder — never `--accent` cyan on `--primary` (the blue-on-navy trap).</p>
+              </div>
+            </div>
+          </div>
+          <div class="fc" onclick="this.classList.toggle('on')">
+            <div class="fc-inner">
+              <div class="ff ff-front">
+                <h3 class="cnm">Front: hover or tap</h3>
+                <p class="cbd">Desktop hover triggers rotateY(180°). Mobile `onclick` toggles `.on`.</p>
+                <span class="ht">Reveal back &nbsp;→</span>
+              </div>
+              <div class="ff ff-back">
+                <span class="bkl">Back &nbsp;·&nbsp; mobile fix</span>
+                <h4 class="bkt">CSS :hover doesn&rsquo;t exist on touch.</h4>
+                <p class="bkb">Mobile kills 3D transforms and uses display:none / display:flex to swap faces. `classList.toggle(&apos;on&apos;)` is the bridge.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 8 — Type K Timeline -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="8">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">08 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Heritage &nbsp;·&nbsp; Type K</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <span class="eyebrow">P&amp;G History &nbsp;·&nbsp; 1837 → 2026</span>
+        <h2 class="stitle">188 years of category-defining brands.</h2>
+        <div class="tl-wrap">
+          <div class="tl-line"><div class="tl-line-fill"></div></div>
+          <div class="tl-row">
+            <div class="tl-node done">
+              <div class="tl-date-top">1837</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">Founded</div>
+              <div class="tl-detail">William Procter and James Gamble — Cincinnati, OH</div>
+            </div>
+            <div class="tl-node done">
+              <div class="tl-date-top">1879</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">Ivory Soap</div>
+              <div class="tl-detail">Flagship product launches — &ldquo;99 44/100% Pure&rdquo;</div>
+            </div>
+            <div class="tl-node done">
+              <div class="tl-date-top">1946</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">Tide</div>
+              <div class="tl-detail">First synthetic-detergent laundry product, redefining Fabric Care</div>
+            </div>
+            <div class="tl-node done">
+              <div class="tl-date-top">1961</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">Pampers</div>
+              <div class="tl-detail">Disposable diaper category created from a kitchen-table prototype</div>
+            </div>
+            <div class="tl-node now">
+              <div class="tl-date-top">2026</div>
+              <div class="tl-dot2"></div>
+              <div class="tl-name">#1 Most Innovative</div>
+              <div class="tl-detail">Third consecutive year — Fortune × Statista, Household Products</div>
+            </div>
+          </div>
+        </div>
+        <p class="cap">Source · us.pg.com /pg-history/, public corporate record</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== -->
+  <!-- Slide 9 — Bespoke quartered-circle composition (no §7 component) -->
+  <!-- ========================================================== -->
+  <section class="slide" data-slide="9">
+    <div class="sw">
+      <div class="shd">
+        <div class="shd-l">
+          <span class="shd-num">09 / 09</span>
+          <span class="shd-sep"></span>
+          <span class="shd-cat">Closer &nbsp;·&nbsp; Bespoke</span>
+        </div>
+        <svg class="logo L" viewBox="0 0 720 720" aria-label="Procter & Gamble"><use href="#brand-wm"/></svg>
+      </div>
+      <div class="sc">
+        <div class="qc-grid">
+          <div class="qc-left">
+            <span class="qc-eyebrow">Bespoke composition &nbsp;·&nbsp; tokens only</span>
+            <h2 class="qc-head">Every quadrant<br>holds a brand promise.</h2>
+            <p class="qc-body">A direct echo of the 2025 Annual Report cover — four quarter-arcs of P&amp;G blue and Sky Cyan, segmented by 1 px `--rule`, anchored by a single yellow dot. No § 7 component used; every colour is a token, every weight is Montserrat 900, the readability floor holds.</p>
+            <div class="qc-tags">
+              <span class="qc-tag hl">--primary</span>
+              <span class="qc-tag">--accent</span>
+              <span class="qc-tag">--paper-tint</span>
+              <span class="qc-tag">--spark</span>
+              <span class="qc-tag">--rule</span>
+            </div>
+          </div>
+          <div class="qc-stage">
+            <svg class="qc-svg" viewBox="0 0 400 400" aria-hidden="true">
+              <defs>
+                <clipPath id="circ"><circle cx="200" cy="200" r="180"/></clipPath>
+              </defs>
+              <g clip-path="url(#circ)">
+                <rect x="20"  y="20"  width="180" height="180" fill="var(--primary)"/>
+                <rect x="200" y="20"  width="180" height="180" fill="var(--accent)"/>
+                <rect x="20"  y="200" width="180" height="180" fill="var(--paper-tint)"/>
+                <rect x="200" y="200" width="180" height="180" fill="var(--primary-deep)"/>
+                <line x1="200" y1="20"  x2="200" y2="380" stroke="var(--white)" stroke-width="1.5"/>
+                <line x1="20"  y1="200" x2="380" y2="200" stroke="var(--white)" stroke-width="1.5"/>
+              </g>
+              <circle cx="200" cy="200" r="180" fill="none" stroke="var(--rule)" stroke-width="1"/>
+              <circle cx="200" cy="200" r="22" fill="var(--spark)"/>
+              <text x="200" y="207" text-anchor="middle" font-family="Montserrat" font-weight="900" font-size="22" fill="var(--primary)">P&amp;G</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /#deck -->
+</div><!-- /#wrap -->
+
+<div id="nav"></div>
+<div id="ctr">SLIDE 1 / 9</div>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.slide');
+  var nav = document.getElementById('nav');
+  var ctr = document.getElementById('ctr');
+  var idx = 0;
+  // Build dot nav
+  for(var i=0;i<slides.length;i++){
+    var d = document.createElement('div');
+    d.className = 'dot' + (i===0?' on':'');
+    d.dataset.i = i;
+    d.addEventListener('click', function(e){ go(parseInt(e.currentTarget.dataset.i,10)); });
+    nav.appendChild(d);
+  }
+  function go(n){
+    if(n<0||n>=slides.length) return;
+    slides[idx].classList.remove('active');
+    nav.children[idx].classList.remove('on');
+    idx=n;
+    slides[idx].classList.add('active');
+    nav.children[idx].classList.add('on');
+    ctr.textContent = 'SLIDE ' + (idx+1) + ' / ' + slides.length;
+  }
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key===' ') { go(idx+1); e.preventDefault(); }
+    else if(e.key==='ArrowLeft') { go(idx-1); e.preventDefault(); }
+    else if(e.key==='Home') go(0);
+    else if(e.key==='End') go(slides.length-1);
+  });
+  // Touch swipe
+  var sx=0; var sy=0;
+  document.addEventListener('touchstart', function(e){
+    if(window.matchMedia('(max-width:768px)').matches) return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(window.matchMedia('(max-width:768px)').matches) return;
+    var dx=e.changedTouches[0].clientX-sx;
+    var dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)) go(idx + (dx<0?1:-1));
+  }, {passive:true});
+
+  // Scale to fit
+  var deck = document.getElementById('deck');
+  function scaleDeck(){
+    if(!deck) return;
+    if(window.matchMedia('(max-width: 768px)').matches){
+      deck.style.transform = 'none';
+      return;
+    }
+    var s = Math.min(window.innerWidth/1280, window.innerHeight/720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  window.addEventListener('resize', scaleDeck);
+  window.addEventListener('load', scaleDeck);
+  scaleDeck();
+})();
+</script>
+</body>
+</html>

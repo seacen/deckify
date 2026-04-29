@@ -1,0 +1,29 @@
+{
+  "chosen": {
+    "id": "414f9b4c",
+    "kind": "img",
+    "page": "about",
+    "region": "header",
+    "src": "https://www.mars.com/themes/custom/mars_acss/assets/images/logo-main.svg",
+    "alt": "Mars logo",
+    "width": 138,
+    "height": 40,
+    "classNames": "coh-image ssa-instance-d0cbc49ddec7d871a060249ca3bcbe07 coh-ce-cpt_site_header-46c776c7"
+  },
+  "result": {
+    "ok": true,
+    "format": "svg",
+    "path": "/private/var/folders/gl/cmnndj_x4gz7t8qdy1qhsqsc0000gn/T/deckify-mars-r64vegg8/assets/logo.svg",
+    "evidence": {
+      "paths": 1,
+      "max_d_len": 3723,
+      "has_inner_image": false,
+      "has_text": false,
+      "dims": [
+        138.0,
+        40.0
+      ]
+    },
+    "url": "https://www.mars.com/themes/custom/mars_acss/assets/images/logo-main.svg"
+  }
+}
