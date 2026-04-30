@@ -32,7 +32,7 @@ deckify: ... reads tiffany.com like a designer would
          ... checks its own work, fixes anything off
          ✓ Done. Open ~/deckify/decks/tiffany/tiffany-deck.html
 ```
-This is the first truly practical brand URL to HTML slide design system that genuinely enables AI‑native slides for real work environments. I’ve been using it for a month to prepare materials for executive meetings and town halls—without creating a single PowerPoint deck. What once required weeks of collective preparation is now a half‑day, one‑person effort, delivering a level of quality that manual PowerPoint simply couldn’t match.
+
 ---
 
 ## What makes deckify different
