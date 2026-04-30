@@ -4,7 +4,7 @@
 
 # deckify
 
-### The next deck writes itself.
+### URL to HTML slide design system that genuinely enables AI‑native slides for real work environments
 
 > Train deckify on your brand once. Every deck after that is just a prompt.
 
