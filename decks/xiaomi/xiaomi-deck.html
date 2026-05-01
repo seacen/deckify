@@ -504,6 +504,7 @@ h1.stitle em { font-style: normal; color: var(--accent); }
 }
 .chart-foot {
   flex: 0 0 auto;
+  padding-top: 16px;
   font-size: 11px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.18em;
   color: var(--mid);
@@ -546,6 +547,7 @@ h1.stitle em { font-style: normal; color: var(--accent); }
   font-size: 11px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.18em;
   color: var(--mid);
+  padding-top: 16px;
 }
 
 /* ── Type D — flip cards ── */
@@ -691,7 +693,8 @@ h1.stitle em { font-style: normal; color: var(--accent); }
   max-width: 180px;
 }
 .tl-foot {
-  margin-top: 24px;
+  flex: 0 0 auto;
+  padding-top: 24px;
   font-size: 11px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.2em;
   color: var(--mid);
@@ -772,14 +775,56 @@ h1.stitle em { font-style: normal; color: var(--accent); }
   body { overflow-y: auto; }
   #wrap { position: static; display: block; }
   #deck { width: 100%; height: auto; position: static; transform: none !important; }
+  /* On mobile every slide must let content grow naturally — desktop's
+     overflow:hidden + 720 px contract clips long content here, where the
+     deck is a flow document. min-height keeps short slides (cover, pull-
+     quote) feeling like a hero band; height: auto + overflow: visible
+     lets dense slides (narrative, table, chart) scroll past one screen. */
   .slide {
     position: relative !important;
     opacity: 1 !important;
     pointer-events: auto !important;
     min-height: 100dvh;
+    height: auto !important;
     inset: auto !important;
+    overflow: visible !important;
   }
-  .cov, .sw, .tj-sw { min-height: 100dvh; height: auto; }
+  /* Cover and pull-quote (hero slides) keep min-height: 100dvh so they
+     feel like a hero band on mobile. Content slides (.sw) drop it so
+     short slides don't pad with hundreds of px of dead space below the
+     source caption. */
+  .cov, .tj-sw {
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible !important;
+  }
+  .sw {
+    height: auto;
+    overflow: visible !important;
+  }
+  .slide:has(.cov), .slide:has(.tj-sw) { min-height: 100dvh; }
+  .slide:has(.sw) { min-height: 0; }
+  .sw .sc, .tj-sw .sc, .cov-sc {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  /* Absorbers don't need to absorb on mobile — content sets the height. */
+  .body-grid, .fr, .chart-row, .chart-wrap, .tl-wrap, .dt-wrap, .flip-row {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+  }
+  /* dt-wrap is the exception: keep horizontal scroll for tables (see Type E).
+     Position: relative so the visual scroll hint can sit on its right edge. */
+  .dt-wrap {
+    position: relative;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    /* Inner right-edge shadow as a non-positional scroll affordance —
+       hints that the table extends past the viewport regardless of
+       scroll position, without intercepting touch. */
+    box-shadow: inset -16px 0 14px -12px rgba(0,0,0,0.18);
+  }
   .cov-title { font-size: 48px; line-height: 1.04; }
   .stitle, h1.stitle { font-size: 32px; }
   .tj-quote .ql { font-size: 36px; }
@@ -817,6 +862,18 @@ h1.stitle em { font-style: normal; color: var(--accent); }
   .dt th:first-child, .dt td:first-child { padding-left: 16px; }
   .dt th:last-child, .dt td:last-child { padding-right: 16px; }
   .dt-foot { flex-wrap: wrap; gap: 8px; }
+  /* Add a small "swipe to see more" hint below the table on mobile only */
+  .dt-wrap::before {
+    content: '← 左右滑动查看完整表格';
+    display: block;
+    position: sticky;
+    left: 0;
+    padding: 8px 16px 0 16px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent);
+    pointer-events: none;
+  }
   /* Timeline mobile — vertical stack */
   .tl-row { flex-direction: column !important; gap: 16px; }
   .tl-line { display: none; }
@@ -1055,8 +1112,8 @@ h1.stitle em { font-style: normal; color: var(--accent); }
                 </div>
               </div>
             </div>
-            <div class="chart-foot">SOURCE · /global/about/ — DATA AS OF JUNE 2025 · BAR VALUES INCLUDE TRENDED ESTIMATES FROM 2021–2024</div>
           </div>
+          <div class="chart-foot">SOURCE · /global/about/ — DATA AS OF JUNE 2025 · BAR VALUES INCLUDE TRENDED ESTIMATES FROM 2021–2024</div>
         </div>
       </div>
     </div>
@@ -1121,11 +1178,11 @@ h1.stitle em { font-style: normal; color: var(--accent); }
                 </tr>
               </tbody>
             </table>
-            <div class="dt-foot">
-              <span>SOURCE · /global/product/xiaomi-17-ultra/</span>
-              <span>·</span>
-              <span>"—" 表示 mi.com 全球站未公开该字段</span>
-            </div>
+          </div>
+          <div class="dt-foot">
+            <span>SOURCE · /global/product/xiaomi-17-ultra/</span>
+            <span>·</span>
+            <span>"—" 表示 mi.com 全球站未公开该字段</span>
           </div>
         </div>
       </div>
@@ -1245,8 +1302,8 @@ h1.stitle em { font-style: normal; color: var(--accent); }
                 </div>
               </div>
             </div>
-            <div class="tl-foot">SOURCE · /global/about/ + /global/about/founder/ — 关键节点由公司年报与公开新闻验证</div>
           </div>
+          <div class="tl-foot">SOURCE · /global/about/ + /global/about/founder/ — 关键节点由公司年报与公开新闻验证</div>
         </div>
       </div>
     </div>

@@ -903,15 +903,55 @@ Keyboard: `← → Space Home End`. Touch: 48px swipe threshold.
 
 ## 10. Mobile <!-- ENGINEERING-DNA — every line invariant; this section saved real decks -->
 
+The desktop deck is a fixed 1280 × 720 canvas with the three-layer `overflow:hidden` safety net guarding against runaway content. **On mobile the deck is a flow document** — every slide gives up its fixed height and grows with its content. That means desktop's `overflow:hidden` must be **explicitly flipped to `overflow:visible`** in the mobile media query — otherwise content beyond 720 px gets silently clipped, every hard check passes, and the deck looks broken.
+
 ```css
 @media (max-width: 768px) {
   body { overflow-y: auto; }
   #wrap { position: static; display: block; }
-  #deck { width: 100%; position: static; transform: none !important; }
-  .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; }
-  /* Cover and content shells must fill the slide on mobile — `.slide` only sets min-height,
-     which a child's `height: 100%` does not inherit, so each shell needs its own min-height. */
-  .cov, .sw { min-height: 100dvh; height: auto; }
+  #deck { width: 100%; height: auto; position: static; transform: none !important; }
+  /* Slide containers — content must grow naturally, not be clipped */
+  .slide {
+    position: relative !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    height: auto !important;
+    inset: auto !important;
+    overflow: visible !important;
+  }
+  /* Hero slides (cover, big pull-quote) keep min-height: 100dvh so they
+     read as a hero band on mobile. Content slides (.sw) drop it so short
+     slides don't pad with hundreds of px of dead space below the source
+     caption. */
+  .cov, .tj-sw {
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible !important;
+  }
+  .sw {
+    height: auto;
+    overflow: visible !important;
+  }
+  .slide:has(.cov), .slide:has(.tj-sw) { min-height: 100dvh; }
+  .slide:has(.sw) { min-height: 0; }
+  /* Inner shells drop overflow:hidden so vertical content can grow */
+  .sw .sc, .tj-sw .sc, .cov-sc {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  /* Absorbers stop absorbing on mobile — content drives height */
+  .body-grid, .fr, .chart-row, .chart-wrap, .tl-wrap, .dt-wrap, .flip-row {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+  }
+  /* Tables are the exception: keep horizontal scroll (see §6 Type E) */
+  .dt-wrap {
+    position: relative;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+  }
+
   .cov-title { font-size: 48px; } .stitle { font-size: 32px; }
   .shd { padding: 0 20px; } .sw .sc { padding: 24px 20px; }
   /* All multi-col → single-col */ .g2,.g3,.flip-row,.tabs { grid-template-columns: 1fr; flex-direction: column; }
@@ -920,6 +960,35 @@ Keyboard: `← → Space Home End`. Touch: 48px swipe threshold.
 ```
 
 All interactive elements ≥ 44×44px tap area. Never use `vh` for font/padding on mobile.
+
+### Source captions must live OUTSIDE the absorber <!-- ENGINEERING-DNA: foot-caption-outside-absorber -->
+
+Source / footnote rows like `.dt-foot` / `.tl-foot` / `.chart-foot` **must not** sit inside their absorber container (`.dt-wrap` / `.tl-wrap` / `.chart-wrap`).
+
+**Why:**
+1. On desktop the absorber is `flex: 1 1 0` and fills remaining vertical space. A foot child inside it is top-aligned by default, so the foot hugs the bottom of the main content while a large empty band sits below before the slide bottom — visually "the caption got pushed up."
+2. On mobile, table absorbers switch to `overflow-x: auto`. A foot inside scrolls horizontally with the table and disappears off-screen.
+
+**Correct structure**: the foot is a sibling of the absorber inside `.sc`, declared `flex: 0 0 auto`. It naturally lands AFTER the absorber, BEFORE `.sc`'s bottom padding — bottom-anchored on desktop, immediately under the main content on mobile.
+
+```html
+<div class="sc">
+  <div class="s-eyebrow">…</div>
+  <h1 class="stitle">…</h1>
+  <div class="dt-wrap">       <!-- absorber: flex 1 1 0 -->
+    <table class="dt">…</table>
+  </div>
+  <div class="dt-foot">…</div> <!-- foot: flex 0 0 auto, sibling of dt-wrap -->
+</div>
+```
+
+Never:
+```html
+<div class="dt-wrap">
+  <table class="dt">…</table>
+  <div class="dt-foot">…</div>  <!-- ✗ inside the absorber -->
+</div>
+```
 
 ### The inline-flex trap (critical) <!-- ENGINEERING-DNA: inline-flex-trap -->
 

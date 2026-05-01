@@ -907,15 +907,54 @@ Xiaomi 的视觉语言**严重依赖产品摄影**。设计 deck 时，不要用
 
 ## 10. 移动端 <!-- ENGINEERING-DNA — every line invariant; this section saved real decks -->
 
+桌面端 deck 是 1280 × 720 的固定画布、`overflow:hidden` 三层安全网保证不溢出。**移动端是流式文档** —— 每张 slide 都让出固定高度，按内容自然伸缩。这意味着桌面的 `overflow:hidden` 必须在 mobile media query 里**显式翻成 `overflow:visible`**，否则超出 720 px 的内容会被静默剪掉。
+
 ```css
 @media (max-width: 768px) {
   body { overflow-y: auto; }
   #wrap { position: static; display: block; }
-  #deck { width: 100%; position: static; transform: none !important; }
-  .slide { position: relative !important; opacity: 1 !important; pointer-events: auto !important; min-height: 100dvh; }
-  /* Cover and content shells must fill the slide on mobile — `.slide` only sets min-height,
-     which a child's `height: 100%` does not inherit, so each shell needs its own min-height. */
-  .cov, .sw { min-height: 100dvh; height: auto; }
+  #deck { width: 100%; height: auto; position: static; transform: none !important; }
+  /* Slide containers — content must grow naturally, not be clipped */
+  .slide {
+    position: relative !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    height: auto !important;
+    inset: auto !important;
+    overflow: visible !important;
+  }
+  /* Hero slides (cover, big pull-quote) keep min-height: 100dvh so they
+     read as a hero band. Content slides (.sw) drop it so short slides
+     don't pad with hundreds of px of dead space below the source caption. */
+  .cov, .tj-sw {
+    min-height: 100dvh;
+    height: auto;
+    overflow: visible !important;
+  }
+  .sw {
+    height: auto;
+    overflow: visible !important;
+  }
+  .slide:has(.cov), .slide:has(.tj-sw) { min-height: 100dvh; }
+  .slide:has(.sw) { min-height: 0; }
+  /* Inner shells drop overflow:hidden so vertical content can grow */
+  .sw .sc, .tj-sw .sc, .cov-sc {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  /* Absorbers stop absorbing on mobile — content drives height */
+  .body-grid, .fr, .chart-row, .chart-wrap, .tl-wrap, .dt-wrap, .flip-row {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+  }
+  /* Tables are the exception: keep horizontal scroll (see §6 Type E) */
+  .dt-wrap {
+    position: relative;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+  }
+
   .cov-title { font-size: 48px; } .stitle { font-size: 32px; }
   .shd { padding: 0 20px; } .sw .sc { padding: 24px 20px; }
   /* All multi-col → single-col */ .g2,.g3,.flip-row,.tabs { grid-template-columns: 1fr; flex-direction: column; }
@@ -924,6 +963,35 @@ Xiaomi 的视觉语言**严重依赖产品摄影**。设计 deck 时，不要用
 ```
 
 所有交互元素 ≥ 44×44 px 点击区域。移动端绝不用 `vh` 作为字号/内边距。
+
+### Source captions 必须移出 absorber <!-- ENGINEERING-DNA: foot-caption-outside-absorber -->
+
+`.dt-foot` / `.tl-foot` / `.chart-foot` 这类「数据来源 / 注脚」行**不能**放在 absorber 容器（`.dt-wrap` / `.tl-wrap` / `.chart-wrap`）内部。
+
+**为什么**：
+1. 桌面端 absorber 是 `flex: 1 1 0` 吸收剩余高度。foot 在 absorber 内部默认顶对齐，于是 foot 紧贴主内容下方、底部留下大片空白。视觉上「注脚被推到上面去了」。
+2. 移动端表格 absorber 切到 `overflow-x: auto`。foot 在内部会跟着横向滚动出视野。
+
+**正确结构**：foot 是 `.sc` 的同级 `flex: 0 0 auto`，自然落在 absorber 之后、`.sc` 底 padding 之前 —— 桌面端贴底，移动端紧跟主内容。
+
+```html
+<div class="sc">
+  <div class="s-eyebrow">…</div>
+  <h1 class="stitle">…</h1>
+  <div class="dt-wrap">       <!-- absorber: flex 1 1 0 -->
+    <table class="dt">…</table>
+  </div>
+  <div class="dt-foot">…</div> <!-- foot: flex 0 0 auto, sibling of dt-wrap -->
+</div>
+```
+
+绝不要：
+```html
+<div class="dt-wrap">
+  <table class="dt">…</table>
+  <div class="dt-foot">…</div>  <!-- ✗ 在 absorber 内部 -->
+</div>
+```
 
 ### inline-flex 陷阱（关键） <!-- ENGINEERING-DNA: inline-flex-trap -->
 
