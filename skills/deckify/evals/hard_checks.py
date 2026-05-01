@@ -662,6 +662,12 @@ def check_ds_engineering_dna(ds_md: str) -> dict:
         # and a freshly embedded wordmark can render 100% invisible while every
         # byte-level check still says PASS.
         "logo-inner-fill",
+        # Surfaced from Xiaomi mobile pass:
+        # source / footnote rows nested inside .dt-wrap / .tl-wrap / .chart-wrap
+        # absorbers get pushed to the top on desktop (large dead band below)
+        # and scroll horizontally out of view inside table absorbers on mobile.
+        # The fix is structural — foot must be a sibling of the absorber.
+        "foot-caption-outside-absorber",
     ]
     missing = [i for i in required_ids if f"<!-- ENGINEERING-DNA: {i} -->" not in ds_md]
     return {"passed": len(missing) == 0, "evidence": {"missing_ids": missing, "checked": required_ids}}
