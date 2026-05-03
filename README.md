@@ -1,7 +1,5 @@
 <div align="center">
 
-![deckify — the next deck writes itself](assets/social/deckify-en-banner-1280x640.png)
-
 # deckify
 
 ### URL to HTML slide design system that genuinely enables AI‑native slides for real work environments
@@ -90,14 +88,6 @@ Eight reference brands, every one passing both machine checks and visual review.
 | Cover | Content |
 |:---:|:---:|
 | ![P&G cover](assets/showcase/pg-cover.png) | ![P&G content](assets/showcase/pg-content.png) |
-
-### P&G — alternate
-*Same brand, different mood; shows what changes when you re-roll the Design System with a different emphasis.*
-[Open the deck →](decks/pg-alt/) · [DS markdown](decks/pg-alt/pg-PPT-Design-System.md)
-
-| Cover | Content |
-|:---:|:---:|
-| ![P&G alt cover](assets/showcase/pg-alt-cover.png) | ![P&G alt content](assets/showcase/pg-alt-content.png) |
 
 ### Coca-Cola
 *Editorial heritage, Georgia serif, deep red.*
@@ -253,9 +243,16 @@ If you're unsure whether your use is "noncommercial," reach out via a GitHub iss
 
 ## Credits
 
-Built by **Xichang (Seacen) Zhao** — [github.com/seacen](https://github.com/seacen).
+Built by **Xichang (Seacen) Zhao** — [github.com/seacen](https://github.com/seacen). Engineering DNA distilled from many failed slides. Every line of `references/ds-template.md` came from a real production bug.
 
-Engineering DNA distilled from many failed slides. Every line of `references/ds-template.md` came from a real production bug.
+
+Special thanks to my twin brother, **[@park0er](https://github.com/park0er)** — the one who pulled me into AI.
+
+On a quiet afternoon at his place, just before Chinese New Year, he showed me what OpenClaw was doing — the first time I felt the pull of this whole AI thing.
+
+Some weeks later, he casually shared a slide an AI had built in pure HTML — and I realised AI could actually make slides *beautiful*.
+
+Without those two offhand moments, there'd be no deckify.
 
 ---
 

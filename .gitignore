@@ -50,3 +50,34 @@ decks/backup/
 # project documentation lives in README.md / TESTING.md / SKILL.md.
 CLAUDE.md
 AGENTS.md
+
+# === Launch / promo artifacts ===
+# Most of /assets/social/launch/ is local working files: video build pipeline
+# (Remotion source + node_modules + ffmpeg scratch), recon screenshots,
+# editorial drafts. The shipped artifacts (the final video + the README's
+# referenced images) are the only thing that needs to live in git.
+
+# Entire Remotion video build pipeline lives locally — source code, build
+# artefacts, rendered MP4. The MP4 itself is uploaded to GitHub user-attachments
+# CDN (see README), not committed to the repo.
+assets/social/launch/v3-remotion/
+
+# Reconnaissance screenshots — regenerable from agent-browser, large
+assets/social/launch/tiffany-recon/
+
+# Background music — Pixabay royalty-free, regenerable, large
+assets/social/launch/audio/
+
+# Editorial drafts + viewpoint cards — local working copies, not part of
+# the public skill (used as input to social media posts, not to the repo).
+assets/social/launch/wechat.md
+assets/social/launch/xiaohongshu.md
+assets/social/launch/video-script.md
+assets/social/launch/Seacen的写作风格.md
+assets/social/launch/wechat-images/
+assets/social/launch/cards/
+
+# Raw deck screenshots used as source for showcase/ images. The curated
+# subset already lives under assets/showcase/; the full pool stays local
+# (18 MB, regenerable from `decks/<brand>/<brand>-deck.html` via screenshot).
+assets/social/raw/
