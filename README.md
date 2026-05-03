@@ -245,14 +245,7 @@ If you're unsure whether your use is "noncommercial," reach out via a GitHub iss
 
 Built by **Xichang (Seacen) Zhao** — [github.com/seacen](https://github.com/seacen). Engineering DNA distilled from many failed slides. Every line of `references/ds-template.md` came from a real production bug.
 
-
-Special thanks to my twin brother, **[@park0er](https://github.com/park0er)** — the one who pulled me into AI.
-
-On a quiet afternoon at his place, just before Chinese New Year, he showed me what OpenClaw was doing — the first time I felt the pull of this whole AI thing.
-
-Some weeks later, he casually shared a slide an AI had built in pure HTML — and I realised AI could actually make slides *beautiful*.
-
-Without those two offhand moments, there'd be no deckify.
+Special thanks to my twin brother, **[@park0er](https://github.com/park0er)** — the one who pulled me into AI. On a quiet afternoon at his place, just before Chinese New Year, he showed me what OpenClaw was doing — the first time I felt the pull of this whole AI thing. Some weeks later, he casually shared a slide an AI had built in pure HTML — and I realised AI could actually make slides *beautiful*. Without those two offhand moments, there'd be no deckify.
 
 ---
 
