@@ -241,14 +241,7 @@ deckify:  （第 1 阶段）读首页 + 5–8 个子页，截图，提取颜色/
 
 由 **Xichang (Seacen) Zhao** 创建 —— [github.com/seacen](https://github.com/seacen)。Engineering DNA 提炼自数次失败的 slide。`references/ds-template.md` 里的每一行都来自一次真实的生产 bug。
 
-
-特别致谢我的双胞胎弟弟 **[@park0er](https://github.com/park0er)** —— 他是把我领进 AI 的那个人。
-
-今年春节前的某个下午，在他家里，他第一次让我看到 OpenClaw 在做的事 —— 那是我在 AI 这条路上的第一次心动。
-
-后来某天，他又随手分享了一份 AI 用 HTML 做的 slide。我才意识到 —— 原来 AI 真的能做出"漂亮"的幻灯片。
-
-没有他的两次"顺手一指"，就没有 deckify。
+特别致谢我的双胞胎弟弟 **[@park0er](https://github.com/park0er)** —— 他是把我领进 AI 的那个人。今年春节前的某个下午，在他家里，他第一次让我看到 OpenClaw 在做的事 —— 那是我在 AI 这条路上的第一次心动。后来某天，他又随手分享了一份 AI 用 HTML 做的 slide。我才意识到 —— 原来 AI 真的能做出"漂亮"的幻灯片。没有他的两次"顺手一指"，就没有 deckify。
 
 ---
 
