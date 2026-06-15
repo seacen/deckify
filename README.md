@@ -123,66 +123,46 @@ Eight reference brands, every one passing both machine checks and visual review.
 
 ---
 
-## Install — paste this to your AI agent
+## Install
 
-Copy this whole block. Paste it to whichever AI coding agent you use (Claude Code, Codex, OpenClaw, Hermes, Cursor, OpenCode, your own — doesn't matter). Tell it: **"install deckify"**. It'll figure out the rest.
+deckify ships as a standard agent skill (`skills/deckify/SKILL.md`). The fastest way to install it is the open [`skills`](https://github.com/vercel-labs/skills) CLI — one command, works across Claude Code, Codex, Cursor, OpenCode, and 70+ other agents. It auto-detects which agents you have installed and drops deckify into each of their skill directories.
 
-```
-👋 Hi agent — the user wants you to install deckify on this machine.
-
-deckify lives at https://github.com/seacen/deckify (a public Git repo)
-and ships as a standard "skill / agent prompt" — a SKILL.md plus a
-scripts/ folder. Detect your host environment from the cases below
-and run the matching install. If your host isn't named, fall through
-to the GENERIC case and adapt.
-
-────────────────────────────────────────────────────────────────────
-CASE: Claude Code  (you have /skill-creator, /loop, etc.)
-
-    claude plugin marketplace add https://github.com/seacen/deckify
-    claude plugin install deckify
-
-────────────────────────────────────────────────────────────────────
-CASE: Codex CLI  (you run inside `codex` interactive mode)
-
-    git clone https://github.com/seacen/deckify.git ~/.codex/deckify
-    mkdir -p ~/.agents/skills
-    ln -sf ~/.codex/deckify/skills/deckify ~/.agents/skills/deckify
-
-────────────────────────────────────────────────────────────────────
-CASE: OpenClaw  (your workspace is at ~/.openclaw/workspace/)
-
-    git clone https://github.com/seacen/deckify.git ~/openclaw-deckify
-    mkdir -p ~/.openclaw/workspace/skills
-    ln -sf ~/openclaw-deckify/skills/deckify ~/.openclaw/workspace/skills/deckify
-
-────────────────────────────────────────────────────────────────────
-CASE: GENERIC  (Hermes, OpenCode, Cursor, Continue, Aider, anything else)
-
-    git clone https://github.com/seacen/deckify.git ~/deckify-skill
-    # Then either:
-    #   (a) symlink ~/deckify-skill/skills/deckify into your host's
-    #       skills directory (if your host has one — check its docs),
-    #       OR
-    #   (b) read ~/deckify-skill/skills/deckify/SKILL.md as a long
-    #       system prompt / context attachment when the user invokes
-    #       deckify. The skill is self-describing — SKILL.md tells
-    #       any agent how to drive it.
-
-────────────────────────────────────────────────────────────────────
-AFTER INSTALL: verify the agent-browser dependency
-
-    python3 <install-path>/skills/deckify/scripts/setup.py
-
-If agent-browser is missing the script prints the install command for
-the user's platform. Don't make the user fix this manually — run the
-install command yourself if you have shell access.
-
-Then ask the user to restart their host so the skill is discovered.
-The skill is invokable as: "use deckify on https://example.com".
+```bash
+npx skills add seacen/deckify
 ```
 
-If you'd rather just run the commands yourself, [the per-host blocks are above](#install--paste-this-to-your-ai-agent) — pick yours.
+That's it. Restart your agent and invoke it with **"use deckify on https://example.com"**.
+
+<details>
+<summary>Other ways to install</summary>
+
+**Claude Code plugin** — deckify is also a Claude Code plugin (it ships a `.claude-plugin/marketplace.json`):
+
+```bash
+claude plugin marketplace add https://github.com/seacen/deckify
+claude plugin install deckify
+```
+
+**Manual** — clone the repo and point your host at `skills/deckify/`:
+
+```bash
+git clone https://github.com/seacen/deckify.git
+# Then either symlink ./deckify/skills/deckify into your host's skills
+# directory, or read skills/deckify/SKILL.md as a context attachment.
+# SKILL.md is self-describing — any agent that reads it knows how to drive it.
+```
+
+</details>
+
+### One dependency: agent-browser
+
+deckify reads brand sites the way a designer would — rendered DOM, computed styles, screenshots — which curl can't do. It uses the standalone [`agent-browser`](https://github.com/vercel-labs/agent-browser) CLI for that. After installing the skill, verify it's present:
+
+```bash
+python3 <install-path>/skills/deckify/scripts/setup.py
+```
+
+If `agent-browser` is missing, the script prints the right install command for your platform (npm / brew / cargo). Your agent can run it for you.
 
 ---
 

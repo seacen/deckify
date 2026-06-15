@@ -123,64 +123,46 @@ deckify 做完 slide 之后不会简单说「完成了」。它会跑 **11 项�
 
 ---
 
-## 安装 —— 把这段粘给你的 AI agent
+## 安装
 
-复制下面整段。粘给你用的任何 AI 编程 agent（Claude Code、Codex、OpenClaw、Hermes、Cursor、OpenCode、自定义都行），告诉它：「**装 deckify**」。剩下的它自己搞定。
+deckify 是一个标准的 agent skill（`skills/deckify/SKILL.md`）。最快的安装方式是用开源的 [`skills`](https://github.com/vercel-labs/skills) CLI —— 一条命令，支持 Claude Code、Codex、Cursor、OpenCode 等 70+ 个 agent。它会自动识别你装了哪些 agent，把 deckify 放进各自的 skills 目录。
 
-```
-👋 你好 agent，用户希望你在这台机器上安装 deckify。
-
-deckify 在 https://github.com/seacen/deckify（一个公开的 Git 仓库），
-是一个标准的「skill / agent prompt」格式 —— SKILL.md + scripts/ 目录。
-请识别你当前所在的 host 环境，按下方对应的命令安装。如果你的 host
-不在列表里，按 GENERIC 那一档自适应即可。
-
-────────────────────────────────────────────────────────────────────
-CASE: Claude Code  (你能用 /skill-creator、/loop 等命令)
-
-    claude plugin marketplace add https://github.com/seacen/deckify
-    claude plugin install deckify
-
-────────────────────────────────────────────────────────────────────
-CASE: Codex CLI  (你跑在 `codex` 交互模式里)
-
-    git clone https://github.com/seacen/deckify.git ~/.codex/deckify
-    mkdir -p ~/.agents/skills
-    ln -sf ~/.codex/deckify/skills/deckify ~/.agents/skills/deckify
-
-────────────────────────────────────────────────────────────────────
-CASE: OpenClaw  (你的 workspace 在 ~/.openclaw/workspace/)
-
-    git clone https://github.com/seacen/deckify.git ~/openclaw-deckify
-    mkdir -p ~/.openclaw/workspace/skills
-    ln -sf ~/openclaw-deckify/skills/deckify ~/.openclaw/workspace/skills/deckify
-
-────────────────────────────────────────────────────────────────────
-CASE: GENERIC  (Hermes、OpenCode、Cursor、Continue、Aider 或别的)
-
-    git clone https://github.com/seacen/deckify.git ~/deckify-skill
-    # 然后两选一：
-    #  (a) 把 ~/deckify-skill/skills/deckify symlink 到你 host 的
-    #      skills 目录（如果你的 host 有这个机制 —— 查它的文档）；
-    #     或者
-    #  (b) 让 SKILL.md 作为长 prompt / context attachment 注入：
-    #      用户调起 deckify 时，把 ~/deckify-skill/skills/deckify/
-    #      SKILL.md 当 system instruction 加进上下文。SKILL.md 是
-    #      自描述的 —— 任何 agent 看完都知道怎么驱动它。
-
-────────────────────────────────────────────────────────────────────
-安装后：验证 agent-browser 依赖
-
-    python3 <安装路径>/skills/deckify/scripts/setup.py
-
-如果 agent-browser 不在 PATH，脚本会给出对应平台的安装命令。如果你
-有 shell 权限，请直接帮用户执行；不要让用户自己折腾。
-
-最后让用户**重启 agent host**，让 skill 被识别。skill 就可以通过
-"use deckify on https://example.com" 触发。
+```bash
+npx skills add seacen/deckify
 ```
 
-如果你想直接自己跑命令，[上面每个 host 那段就是命令](#安装--把这段粘给你的-ai-agent) —— 挑你用的那一档执行。
+就这样。重启你的 agent，用 **"use deckify on https://example.com"** 触发。
+
+<details>
+<summary>其他安装方式</summary>
+
+**Claude Code 插件** —— deckify 同时也是一个 Claude Code 插件（仓库里带了 `.claude-plugin/marketplace.json`）：
+
+```bash
+claude plugin marketplace add https://github.com/seacen/deckify
+claude plugin install deckify
+```
+
+**手动** —— clone 仓库，把你的 host 指向 `skills/deckify/`：
+
+```bash
+git clone https://github.com/seacen/deckify.git
+# 然后两选一：把 ./deckify/skills/deckify symlink 到你 host 的 skills
+# 目录；或者把 skills/deckify/SKILL.md 当 context attachment 注入。
+# SKILL.md 是自描述的 —— 任何 agent 看完都知道怎么驱动它。
+```
+
+</details>
+
+### 唯一的依赖：agent-browser
+
+deckify 像设计师一样阅读品牌网站 —— 渲染后的 DOM、computed styles、截图 —— 这些 curl 都做不到。它用独立的 [`agent-browser`](https://github.com/vercel-labs/agent-browser) CLI 来完成。装完 skill 后，验证一下它在不在：
+
+```bash
+python3 <安装路径>/skills/deckify/scripts/setup.py
+```
+
+如果 `agent-browser` 不在 PATH，脚本会给出对应平台的安装命令（npm / brew / cargo）。让你的 agent 帮你跑即可。
 
 ---
 
